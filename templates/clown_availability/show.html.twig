@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Fehlzeiten{% endblock %}
+
+{% block content %}
+    {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
+    <h4 class="pt-3">Fehlzeiten {{ clown.name }} {{ month.label }}</h4>
+
+    <div class="container">
+        <div class="row pb-3">
+                <div class="col-sm-4">
+                    Wunsch Anzahl Spiele pro Monat: <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
+                </div>
+                <div class="col-sm-4">
+                    Maximale Anzahl Spiele pro Monat: <strong>{{ clownAvailability.maxPlaysMonth }}</strong>
+                </div>
+                <div class="col-sm-4">
+                    Maximale Anzahl Spiele pro Tag: <strong>{{ clownAvailability.maxPlaysDay }}</strong>
+                </div>
+            </div>
+        {% for day in schedule.days %}
+            <div class="row">
+                {{ include ('partials/schedule_day_number_and_name.html.twig', {day: day}, with_context = false) }}
+
+                {{ include (
+                    'clown_availability/show_availability_in_schedule.html.twig', 
+                    {availability: day.entries('am')[0], daytime: 'am'}, with_context = false) 
+                }}
+                {{ include (
+                    'clown_availability/show_availability_in_schedule.html.twig', 
+                    {availability: day.entries('pm')[0], daytime: 'pm'}, with_context = false) 
+                }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="container pt-3">
+        <a href="{{ path('clown_availability_edit', {clownId: clown.id, monthId: month.key}) }}">Fehlzeiten bearbeiten</a>
+    </div>
+{% endblock %}

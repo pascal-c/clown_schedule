@@ -1,0 +1,9 @@
+<ul class="nav nav-tabs pt-4">
+    {% for key, element in navigationItems %}
+        <li class="nav-item">
+            <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">
+                {{ element['label'] }}
+            </a>
+        </li>
+     {% endfor %}
+</ul>

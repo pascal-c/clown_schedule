@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    {{ component('month_navigation', { active: playDate.month.key , urlKey: 'schedule'}) }}
+    <h4 class="pt-3">Clowns zu Spieltermin einteilen</h4>
+    <h5>Am {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime == 'am' ? 'vormittags' : 'nachmittags' }} in {{ playDate.venue.name }}</h5>
+
+    {{ form(form) }}
+{% endblock %}

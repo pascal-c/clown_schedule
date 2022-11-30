@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Clowns{% endblock %}
+
+{% block content %}
+    {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_index' }) }}
+    <h4 class="pt-3">Fehlzeiten {{ month.label }}</h4>
+
+    <table class="table">
+        <thead>
+            <tr><th>Clown</th><th>Fehlzeiten eingetragen?</th></tr>
+        </thead>
+        <tbody>
+
+            {% for clown in clowns %}
+                <tr>
+                    <td>{{ clown.name }}</td>
+                    <td>
+                        <a href="{{ path('clown_availability_show', {clownId: clown.id, monthId: month.key}) }}"
+                            class="{{ clown.hasAvailabilityFor(month) ? 'text-success' : 'text-danger' }}">
+                            {{ clown.hasAvailabilityFor(month) ? 'Ja' : 'Nein' }}
+                        </a>
+                    </td>
+                </tr>    
+            {% endfor %}    
+        </tbody>
+    </table>
+{% endblock %}

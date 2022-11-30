@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Clowns{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">Clowns</h4>
+
+    <table class="table">
+        <thead>
+            <tr><th>Clown</th><th>Fehlzeiten</th></tr>
+        </thead>
+        <tbody>
+
+            {% for clown in clowns %}
+                <tr>
+                    <td><a href="{{ path('clown_edit', {id: clown.id}) }}">{{ clown.name }}</a></td>
+                    <td><a href="{{ path('clown_availability_show', {clownId: clown.id}) }}">Fehlzeiten</a></td>
+                </tr>    
+            {% endfor %}    
+        </tbody>
+    </table>
+    <a href="{{ path('clown_new') }}">Clown anlegen</a>
+{% endblock %}

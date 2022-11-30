@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20221120140312 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP SEQUENCE clown_availability2_id_seq CASCADE');
+        $this->addSql('CREATE SEQUENCE clown_availability_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE clown_availability (id INT NOT NULL, clown_id INT NOT NULL, month VARCHAR(7) NOT NULL, max_plays_month INT NOT NULL, wished_plays_month INT NOT NULL, max_plays_day INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_8B83861687F943E2 ON clown_availability (clown_id)');
+        $this->addSql('ALTER TABLE clown_availability ADD CONSTRAINT FK_8B83861687F943E2 FOREIGN KEY (clown_id) REFERENCES clown (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE clown_availability2 DROP CONSTRAINT fk_ee8a88da87f943e2');
+        $this->addSql('DROP TABLE clown_availability2');
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SCHEMA public');
+        $this->addSql('DROP SEQUENCE clown_availability_id_seq CASCADE');
+        $this->addSql('CREATE SEQUENCE clown_availability2_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE clown_availability2 (id INT NOT NULL, clown_id INT NOT NULL, month VARCHAR(7) NOT NULL, max_plays_month INT NOT NULL, wished_plays_month INT NOT NULL, max_plays_day INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX idx_ee8a88da87f943e2 ON clown_availability2 (clown_id)');
+        $this->addSql('ALTER TABLE clown_availability2 ADD CONSTRAINT fk_ee8a88da87f943e2 FOREIGN KEY (clown_id) REFERENCES clown (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE clown_availability DROP CONSTRAINT FK_8B83861687F943E2');
+        $this->addSql('DROP TABLE clown_availability');
+    }
+}

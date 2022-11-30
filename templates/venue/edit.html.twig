@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Spielort bearbeiten</h4>
+
+    {{ form(form) }}
+    {{ venue.playDates.empty ? form(delete_form) : null }}
+
+{% endblock %}

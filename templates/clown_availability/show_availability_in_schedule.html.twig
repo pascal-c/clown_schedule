@@ -1,0 +1,5 @@
+{% set textColor = availability == 'yes' ? 'success' : (availability == 'no' ? 'danger' : 'warning') %}
+<div class="col-sm-5 border text-{{ textColor }}">
+    <span class="text-muted">{{ daytime == 'am' ? 'vormittags' : 'nachmittags' }}</span>
+    {{ availability == 'yes' ? 'Ja' : (availability == 'no' ? 'Nein' : 'Wenn\'s sein muss') }}
+</div>
