@@ -6,6 +6,7 @@ use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +38,16 @@ class ClownController extends AbstractController
 
         $form = $this->createFormBuilder($clown)
             ->add('name', TextType::class)
+            ->add('gender', ChoiceType::class, [
+                'choices'  => [
+                    'weiblich' => 'female',
+                    'divers' => 'diverse',
+                    'männlich' => 'male',
+                ],
+                'label' => 'Gender',
+                'expanded' => true,
+                'multiple' => false,
+                ])
             ->add('save', SubmitType::class, ['label' => 'Clown anlegen'])
             ->getForm();
 
@@ -66,6 +77,16 @@ class ClownController extends AbstractController
 
         $form = $this->createFormBuilder($clown)
             ->add('name', TextType::class)
+            ->add('gender', ChoiceType::class, [
+                'choices'  => [
+                    'weiblich' => 'female',
+                    'divers' => 'diverse',
+                    'männlich' => 'male',
+                ],
+                'label' => 'Gender',
+                'expanded' => true,
+                'multiple' => false,
+                ])
             ->add('save', SubmitType::class, ['label' => 'Clown speichern'])
             ->setMethod('PATCH')
             ->getForm();

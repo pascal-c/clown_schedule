@@ -7,6 +7,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
+use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 
 class Scheduler
@@ -15,6 +16,7 @@ class Scheduler
         private PlayDateRepository $playDateRepository,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownAssigner $clownAssigner,
+        private AvailabilityChecker $availabilityChecker
     )
     {
     }
@@ -22,22 +24,20 @@ class Scheduler
     public function calculate(Month $month): void
     {
         $playDates = $this->playDateRepository->byMonth($month);
-        $clownAvailabilies = $this->clownAvailabilityRepository->byMonth($month);
+        $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $this->removeClownAssignments($playDates);
-        $clownCounter = array_map(
-            fn(ClownAvailability $availability) =>
-                [
-                    'clown' => $availability->getClown(),
-                    'remainingMaxPlays' => $availability->getMaxPlaysMonth(),
-                ], 
-            $clownAvailabilies
-        );
+        
         foreach ($playDates as $playDate) {
-            $this->clownAssigner->assignFirstClown($playDate, $clownCounter);
+            $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
         }
-        #orderPlayDatesByAvailabilities
-        #calculateEntitledPlays
-        #assignSecondClown
+
+        $this->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
+
+        $playDates = $this->orderByAvailabilities($playDates, $clownAvailabilities);
+
+        foreach ($playDates as $playDate) {
+            $this->clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
+        }
     }
 
     private function removeClownAssignments(array $playDates): void
@@ -47,5 +47,38 @@ class Scheduler
                 $playDate->removePlayingClown($clown);
             }
         }
+    }
+
+    private function calculateEntitledPlays(array $clownAvailabilities, int $clownPlayNumber): void
+    {
+        $fullClownNumber = array_reduce(
+            $clownAvailabilities,
+            fn(float $number, ClownAvailability $availability) => $number + $availability->getAvailabilityRatio(),
+            0.0
+        );
+        $playsPerFullClown = $clownPlayNumber / $fullClownNumber;
+
+        foreach ($clownAvailabilities as $availability) {
+            $availability->setEntitledPlaysMonth($playsPerFullClown * $availability->getAvailabilityRatio());
+        }
+    }
+
+    private function orderByAvailabilities(array $playDates, array $clownAvailabilities): array
+    {
+        usort(
+            $playDates, 
+            fn(PlayDate $playDate1, PlayDate $playDate2) => 
+                count(array_filter(
+                    $clownAvailabilities, 
+                    fn(ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate2, $availability)
+                ))
+                <=>
+                count(array_filter(
+                    $clownAvailabilities, 
+                    fn(ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate1, $availability)
+                ))
+        );
+
+        return $playDates;
     }
 }

@@ -81,7 +81,7 @@ class Venue
     {
         if (!$this->playDates->contains($playDate)) {
             $this->playDates->add($playDate);
-            $playDate->setVenueId($this);
+            $playDate->setVenue($this);
         }
 
         return $this;
@@ -91,8 +91,8 @@ class Venue
     {
         if ($this->playDates->removeElement($playDate)) {
             // set the owning side to null (unless already changed)
-            if ($playDate->getVenueId() === $this) {
-                $playDate->setVenueId(null);
+            if ($playDate->getVenue() === $this) {
+                $playDate->setVenue(null);
             }
         }
 

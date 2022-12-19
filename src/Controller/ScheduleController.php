@@ -28,7 +28,7 @@ class ScheduleController extends AbstractController
     }
 
     #[Route('/schedule/{monthId}', name: 'schedule', methods: ['GET'])]
-    public function schedule(SessionInterface $session, ?string $monthId = null): Response 
+    public function schedule(SessionInterface $session, Request $request, ?string $monthId = null): Response 
     {
         $month = $this->monthRepository->find($session, $monthId);
     
@@ -45,6 +45,7 @@ class ScheduleController extends AbstractController
             'schedule' => $schedule,
             'month' => $month,
             'form' => $form,
+            'showAvailabilities' => $request->query->get('showAvailabilities') == 'yes'
         ]);
     }
 
@@ -53,6 +54,7 @@ class ScheduleController extends AbstractController
     {
         $month = $this->monthRepository->find($session, $monthId);
         $this->scheduler->calculate($month);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'Yes! Spielplan wurde erstellt. Bitte nochmal prüfen, ob alles so passt!');
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);

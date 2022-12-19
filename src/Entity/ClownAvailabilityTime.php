@@ -84,6 +84,11 @@ class ClownAvailabilityTime
         return $this;
     }
 
+    public function isAvailable(): bool
+    {
+        return $this->availability != 'no';
+    }
+
     public function getClownAvailability(): ?ClownAvailability
     {
         return $this->clownAvailability;

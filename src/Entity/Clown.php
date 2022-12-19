@@ -37,6 +37,9 @@ class Clown
     #[ORM\OneToMany(mappedBy: 'clown', targetEntity: ClownAvailability::class, orphanRemoval: true)]
     private Collection $clownAvailabilities;
 
+    #[ORM\Column(length: 7)]
+    private ?string $gender = null;
+
     public function __construct()
     {
         $this->venues = new ArrayCollection();
@@ -132,5 +135,17 @@ class Clown
         }
 
         return false;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
     }
 }

@@ -18,7 +18,7 @@ class ClownAvailabilityRepository extends AbstractRepository
         return $this->doctrineRepository->findOneBy(['month' => $month->getKey(), 'clown' => $clown]);
     }
 
-    public function byMonth(Month $month): Array
+    public function byMonth(Month $month): array
     {
         return $this->doctrineRepository->findBy(['month' => $month->getKey()]);
     }

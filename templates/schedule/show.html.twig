@@ -6,7 +6,16 @@
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     <h4 class="pt-3">Spielplan {{ month.label }}</h4>
 
-    <div class="container">
+    
+    <form>
+        <div class="form-check form-check-inline">
+            <input {{ showAvailabilities ? 'checked="checked"' : '' }} class="form-check-input" type="checkbox" name="showAvailabilities" id="show_availablilities" value="yes">
+            <label class="form-check-label" for="show_availabilities">Noch verfügbare Clowns zeigen</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Los jetzt!</button>
+    </form>
+    
+    <div class="container pt-1">
         {% for day in schedule.days %}
             <div class="row">
                 {{ include ('partials/schedule_day_number_and_name.html.twig', {day: day}, with_context = false) }}

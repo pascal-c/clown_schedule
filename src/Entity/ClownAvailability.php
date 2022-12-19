@@ -15,7 +15,7 @@ class ClownAvailability
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'clownAvailabilities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Clown $clown = null;
 
@@ -33,6 +33,12 @@ class ClownAvailability
 
     #[ORM\OneToMany(mappedBy: 'clownAvailability', targetEntity: ClownAvailabilityTime::class, orphanRemoval: true)]
     private Collection $clownAvailabilityTimes;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $entitled_plays_month = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $calculated_plays_month = null;
 
     public function __construct()
     {
@@ -132,5 +138,78 @@ class ClownAvailability
         }
 
         return $this;
+    }
+
+    public function getAvailabilityRatio(): float
+    {
+        $allTimeSlots = $this->getClownAvailabilityTimes(); 
+        $availableTimeSlots = $allTimeSlots->filter(
+            fn($timeSlot) => $timeSlot->getAvailability() != 'no'
+        );
+
+        return count($availableTimeSlots) / count($allTimeSlots);   
+    }
+
+    private function getTimeSlot(\DateTimeInterface $date, string $daytime): ClownAvailabilityTime
+    {
+        return $this->getClownAvailabilityTimes()
+            ->filter(fn(ClownAvailabilityTime $timeSlot) => $timeSlot->getDate() == $date && $timeSlot->getDaytime() == $daytime)
+            ->first();
+    }
+
+    public function getAvailabilityOn(\DateTimeInterface $date, string $daytime): string
+    {
+        return $this->getTimeSlot($date, $daytime)
+            ->getAvailability();
+    }
+
+    public function isAvailableOn(\DateTimeInterface $date, string $daytime): bool
+    {
+        return $this->getTimeSlot($date, $daytime)
+            ->isAvailable(); 
+    }
+
+    public function getEntitledPlaysMonth(): ?float
+    {
+        return $this->entitled_plays_month;
+    }
+
+    public function setEntitledPlaysMonth(?float $entitled_plays_month): self
+    {
+        $this->entitled_plays_month = $entitled_plays_month;
+
+        return $this;
+    }
+
+    public function getCalculatedPlaysMonth(): ?int
+    {
+        return $this->calculated_plays_month;
+    }
+
+    public function setCalculatedPlaysMonth(?int $calculated_plays_month): self
+    {
+        $this->calculated_plays_month = $calculated_plays_month;
+
+        return $this;
+    }
+
+    public function incCalculatedPlaysMonth(): self
+    {
+        if (is_null($this->calculated_plays_month)) {
+            $this->calculated_plays_month = 1;
+        } else {
+            $this->calculated_plays_month++;
+        }
+
+        return $this;
+    }
+
+    public function getOpenEntitledPlays(): ?float
+    {
+        if (is_null($this->getEntitledPlaysMonth())) {
+            return null;
+        }
+
+        return $this->getEntitledPlaysMonth() - $this->getCalculatedPlaysMonth();
     }
 }
