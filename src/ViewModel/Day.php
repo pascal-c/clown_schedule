@@ -45,7 +45,12 @@ class Day
         return $this->date->format('D');
     }
 
-    public function getDate(): string
+    public function getDate(): \DateTimeImmutable
+    {
+        return $this->date;
+    }
+
+    public function getDateString(): string
     {
         return $this->date->format('Y-m-d');
     }

@@ -25,7 +25,7 @@ class Scheduler
     {
         $playDates = $this->playDateRepository->byMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
-        $this->removeClownAssignments($playDates);
+        $this->removeClownAssignments($playDates, $clownAvailabilities);
         
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
@@ -40,12 +40,16 @@ class Scheduler
         }
     }
 
-    private function removeClownAssignments(array $playDates): void
+    private function removeClownAssignments(array $playDates, array $clownAvailabilities): void
     {
         foreach ($playDates as $playDate) {
             foreach($playDate->getPlayingClowns() as $clown) {
                 $playDate->removePlayingClown($clown);
             }
+        }
+        
+        foreach($clownAvailabilities as $availability) {
+            $availability->setCalculatedPlaysMonth(null);
         }
     }
 

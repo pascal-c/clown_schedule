@@ -25,7 +25,7 @@ final class AvailabilityCheckerTest extends TestCase
     {
         $playDate = $this->buildPlayDate('am', (new Clown)->setGender($firstClownGender));
         $playDateRepository = $this->createMock(PlayDateRepository::class);
-        $playDateRepository->expects($this->once())
+        $playDateRepository->expects($this->atLeastOnce())
             ->method('byMonth')
             ->with($this->equalTo(new Month(new \DateTimeImmutable('2022-04'))))
             ->willReturn($otherPlayDates);

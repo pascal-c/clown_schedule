@@ -67,6 +67,9 @@ final class SchedulerTest extends TestCase
         foreach($playDates as $playDate) {
             $this->assertEmpty($playDate->getPlayingClowns());
         }
+        foreach($clownAvailabilities as $availability) {
+            $this->assertNull($availability->getCalculatedPlaysMonth());
+        }
 
         # calculate entitled plays
         $this->assertEquals(2.0, $clownAvailabilities[0]->getEntitledPlaysMonth()); # 6 * 1.0 / 3
@@ -104,6 +107,7 @@ final class SchedulerTest extends TestCase
     private function buildClownAvailability(array $timeSlots): ClownAvailability
     {
         $clownAvailability = new ClownAvailability;
+        $clownAvailability->setCalculatedPlaysMonth(27);
         foreach ($timeSlots as $availability => $number) {
             for ($i=0; $i<$number; $i++) {
                 $timeSlot = new ClownAvailabilityTime;

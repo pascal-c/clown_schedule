@@ -1,0 +1,80 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Statistiken{% endblock %}
+
+{% block content %}
+    {{ component('month_navigation', { active: month.key, urlKey: 'statistics' }) }}
+    <h4 class="pt-3">Statistiken für {{ month.label }}</h4>
+
+    Spieltermine (aktuell): {{ currentPlayDatesCount }}
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Clown</th>
+                <th>Maximum</th>
+                <th>Wunsch</th>
+                <th>Verfügbarkeit</th>
+                <th>zustehend</th>
+                <th>zugewiesen</th>
+                <th>Differenz</th>
+                <th>aktuell</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for availability in clownAvailabilities %}
+            <tr>
+                <td>{{ availability.clown.name }}</td>
+                <td>
+                    {{ availability.maxPlaysMonth }}
+                </td>
+                <td>
+                    {{ availability.wishedPlaysMonth }}
+                </td>
+                <td>
+                    {{ (availability.availabilityRatio * 100)|round(2) }} %
+                </td>
+                <td>
+                    {{ availability.entitledPlaysMonth|round(2) }}
+                </td>
+                <td>
+                    {{ availability.calculatedPlaysMonth }}
+                </td>
+                <td>
+                    {{ availability.openEntitledPlays|round(2) }}
+                </td>
+                <td>
+                    {{ plays[availability.clown.id] }}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th>Summe</th>
+                <th>
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.maxPlaysMonth) }}
+                </th>
+                <th>
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.wishedPlaysMonth) }}
+                </th>
+                <th>
+                    -
+                </th>
+                <th>
+                    {% set entitledPlaysSum = clownAvailabilities|reduce((carry, v) => carry+v.entitledPlaysMonth) %}
+                    {{ entitledPlaysSum }}
+                </th>
+                <th>
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.calculatedPlaysMonth) }}
+                </th>
+                <th>
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openEntitledPlays)|round(2) }} |
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openEntitledPlays|abs)|round(2) }}
+                </th>
+                {% set currentPlaysSum = plays|reduce((carry, v) => carry+v) %}
+                <th class="text-{{ entitledPlaysSum|round == currentPlaysSum ? 'success' : 'danger' }}">
+                    {{ currentPlaysSum }}
+                </th>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

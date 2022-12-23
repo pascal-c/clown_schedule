@@ -16,31 +16,31 @@
                     <div class="col-sm-5 border">
                         <div class="text-muted">vormittags</div>
                         <div class="form-check form-check-inline">
-                            <input {{ day.entries('am')[0] == 'yes' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.date }}][am]" id="availability_{{ day.date }}_am_yes" value="yes">
-                            <label class="form-check-label" for="availability_{{ day.date }}_am_yes">Ja</label>
+                            <input {{ day.entries('am')[0] == 'yes' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][am]" id="availability_{{ day.dateString }}_am_yes" value="yes">
+                            <label class="form-check-label" for="availability_{{ day.dateString }}_am_yes">Ja</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input {{ day.entries('am')[0] == 'maybe' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.date }}][am]" id="availability_{{ day.date }}_am_maybe" value="maybe">
-                            <label class="form-check-label" for="availability_{{ day.date }}_am_maybe">Wenn's sein muss</label>
+                            <input {{ day.entries('am')[0] == 'maybe' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][am]" id="availability_{{ day.dateString }}_am_maybe" value="maybe">
+                            <label class="form-check-label" for="availability_{{ day.dateString }}_am_maybe">Wenn's sein muss</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input {{ day.entries('am')[0] == 'no' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.date }}][am]" id="availability_{{ day.date }}_am_no" value="no">
-                            <label class="form-check-label" for="availability_{{ day.date }}_am_no">Nein</label>
+                            <input {{ day.entries('am')[0] == 'no' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][am]" id="availability_{{ day.dateString }}_am_no" value="no">
+                            <label class="form-check-label" for="availability_{{ day.dateString }}_am_no">Nein</label>
                         </div>
                     </div>
                     <div class="col-sm-5 border">
                         <div class="text-muted">nachmittags</div>
                         <div class="form-check form-check-inline">
-                            <input {{ day.entries('pm')[0] == 'yes' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.date }}][pm]" id="availability_{{ day.date }}_pm_yes" value="yes">
-                            <label class="form-check-label" for="availability_{{ day.date }}_pm_yes">Ja</label>
+                            <input {{ day.entries('pm')[0] == 'yes' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][pm]" id="availability_{{ day.dateString }}_pm_yes" value="yes">
+                            <label class="form-check-label" for="availability_{{ day.dateString }}_pm_yes">Ja</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input {{ day.entries('pm')[0] == 'maybe' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.date }}][pm]" id="availability_{{ day.date }}_pm_maybe" value="maybe">
-                            <label class="form-check-label" for="availability_{{ day.date }}_pm_maybe">Wenn's sein muss</label>
+                            <input {{ day.entries('pm')[0] == 'maybe' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][pm]" id="availability_{{ day.dateString }}_pm_maybe" value="maybe">
+                            <label class="form-check-label" for="availability_{{ day.dateString }}_pm_maybe">Wenn's sein muss</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input {{ day.entries('pm')[0] == 'no' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.date }}][pm]" id="availability_{{ day.date }}_pm_no" value="no">
-                            <label class="form-check-label" for="availability_{{ day.date }}_pm_no">Nein</label>
+                            <input {{ day.entries('pm')[0] == 'no' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][pm]" id="availability_{{ day.dateString }}_pm_no" value="no">
+                            <label class="form-check-label" for="availability_{{ day.dateString }}_pm_no">Nein</label>
                         </div>
                     </div>
                 </div>

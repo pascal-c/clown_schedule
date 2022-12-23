@@ -33,7 +33,7 @@ class WebTestCase extends SymfonyWebTestCase
     protected function buildClown(string $name = 'Hugo'): Clown
     {
         $clown = new Clown;
-        $clown->setName($name);
+        $clown->setName($name)->setGender('female');
         return $clown;
     }
 

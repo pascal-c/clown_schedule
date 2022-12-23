@@ -9,10 +9,10 @@
     
     <form>
         <div class="form-check form-check-inline">
-            <input {{ showAvailabilities ? 'checked="checked"' : '' }} class="form-check-input" type="checkbox" name="showAvailabilities" id="show_availablilities" value="yes">
-            <label class="form-check-label" for="show_availabilities">Noch verfügbare Clowns zeigen</label>
+            <input {{ showAvailabilities ? 'checked="checked"' : '' }} class="form-check-input" type="checkbox" name="showAvailabilities" id="show_availabilities" value="yes">
+            <label class="form-check-label" for="show_availabilities">Noch verfügbare Clowns</label>
         </div>
-        <button type="submit" class="btn btn-primary">Los jetzt!</button>
+        <button type="submit" class="btn btn-secondary">zeigen!</button>
     </form>
     
     <div class="container pt-1">
@@ -26,6 +26,9 @@
                     {% else %}
                        <span class="text-muted">vormittags</span>
                     {% endfor %}
+                    {% if showAvailabilities and day.entries('am') is not empty  %}
+                        {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
+                    {% endif %}
                 </div>
                 <div class="col-sm-5 border">
                     {% for playDate in day.entries('pm') %}
@@ -33,6 +36,9 @@
                     {% else %}
                        <span class="text-muted">nachmittags</span>
                     {% endfor %}
+                    {% if showAvailabilities and day.entries('pm') is not empty  %}
+                        {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}
+                    {% endif %}
                 </div>
             </div>
             

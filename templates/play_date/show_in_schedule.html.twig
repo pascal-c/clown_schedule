@@ -1,5 +1,5 @@
 <div class="pt-2">
-    <strong>{{ playDate.venue.name }}</strong>
+    <strong class="{{ playDate.playingClowns.count !=2 ? 'text-danger' }}">{{ playDate.venue.name }}</strong>
     {% if playDate.venue.playTimeFrom %}
         <span class="text-muted">
         {{ playDate.venue.playTimeFrom|date('H:i') }}-{{ playDate.venue.playTimeTo|date('H:i') }}
