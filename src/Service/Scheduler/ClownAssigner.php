@@ -71,9 +71,9 @@ class ClownAssigner
                 $a2Availability = $availability2->getAvailabilityOn($playDate->getDate(), $playDate->getDaytime());
                 if ($a1Availability == $a2Availability) {
                     return 
-                        $availability2->getOpenEntitledPlays()
+                        $availability2->getOpenTargetPlays()
                         <=>
-                        $availability1->getOpenEntitledPlays();
+                        $availability1->getOpenTargetPlays();
                 }
 
                 return $a1Availability == 'yes' ? -1 : 1;

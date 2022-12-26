@@ -8,13 +8,13 @@ use App\Entity\ClownAvailabilityTime;
 
 final class ClownAvailabilityTest extends TestCase
 {
-    public function testgetOpenEntitledPlays(): void
+    public function testgetOpenTargetPlays(): void
     {
         $availability = new ClownAvailability;
-        $availability->setEntitledPlaysMonth(2.3);
+        $availability->setTargetPlays(3);
         $availability->setCalculatedPlaysMonth(1);
 
-        $this->assertEqualsWithDelta(1.3, $availability->getOpenEntitledPlays(), 0.0000001);
+        $this->assertEquals(2, $availability->getOpenTargetPlays());
     }
 
     public function testgetAvailabilityRatio(): void

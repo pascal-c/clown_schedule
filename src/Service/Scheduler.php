@@ -9,6 +9,7 @@ use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
+use App\Service\Scheduler\FairPlayCalculator;
 
 class Scheduler
 {
@@ -16,7 +17,8 @@ class Scheduler
         private PlayDateRepository $playDateRepository,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownAssigner $clownAssigner,
-        private AvailabilityChecker $availabilityChecker
+        private AvailabilityChecker $availabilityChecker,
+        private FairPlayCalculator $fairPlayCalculator
     )
     {
     }
@@ -31,7 +33,8 @@ class Scheduler
             $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
         }
 
-        $this->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
+        $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
+        $this->fairPlayCalculator->calculateTargetPlays($clownAvailabilities, count($playDates) * 2);
 
         $playDates = $this->orderByAvailabilities($playDates, $clownAvailabilities);
 
@@ -50,20 +53,6 @@ class Scheduler
         
         foreach($clownAvailabilities as $availability) {
             $availability->setCalculatedPlaysMonth(null);
-        }
-    }
-
-    private function calculateEntitledPlays(array $clownAvailabilities, int $clownPlayNumber): void
-    {
-        $fullClownNumber = array_reduce(
-            $clownAvailabilities,
-            fn(float $number, ClownAvailability $availability) => $number + $availability->getAvailabilityRatio(),
-            0.0
-        );
-        $playsPerFullClown = $clownPlayNumber / $fullClownNumber;
-
-        foreach ($clownAvailabilities as $availability) {
-            $availability->setEntitledPlaysMonth($playsPerFullClown * $availability->getAvailabilityRatio());
         }
     }
 

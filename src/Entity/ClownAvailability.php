@@ -40,6 +40,9 @@ class ClownAvailability
     #[ORM\Column(nullable: true)]
     private ?int $calculated_plays_month = null;
 
+    #[ORM\Column]
+    private ?int $targetPlays = null;
+
     public function __construct()
     {
         $this->clownAvailabilityTimes = new ArrayCollection();
@@ -204,12 +207,46 @@ class ClownAvailability
         return $this;
     }
 
-    public function getOpenEntitledPlays(): ?float
+    public function getOpenTargetPlays(): ?int
     {
-        if (is_null($this->getEntitledPlaysMonth())) {
+        if (is_null($this->getTargetPlays())) {
             return null;
         }
 
-        return $this->getEntitledPlaysMonth() - $this->getCalculatedPlaysMonth();
+        return $this->getTargetPlays() - $this->getCalculatedPlaysMonth();
+    }
+
+    public function getTargetPlays(): ?int
+    {
+        return $this->targetPlays;
+    }
+
+    public function setTargetPlays(int $targetPlays): self
+    {
+        $this->targetPlays = $targetPlays;
+
+        return $this;
+    }
+
+    public function incTargetPlays(): self
+    {
+        if (is_null($this->targetPlays)) {
+            $this->targetPlays = 1;
+        } else {
+            $this->targetPlays++;
+        }
+
+        return $this;
+    }
+
+    public function decrTargetPlays(): self
+    {
+        if (is_null($this->targetPlays)) {
+            $this->targetPlays = -1;
+        } else {
+            $this->targetPlays--;
+        }
+
+        return $this;
     }
 }

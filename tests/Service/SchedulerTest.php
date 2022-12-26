@@ -13,6 +13,7 @@ use App\Repository\PlayDateRepository;
 use App\Service\Scheduler;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
+use App\Service\Scheduler\FairPlayCalculator;
 use PHPUnit\Framework\TestCase;
 
 final class SchedulerTest extends TestCase
@@ -58,8 +59,17 @@ final class SchedulerTest extends TestCase
                 }
             ));
 
+        $fairPlayCalculator = $this->createMock(FairPlayCalculator::class);    
+        $fairPlayCalculator->expects($this->once())
+            ->method('calculateEntitledPlays')
+            ->with($clownAvailabilities, 6);
+        $fairPlayCalculator->expects($this->once())
+            ->method('calculateTargetPlays')
+            ->with($clownAvailabilities, 6);
 
-        $scheduler = new Scheduler($playDateRepository, $clownAvailabilityRepository, $clownAssigner, $availabilityChecker);
+
+            $scheduler = new Scheduler($playDateRepository, $clownAvailabilityRepository, $clownAssigner, 
+            $availabilityChecker, $fairPlayCalculator);
         $month = new Month(new \DateTimeImmutable('1978-12'));
         $scheduler->calculate($month);
 
@@ -70,12 +80,6 @@ final class SchedulerTest extends TestCase
         foreach($clownAvailabilities as $availability) {
             $this->assertNull($availability->getCalculatedPlaysMonth());
         }
-
-        # calculate entitled plays
-        $this->assertEquals(2.0, $clownAvailabilities[0]->getEntitledPlaysMonth()); # 6 * 1.0 / 3
-        $this->assertEquals(1.6, $clownAvailabilities[1]->getEntitledPlaysMonth()); # 6 * 0.8 / 3
-        $this->assertEquals(1.2, $clownAvailabilities[2]->getEntitledPlaysMonth()); # 6 * 0.6 / 3
-        $this->assertEquals(1.2, $clownAvailabilities[3]->getEntitledPlaysMonth()); # 6 * 0.6 / 3
     }
 
     private function getPlayDates(): array
