@@ -101,11 +101,11 @@ final class ClownAssignerTest extends TestCase
     {
         $buildResultSet = function(array $params): array {
             $clownAvailabilities = [
-                $this->buildClownAvailability('no', 2.5, 1),
-                $this->buildClownAvailability('maybe', 2.5, 1),
-                $this->buildClownAvailability('yes', 2.5, 1),
-                $this->buildClownAvailability('maybe', 4.5, 1),
-                $this->buildClownAvailability('yes', 3.5, 1),
+                $this->buildClownAvailability('no', 2, 1),
+                $this->buildClownAvailability('maybe', 2, 1),
+                $this->buildClownAvailability('yes', 2, 1),
+                $this->buildClownAvailability('maybe', 4, 1),
+                $this->buildClownAvailability('yes', 3, 1),
             ];
             $expectedResultIndex = $params['expectedResultIndex'];
             
@@ -188,7 +188,7 @@ final class ClownAssignerTest extends TestCase
         return $playDate;
     }
     
-    private function buildClownAvailability(string $availability = 'yes', float $entitledPlays = 2.5, ?int $calculatedPlays = null): ClownAvailability
+    private function buildClownAvailability(string $availability = 'yes', int $targetPlays = 2, ?int $calculatedPlays = null): ClownAvailability
     {
         $timeSlot = (new ClownAvailabilityTime)
             ->setDate(new \DateTimeImmutable('2022-04-01'))
@@ -197,7 +197,7 @@ final class ClownAssignerTest extends TestCase
 
         $clownAvailability = new ClownAvailability;
         $clownAvailability->setClown(new Clown);
-        $clownAvailability->setEntitledPlaysMonth($entitledPlays);
+        $clownAvailability->setTargetPlays($targetPlays);
         $clownAvailability->setCalculatedPlaysMonth($calculatedPlays);
         $clownAvailability->addClownAvailabilityTime($timeSlot);
         return $clownAvailability;

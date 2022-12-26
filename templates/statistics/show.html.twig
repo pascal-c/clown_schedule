@@ -16,7 +16,8 @@
                 <th>Wunsch</th>
                 <th>Verfügbarkeit</th>
                 <th>zustehend</th>
-                <th>zugewiesen</th>
+                <th>Ziel</th>
+                <th>Ergebnis</th>
                 <th>Differenz</th>
                 <th>aktuell</th>
             </tr>
@@ -38,10 +39,13 @@
                     {{ availability.entitledPlaysMonth|round(2) }}
                 </td>
                 <td>
+                    {{ availability.targetPlays }}
+                </td>
+                <td>
                     {{ availability.calculatedPlaysMonth }}
                 </td>
                 <td>
-                    {{ availability.openEntitledPlays|round(2) }}
+                    {{ availability.openTargetPlays }}
                 </td>
                 <td>
                     {{ plays[availability.clown.id] }}
@@ -64,11 +68,14 @@
                     {{ entitledPlaysSum }}
                 </th>
                 <th>
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.targetPlays) }}
+                </th>
+                <th>
                     {{ clownAvailabilities|reduce((carry, v) => carry+v.calculatedPlaysMonth) }}
                 </th>
                 <th>
-                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openEntitledPlays)|round(2) }} |
-                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openEntitledPlays|abs)|round(2) }}
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openTargetPlays) }} |
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openTargetPlays|abs) }}
                 </th>
                 {% set currentPlaysSum = plays|reduce((carry, v) => carry+v) %}
                 <th class="text-{{ entitledPlaysSum|round == currentPlaysSum ? 'success' : 'danger' }}">
