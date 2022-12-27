@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
+    <h4 class="pt-3">Springer für {{ timeSlot.date|date('d.m.Y') }} {{ timeSlot.daytime == 'am' ? 'vormittags' : 'nachmittags' }}</h4>
+
+    {{ component('show_available_clowns', { date: timeSlot.date, daytime: timeSlot.daytime }) }}
+    {{ form(form) }}
+{% endblock %}

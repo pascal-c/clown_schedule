@@ -2,13 +2,15 @@
 
 namespace App\Service\Scheduler;
 
+use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
+use App\Repository\TimeSlotRepository;
 
 class AvailabilityChecker
 {
-    public function __construct(private PlayDateRepository $playDateRepository)
+    public function __construct(private PlayDateRepository $playDateRepository, private TimeSlotRepository $timeSlotRepository)
     {
     }
 
@@ -24,7 +26,8 @@ class AvailabilityChecker
 
         return 
             $clownAvailability->isAvailableOn($date, $daytime) && 
-            count($playDatesSameTimeSlot) == 0
+            count($playDatesSameTimeSlot) == 0 &&
+            !$this->isSubstitutionClown($date, $daytime, $clownAvailability->getClown())
         ;
     }
 
@@ -63,5 +66,15 @@ class AvailabilityChecker
 
         return $playDate->getPlayingClowns()->first()->getGender() == 'male' && 
             $clownAvailability->getClown()->getGender() == 'male';
+    }
+
+    private function isSubstitutionClown(\DateTimeInterface $date, string $daytime, Clown $clown)
+    {
+        $timeSlot = $this->timeSlotRepository->find($date, $daytime);
+        if (is_null($timeSlot)) {
+            return false;
+        }
+
+        return $timeSlot->getSubstitutionClown() === $clown;
     }
 }

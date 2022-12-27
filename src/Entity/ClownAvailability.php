@@ -40,7 +40,7 @@ class ClownAvailability
     #[ORM\Column(nullable: true)]
     private ?int $calculated_plays_month = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $targetPlays = null;
 
     public function __construct()

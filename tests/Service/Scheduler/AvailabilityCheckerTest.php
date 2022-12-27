@@ -7,7 +7,9 @@ use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Entity\Month;
 use App\Entity\PlayDate;
+use App\Entity\TimeSlot;
 use App\Repository\PlayDateRepository;
+use App\Repository\TimeSlotRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +22,8 @@ final class AvailabilityCheckerTest extends TestCase
         ClownAvailability $clownAvailability, 
         array $otherPlayDates,
         string $firstClownGender, 
-        bool $expectedResult
+        bool $expectedResult,
+        ?TimeSlot $isSubstitutionClown = null
     ): void
     {
         $playDate = $this->buildPlayDate('am', (new Clown)->setGender($firstClownGender));
@@ -29,8 +32,12 @@ final class AvailabilityCheckerTest extends TestCase
             ->method('byMonth')
             ->with($this->equalTo(new Month(new \DateTimeImmutable('2022-04'))))
             ->willReturn($otherPlayDates);
+        $timeSlotRepository = $this->createMock(TimeSlotRepository::class);
+        $timeSlotRepository->expects($this->atMost(1))
+            ->method('find')
+            ->willReturn($isSubstitutionClown);
 
-        $availabilityChecker = new AvailabilityChecker($playDateRepository);
+        $availabilityChecker = new AvailabilityChecker($playDateRepository, $timeSlotRepository);
         $result = $availabilityChecker->isAvailableFor($playDate, $clownAvailability);
         $this->assertSame($expectedResult, $result);
     }
@@ -44,12 +51,16 @@ final class AvailabilityCheckerTest extends TestCase
 
         $playDateOnSameTimeSlot = $this->buildPlayDate('am', $clownAvailability->getClown());
         $playDateOnSameDay = $this->buildPlayDate('pm', $clownAvailability->getClown());
+
+        $timeSlot = $this->buildTimeSlot()->setSubstitutionClown($clownAvailability->getClown());
+
         return [
             [$this->buildClownAvailability('yes'), [], 'male', true], # clown is available
             [$this->buildClownAvailability('maybe'), [], 'male', true], # clown is available
             [$this->buildClownAvailability('no'), [], 'male', false], # clown is not available
             [$this->buildClownAvailability('yes', true), [], 'male', false], # maxPlays reached
             [$this->buildClownAvailability('yes'), [$this->buildPlayDate()], 'male', true], # other play on same timeslot, but not for this clown
+            [$clownAvailability, [], 'male', false, $timeSlot], # clown is available, but is already substitution clown
             [$clownAvailability, [$playDateOnSameTimeSlot], 'male', false], # other play on same timeslot for this clown
             [$clownAvailability, [$playDateOnSameDay], 'male', false], # other play on same day for this clown
             [$clownAvailabilityWithMaxPlaysDay2, [$playDateOnSameDay], 'male', true], # other play on same day for this clown but higher max
@@ -69,6 +80,13 @@ final class AvailabilityCheckerTest extends TestCase
         return $playDate;
     }
 
+    private function buildTimeSlot(string $daytime = 'am'): TimeSlot
+    {
+        return (new TimeSlot)
+            ->setDate(new \DateTimeImmutable('2022-04-01'))
+            ->setDaytime($daytime);
+    }
+
     private function buildClownAvailability(
         string $availability, 
         bool $maxPlaysReached = false,
@@ -81,12 +99,12 @@ final class AvailabilityCheckerTest extends TestCase
         $clownAvailability->setMaxPlaysMonth(2);
         $clownAvailability->setCalculatedPlaysMonth($maxPlaysReached ? 2 : 1);
         $date = new \DateTimeImmutable('2022-04-01');
-        $clownAvailability->addClownAvailabilityTime($this->buildTimeSlot($availability, $date, 'am'));
+        $clownAvailability->addClownAvailabilityTime($this->buildAvailabilityTimeSlot($availability, $date, 'am'));
 
         return $clownAvailability;
     }
 
-    private function buildTimeSlot(string $availability, \DateTimeInterface $date, string $daytime): ClownAvailabilityTime
+    private function buildAvailabilityTimeSlot(string $availability, \DateTimeInterface $date, string $daytime): ClownAvailabilityTime
     {
         $timeSlot = new ClownAvailabilityTime;
         $timeSlot->setAvailability($availability);

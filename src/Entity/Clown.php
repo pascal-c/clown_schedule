@@ -40,11 +40,15 @@ class Clown
     #[ORM\Column(length: 7)]
     private ?string $gender = null;
 
+    #[ORM\OneToMany(mappedBy: 'substitutionClown', targetEntity: TimeSlot::class)]
+    private Collection $substitutionTimeSlots;
+
     public function __construct()
     {
         $this->venues = new ArrayCollection();
         $this->venue_responsibilities = new ArrayCollection();
         $this->playDates = new ArrayCollection();
+        $this->substitutionTimeSlots = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +149,36 @@ class Clown
     public function setGender(string $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TimeSlot>
+     */
+    public function getSubstitutionTimeSlots(): Collection
+    {
+        return $this->substitutionTimeSlots;
+    }
+
+    public function addSubstitutionTimeSlot(TimeSlot $substitutionTimeSlot): self
+    {
+        if (!$this->substitutionTimeSlots->contains($substitutionTimeSlot)) {
+            $this->substitutionTimeSlots->add($substitutionTimeSlot);
+            $substitutionTimeSlot->setSubstitutionClown($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubstitutionTimeSlot(TimeSlot $substitutionTimeSlot): self
+    {
+        if ($this->substitutionTimeSlots->removeElement($substitutionTimeSlot)) {
+            // set the owning side to null (unless already changed)
+            if ($substitutionTimeSlot->getSubstitutionClown() === $this) {
+                $substitutionTimeSlot->setSubstitutionClown(null);
+            }
+        }
 
         return $this;
     }
