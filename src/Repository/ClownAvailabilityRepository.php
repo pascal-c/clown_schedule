@@ -20,6 +20,11 @@ class ClownAvailabilityRepository extends AbstractRepository
 
     public function byMonth(Month $month): array
     {
-        return $this->doctrineRepository->findBy(['month' => $month->getKey()]);
+        return $this->doctrineRepository->createQueryBuilder('ca')
+            ->where('ca.month = :month')
+            ->setParameter('month', $month->getKey())
+            ->getQuery()
+            ->enableResultCache()
+            ->getResult();
     }
 }

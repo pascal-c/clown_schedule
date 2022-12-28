@@ -17,7 +17,11 @@ class PlayDateFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date', DateType::class, ['widget' => 'single_text', 'label' => 'Datum'])
+            ->add('date', DateType::class, [
+                'widget' => 'single_text', 
+                'label' => 'Datum',
+                'input' => 'datetime_immutable',
+                ])
             ->add('daytime', ChoiceType::class, [
                 'choices'  => [
                     'vormittags' => 'am',
