@@ -26,8 +26,11 @@
                     {% else %}
                        <span class="text-muted">vormittags</span>
                     {% endfor %}
-                    {% if showAvailabilities and day.entries('am') is not empty  %}
-                        {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
+                    {% if day.entries('am') is not empty  %}
+                        {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
+                        {% if showAvailabilities %}
+                            {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="col-sm-5 border">
@@ -36,6 +39,9 @@
                     {% else %}
                        <span class="text-muted">nachmittags</span>
                     {% endfor %}
+                    {% if day.entries('pm') is not empty  %}
+                         {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
+                    {% endif %}
                     {% if showAvailabilities and day.entries('pm') is not empty  %}
                         {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}
                     {% endif %}

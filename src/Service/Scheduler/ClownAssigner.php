@@ -4,14 +4,19 @@ namespace App\Service\Scheduler;
 
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
+use App\Entity\TimeSlot;
 use App\Entity\Venue;
+use App\Repository\TimeSlotRepository;
 use App\Service\Scheduler\AvailabilityChecker;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ClownAssigner
 {
-    public function __construct(private AvailabilityChecker $availabilityChecker)
-    {
-    }
+    public function __construct(
+        private AvailabilityChecker $availabilityChecker, 
+        private TimeSlotRepository $timeSlotRepository,
+        private EntityManagerInterface $entityManager
+        ) {}
 
     public function assignFirstClown(PlayDate $playDate, array $clownAvailabilities): void
     {
@@ -43,6 +48,44 @@ class ClownAssigner
         
         $orderedClownAvailabilities = $this->orderAvailabilitesFor($playDate, $availableClownAvailabilities);
         $this->assignClown($playDate, $orderedClownAvailabilities[0]);
+    }
+
+    public function assignSubstitutionClown(\DateTimeImmutable $date, string $daytime, array $clownAvailabilities): void
+    {
+        $availableClownAvailabilities = array_filter(
+            $clownAvailabilities,
+            fn(ClownAvailability $availability) => $this->availabilityChecker->isAvailableOn($date, $daytime, $availability)
+        );
+        if (empty($availableClownAvailabilities)) {
+            return;
+        }
+
+        usort(
+            $availableClownAvailabilities, 
+            function(ClownAvailability $availability1, ClownAvailability $availability2) use ($date, $daytime)
+            {
+                $a1Availability = $availability1->getAvailabilityOn($date, $daytime);
+                $a2Availability = $availability2->getAvailabilityOn($date, $daytime);
+                if ($a1Availability == $a2Availability) {
+                    return 
+                        $availability2->getOpenSubstitutions()
+                        <=>
+                        $availability1->getOpenSubstitutions();
+                }
+
+                return $a1Availability == 'yes' ? -1 : 1;
+            }
+        );
+
+        $timeSlot = $this->timeSlotRepository->find($date, $daytime);
+        if (is_null($timeSlot)) {
+            $timeSlot = (new TimeSlot)->setDate($date)->setDaytime($daytime);
+            $this->entityManager->persist($timeSlot);
+        }
+
+        $clownAvailability = $availableClownAvailabilities[0];
+        $timeSlot->setSubstitutionClown($clownAvailability->getClown());
+        $clownAvailability->incCalculatedSubstitutions();
     }
 
     private function assignClown(PlayDate $playDate, ClownAvailability $clownAvailability): void

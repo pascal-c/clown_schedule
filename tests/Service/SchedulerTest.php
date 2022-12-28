@@ -7,9 +7,11 @@ use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Entity\Month;
 use App\Entity\PlayDate;
+use App\Entity\TimeSlot;
 use App\Entity\Venue;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
+use App\Repository\TimeSlotRepository;
 use App\Service\Scheduler;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
@@ -22,6 +24,7 @@ final class SchedulerTest extends TestCase
     {
         $playDates = $this->getPlayDates();
         list($playDate1, $playDate2, $playDate3) = $playDates;
+        $timeSlot = (new TimeSlot)->setSubstitutionClown(new Clown);
         
         $playDateRepository = $this->createMock(PlayDateRepository::class);
         $playDateRepository->expects($this->once())
@@ -42,6 +45,8 @@ final class SchedulerTest extends TestCase
                 [$playDate3, $clownAvailabilities],
                 [$playDate1, $clownAvailabilities],
             );
+        $clownAssigner->expects($this->once())
+            ->method('assignSubstitutionClown');    
         
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->any())
@@ -66,10 +71,13 @@ final class SchedulerTest extends TestCase
         $fairPlayCalculator->expects($this->once())
             ->method('calculateTargetPlays')
             ->with($clownAvailabilities, 6);
+        $timeSlotRepository = $this->createMock(TimeSlotRepository::class);
+        $timeSlotRepository->expects($this->once())
+            ->method('byMonth')
+            ->willReturn([$timeSlot]);
 
-
-            $scheduler = new Scheduler($playDateRepository, $clownAvailabilityRepository, $clownAssigner, 
-            $availabilityChecker, $fairPlayCalculator);
+        $scheduler = new Scheduler($playDateRepository, $clownAvailabilityRepository, $clownAssigner, 
+            $availabilityChecker, $fairPlayCalculator, $timeSlotRepository);
         $month = new Month(new \DateTimeImmutable('1978-12'));
         $scheduler->calculate($month);
 
@@ -80,6 +88,7 @@ final class SchedulerTest extends TestCase
         foreach($clownAvailabilities as $availability) {
             $this->assertNull($availability->getCalculatedPlaysMonth());
         }
+        $this->assertNull($timeSlot->getSubstitutionClown());
     }
 
     private function getPlayDates(): array
@@ -92,6 +101,8 @@ final class SchedulerTest extends TestCase
         static $counter = 0; 
         $counter ++;
         $playDate = new PlayDate;
+        $playDate->setDate(new \DateTimeImmutable('2018-12'));
+        $playDate->setDaytime('pm');
         $playDate->addPlayingClown(new Clown);
         $playDate->addPlayingClown(new Clown);
         $playDate->setVenue((new Venue)->setName("Ort $counter"));
