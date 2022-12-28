@@ -9,9 +9,8 @@ class TimeSlotRepository extends AbstractRepository
 {
     private array $cache = [];
 
-    private function cacheWarmUp(Month $month): void
+    private function cacheWarmUp(Month $month, array $timeSlots): void
     {
-        $timeSlots = $this->byMonth($month);
         $this->cache[$month->getKey()] = [];
         foreach ($timeSlots as $timeSlot) {
             $this->cache[$month->getKey()][$timeSlot->getDate()->format('d')][$timeSlot->getDaytime()] = $timeSlot;
@@ -27,7 +26,7 @@ class TimeSlotRepository extends AbstractRepository
     {
         $month = new Month($date);
         if ($this->cacheNeedsWarmUp($month)) {
-            $this->cacheWarmUp($month);
+            $this->cacheWarmUp($month, $this->byMonth($month));
         }
 
         if (!isset($this->cache[$month->getKey()][$date->format('d')][$daytime])) {
@@ -46,8 +45,10 @@ class TimeSlotRepository extends AbstractRepository
         return $this->cacheGet($date, $daytime);
     }
 
-    private function byMonth(Month $month): array
+    public function byMonth(Month $month): array
     {
-        return $this->doctrineRepository->findBy(['month' => $month->getKey()]);
+        $timeSlots = $this->doctrineRepository->findBy(['month' => $month->getKey()]);
+        $this->cacheWarmUp($month, $timeSlots);
+        return $timeSlots;
     }
 }

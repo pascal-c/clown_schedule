@@ -43,6 +43,9 @@ class ClownAvailability
     #[ORM\Column(nullable: true)]
     private ?int $targetPlays = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $calculatedSubstitutions = null;
+
     public function __construct()
     {
         $this->clownAvailabilityTimes = new ArrayCollection();
@@ -248,5 +251,37 @@ class ClownAvailability
         }
 
         return $this;
+    }
+
+    public function getCalculatedSubstitutions(): ?int
+    {
+        return $this->calculatedSubstitutions;
+    }
+
+    public function setCalculatedSubstitutions(?int $calculatedSubstitutions): self
+    {
+        $this->calculatedSubstitutions = $calculatedSubstitutions;
+
+        return $this;
+    }
+
+    public function incCalculatedSubstitutions(): self
+    {
+        if (is_null($this->calculatedSubstitutions)) {
+            $this->calculatedSubstitutions = 1;
+        } else {
+            $this->calculatedSubstitutions++;
+        }
+
+        return $this;
+    }
+
+    public function getOpenSubstitutions(): int
+    {
+        if (is_null($this->getCalculatedPlaysMonth())) {
+            return null;
+        }
+
+        return intval($this->getCalculatedPlaysMonth() / 2) - $this->getCalculatedSubstitutions();
     }
 }

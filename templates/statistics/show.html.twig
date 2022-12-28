@@ -6,10 +6,16 @@
     {{ component('month_navigation', { active: month.key, urlKey: 'statistics' }) }}
     <h4 class="pt-3">Statistiken für {{ month.label }}</h4>
 
-    Spieltermine (aktuell): {{ currentPlayDatesCount }}
+    <div>Spieltermine (aktuell): {{ currentPlayDatesCount }}</div>
+    <div>benötigte Springer (aktuell): {{ currentSubstitutionsNeededCount }}</div>
     
     <table class="table">
         <thead>
+            <tr>
+                <th colspan="4"></th>
+                <th colspan="5">berechnet</th>
+                <th colspan="3">aktuell</th>
+            </tr>
             <tr>
                 <th>Clown</th>
                 <th>Maximum</th>
@@ -19,7 +25,9 @@
                 <th>Ziel</th>
                 <th>Ergebnis</th>
                 <th>Differenz</th>
-                <th>aktuell</th>
+                <th>Springer</th>
+                <th>Spiele</th>
+                <th>Springer</th>
             </tr>
         </thead>
         <tbody>
@@ -48,7 +56,13 @@
                     {{ availability.openTargetPlays }}
                 </td>
                 <td>
-                    {{ plays[availability.clown.id] }}
+                    {{ availability.calculatedSubstitutions }}
+                </td>
+                <td>
+                    {{ currentPlays[availability.clown.id] }}
+                </td>
+                <td>
+                    {{ currentSubstitutions[availability.clown.id] }}
                 </td>
             </tr>
             {% endfor %}
@@ -74,12 +88,17 @@
                     {{ clownAvailabilities|reduce((carry, v) => carry+v.calculatedPlaysMonth) }}
                 </th>
                 <th>
-                    {{ clownAvailabilities|reduce((carry, v) => carry+v.openTargetPlays) }} |
                     {{ clownAvailabilities|reduce((carry, v) => carry+v.openTargetPlays|abs) }}
                 </th>
-                {% set currentPlaysSum = plays|reduce((carry, v) => carry+v) %}
-                <th class="text-{{ entitledPlaysSum|round == currentPlaysSum ? 'success' : 'danger' }}">
+                <th>
+                    {{ clownAvailabilities|reduce((carry, v) => carry+v.calculatedSubstitutions) }}
+                </th>
+                {% set currentPlaysSum = currentPlays|reduce((carry, v) => carry+v) %}
+                <th class="text-{{ currentPlayDatesCount * 2 == currentPlaysSum ? 'success' : 'danger' }}">
                     {{ currentPlaysSum }}
+                </th>
+                <th>
+                    {{ currentSubstitutions|reduce((carry, v) => carry+v) }}
                 </th>
             </tr>
         </tbody>

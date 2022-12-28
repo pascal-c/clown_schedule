@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Venue;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 
 class VenueRepository extends AbstractRepository
 {

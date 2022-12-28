@@ -1,5 +1,5 @@
 <div class="pt-2">
-    <strong class="{{ timeSlot.substitutionClown ? '' : 'text-danger' }}">Springer</strong>
+    <strong class="{{ timeSlot.substitutionClown ? '' : 'text-danger' }}"><i>Springer</i></strong>
     {{ timeSlot.substitutionClown ? timeSlot.substitutionClown.name : 'keener' }} 
     <a href="{{ path('time_slot_edit', {date: timeSlot.date|date('Y-m-d'), daytime: timeSlot.daytime}) }}">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">

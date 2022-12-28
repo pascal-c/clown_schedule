@@ -18,7 +18,7 @@ class PlayDate
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\NotBlank]
     private ?\DateTimeInterface $date = null;
 
@@ -45,7 +45,7 @@ class PlayDate
     
     public function getMonth(): Month
     {
-        return new Month(\DateTimeImmutable::createFromMutable($this->date));
+        return new Month($this->date);
     }   
 
     public function getDate(): ?\DateTimeInterface

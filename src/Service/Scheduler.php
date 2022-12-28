@@ -7,6 +7,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
+use App\Repository\TimeSlotRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
@@ -18,19 +19,22 @@ class Scheduler
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownAssigner $clownAssigner,
         private AvailabilityChecker $availabilityChecker,
-        private FairPlayCalculator $fairPlayCalculator
-    )
-    {
-    }
+        private FairPlayCalculator $fairPlayCalculator,
+        private TimeSlotRepository $timeSlotRepository
+    ) {}
 
     public function calculate(Month $month): void
     {
+        $timeSlots = [];
         $playDates = $this->playDateRepository->byMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
-        $this->removeClownAssignments($playDates, $clownAvailabilities);
+        $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
         
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
+            if (!in_array([$playDate->getDate(), $playDate->getDaytime()], $timeSlots)) {
+                $timeSlots[] = [$playDate->getDate(), $playDate->getDaytime()];
+            }
         }
 
         $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
@@ -41,9 +45,12 @@ class Scheduler
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
         }
+        foreach ($timeSlots as $timeSlot) {
+            $this->clownAssigner->assignSubstitutionClown($timeSlot[0], $timeSlot[1], $clownAvailabilities);
+        }
     }
 
-    private function removeClownAssignments(array $playDates, array $clownAvailabilities): void
+    private function removeClownAssignments(array $playDates, array $clownAvailabilities, Month $month): void
     {
         foreach ($playDates as $playDate) {
             foreach($playDate->getPlayingClowns() as $clown) {
@@ -53,6 +60,10 @@ class Scheduler
         
         foreach($clownAvailabilities as $availability) {
             $availability->setCalculatedPlaysMonth(null);
+        }
+
+        foreach($this->timeSlotRepository->byMonth($month) as $timeSlot) {
+            $timeSlot->setSubstitutionClown(null);
         }
     }
 
