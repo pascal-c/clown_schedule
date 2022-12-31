@@ -14,7 +14,7 @@
 
             {% for clown in clowns %}
                 <tr>
-                    <td>{{ clown.name }}</td>
+                    <td class="{{ clown.active ? '' : 'text-muted' }}">{{ clown.name }}</td>
                     <td>
                         <a href="{{ path('clown_availability_show', {clownId: clown.id, monthId: month.key}) }}"
                             class="{{ clown.hasAvailabilityFor(month) ? 'text-success' : 'text-danger' }}">

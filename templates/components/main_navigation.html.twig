@@ -1,7 +1,14 @@
-<ul class="nav nav-pills">
+{% if active != 'none' %}
+<nav class="navbar">
+    <ul class="nav nav-pills">
     {% for key, element in navigationItems %}
         <li class="nav-item">
             <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">{{ element['label'] }}</a>
         </li>
      {% endfor %}
-</ul>
+    </ul>
+    <span class="navbar-text">
+        <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}">Abmelden</a>
+    </span>
+</nav>    
+{% endif %}

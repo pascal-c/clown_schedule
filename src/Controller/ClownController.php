@@ -2,13 +2,12 @@
 namespace App\Controller;
 
 use App\Entity\Clown;
+use App\Form\ClownFormType;
 use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,25 +34,11 @@ class ClownController extends AbstractController
     public function new(Request $request): Response
     {
         $clown = new Clown();
-
-        $form = $this->createFormBuilder($clown)
-            ->add('name', TextType::class)
-            ->add('gender', ChoiceType::class, [
-                'choices'  => [
-                    'weiblich' => 'female',
-                    'divers' => 'diverse',
-                    'männlich' => 'male',
-                ],
-                'label' => 'Gender',
-                'expanded' => true,
-                'multiple' => false,
-                ])
-            ->add('save', SubmitType::class, ['label' => 'Clown anlegen'])
-            ->getForm();
+        $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'POST']);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $clown = $form->getData();
+            $clown = $form->getData();  
 
             $this->entityManager->persist($clown);
             $this->entityManager->flush();
@@ -75,21 +60,7 @@ class ClownController extends AbstractController
     {
         $clown = $this->clownRepository->find($id);
 
-        $form = $this->createFormBuilder($clown)
-            ->add('name', TextType::class)
-            ->add('gender', ChoiceType::class, [
-                'choices'  => [
-                    'weiblich' => 'female',
-                    'divers' => 'diverse',
-                    'männlich' => 'male',
-                ],
-                'label' => 'Gender',
-                'expanded' => true,
-                'multiple' => false,
-                ])
-            ->add('save', SubmitType::class, ['label' => 'Clown speichern'])
-            ->setMethod('PATCH')
-            ->getForm();
+        $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($clown)
             ->add('delete', SubmitType::class, 
                 ['label' => 'Clown löschen', 'attr' => array('onclick' => 'return confirm("Clown endgültig löschen?")')])
@@ -99,6 +70,8 @@ class ClownController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $clown = $form->getData();
+            $clown->setIsActive($form['isActive']->isSubmitted());   
+            $clown->setIsAdmin($form['isAdmin']->isSubmitted());  
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich gespeichert.');

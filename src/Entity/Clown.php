@@ -43,6 +43,20 @@ class Clown
     #[ORM\OneToMany(mappedBy: 'substitutionClown', targetEntity: TimeSlot::class)]
     private Collection $substitutionTimeSlots;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email(message: 'Das ist keine gültige Email')]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $password = null;
+
+    #[ORM\Column]
+    private bool $isAdmin = false;
+
+    #[ORM\Column]
+    private bool $isActive = true;
+
     public function __construct()
     {
         $this->venues = new ArrayCollection();
@@ -179,6 +193,54 @@ class Clown
                 $substitutionTimeSlot->setSubstitutionClown(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

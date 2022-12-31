@@ -8,7 +8,7 @@ class VenueControllerTest extends WebTestCase
 {
     public function testcreateAndShow(): void
     {
-        $client = static::createClient();
+        $client = $this->login();
         $erika = $this->createClown('Erika');
 
         $client->followRedirects();
@@ -24,7 +24,7 @@ class VenueControllerTest extends WebTestCase
         $form['venue_form[name]'] = 'DRK Leipzig';
         $form['venue_form[emails][0]'] = 'erika@leipzig.de';
         $form['venue_form[emails][1]'] = 'hugo@leipzig.de';
-        $form['venue_form[responsibleClowns][0]']->tick();
+        $form['venue_form[responsibleClowns][1]']->tick();
 
         $form['venue_form[daytimeDefault]'] = 'am';
         $form['venue_form[meetingTime][hour]'] = '9';

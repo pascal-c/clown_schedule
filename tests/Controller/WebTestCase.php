@@ -30,20 +30,40 @@ class WebTestCase extends SymfonyWebTestCase
         $this->assertStringContainsString($search, $node->text());
     }
 
-    protected function buildClown(string $name = 'Hugo'): Clown
+    protected function buildClown(string $name, string $email, $password): Clown
     {
         $clown = new Clown;
-        $clown->setName($name)->setGender('female');
+        $clown
+            ->setGender('female')
+            ->setName($name)
+            ->setEmail($email)
+            ->setPassword(password_hash($password, PASSWORD_DEFAULT))
+            ->setIsAdmin(true)
+            ;
         return $clown;
     }
 
-    protected function createClown(string $name = 'Hugo'): Clown
+    protected function createClown(string $name = 'Hugo', string $email='hugo@test.de', $password = 'secret123'): Clown
     {
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.default_entity_manager');
-        $clown = $this->buildClown(($name));
+        $clown = $this->buildClown($name, $email, $password);
         $entityManager->persist($clown);
         $entityManager->flush();
         return $clown;
+    }
+
+    protected function login()
+    {
+        $client = static::createClient();
+        $this->createClown('Emil', 'emil@test.de', 'secret123');
+        $client->request('GET', '/login');
+
+        $form = $client->getCrawler()->selectButton('anmelden')->form();
+        $form['form[email]'] = 'emil@test.de';
+        $form['form[password]'] = 'secret123';
+        $client->submit($form);
+
+        return $client;
     }
 }

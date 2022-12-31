@@ -28,6 +28,11 @@ class ClownRepository
         return $this->doctrineRepository->find($id);
     }
 
+    public function findOneByEmail(string $email): ?Clown
+    {
+        return $this->doctrineRepository->findOneByEmail($email);
+    }
+
 
 //    /**
 //     * @return Clown[] Returns an array of Clown objects

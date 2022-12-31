@@ -7,13 +7,15 @@
 
     <table class="table">
         <thead>
-            <tr><th>Clown</th><th>Fehlzeiten</th></tr>
+            <tr><th>Clown</th><th>aktiv</th><th>Admin</th><th>Fehlzeiten</th></tr>
         </thead>
         <tbody>
 
             {% for clown in clowns %}
                 <tr>
                     <td><a href="{{ path('clown_edit', {id: clown.id}) }}">{{ clown.name }}</a></td>
+                    <td>{{ clown.active ? 'Ja' : 'Nein' }}</td>
+                    <td>{{ clown.admin ? 'Ja' : 'Nein' }}</td>
                     <td><a href="{{ path('clown_availability_show', {clownId: clown.id}) }}">Fehlzeiten</a></td>
                 </tr>    
             {% endfor %}    
