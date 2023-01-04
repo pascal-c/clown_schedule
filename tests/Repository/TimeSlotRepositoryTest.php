@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\Service\Scheduler;
+namespace App\Tests\Repository;
 
 use App\Entity\TimeSlot;
 use App\Repository\TimeSlotRepository;
