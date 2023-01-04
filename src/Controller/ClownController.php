@@ -33,6 +33,8 @@ class ClownController extends AbstractController
     #[Route('/clowns/new', name: 'clown_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->adminOnly();
+
         $clown = new Clown();
         $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'POST']);
 
@@ -58,6 +60,8 @@ class ClownController extends AbstractController
     #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PATCH'])]
     public function edit(Request $request, int $id): Response
     {
+        $this->adminOnly();
+
         $clown = $this->clownRepository->find($id);
 
         $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PATCH']);
@@ -90,6 +94,8 @@ class ClownController extends AbstractController
     #[Route('/clowns/{id}', name: 'clown_delete', methods: ['DELETE'])]
     public function delete(Request $request, $id): Response
     {
+        $this->adminOnly();
+        
         $clown = $this->clownRepository->find($id);
 
         $deleteForm = $this->createFormBuilder($clown)

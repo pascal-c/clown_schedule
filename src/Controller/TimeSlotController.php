@@ -30,6 +30,8 @@ class TimeSlotController extends AbstractController
     #[Route('/time_slots/{date}/{daytime}', name: 'time_slot_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, \DateTimeImmutable $date, string $daytime): Response 
     {
+        $this->adminOnly();
+        
         $timeSlot = $this->timeSlotRepository->find($date, $daytime);
         if (is_null($timeSlot)) {
             $timeSlot = new TimeSlot;

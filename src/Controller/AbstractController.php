@@ -20,6 +20,13 @@ abstract class AbstractController extends SymfonyAbstractController
         $this->authService = $authService;    
     }
 
+    protected function adminOnly(): void
+    {
+        if (!$this->getCurrentClown()->isAdmin()) {
+            throw($this->createAccessDeniedException('Das darfst Du nicht.'));
+        }
+    }
+
     protected function getCurrentClown(): ?Clown
     {
         return $this->authService->getCurrentClown();

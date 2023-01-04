@@ -54,6 +54,8 @@ class ScheduleController extends AbstractController
     #[Route('/schedule/{monthId}', methods: ['POST'])]
     public function create(SessionInterface $session, ?string $monthId = null): Response 
     {
+        $this->adminOnly();
+        
         $month = $this->monthRepository->find($session, $monthId);
         $this->scheduler->calculate($month);
         $this->entityManager->flush();
