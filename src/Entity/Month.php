@@ -7,7 +7,7 @@ class Month
     private \DateTimeImmutable $date;
 
     public function __construct(\DateTimeImmutable $date) {
-        $this->date = $date->modify('first day of');
+        $this->date = $date->modify('first day of midnight');
     }
 
     public function days()

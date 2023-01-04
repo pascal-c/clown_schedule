@@ -60,8 +60,8 @@ class WebTestCase extends SymfonyWebTestCase
         $client->request('GET', '/login');
 
         $form = $client->getCrawler()->selectButton('anmelden')->form();
-        $form['form[email]'] = 'emil@test.de';
-        $form['form[password]'] = 'secret123';
+        $form['login_form[email]'] = 'emil@test.de';
+        $form['login_form[password]'] = 'secret123';
         $client->submit($form);
 
         return $client;

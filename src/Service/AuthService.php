@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Clown;
 use App\Repository\ClownRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
@@ -12,7 +13,7 @@ class AuthService
     private ?Clown $currentClown = null;
 
     public function __construct(private ClownRepository $clownRepository, private RequestStack $requestStack,
-        private TokenGeneratorInterface $tokenGenerator) {}
+        private TokenGeneratorInterface $tokenGenerator, private EntityManagerInterface $entityManager) {}
 
     public function login($email, $password): bool
     {
@@ -78,5 +79,13 @@ class AuthService
         }
 
         return false;
+    }
+
+    public function changePassword(string $password): void
+    {
+        $clown = $this->getCurrentClown();
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $clown->setPassword($passwordHash);
+        $this->entityManager->flush();
     }
 }

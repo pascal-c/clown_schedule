@@ -1,18 +1,18 @@
 <?php
 namespace App\Controller;
 
+use App\Form\LoginFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use App\Service\AuthService;
-use Container77D1gjj\getDoctrine_Orm_DefaultEntityManager_PropertyInfoExtractorService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Length;
 
 class LoginController extends AbstractController
 {
@@ -25,25 +25,7 @@ class LoginController extends AbstractController
     #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(Request $request): Response 
     {
-        $loginForm = $this->createFormBuilder()
-            ->add('email', EmailType::class, [
-                'label' => false, 
-                'attr' => ['placeholder' => 'Email', 'autocomplete' => 'username'],
-                ])
-            ->add('password', PasswordType::class, [
-                'label' => false,
-                'required' => false,
-                'attr' => ['placeholder' => 'Passwort', 'autocomplete' => 'current-password']
-                ])
-            ->add('login', SubmitType::class, [
-                'label' => 'anmelden',
-                'attr' => ['title' => 'Mit Email und Passwort anmelden'],
-                ])
-            ->add('login_by_email', SubmitType::class, [
-                'label' => 'per Email-Link anmelden (ohne Passwort)', 
-                'attr' => ['title' => 'Du bekommst eine Email mit einem Anmelde-Link'],
-                ])
-            ->getForm();
+        $loginForm = $this->createForm(LoginFormType::class);
 
         $loginForm->handleRequest($request);
         if ($loginForm->isSubmitted() && $loginForm->isValid()) {
@@ -57,19 +39,24 @@ class LoginController extends AbstractController
                 }
                 
                 $this->addFlash('warning', $this->getFailureMessage());
-            } 
-            elseif ($loginForm['login_by_email']->isClicked()) {
+            } elseif ($loginForm['login_by_email']->isClicked()) {
                 $clown = $this->clownRepository->findOneByEmail($loginForm['email']->getData());
                 if (!is_null($clown)) {
                     $this->mailer->sendLoginByTokenMail($clown);
                 }
                 $this->addFlash('success', 
                     sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email']));
+            } elseif ($loginForm['change_password']->isClicked()) {
+                $clown = $this->clownRepository->findOneByEmail($loginForm['email']->getData());
+                if (!is_null($clown)) {
+                    $this->mailer->sendChangePasswordByTokenMail($clown);
+                }
+                $this->addFlash('success', 
+                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email']));
             }
         }
 
         return $this->renderForm('login/login.html.twig', [
-            'clown' => $this->clownRepository->all(),
             'active' => 'none',
             'form' => $loginForm,
         ]);
@@ -86,12 +73,53 @@ class LoginController extends AbstractController
         return $this->redirectToRoute('login');
     }
 
+    #[Route('/change_password/{token}', name: 'change_password', methods: ['GET', 'PATCH'])]
+    public function changePassword(Request $request, string $token): Response 
+    {
+        $passwordForm = $this->createFormBuilder()
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Die Passwörter stimmen nicht überein.',
+                'options' => ['label' => false, 'constraints' => [new Length(['min' => 8])],],
+                'required' => true,
+                'first_options'  => ['attr' => ['placeholder' => 'Neues Passwort', 'autocomplete' => 'new-password']],
+                'second_options' => ['attr' => ['placeholder' => 'Neues Passwort Wiederholung', 'autocomplete' => 'new-password']],
+            ])
+            ->add('change_password', SubmitType::class, [
+                'label' => 'Passwort ändern',
+                ])
+            ->setMethod('PATCH')
+            ->getForm();
+        $passwordForm->handleRequest($request);
+
+        if (!$passwordForm->isSubmitted()) {
+            $this->authService->loginByToken($token);
+        }
+        if (!$this->authService->isLoggedIn()) {
+            $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.');
+                
+            return $this->redirectToRoute('login');
+        }
+        if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+            $this->authService->changePassword($passwordForm['password']->getData());
+            $this->addFlash('success',
+                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->authService->getCurrentClown()->getName()));
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->renderForm('login/change_password.html.twig', [
+            'active' => 'none',
+            'currentClown' => $this->authService->getCurrentClown(),
+            'form' => $passwordForm,
+        ]);
+    }
+
     #[Route('/logout', name: 'logout', methods: ['GET', 'POST'])]
     public function logout(Request $request): Response 
     {
         if (!$this->isCsrfTokenValid('logout_token', $request->query->get('logout_token'))) {
             $this->addFlash('warning', 'Logout ist schiefgegangen!');
-            return $this->redirectToRoute('clown_index');
+            return $this->redirectToRoute('root');
         }
 
         $this->authService->logout();
@@ -116,6 +144,6 @@ class LoginController extends AbstractController
     {
         $this->addFlash('success',
             sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->authService->getCurrentClown()->getName()));
-        return $this->redirectToRoute('clown_index');
+        return $this->redirectToRoute('root');
     }
 }

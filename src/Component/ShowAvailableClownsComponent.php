@@ -5,7 +5,6 @@ use App\Entity\ClownAvailability;
 use App\Entity\Month;
 use App\Repository\ClownAvailabilityRepository;
 use App\Service\Scheduler\AvailabilityChecker;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent('show_available_clowns')]
@@ -19,8 +18,6 @@ final class ShowAvailableClownsComponent
     ) {}
 
     public function mount(\DateTimeImmutable $date, string $daytime) {
-        $this->date = $date;
-        $this->daytime = $daytime;
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth(new Month($date));
         $availableClownAvailabilities = array_filter(
             $clownAvailabilities,
