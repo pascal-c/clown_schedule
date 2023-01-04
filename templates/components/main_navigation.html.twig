@@ -8,7 +8,7 @@
      {% endfor %}
     </ul>
     <span class="navbar-text">
-        <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}">Abmelden</a>
+        {{ currentClown.name}} <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}">Abmelden</a>
     </span>
 </nav>    
 {% endif %}

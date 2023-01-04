@@ -17,7 +17,7 @@ abstract class AbstractController extends SymfonyAbstractController
     #[Required]
     public function setAuthService(AuthService $authService) 
     { 
-        $this->authService = $authService;    
+        $this->authService = $authService;
     }
 
     protected function adminOnly(): void

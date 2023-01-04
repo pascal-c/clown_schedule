@@ -94,7 +94,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/venues/{id}', name: 'venue_delete', methods: ['DELETE'])]
-    public function delete(Request $request, $id): Response
+    public function delete(Request $request, int $id): Response
     {
         $this->adminOnly();
         

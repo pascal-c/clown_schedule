@@ -126,7 +126,7 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_delete', methods: ['DELETE'])]
-    public function delete(Request $request, $id): Response
+    public function delete(Request $request, int $id): Response
     {
         $this->adminOnly();
 
