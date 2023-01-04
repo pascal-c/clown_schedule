@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Repository\MonthRepository;
@@ -7,7 +10,6 @@ use App\Service\Scheduler;
 use App\ViewModel\Schedule;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,6 +54,8 @@ class ScheduleController extends AbstractController
     #[Route('/schedule/{monthId}', methods: ['POST'])]
     public function create(SessionInterface $session, ?string $monthId = null): Response 
     {
+        $this->adminOnly();
+        
         $month = $this->monthRepository->find($session, $monthId);
         $this->scheduler->calculate($month);
         $this->entityManager->flush();

@@ -1,13 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\Clown;
 use App\Entity\Venue;
 use App\Form\VenueFormType;
 use App\Repository\VenueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,8 @@ class VenueController extends AbstractController
     #[Route('/venues/new', name: 'venue_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->adminOnly();
+
         $venue = new Venue();
 
         $form = $this->createForm(VenueFormType::class, $venue);
@@ -60,6 +63,8 @@ class VenueController extends AbstractController
     #[Route('/venues/edit/{id}', name: 'venue_edit', methods: ['GET', 'PATCH'])]
     public function edit(Request $request, int $id): Response
     {
+        $this->adminOnly();
+
         $venue = $this->venueRepository->find($id);
 
         $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PATCH']);
@@ -91,6 +96,8 @@ class VenueController extends AbstractController
     #[Route('/venues/{id}', name: 'venue_delete', methods: ['DELETE'])]
     public function delete(Request $request, $id): Response
     {
+        $this->adminOnly();
+        
         $venue = $this->venueRepository->find($id);
 
         $deleteForm = $this->createFormBuilder($venue)

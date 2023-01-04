@@ -1,11 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Form\LoginFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use App\Service\AuthService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -18,7 +20,7 @@ class LoginController extends AbstractController
 {
     public function __construct(
         private ClownRepository $clownRepository, 
-        private AuthService $authService,
+        protected AuthService $authService,
         private AuthenticationMailer $mailer
         ) {}
 
@@ -103,13 +105,12 @@ class LoginController extends AbstractController
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $this->authService->changePassword($passwordForm['password']->getData());
             $this->addFlash('success',
-                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->authService->getCurrentClown()->getName()));
+                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName()));
             return $this->redirectToRoute('login');
         }
 
         return $this->renderForm('login/change_password.html.twig', [
             'active' => 'none',
-            'currentClown' => $this->authService->getCurrentClown(),
             'form' => $passwordForm,
         ]);
     }
@@ -143,7 +144,7 @@ class LoginController extends AbstractController
     private function handleLoginSuccess(): Response
     {
         $this->addFlash('success',
-            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->authService->getCurrentClown()->getName()));
+            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName()));
         return $this->redirectToRoute('root');
     }
 }

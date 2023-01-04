@@ -22,7 +22,7 @@
                 
                 <div class="col-sm-5 border">
                     {% for playDate in day.entries('am') %}
-                        {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}, with_context = false) }}
+                        {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
                     {% else %}
                        <span class="text-muted">vormittags</span>
                     {% endfor %}
@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-sm-5 border">
                     {% for playDate in day.entries('pm') %}
-                        {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}, with_context = false) }}
+                        {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
                     {% else %}
                        <span class="text-muted">nachmittags</span>
                     {% endfor %}
@@ -50,10 +50,12 @@
             
         {% endfor %}
     </div>
-    <div class="pt-3">
-        {{ form(form) }}
-    </div>
-    <div class="pt-3">
-        <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
-    </div>
+    {% if currentClown.isAdmin %}
+        <div class="pt-3">
+            {{ form(form) }}
+        </div>
+        <div class="pt-3">
+            <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
+        </div>
+    {% endif %}
 {% endblock %}

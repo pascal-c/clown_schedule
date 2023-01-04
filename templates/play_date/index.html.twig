@@ -9,9 +9,11 @@
     {% for play_date in play_dates %}
         <li>
             {{ play_date.date|date("d.m.Y") }}&nbsp;{{ play_date.daytime }}&nbsp;{{ play_date.venue.name }}
-            &nbsp;<a href="{{ path('play_date_edit', {id: play_date.id}) }}">Spieltermin bearbeiten</a>
+            &nbsp;{% if currentClown.isAdmin %}<a href="{{ path('play_date_edit', {id: play_date.id}) }}">Spieltermin bearbeiten</a>{% endif %}
         </li>
     {% endfor %}
     </ul>
-    <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
+    {% if currentClown.isAdmin %}
+        <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
+    {% endif %}
 {% endblock %}

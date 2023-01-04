@@ -13,7 +13,13 @@
 
             {% for clown in clowns %}
                 <tr>
-                    <td><a href="{{ path('clown_edit', {id: clown.id}) }}">{{ clown.name }}</a></td>
+                    <td>
+                        {% if currentClown.isAdmin %}
+                            <a href="{{ path('clown_edit', {id: clown.id}) }}">{{ clown.name }}</a>
+                        {% else %}
+                            {{ clown.name}}
+                        {% endif %}
+                    </td>
                     <td>{{ clown.active ? 'Ja' : 'Nein' }}</td>
                     <td>{{ clown.admin ? 'Ja' : 'Nein' }}</td>
                     <td><a href="{{ path('clown_availability_show', {clownId: clown.id}) }}">Fehlzeiten</a></td>
@@ -21,5 +27,8 @@
             {% endfor %}    
         </tbody>
     </table>
-    <a href="{{ path('clown_new') }}">Clown anlegen</a>
+    
+    {% if currentClown.isAdmin %}
+        <a href="{{ path('clown_new') }}">Clown anlegen</a>
+    {% endif %}    
 {% endblock %}

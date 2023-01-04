@@ -1,14 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Clown;
-use App\Entity\Month;
 use App\Entity\TimeSlot;
 use App\Repository\TimeSlotRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,8 @@ class TimeSlotController extends AbstractController
     #[Route('/time_slots/{date}/{daytime}', name: 'time_slot_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, \DateTimeImmutable $date, string $daytime): Response 
     {
+        $this->adminOnly();
+        
         $timeSlot = $this->timeSlotRepository->find($date, $daytime);
         if (is_null($timeSlot)) {
             $timeSlot = new TimeSlot;

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\PlayDate;
@@ -9,7 +12,6 @@ use App\Repository\PlayDateRepository;
 use App\Repository\VenueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,10 +37,12 @@ class PlayDateController extends AbstractController
     #[Route('/play_dates/new', name: 'play_date_new', methods: ['GET', 'POST'])]
     public function new(Request $request, VenueRepository $venueRepository): Response
     {
+        $this->adminOnly();
+        
         $playDate = new PlayDate();
         $venueId = $request->query->get('venue_id');
         if (isset($venueId)) {
-            $venue = $venueRepository->find($venueId);
+            $venue = $venueRepository->find(intval($venueId));
             $playDate->setVenue($venue);
             $playDate->setDaytime($venue->getDaytimeDefault());
         }
@@ -69,6 +73,8 @@ class PlayDateController extends AbstractController
     #[Route('/play_dates/{id}', name: 'play_date_edit', methods: ['GET', 'PATCH'])]
     public function edit(Request $request, int $id): Response
     {
+        $this->adminOnly();
+
         $playDate = $this->playDateRepository->find($id);
 
         $editForm = $this->createForm(PlayDateFormType::class, $playDate, ['method' => 'PATCH']);
@@ -98,6 +104,8 @@ class PlayDateController extends AbstractController
     #[Route('/play_dates/assign_clowns/{id}', name: 'play_date_assign_clowns', methods: ['GET', 'PATCH'])]
     public function assignClowns(Request $request, int $id): Response
     {
+        $this->adminOnly();
+
         $playDate = $this->playDateRepository->find($id);
 
         $form = $this->createForm(PlayDateAssignClownsFormType::class, $playDate, ['method' => 'PATCH']);
@@ -120,6 +128,8 @@ class PlayDateController extends AbstractController
     #[Route('/play_dates/{id}', name: 'play_date_delete', methods: ['DELETE'])]
     public function delete(Request $request, $id): Response
     {
+        $this->adminOnly();
+
         $playDate = $this->playDateRepository->find($id);
 
         $deleteForm = $this->createFormBuilder($playDate)

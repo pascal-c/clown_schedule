@@ -23,7 +23,7 @@ class ClownRepository
         );
     }
 
-    public function find(int $id): Clown
+    public function find(int $id): ?Clown
     {
         return $this->doctrineRepository->find($id);
     }
