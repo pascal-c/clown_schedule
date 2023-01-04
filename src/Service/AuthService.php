@@ -50,7 +50,7 @@ class AuthService
     {
         if (is_null($this->currentClown)) {
             $session = $this->requestStack->getSession();
-            $this->currentClown = $this->clownRepository->find($session->get('currentClownId'));
+            $this->currentClown = $this->clownRepository->find(intval($session->get('currentClownId')));
         }
 
         return $this->currentClown;

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\PlayDate;
@@ -9,7 +12,6 @@ use App\Repository\PlayDateRepository;
 use App\Repository\VenueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +40,7 @@ class PlayDateController extends AbstractController
         $playDate = new PlayDate();
         $venueId = $request->query->get('venue_id');
         if (isset($venueId)) {
-            $venue = $venueRepository->find($venueId);
+            $venue = $venueRepository->find(intval($venueId));
             $playDate->setVenue($venue);
             $playDate->setDaytime($venue->getDaytimeDefault());
         }

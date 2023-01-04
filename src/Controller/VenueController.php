@@ -1,13 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\Clown;
 use App\Entity\Venue;
 use App\Form\VenueFormType;
 use App\Repository\VenueRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
