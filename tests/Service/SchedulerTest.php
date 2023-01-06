@@ -87,6 +87,7 @@ final class SchedulerTest extends TestCase
         }
         foreach($clownAvailabilities as $availability) {
             $this->assertNull($availability->getCalculatedPlaysMonth());
+            $this->assertNull($availability->getCalculatedSubstitutions());
         }
         $this->assertNull($timeSlot->getSubstitutionClown());
     }
@@ -123,6 +124,7 @@ final class SchedulerTest extends TestCase
     {
         $clownAvailability = new ClownAvailability;
         $clownAvailability->setCalculatedPlaysMonth(27);
+        $clownAvailability->setCalculatedSubstitutions(28);
         foreach ($timeSlots as $availability => $number) {
             for ($i=0; $i<$number; $i++) {
                 $timeSlot = new ClownAvailabilityTime;

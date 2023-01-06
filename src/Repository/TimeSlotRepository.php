@@ -2,11 +2,15 @@
 
 namespace App\Repository;
 
+use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\TimeSlot;
+use App\Service\TimeService;
 
 class TimeSlotRepository extends AbstractRepository
 {
+    public function __construct(private TimeService $timeService) {}
+
     private array $cache = [];
 
     private function cacheWarmUp(Month $month, array $timeSlots): void
@@ -50,5 +54,20 @@ class TimeSlotRepository extends AbstractRepository
         $timeSlots = $this->doctrineRepository->findBy(['month' => $month->getKey()]);
         $this->cacheWarmUp($month, $timeSlots);
         return $timeSlots;
+    }
+
+    public function futureByClown(Clown $clown): Array
+    {
+        return $this->doctrineRepository->createQueryBuilder('ts')
+            ->leftJoin('ts.substitutionClown', 'clown')
+            ->where('ts.date >= :today')
+            ->andWhere('clown = :clown')
+            ->setParameter('today', $this->timeService->today())
+            ->setParameter('clown', $clown)
+            ->orderBy('ts.date', 'ASC')
+            ->addOrderBy('ts.daytime', 'ASC')
+            ->getQuery()
+            ->enableResultCache()
+            ->getResult();
     }
 }

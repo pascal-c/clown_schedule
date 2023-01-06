@@ -60,6 +60,7 @@ class Scheduler
         
         foreach($clownAvailabilities as $availability) {
             $availability->setCalculatedPlaysMonth(null);
+            $availability->setCalculatedSubstitutions(null);
         }
 
         foreach($this->timeSlotRepository->byMonth($month) as $timeSlot) {

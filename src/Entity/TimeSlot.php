@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'timeslot_date_daytime_index', fields: ['date', 'daytime'])]
-class TimeSlot
+class TimeSlot implements TimeSlotInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
