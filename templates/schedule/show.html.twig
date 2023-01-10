@@ -28,9 +28,9 @@
                     {% endfor %}
                     {% if day.entries('am') is not empty  %}
                         {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
-                        {% if showAvailabilities %}
-                            {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
-                        {% endif %}
+                    {% endif %}
+                    {% if showAvailabilities %}
+                        {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
                     {% endif %}
                 </div>
                 <div class="col-sm-5 border">
@@ -42,7 +42,7 @@
                     {% if day.entries('pm') is not empty  %}
                          {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
                     {% endif %}
-                    {% if showAvailabilities and day.entries('pm') is not empty  %}
+                    {% if showAvailabilities %}
                         {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}
                     {% endif %}
                 </div>
