@@ -97,8 +97,9 @@
                 <th class="text-{{ currentPlayDatesCount * 2 == currentPlaysSum ? 'success' : 'danger' }}">
                     {{ currentPlaysSum }}
                 </th>
-                <th>
-                    {{ currentSubstitutions|reduce((carry, v) => carry+v) }}
+                {% set currentSubstitutionsSum = currentSubstitutions|reduce((carry, v) => carry+v) %}
+                <th class="text-{{ currentSubstitutionsNeededCount == currentSubstitutionsSum ? 'success' : 'danger' }}">
+                    {{ currentSubstitutionsSum }}
                 </th>
             </tr>
         </tbody>

@@ -57,7 +57,7 @@ class StatisticsController extends AbstractController
             'currentPlays' => $plays,
             'currentPlayDatesCount' => count($playDates),
             'currentSubstitutions' => $substitutions,
-            'currentSubstitutionsNeededCount' => count($timeSlots),
+            'currentSubstitutionsNeededCount' => $this->playDateRepository->countTimeSlotsPerMonth($month),
             'active' => 'statistics',
         ]);
     }
