@@ -39,7 +39,7 @@ class PlayDateRepository extends AbstractRepository
             ->orderBy('pd.date', 'ASC')
             ->addOrderBy('pd.daytime', 'ASC')
             ->getQuery()
-            ->enableResultCache()
+            #->enableResultCache()
             ->getResult();
     }
 
@@ -54,7 +54,7 @@ class PlayDateRepository extends AbstractRepository
             ->orderBy('pd.date', 'ASC')
             ->addOrderBy('pd.daytime', 'ASC')
             ->getQuery()
-            ->enableResultCache()
+            #->enableResultCache()
             ->getResult();
     }
 }

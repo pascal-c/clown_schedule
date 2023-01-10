@@ -24,7 +24,7 @@ class ClownAvailabilityRepository extends AbstractRepository
             ->where('ca.month = :month')
             ->setParameter('month', $month->getKey())
             ->getQuery()
-            ->enableResultCache()
+            #->enableResultCache()
             ->getResult();
     }
 }

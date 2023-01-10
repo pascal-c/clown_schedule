@@ -67,7 +67,7 @@ class TimeSlotRepository extends AbstractRepository
             ->orderBy('ts.date', 'ASC')
             ->addOrderBy('ts.daytime', 'ASC')
             ->getQuery()
-            ->enableResultCache()
+            #->enableResultCache()
             ->getResult();
     }
 }
