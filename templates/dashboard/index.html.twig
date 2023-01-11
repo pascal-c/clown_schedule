@@ -38,7 +38,7 @@
         </tbody>
     </table>
 
-    <h4 class="pt-3">Deine Fehlzeiten, {{ currentClown.name }}</h4>
+    <h4 class="pt-3">Fehlzeiten verwalten</h4>
     <ul>
         <li>
             <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">Fehlzeiten {{ nextMonth.label }}</a>
@@ -57,4 +57,7 @@
             {% endif %}    
         </li>
     </ul>
+
+    <h4 class="pt-3">Feedback zu dieser App</h4>
+    <a href="https://nextcloud.clowns-und-clowns.de/index.php/f/23243" target="_blank">Hier Wünsche und Anregungen eintragen</a>
 {% endblock %}
