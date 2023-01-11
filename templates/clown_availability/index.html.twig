@@ -8,7 +8,7 @@
 
     <table class="table">
         <thead>
-            <tr><th>Clown</th><th>Fehlzeiten eingetragen?</th></tr>
+            <tr><th>Clown</th><th>Fehlzeiten eingetragen?</th><th>Wünsche / Anmerkungen</tr>
         </thead>
         <tbody>
 
@@ -21,6 +21,7 @@
                             {{ clown.hasAvailabilityFor(month) ? 'Ja' : 'Nein' }}
                         </a>
                     </td>
+                    <td>{{ clown.hasAvailabilityFor(month) ? clown.getAvailabilityFor(month).additionalWishes|nl2br : '' }}</td>
                 </tr>    
             {% endfor %}    
         </tbody>

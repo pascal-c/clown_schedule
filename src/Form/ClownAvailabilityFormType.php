@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ClownAvailabilityFormType extends AbstractType
 {
@@ -30,6 +31,10 @@ class ClownAvailabilityFormType extends AbstractType
                 'label' => 'Maximale Anzahl Spiele pro Tag',
                 'expanded' => false,
                 'multiple' => false,
+            ])
+            ->add('additionalWishes', TextareaType::class, [
+                'label' => 'Weitere Wünsche oder Anmerkungen',
+                'required' => false,
             ])
         ;
     }

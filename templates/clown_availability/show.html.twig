@@ -8,16 +8,23 @@
 
     <div class="container">
         <div class="row pb-3">
-                <div class="col-sm-4">
-                    Wunsch Anzahl Spiele pro Monat: <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
-                </div>
-                <div class="col-sm-4">
-                    Maximale Anzahl Spiele pro Monat: <strong>{{ clownAvailability.maxPlaysMonth }}</strong>
-                </div>
-                <div class="col-sm-4">
-                    Maximale Anzahl Spiele pro Tag: <strong>{{ clownAvailability.maxPlaysDay }}</strong>
+            <div class="col-sm-4">
+                Wunsch Anzahl Spiele pro Monat: <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
+            </div>
+            <div class="col-sm-4">
+                Maximale Anzahl Spiele pro Monat: <strong>{{ clownAvailability.maxPlaysMonth }}</strong>
+            </div>
+            <div class="col-sm-4">
+                Maximale Anzahl Spiele pro Tag: <strong>{{ clownAvailability.maxPlaysDay }}</strong>
+            </div>
+        </div>
+        {% if clownAvailability.additionalWishes is not empty %}
+            <div class="row pb-3">
+                <div class="col">
+                    Weitere Wünsche/Anmerkungen: {{ clownAvailability.additionalWishes|nl2br }}
                 </div>
             </div>
+        {% endif %}
         {% for day in schedule.days %}
             <div class="row">
                 {{ include ('partials/schedule_day_number_and_name.html.twig', {day: day}, with_context = false) }}

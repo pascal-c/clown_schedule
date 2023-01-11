@@ -59,7 +59,6 @@ class Clown
 
     public function __construct()
     {
-        $this->venues = new ArrayCollection();
         $this->venue_responsibilities = new ArrayCollection();
         $this->playDates = new ArrayCollection();
         $this->substitutionTimeSlots = new ArrayCollection();
@@ -153,6 +152,17 @@ class Clown
         }
 
         return false;
+    }
+
+    public function getAvailabilityFor(Month $month): ?ClownAvailability
+    {
+        foreach($this->clownAvailabilities as $availability) {
+            if ($availability->getMonth() == $month) {
+                return $availability;
+            }
+        }
+
+        return null;
     }
 
     public function getGender(): ?string
