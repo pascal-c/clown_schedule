@@ -78,6 +78,12 @@ class ClownAvailabilityController extends AbstractController
         $clown = $this->clownRepository->find($clownId);
         $schedule = new Schedule($month);
         $clownAvailability = new ClownAvailability;
+        $lastMonthAvailability = $this->clownAvailabilityRepository->find($month->previous(), $clown);
+        if (!is_null($lastMonthAvailability)) {
+            $clownAvailability->setWishedPlaysMonth($lastMonthAvailability->getWishedPlaysMonth());
+            $clownAvailability->setMaxPlaysMonth($lastMonthAvailability->getMaxPlaysMonth());
+            $clownAvailability->setMaxPlaysDay($lastMonthAvailability->getMaxPlaysDay());
+        }
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability);
 
         foreach($schedule->getDays() as $day) {

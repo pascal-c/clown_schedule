@@ -44,4 +44,9 @@ class Month
         $interval = new \DateInterval('P1M');
         return new Month($this->date->add($interval));
     }
+
+    public function previous(): Month
+    {
+        return new Month($this->date->modify('-1 month'));
+    }
 }
