@@ -33,7 +33,6 @@ class ScheduleController extends AbstractController
     public function schedule(SessionInterface $session, Request $request, ?string $monthId = null): Response 
     {
         $month = $this->monthRepository->find($session, $monthId);
-        #dump($month); exit;
         $schedule = new Schedule($month);
 
         foreach ($this->playDateRepository->byMonth($month) as $playDate) {

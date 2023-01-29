@@ -1,10 +1,10 @@
 <div class="col-6 col-sm-1 border">
-    {% if day.isWeekend %}<strong class="text-primary">{% endif %}
+    {% if day.isFree %}<strong class="text-primary">{% endif %}
         {{ day.dayNumber }}
-    {% if day.isWeekend %}</strong>{% endif %}
+    {% if day.isFree %}</strong>{% endif %}
 </div>
-<div class="col-6 col-sm-1 border">
-    {% if day.isWeekend %}<strong class="text-primary">{% endif %}
+<div class="col-6 col-sm-1 border" title="{{ day.dayName }}">
+    {% if day.isFree %}<strong class="text-primary">{% endif %}
     {{ day.dayShortName }}
-    {% if day.isWeekend %}</strong>{% endif %}
+    {% if day.isFree %}</strong>{% endif %}
 </div>
