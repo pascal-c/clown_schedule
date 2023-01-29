@@ -16,10 +16,14 @@
                 <tr>
                     <td class="{{ clown.active ? '' : 'text-muted' }}">{{ clown.name }}</td>
                     <td>
+                        {% if clown.isActive or clown.hasAvailabilityFor(month) %}
                         <a href="{{ path('clown_availability_show', {clownId: clown.id, monthId: month.key}) }}"
                             class="{{ clown.hasAvailabilityFor(month) ? 'text-success' : 'text-danger' }}">
                             {{ clown.hasAvailabilityFor(month) ? 'Ja' : 'Nein' }}
                         </a>
+                        {% else %}
+                            Nein
+                        {% endif %}
                     </td>
                     <td>{{ clown.hasAvailabilityFor(month) ? clown.getAvailabilityFor(month).additionalWishes|nl2br : '' }}</td>
                 </tr>    

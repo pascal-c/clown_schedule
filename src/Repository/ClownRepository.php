@@ -19,7 +19,7 @@ class ClownRepository
     {
         return $this->doctrineRepository->findBy(
             [],
-            ['name' => 'ASC']
+            ['isActive' => 'DESC', 'name' => 'ASC']
         );
     }
 
