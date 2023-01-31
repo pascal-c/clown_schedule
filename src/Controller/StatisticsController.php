@@ -27,7 +27,7 @@ class StatisticsController extends AbstractController
     public function show(SessionInterface $session, Request $request, ?string $monthId = null): Response 
     {
         $month = $this->monthRepository->find($session, $monthId);
-        $playDates = $this->playDateRepository->byMonth($month);
+        $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $timeSlots = $this->timeSlotRepository->byMonth($month);
 
@@ -57,7 +57,7 @@ class StatisticsController extends AbstractController
             'currentPlays' => $plays,
             'currentPlayDatesCount' => count($playDates),
             'currentSubstitutions' => $substitutions,
-            'currentSubstitutionsNeededCount' => $this->playDateRepository->countTimeSlotsPerMonth($month),
+            'currentSubstitutionsNeededCount' => $this->playDateRepository->countRegularTimeSlotsPerMonth($month),
             'active' => 'statistics',
         ]);
     }

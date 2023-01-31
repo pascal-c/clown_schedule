@@ -6,6 +6,7 @@ use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Service\TimeService;
+use Doctrine\ORM\QueryBuilder;
 
 class PlayDateRepository extends AbstractRepository
 {
@@ -29,13 +30,14 @@ class PlayDateRepository extends AbstractRepository
         );
     }
 
-    public function countTimeSlotsPerMonth(Month $month): int
+    public function countRegularTimeSlotsPerMonth(Month $month): int
     {
         $results = $this->doctrineRepository->createQueryBuilder('pd')
             ->select('count(pd.date)')
             ->groupBy('pd.date', 'pd.daytime')
             ->where('pd.date >= :this')
             ->andWhere('pd.date < :next')
+            ->andWhere('pd.isSpecial = 0')
             ->setParameter('this', $month->dbFormat())
             ->setParameter('next', $month->next()->dbFormat())
             ->getQuery()
@@ -44,7 +46,22 @@ class PlayDateRepository extends AbstractRepository
         return count($results);
     }
 
+    public function regularByMonth(Month $month): Array
+    {
+        return $this->queryByMonth($month)
+            ->andWhere('pd.isSpecial = 0')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function byMonth(Month $month): Array
+    {
+        return $this->queryByMonth($month)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function queryByMonth(Month $month): QueryBuilder
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->where('pd.date >= :this')
@@ -52,10 +69,8 @@ class PlayDateRepository extends AbstractRepository
             ->setParameter('this', $month->dbFormat())
             ->setParameter('next', $month->next()->dbFormat())
             ->orderBy('pd.date', 'ASC')
-            ->addOrderBy('pd.daytime', 'ASC')
-            ->getQuery()
+            ->addOrderBy('pd.daytime', 'ASC');
             #->enableResultCache()
-            ->getResult();
     }
 
     public function futureByClown(Clown $clown): Array

@@ -54,7 +54,7 @@ class VenueController extends AbstractController
             $this->addFlash('warning', 'Spielort konnte nicht angelegt werden.');
         }
 
-        return $this->renderForm('venue/new.html.twig', [
+        return $this->render('venue/new.html.twig', [
             'form' => $form,
             'active' => 'venue',
         ]);
@@ -85,7 +85,7 @@ class VenueController extends AbstractController
             $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
         }
 
-        return $this->renderForm('venue/edit.html.twig', [
+        return $this->render('venue/edit.html.twig', [
             'venue' => $venue,
             'form' => $editForm,
             'delete_form' => $deleteForm,

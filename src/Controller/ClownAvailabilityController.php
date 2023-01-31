@@ -91,7 +91,7 @@ class ClownAvailabilityController extends AbstractController
             $day->addEntry(Daytime::PM, 'yes');
         }
 
-        return $this->renderForm('clown_availability/form.html.twig', [
+        return $this->render('clown_availability/form.html.twig', [
             'active' => 'availability',
             'clown' => $clown,
             'month' => $month,
@@ -148,7 +148,7 @@ class ClownAvailabilityController extends AbstractController
             $schedule->add($timeSlot->getDate(), $timeSlot->getDaytime(), $timeSlot->getAvailability());
         }
 
-        return $this->renderForm('clown_availability/form.html.twig', [
+        return $this->render('clown_availability/form.html.twig', [
             'active' => 'availability',
             'clown' => $clown,
             'month' => $month,

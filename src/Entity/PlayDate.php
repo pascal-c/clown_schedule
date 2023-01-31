@@ -26,12 +26,23 @@ class PlayDate implements TimeSlotInterface
     private ?string $daytime = null;
 
     #[ORM\ManyToOne(inversedBy: 'playDates')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Assert\When(
+        expression: '!this.isSpecial()',
+        constraints: [
+            new Assert\NotBlank()
+        ],
+    )]
     private ?Venue $venue = null;
 
     #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'playDates')]
     private Collection $playingClowns;
+
+    #[ORM\Column]
+    private ?bool $isSpecial = false;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $title = null;
 
     public function __construct()
     {
@@ -104,6 +115,30 @@ class PlayDate implements TimeSlotInterface
     public function removePlayingClown(Clown $playingClown): self
     {
         $this->playingClowns->removeElement($playingClown);
+
+        return $this;
+    }
+
+    public function isSpecial(): bool
+    {
+        return $this->isSpecial;
+    }
+
+    public function setIsSpecial(bool $isSpecial): self
+    {
+        $this->isSpecial = $isSpecial;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
 
         return $this;
     }

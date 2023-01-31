@@ -1,8 +1,10 @@
 <div class="pt-2">
-    <strong class="{{ playDate.playingClowns.count !=2 ? 'text-danger' }}">{{ playDate.venue.name }}</strong>
-    {% if playDate.venue.playTimeFrom %}
+    {% if playDate.isSpecial %}
+        <strong class="text-secondary">{{ playDate.title }}</strong>
+    {% else %}
+        <strong class="{{ playDate.playingClowns.count !=2 ? 'text-danger' }}">{{ playDate.venue.name }}</strong>
         <span class="text-muted">
-        {{ playDate.venue.playTimeFrom|date('H:i') }}-{{ playDate.venue.playTimeTo|date('H:i') }}
+            {{ playDate.venue.playTimeFrom|date('H:i') }}-{{ playDate.venue.playTimeTo|date('H:i') }}
         </span>
     {% endif %}
     {{ playDate.playingClowns|map(clown => clown.name)|join(' | ')}}

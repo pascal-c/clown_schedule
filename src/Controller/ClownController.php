@@ -51,7 +51,7 @@ class ClownController extends AbstractController
             $this->addFlash('warning', 'Clown konnte nicht angelegt werden.');
         }
 
-        return $this->renderForm('clown/new.html.twig', [
+        return $this->render('clown/new.html.twig', [
             'form' => $form,
             'active' => 'clown',
         ]);
@@ -84,7 +84,7 @@ class ClownController extends AbstractController
             $this->addFlash('warning', 'Clown konnte nicht gespeichert werden.');
         }
         
-        return $this->renderForm('clown/edit.html.twig', [
+        return $this->render('clown/edit.html.twig', [
             'form' => $form,
             'delete_form' => $deleteForm,
             'active' => 'clown',

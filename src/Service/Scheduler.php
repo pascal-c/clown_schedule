@@ -26,7 +26,7 @@ class Scheduler
     public function calculate(Month $month): void
     {
         $timeSlots = [];
-        $playDates = $this->playDateRepository->byMonth($month);
+        $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
         

@@ -26,7 +26,7 @@
                     {% else %}
                        <span class="text-muted">vormittags</span>
                     {% endfor %}
-                    {% if day.entries('am') is not empty  %}
+                    {% if day.entries('am')|filter(playDate => not playDate.isSpecial) is not empty  %}
                         {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
                     {% endif %}
                     {% if showAvailabilities %}
@@ -39,7 +39,7 @@
                     {% else %}
                        <span class="text-muted">nachmittags</span>
                     {% endfor %}
-                    {% if day.entries('pm') is not empty  %}
+                    {% if day.entries('pm')|filter(playDate => not playDate.isSpecial) is not empty  %}
                          {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
                     {% endif %}
                     {% if showAvailabilities %}
@@ -55,7 +55,24 @@
             {{ form(form) }}
         </div>
         <div class="pt-3">
-            <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
+            <a href="{{ path('play_date_new') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Spieltermin anlegen
+            </a>
         </div>
+
+        <div class="">
+            <a href="{{ path('play_date_new', {isSpecial: 1}) }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Sondertermin anlegen
+            </a>
+        </div>
+
     {% endif %}
 {% endblock %}

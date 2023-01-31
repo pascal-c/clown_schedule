@@ -43,7 +43,7 @@ class ScheduleController extends AbstractController
             ->add('save', SubmitType::class, ['label' => 'Spielplan erstellen', 'attr' => array('onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")')])
             ->getForm();
 
-        return $this->renderForm('schedule/show.html.twig', [
+        return $this->render('schedule/show.html.twig', [
             'schedule' => $schedule,
             'month' => $month,
             'form' => $form,
@@ -64,8 +64,8 @@ class ScheduleController extends AbstractController
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }
 
-    protected function renderForm(string $view, array $parameters = [], Response $response = null): Response
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
-        return parent::renderForm($view, array_merge($parameters, ['active' => 'play_date']), $response);
+        return parent::render($view, array_merge($parameters, ['active' => 'play_date']), $response);
     }
 }
