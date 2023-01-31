@@ -39,7 +39,7 @@ final class Version20230106161446 extends AbstractMigration
         $this->addSql('ALTER TABLE venue_clown ADD CONSTRAINT FK_3804909F40A73EBA FOREIGN KEY (venue_id) REFERENCES venue (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE venue_clown ADD CONSTRAINT FK_3804909F87F943E2 FOREIGN KEY (clown_id) REFERENCES clown (id) ON DELETE CASCADE');
 
-        $this->addSql('INSERT INTO clown (gender, email, password, is_admin) VALUES ("male", "pascal.keimel@apwp.de", "'.password_hash('secret123', PASSWORD_DEFAULT).'", 1)');
+        $this->addSql('INSERT INTO clown (name, gender, email, password, is_admin, is_active) VALUES ("Pascal", "male", "pascal.keimel@apwp.de", "'.password_hash('secret123', PASSWORD_DEFAULT).'", 1, 0)');
     }
 
     public function down(Schema $schema): void

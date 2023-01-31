@@ -26,7 +26,7 @@
                     {% else %}
                        <span class="text-muted">vormittags</span>
                     {% endfor %}
-                    {% if day.entries('am') is not empty  %}
+                    {% if day.entries('am')|filter(playDate => not playDate.isSpecial) is not empty  %}
                         {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
                     {% endif %}
                     {% if showAvailabilities %}
@@ -39,7 +39,7 @@
                     {% else %}
                        <span class="text-muted">nachmittags</span>
                     {% endfor %}
-                    {% if day.entries('pm') is not empty  %}
+                    {% if day.entries('pm')|filter(playDate => not playDate.isSpecial) is not empty  %}
                          {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
                     {% endif %}
                     {% if showAvailabilities %}
@@ -57,5 +57,10 @@
         <div class="pt-3">
             <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
         </div>
+
+        <div class="">
+            <a href="{{ path('play_date_new', {isSpecial: 1}) }}">Sondertermin anlegen</a>
+        </div>
+
     {% endif %}
 {% endblock %}

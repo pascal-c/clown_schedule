@@ -8,6 +8,7 @@ use App\Entity\PlayDate;
 use App\Entity\Venue;
 use App\Form\PlayDateAssignClownsFormType;
 use App\Form\PlayDateFormType;
+use App\Form\SpecialPlayDateFormType;
 use App\Repository\PlayDateRepository;
 use App\Repository\VenueRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,7 +51,8 @@ class PlayDateController extends AbstractController
             $venue = null;
         }
 
-        $form = $this->createForm(PlayDateFormType::class, $playDate);
+        $isSpecial = $request->query->get('isSpecial');
+        $form = $this->createForm($isSpecial ? SpecialPlayDateFormType::class : PlayDateFormType::class, $playDate);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -65,7 +67,7 @@ class PlayDateController extends AbstractController
             $this->addFlash('warning', 'Spieltermin konnte nicht angelegt werden.');
         }
 
-        return $this->renderForm('play_date/new.html.twig', [
+        return $this->render('play_date/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -77,7 +79,7 @@ class PlayDateController extends AbstractController
 
         $playDate = $this->playDateRepository->find($id);
 
-        $editForm = $this->createForm(PlayDateFormType::class, $playDate, ['method' => 'PATCH']);
+        $editForm = $this->createForm($playDate->isSpecial() ? SpecialPlayDateFormType::class : PlayDateFormType::class, $playDate, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($playDate)
             ->add('delete', SubmitType::class, 
                 ['label' => 'Spieltermin löschen', 'attr' => array('onclick' => 'return confirm("Spieltermin endgültig löschen?")')])
@@ -95,7 +97,7 @@ class PlayDateController extends AbstractController
             $this->addFlash('warning', 'Hach! Spieltermin konnte irgendwie nicht aktualisiert werden.');
         }
 
-        return $this->renderForm('play_date/edit.html.twig', [
+        return $this->render('play_date/edit.html.twig', [
             'form' => $editForm,
             'delete_form' => $deleteForm,
         ]);
@@ -119,7 +121,7 @@ class PlayDateController extends AbstractController
             $this->addFlash('warning', 'Mist, das hat nicht geklappt!');
         }
 
-        return $this->renderForm('play_date/assign_clowns.html.twig', [
+        return $this->render('play_date/assign_clowns.html.twig', [
             'playDate' => $playDate,
             'form' => $form,
         ]);
@@ -161,10 +163,5 @@ class PlayDateController extends AbstractController
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
         return parent::render($view, array_merge($parameters, ['active' => 'play_date']), $response);
-    }
-
-    protected function renderForm(string $view, array $parameters = [], Response $response = null): Response
-    {
-        return parent::renderForm($view, array_merge($parameters, ['active' => 'play_date']), $response);
     }
 }
