@@ -1,6 +1,6 @@
 <div class="pt-2">
     {% if playDate.isSpecial %}
-        <strong class="text-dark">{{ playDate.title }}</strong>
+        <strong class="text-secondary">{{ playDate.title }}</strong>
     {% else %}
         <strong class="{{ playDate.playingClowns.count !=2 ? 'text-danger' }}">{{ playDate.venue.name }}</strong>
         <span class="text-muted">
