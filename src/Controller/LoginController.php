@@ -58,7 +58,7 @@ class LoginController extends AbstractController
             }
         }
 
-        return $this->renderForm('login/login.html.twig', [
+        return $this->render('login/login.html.twig', [
             'active' => 'none',
             'form' => $loginForm,
         ]);
@@ -109,7 +109,7 @@ class LoginController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        return $this->renderForm('login/change_password.html.twig', [
+        return $this->render('login/change_password.html.twig', [
             'active' => 'none',
             'form' => $passwordForm,
         ]);

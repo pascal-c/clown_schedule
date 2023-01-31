@@ -36,9 +36,4 @@ abstract class AbstractController extends SymfonyAbstractController
     {
         return parent::render($view, array_merge($parameters, ['currentClown' => $this->getCurrentClown()]), $response);
     }
-
-    protected function renderForm(string $view, array $parameters = [], Response $response = null): Response
-    {
-        return parent::renderForm($view, array_merge($parameters, ['currentClown' => $this->getCurrentClown()]), $response);
-    }
 }
