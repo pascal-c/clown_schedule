@@ -28,7 +28,7 @@ final class SchedulerTest extends TestCase
         
         $playDateRepository = $this->createMock(PlayDateRepository::class);
         $playDateRepository->expects($this->once())
-            ->method('byMonth')
+            ->method('regularByMonth')
             ->willReturn($playDates);
         $clownAvailabilities = $this->getClownAvailabilities();
         $clownAvailabilityRepository = $this->createMock(ClownAvailabilityRepository::class);
