@@ -2,6 +2,7 @@
 namespace App\Component;
 
 use App\Entity\Month;
+use App\Service\TimeService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
@@ -13,14 +14,25 @@ class MonthNavigationComponent
     public ?string $urlKey;
     public array $urlParams = [];
 
-    public function __construct(private UrlGeneratorInterface $urlHelper) {}
+    public function __construct(
+        private UrlGeneratorInterface $urlHelper,
+        private TimeService $timeService
+    ) {}
 
     #[ExposeInTemplate()]
     public function getNavigationItems(): array
     {
-        $currentMonth = new Month(new \DateTimeImmutable('-2 month'));
+        $currentMonth = new Month($this->timeService->today());
+        $activeMonth = new Month(new \DateTimeImmutable($this->active));
         $navigationItems = [];
-        for ($i = 1; $i <= 5; $i++) {
+        $navigationItems['previous'] = [
+            'label' => '<<',
+            'url' => $this->urlHelper->generate(
+                $this->urlKey,
+                array_merge($this->urlParams, ['monthId' => $activeMonth->previous()->getKey()])
+            ),
+        ];
+        for ($i = 1; $i <= 3; $i++) {
             $navigationItems[$currentMonth->getKey()] = [
                 'label' => $currentMonth->getLabel(), 
                 'url' => $this->urlHelper->generate(
@@ -30,6 +42,14 @@ class MonthNavigationComponent
             ];
             $currentMonth = $currentMonth->next();
         }
+        $navigationItems['next'] = [
+            'label' => '>>',
+            'url' => $this->urlHelper->generate(
+                $this->urlKey,
+                array_merge($this->urlParams, ['monthId' => $activeMonth->next()->getKey()])
+            ),
+        ];
+
         return $navigationItems;
     }
 }
