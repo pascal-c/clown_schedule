@@ -12,7 +12,7 @@ class MonthRepository
         if (is_null(($id))) {
             $id = $session->get('month_id');
         }
-        else {
+        elseif ('infinity' != $id) {
             $session->set('month_id', $id);
         }
 

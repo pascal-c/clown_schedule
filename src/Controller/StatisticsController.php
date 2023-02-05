@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\ClownAvailabilityRepository;
+use App\Repository\ClownRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\TimeSlotRepository;
@@ -19,12 +20,35 @@ class StatisticsController extends AbstractController
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
-        private TimeSlotRepository $timeSlotRepository)
+        private TimeSlotRepository $timeSlotRepository,
+        private ClownRepository $clownRepository)
     {
     }
 
+    #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]
+    public function showInfinity(): Response 
+    {
+        $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts();
+        $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts();
+        
+        foreach($clownsWithTotalCount as $k => $clownWithTotalCount) {
+            $clownsWithTotalCount[$k]['superCount'] = 0;
+            foreach($clownsWithSuperCount as $clownWithSuperCount) {
+                if ($clownWithSuperCount['clown'] === $clownWithTotalCount['clown']) {
+                    $clownsWithTotalCount[$k]['superCount'] = $clownWithSuperCount['superCount'];
+                }
+            }
+        }
+
+        return $this->render('statistics/infinity.html.twig', [
+            'month' => null,
+            'clownsWithCounts' => $clownsWithTotalCount,
+            'active' => 'statistics',
+        ]);
+    }
+
     #[Route('/statistics/{monthId}', name: 'statistics', methods: ['GET'])]
-    public function show(SessionInterface $session, Request $request, ?string $monthId = null): Response 
+    public function showPerMonth(SessionInterface $session, Request $request, ?string $monthId = null): Response 
     {
         $month = $this->monthRepository->find($session, $monthId);
         $playDates = $this->playDateRepository->regularByMonth($month);
@@ -51,7 +75,7 @@ class StatisticsController extends AbstractController
             }
         }
 
-        return $this->render('statistics/show.html.twig', [
+        return $this->render('statistics/per_month.html.twig', [
             'month' => $month,
             'clownAvailabilities' => $clownAvailabilities,
             'currentPlays' => $plays,

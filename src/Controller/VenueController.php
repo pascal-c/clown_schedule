@@ -77,6 +77,7 @@ class VenueController extends AbstractController
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $venue->setIsSuper($editForm['isSuper']->isSubmitted());   
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');

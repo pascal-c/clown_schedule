@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Statistiken{% endblock %}
+
+{% block content %}
+    {{ component('month_navigation', { active: null, urlKey: 'statistics' }) }}
+    <h4 class="pt-3">Ewige Statistik</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Clown</th>
+                <th>Spieltermine gesamt</th>
+                <th>Super-Spieltermine</th>
+                <th>Anteil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clownWithCounts in clownsWithCounts %}
+            <tr>
+                <td>{{ clownWithCounts.clown.name }}</td>
+                <td>
+                    {{ clownWithCounts.totalCount }}
+                </td>
+                <td>
+                    {{ clownWithCounts.superCount }}
+                </td>
+                <td>
+                    {% if clownWithCounts.totalCount > 0 %}
+                        {{ (clownWithCounts.superCount / clownWithCounts.totalCount * 100)|round }} %
+                    {% else %}
+                        --
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

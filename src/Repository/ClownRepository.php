@@ -33,6 +33,32 @@ class ClownRepository
         return $this->doctrineRepository->findOneByEmail($email);
     }
 
+    public function allWithTotalPlayDateCounts(): Array
+    {
+        return $this->doctrineRepository->createQueryBuilder('cl')
+            ->select('cl AS clown, count(pd.id) AS totalCount')
+            ->leftJoin('cl.playDates', 'pd')
+            ->where('pd.isSpecial = 0')
+            ->groupBy('cl')
+            ->orderBy('cl.isActive', 'DESC')
+            ->addOrderBy('cl.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function allWithSuperPlayDateCounts(): Array
+    {
+        return $this->doctrineRepository->createQueryBuilder('cl')
+            ->select('cl AS clown, count(pd.id) AS superCount')
+            ->leftJoin('cl.playDates', 'pd')
+            ->leftJoin('pd.venue', 'venue')
+            ->where('venue.isSuper = 1')
+            ->groupBy('cl')
+            ->orderBy('cl.isActive', 'DESC')
+            ->addOrderBy('cl.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Clown[] Returns an array of Clown objects

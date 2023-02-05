@@ -44,6 +44,9 @@ class Venue
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $emails = ['', '', ''];
 
+    #[ORM\Column]
+    private bool $isSuper = false;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -179,6 +182,18 @@ class Venue
     public function setEmails(?array $emails): self
     {
         $this->emails = $emails;
+
+        return $this;
+    }
+
+    public function isSuper(): bool
+    {
+        return $this->isSuper;
+    }
+
+    public function setIsSuper(bool $isSuper): self
+    {
+        $this->isSuper = $isSuper;
 
         return $this;
     }

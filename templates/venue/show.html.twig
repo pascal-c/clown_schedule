@@ -46,6 +46,11 @@
                     {{ venue.playTimeFrom|date('H:i') }} - {{ venue.playTimeTo|date('H:i') }}
                 </td>
             </tr>
+            {% if venue.isSuper %}
+                <tr>
+                    <td colspan="2">ist ein Super-Spielort!</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
     
