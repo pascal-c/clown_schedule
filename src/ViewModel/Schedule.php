@@ -16,9 +16,9 @@ class Schedule
         }
     }
     
-    public function add(\DateTimeInterface $date, string $daytime, $entry)
+    public function add(\DateTimeInterface $date, string $daytime, string $key, mixed $entry)
     {
-        $this->days[$date->format('d')]->addEntry($daytime, $entry);
+        $this->days[$date->format('d')]->addEntry($daytime, $key, $entry);
     }
 
     public function getDays(): array

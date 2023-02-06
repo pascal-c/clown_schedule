@@ -30,23 +30,23 @@ class Day
             'EEEE');
     }
     
-    public function addEntry(string $daytime, $entry)
+    public function addEntry(string $daytime, string $key, mixed $entry)
     {
         if ($daytime == Daytime::AM) {
-            $this->entriesAm[] = $entry;
+            $this->entriesAm[$key][] = $entry;
         } elseif ($daytime == Daytime::PM) {
-            $this->entriesPm[] = $entry;
+            $this->entriesPm[$key][] = $entry;
         } else {
             throw new \InvalidArgumentException('this is not a valid daytime');
         }
     }
 
-    public function getEntries(string $daytime): array
+    public function getEntries(string $daytime, string $key): array
     {
         if ($daytime == Daytime::AM) {
-            return $this->entriesAm;
+            return array_key_exists($key, $this->entriesAm) ? $this->entriesAm[$key] : [];
         } elseif ($daytime == Daytime::PM) {
-            return $this->entriesPm;
+            return array_key_exists($key, $this->entriesPm) ? $this->entriesPm[$key] : [];
         } else {
             throw new \InvalidArgumentException('this is not a valid daytime');
         }

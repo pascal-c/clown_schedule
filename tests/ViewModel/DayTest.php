@@ -29,11 +29,13 @@ final class DayTest extends TestCase
      */
     public function testgetEntries(Day $day): void
     {
-        $day->addEntry(Daytime::AM, 'am first');
-        $day->addEntry(Daytime::AM, 'am second');
-        $this->assertEquals(['am first', 'am second'], $day->getEntries(Daytime::AM));
-        $this->assertEquals([], $day->getEntries(Daytime::PM));
-
+        $day->addEntry(Daytime::AM, 'key1', 'am key1 first');
+        $day->addEntry(Daytime::AM, 'key1', 'am key1 second');
+        $day->addEntry(Daytime::AM, 'key2', 'am key2');
+        $this->assertEquals(['am key1 first', 'am key1 second'], $day->getEntries(Daytime::AM, 'key1'));
+        $this->assertEquals(['am key2'], $day->getEntries(Daytime::AM, 'key2'));
+        $this->assertEquals([], $day->getEntries(Daytime::PM, 'key1'));
+        $this->assertEquals([], $day->getEntries(Daytime::PM, 'key2'));
     }
 
     /**

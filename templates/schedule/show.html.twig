@@ -6,45 +6,39 @@
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     <h4 class="pt-3">Spielplan {{ month.label }}</h4>
 
-    
-    <form>
-        <div class="form-check form-check-inline">
-            <input {{ showAvailabilities ? 'checked="checked"' : '' }} class="form-check-input" type="checkbox" name="showAvailabilities" id="show_availabilities" value="yes">
-            <label class="form-check-label" for="show_availabilities">Noch verfügbare Clowns</label>
-        </div>
-        <button type="submit" class="btn btn-secondary">zeigen!</button>
-    </form>
-    
+    <button type="button" class="btn btn-info mb-3 collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
+    <button type="button" class="btn btn-info mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
+
     <div class="container pt-1">
         {% for day in schedule.days %}
             <div class="row">
                 {{ include ('partials/schedule_day_number_and_name.html.twig', {day: day}, with_context = false) }}
                 
                 <div class="col-sm-5 border">
-                    {% for playDate in day.entries('am') %}
+                    {% for playDate in day.entries('am', 'playDates') %}
                         {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
                     {% else %}
                        <span class="text-muted">vormittags</span>
                     {% endfor %}
-                    {% if day.entries('am')|filter(playDate => not playDate.isSpecial) is not empty  %}
+                    {% if day.entries('am', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
                         {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
                     {% endif %}
-                    {% if showAvailabilities %}
+                    <div class="collapse available_clowns">
                         {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
-                    {% endif %}
+                    </div>
                 </div>
                 <div class="col-sm-5 border">
-                    {% for playDate in day.entries('pm') %}
+                    {% for playDate in day.entries('pm', 'playDates') %}
                         {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
                     {% else %}
                        <span class="text-muted">nachmittags</span>
                     {% endfor %}
-                    {% if day.entries('pm')|filter(playDate => not playDate.isSpecial) is not empty  %}
+                    {% if day.entries('pm', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
                          {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
                     {% endif %}
-                    {% if showAvailabilities %}
+                    <div class="collapse available_clowns">
                         {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}
-                    {% endif %}
+                    </div>
                 </div>
             </div>
             

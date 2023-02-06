@@ -36,7 +36,7 @@ class ScheduleController extends AbstractController
         $schedule = new Schedule($month);
 
         foreach ($this->playDateRepository->byMonth($month) as $playDate) {
-            $schedule->add($playDate->getDate(), $playDate->getDaytime(), $playDate);
+            $schedule->add($playDate->getDate(), $playDate->getDaytime(), 'playDates', $playDate);
         }
 
         $form = $this->createFormBuilder()
@@ -47,7 +47,6 @@ class ScheduleController extends AbstractController
             'schedule' => $schedule,
             'month' => $month,
             'form' => $form,
-            'showAvailabilities' => $request->query->get('showAvailabilities') == 'yes'
         ]);
     }
 

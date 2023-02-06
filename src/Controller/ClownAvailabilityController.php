@@ -12,6 +12,7 @@ use App\Form\ClownAvailabilityFormType;
 use App\Repository\ClownRepository;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\MonthRepository;
+use App\Repository\PlayDateRepository;
 use App\ViewModel\Schedule;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,7 +29,8 @@ class ClownAvailabilityController extends AbstractController
         ManagerRegistry $doctrine, 
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownRepository $clownRepository,
-        private MonthRepository $monthRepository
+        private MonthRepository $monthRepository,
+        private PlayDateRepository $playDateRepository
     )
     {
         $this->entityManager = $doctrine->getManager();
@@ -59,7 +61,10 @@ class ClownAvailabilityController extends AbstractController
     
         $schedule = new Schedule($month);
         foreach ($clownAvailability->getClownAvailabilityTimes($month) as $timeSlot) {
-            $schedule->add($timeSlot->getDate(), $timeSlot->getDaytime(), $timeSlot->getAvailability());
+            $schedule->add($timeSlot->getDate(), $timeSlot->getDaytime(), 'availabilities', $timeSlot->getAvailability());
+        }
+        foreach ($this->playDateRepository->byMonth($month) as $playDate) {
+            $schedule->add($playDate->getDate(), $playDate->getDaytime(), 'playDates', $playDate);
         }
 
         return $this->render('clown_availability/show.html.twig', [
@@ -87,9 +92,13 @@ class ClownAvailabilityController extends AbstractController
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability);
 
         foreach($schedule->getDays() as $day) {
-            $day->addEntry(Daytime::AM, 'yes');
-            $day->addEntry(Daytime::PM, 'yes');
+            $day->addEntry(Daytime::AM, 'availabilities', 'yes');
+            $day->addEntry(Daytime::PM, 'availabilities', 'yes');
         }
+        foreach ($this->playDateRepository->byMonth($month) as $playDate) {
+            $schedule->add($playDate->getDate(), $playDate->getDaytime(), 'playDates', $playDate);
+        }
+
 
         return $this->render('clown_availability/form.html.twig', [
             'active' => 'availability',
@@ -145,7 +154,10 @@ class ClownAvailabilityController extends AbstractController
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability, ['method' => 'PATCH']);
 
         foreach ($clownAvailability->getClownAvailabilityTimes() as $timeSlot) {
-            $schedule->add($timeSlot->getDate(), $timeSlot->getDaytime(), $timeSlot->getAvailability());
+            $schedule->add($timeSlot->getDate(), $timeSlot->getDaytime(), 'availabilities', $timeSlot->getAvailability());
+        }
+        foreach ($this->playDateRepository->byMonth($month) as $playDate) {
+            $schedule->add($playDate->getDate(), $playDate->getDaytime(), 'playDates', $playDate);
         }
 
         return $this->render('clown_availability/form.html.twig', [

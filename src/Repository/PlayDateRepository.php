@@ -58,7 +58,9 @@ class PlayDateRepository extends AbstractRepository
     {
         return $this->queryByMonth($month)
             ->getQuery()
-            ->getResult();
+            ->enableResultCache(1)
+            ->getResult()
+            ;
     }
 
     private function queryByMonth(Month $month): QueryBuilder
@@ -70,7 +72,6 @@ class PlayDateRepository extends AbstractRepository
             ->setParameter('next', $month->next()->dbFormat())
             ->orderBy('pd.date', 'ASC')
             ->addOrderBy('pd.daytime', 'ASC');
-            #->enableResultCache()
     }
 
     public function futureByClown(Clown $clown): Array
