@@ -85,7 +85,6 @@ class PlayDateRepository extends AbstractRepository
             ->orderBy('pd.date', 'ASC')
             ->addOrderBy('pd.daytime', 'ASC')
             ->getQuery()
-            #->enableResultCache()
             ->getResult();
     }
 }
