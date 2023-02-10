@@ -3,31 +3,24 @@
 namespace App\ViewModel;
 
 use App\Entity\Daytime;
-use IntlDateFormatter;
+use App\Entity\Vacation;
+use DateTimeInterface;
 
 class Day
 {
     private array $entriesAm = [];
     private array $entriesPm = [];
-    private IntlDateFormatter $dayShortNameFormatter;
-    private IntlDateFormatter $dayLongNameFormatter;
-
-    public function __construct(private \DateTimeInterface $date)
+    
+    public function __construct(
+        private DateTimeInterface $date,
+        private string $dayLongName,
+        private string $dayShortName,
+        private ?string $dayHolidayName,
+        private bool $isWeekend,
+        private bool $isHoliday,
+        private ?Vacation $vacation,
+    ) 
     {
-        $this->dayShortNameFormatter = new IntlDateFormatter(
-            'de_DE', 
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            'Europe/Berlin',
-            \IntlDateFormatter::GREGORIAN,
-            'EEE');
-        $this->dayLongNameFormatter = new IntlDateFormatter(
-            'de_DE', 
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            'Europe/Berlin',
-            \IntlDateFormatter::GREGORIAN,
-            'EEEE');
     }
     
     public function addEntry(string $daytime, string $key, mixed $entry)
@@ -59,12 +52,12 @@ class Day
 
     public function getDayShortName(): string
     {
-        return $this->dayShortNameFormatter->format($this->date);
+        return $this->dayShortName;
     }
 
     public function getDayName(): string
     {
-        return $this->isHolyday() ? $this->holidaysForYear()[$this->getDateString()] : $this->dayLongNameFormatter->format($this->date);
+        return $this->isHoliday() ? $this->dayHolidayName : $this->dayLongName;
     }
 
     public function getDate(): \DateTimeImmutable
@@ -79,40 +72,26 @@ class Day
 
     public function isFree(): bool
     {
-        return $this->isWeekend() || $this->isHolyday();
+        return $this->isWeekend() || $this->isHoliday();
     }
 
     public function isWeekend(): bool
     {
-        return $this->date->format('N') >= 6;
+        return $this->isWeekend;
     }
 
-    public function isHolyday(): bool
+    public function isHoliday(): bool
     {
-        return array_key_exists($this->getDateString(), $this->holidaysForYear());
+        return $this->isHoliday;
     }
 
-    private function holidaysForYear(): array
+    public function isVacation(): bool
     {
-        $year = $this->date->format('Y');
-        
-        $easterDate = \DateTimeImmutable::createFromFormat('U', easter_date($year))
-            ->setTimezone(new \DateTimeZone('Europe/Berlin'));
-        $busAndBedDate = (new \DateTimeImmutable($year . '-11-23'))->modify('last Wednesday');
+        return $this->vacation != null;
+    }
 
-        return [
-            $year . '-01-01' => 'Neujahr', // new year
-            $year . '-05-01' => 'Tag der Arbeit', // day of work!
-            $year . '-10-03' => 'Tag der deutschen Einheit', // reunion day
-            $year . '-10-31' => 'Reformationstag', // reformation day
-            $year . '-12-25' => '1. Weihnachtsfeiertag', // chrismas 1
-            $year . '-12-26' => '2. Weihnachtsfeiertag', // chrismas 2
-            $easterDate->format('Y-m-d') => 'Ostersonntag', // easter
-            $easterDate->modify('-2 days')->format('Y-m-d') => 'Karfreitag', // easter friday
-            $easterDate->modify('+1 day')->format('Y-m-d') => 'Ostermontag', // easter monday
-            $easterDate->modify('+39 day')->format('Y-m-d') => 'Himmelfahrt', // trip to heaven
-            $easterDate->modify('+50 day')->format('Y-m-d') => 'Pfingsten', // pentercote
-            $busAndBedDate->format('Y-m-d') => 'Buß- und Bettag', // bus and bed day
-        ];
+    public function getVacationName(): ?string
+    {
+        return $this->isVacation() ? $this->vacation->getName() : null;
     }
 }

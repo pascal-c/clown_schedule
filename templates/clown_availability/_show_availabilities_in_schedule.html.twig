@@ -1,0 +1,25 @@
+{% extends "partials/_schedule_base.html.twig" %}
+
+{% block am %}
+    {{ include (
+        'clown_availability/_show_availability_in_schedule.html.twig', 
+        {availability: day.entries('am', 'availabilities')[0], daytime: 'am'}, with_context = false) 
+    }}
+    <div class="play_dates collapse">
+        {% for playDate in day.entries('am', 'playDates') %}
+            {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block pm %}
+    {{ include (
+        'clown_availability/_show_availability_in_schedule.html.twig', 
+        {availability: day.entries('pm', 'availabilities')[0], daytime: 'pm'}, with_context = false) 
+    }}
+    <div class="collapse play_dates">
+        {% for playDate in day.entries('pm', 'playDates') %}
+            {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+        {% endfor %}
+    </div>
+{% endblock %}

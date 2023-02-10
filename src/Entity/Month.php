@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 class Month
@@ -19,6 +21,11 @@ class Month
     public function getKey(): string
     {
         return $this->date->format('Y-m');
+    }
+
+    public function getYear(): string
+    {
+        return $this->date->format('Y');
     }
 
     public function getLabel(): string

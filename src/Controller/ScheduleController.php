@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Service\Scheduler;
+use App\ViewController\ScheduleViewController;
 use App\ViewModel\Schedule;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,6 +25,7 @@ class ScheduleController extends AbstractController
         ManagerRegistry $doctrine, 
         private PlayDateRepository $playDateRepository, 
         private MonthRepository $monthRepository,
+        private ScheduleViewController $scheduleViewController,
         private Scheduler $scheduler)
     {
         $this->entityManager = $doctrine->getManager();
@@ -33,7 +35,7 @@ class ScheduleController extends AbstractController
     public function schedule(SessionInterface $session, Request $request, ?string $monthId = null): Response 
     {
         $month = $this->monthRepository->find($session, $monthId);
-        $schedule = new Schedule($month);
+        $schedule = $this->scheduleViewController->getSchedule($month);
 
         foreach ($this->playDateRepository->byMonth($month) as $playDate) {
             $schedule->add($playDate->getDate(), $playDate->getDaytime(), 'playDates', $playDate);

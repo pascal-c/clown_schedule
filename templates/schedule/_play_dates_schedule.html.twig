@@ -1,0 +1,29 @@
+{% extends "partials/_schedule_base.html.twig" %}
+
+{% block am %}
+    {% for playDate in day.entries('am', 'playDates') %}
+        {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+    {% else %}
+        <span class="text-muted">vormittags</span>
+    {% endfor %}
+    {% if day.entries('am', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
+        {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
+    {% endif %}
+    <div class="collapse available_clowns">
+        {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
+    </div>
+{% endblock %}
+
+{% block pm %}
+    {% for playDate in day.entries('pm', 'playDates') %}
+        {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+    {% else %}
+        <span class="text-muted">nachmittags</span>
+    {% endfor %}
+    {% if day.entries('pm', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
+            {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
+    {% endif %}
+    <div class="collapse available_clowns">
+        {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}
+    </div>
+{% endblock %}
