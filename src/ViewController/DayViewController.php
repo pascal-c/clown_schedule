@@ -47,7 +47,7 @@ class DayViewController
 
     private function getVacation(\DateTimeImmutable $date): ?Vacation
     {
-        foreach ($this->vacationRepository->byMonth(new Month($date)) as $vacation) {
+        foreach ($this->vacationRepository->byYear(new Month($date)) as $vacation) {
             if ($vacation->getStartDate() <= $date && $vacation->getEndDate() >= $date) {
                 return $vacation;
             }

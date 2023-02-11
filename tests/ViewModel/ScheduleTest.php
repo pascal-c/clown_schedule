@@ -39,15 +39,13 @@ final class ScheduleTest extends TestCase
     private function buildDay(DateTimeImmutable $date): Day
     {
         return new Day(
-            ...array_values([
-                'date' => $date,
-                'dayLongName' => 'Freitag',
-                'dayShortName' => 'Fr.',
-                'holidayName' => 'Himmelfahrt',
-                'isWeekend' => false,
-                'isHoliday' => true,
-                'vacation' => null
-            ])
+            date: $date,
+            dayLongName: 'Freitag',
+            dayShortName: 'Fr.',
+            dayHolidayName: 'Himmelfahrt',
+            isWeekend: false,
+            isHoliday: true,
+            vacation: null,
         );
     }
 }

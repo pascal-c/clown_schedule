@@ -11,17 +11,17 @@ use DateTimeImmutable;
 
 class VacationRepository 
 {
-    public function __construct(private VacationGateway $holidayGateway)
+    public function __construct(private VacationGateway $vacationGateway)
     {
     }
 
-    public function byMonth(Month $month): array
+    public function byYear(Month $month): array
     {
-        $byYear = $this->holidayGateway->findByYear($month->getYear());
+        $byYear = $this->vacationGateway->findByYear($month->getYear());
         return array_map(
             fn(array $x) => new Vacation(
                 new DateTimeImmutable($x['start']), 
-                new DateTimeImmutable( $x['end']), 
+                new DateTimeImmutable($x['end']), 
                 $x['name']  
             ),
             $byYear 

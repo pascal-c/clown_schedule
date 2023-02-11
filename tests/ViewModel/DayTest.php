@@ -11,15 +11,13 @@ final class DayTest extends TestCase
     public function testgetDayNumber(): Day
     {
         $day = new Day(
-            ...array_values([
-                'date' => new \DateTimeImmutable('2022-08-08'),
-                'dayLongName' => 'Freitag',
-                'dayShortName' => 'Fr.',
-                'holidayName' => 'Himmelfahrt',
-                'isWeekend' => false,
-                'isHoliday' => true,
-                'vacation' => null
-            ])
+            date: new \DateTimeImmutable('2022-08-08'),
+            dayLongName: 'Freitag',
+            dayShortName: 'Fr.',
+            dayHolidayName: 'Himmelfahrt',
+            isWeekend: false,
+            isHoliday: true,
+            vacation: null,
         );
         $this->assertEquals('08', $day->getDayNumber());
         

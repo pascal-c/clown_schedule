@@ -3,11 +3,7 @@
 namespace App\ViewController;
 
 use App\Entity\Month;
-use App\Entity\Vacation;
-use App\Repository\VacationRepository;
-use App\ViewModel\Day;
 use App\ViewModel\Schedule;
-use IntlDateFormatter;
 
 class ScheduleViewController
 {
@@ -20,8 +16,8 @@ class ScheduleViewController
         $schedule = new Schedule($month);
 
         $days = [];
-        foreach($month->days() as $day) {
-            $days[$day->format('d')] = $this->dayViewController->getDay($day);
+        foreach($month->days() as $date) {
+            $days[$date->format('d')] = $this->dayViewController->getDay($date);
         }
         $schedule->setDays($days);
         

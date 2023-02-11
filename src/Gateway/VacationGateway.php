@@ -9,7 +9,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class VacationGateway 
+class VacationGateway
 {
     public function __construct(
         private HttpClientInterface $httpClient,
