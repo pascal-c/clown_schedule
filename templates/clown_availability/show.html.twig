@@ -29,34 +29,7 @@
         <button type="button" class="btn btn-info mb-3 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
         <button type="button" class="btn btn-info mb-3 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
 
-        {% for day in schedule.days %}
-            <div class="row">
-                {{ include ('partials/schedule_day_number_and_name.html.twig', {day: day}, with_context = false) }}
-
-                <div class="col-sm-5 border">
-                    {{ include (
-                        'clown_availability/show_availability_in_schedule.html.twig', 
-                        {availability: day.entries('am', 'availabilities')[0], daytime: 'am'}, with_context = false) 
-                    }}
-                    <div class="play_dates collapse">
-                        {% for playDate in day.entries('am', 'playDates') %}
-                            {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-sm-5 border">
-                    {{ include (
-                        'clown_availability/show_availability_in_schedule.html.twig', 
-                        {availability: day.entries('pm', 'availabilities')[0], daytime: 'pm'}, with_context = false) 
-                    }}
-                    <div class="collapse play_dates">
-                        {% for playDate in day.entries('pm', 'playDates') %}
-                            {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+        {{ include('clown_availability/_show_availabilities_in_schedule.html.twig') }}
     </div>
     <div class="container pt-3">
         <a href="{{ path('clown_availability_edit', {clownId: clown.id, monthId: month.key}) }}">Fehlzeiten bearbeiten</a>

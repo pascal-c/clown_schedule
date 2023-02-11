@@ -10,39 +10,7 @@
     <button type="button" class="btn btn-info mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
 
     <div class="container pt-1">
-        {% for day in schedule.days %}
-            <div class="row">
-                {{ include ('partials/schedule_day_number_and_name.html.twig', {day: day}, with_context = false) }}
-                
-                <div class="col-sm-5 border">
-                    {% for playDate in day.entries('am', 'playDates') %}
-                        {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
-                    {% else %}
-                       <span class="text-muted">vormittags</span>
-                    {% endfor %}
-                    {% if day.entries('am', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
-                        {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
-                    {% endif %}
-                    <div class="collapse available_clowns">
-                        {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
-                    </div>
-                </div>
-                <div class="col-sm-5 border">
-                    {% for playDate in day.entries('pm', 'playDates') %}
-                        {{ include ('play_date/show_in_schedule.html.twig', {playDate: playDate}) }}
-                    {% else %}
-                       <span class="text-muted">nachmittags</span>
-                    {% endfor %}
-                    {% if day.entries('pm', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
-                         {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
-                    {% endif %}
-                    <div class="collapse available_clowns">
-                        {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}
-                    </div>
-                </div>
-            </div>
-            
-        {% endfor %}
+        {{ include('schedule/_play_dates_schedule.html.twig') }}
     </div>
     {% if currentClown.isAdmin %}
         <div class="pt-3">

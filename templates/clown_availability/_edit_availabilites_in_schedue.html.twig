@@ -1,0 +1,45 @@
+ {% extends "partials/_schedule_base.html.twig" %}
+
+{% block am %}
+    <div class="text-muted">vormittags</div>
+    <div class="form-check form-check-inline">
+        <input {{ day.entries('am', 'availabilities')[0] == 'yes' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][am]" id="availability_{{ day.dateString }}_am_yes" value="yes">
+        <label class="form-check-label" for="availability_{{ day.dateString }}_am_yes">Ja</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input {{ day.entries('am', 'availabilities')[0] == 'maybe' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][am]" id="availability_{{ day.dateString }}_am_maybe" value="maybe">
+        <label class="form-check-label" for="availability_{{ day.dateString }}_am_maybe">Wenn's sein muss</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input {{ day.entries('am', 'availabilities')[0] == 'no' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][am]" id="availability_{{ day.dateString }}_am_no" value="no">
+        <label class="form-check-label" for="availability_{{ day.dateString }}_am_no">Nein</label>
+    </div>
+
+    <div class="play_dates collapse">
+        {% for playDate in day.entries('am', 'playDates') %}
+            {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block pm %}
+    <div class="text-muted">nachmittags</div>
+    <div class="form-check form-check-inline">
+        <input {{ day.entries('pm', 'availabilities')[0] == 'yes' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][pm]" id="availability_{{ day.dateString }}_pm_yes" value="yes">
+        <label class="form-check-label" for="availability_{{ day.dateString }}_pm_yes">Ja</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input {{ day.entries('pm', 'availabilities')[0] == 'maybe' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][pm]" id="availability_{{ day.dateString }}_pm_maybe" value="maybe">
+        <label class="form-check-label" for="availability_{{ day.dateString }}_pm_maybe">Wenn's sein muss</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input {{ day.entries('pm', 'availabilities')[0] == 'no' ? 'checked="checked"' : '' }} class="form-check-input" type="radio" name="availability[{{ day.dateString }}][pm]" id="availability_{{ day.dateString }}_pm_no" value="no">
+        <label class="form-check-label" for="availability_{{ day.dateString }}_pm_no">Nein</label>
+    </div>
+
+    <div class="play_dates collapse">
+        {% for playDate in day.entries('pm', 'playDates') %}
+            {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -13,6 +13,7 @@ use App\Repository\ClownRepository;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
+use App\ViewController\ScheduleViewController;
 use App\ViewModel\Schedule;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,7 +31,8 @@ class ClownAvailabilityController extends AbstractController
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownRepository $clownRepository,
         private MonthRepository $monthRepository,
-        private PlayDateRepository $playDateRepository
+        private PlayDateRepository $playDateRepository,
+        private ScheduleViewController $scheduleViewController
     )
     {
         $this->entityManager = $doctrine->getManager();
@@ -59,7 +61,7 @@ class ClownAvailabilityController extends AbstractController
             return $this->redirectToRoute('clown_availability_new', ['monthId' => $month->getkey(), 'clownId' => $clown->getId()]);
         }
     
-        $schedule = new Schedule($month);
+        $schedule = $this->scheduleViewController->getSchedule($month);
         foreach ($clownAvailability->getClownAvailabilityTimes($month) as $timeSlot) {
             $schedule->add($timeSlot->getDate(), $timeSlot->getDaytime(), 'availabilities', $timeSlot->getAvailability());
         }
@@ -81,7 +83,7 @@ class ClownAvailabilityController extends AbstractController
     {
         $month = new Month(new \DateTimeImmutable($monthId));
         $clown = $this->clownRepository->find($clownId);
-        $schedule = new Schedule($month);
+        $schedule = $this->scheduleViewController->getSchedule($month);
         $clownAvailability = new ClownAvailability;
         $lastMonthAvailability = $this->clownAvailabilityRepository->find($month->previous(), $clown);
         if (!is_null($lastMonthAvailability)) {
@@ -150,7 +152,7 @@ class ClownAvailabilityController extends AbstractController
         $month = new Month(new \DateTimeImmutable($monthId));
         $clown = $this->clownRepository->find($clownId);
         $clownAvailability = $this->clownAvailabilityRepository->find($month, $clown);
-        $schedule = new Schedule($month);
+        $schedule = $this->scheduleViewController->getSchedule($month);
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability, ['method' => 'PATCH']);
 
         foreach ($clownAvailability->getClownAvailabilityTimes() as $timeSlot) {
