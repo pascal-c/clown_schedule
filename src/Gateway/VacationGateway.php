@@ -13,13 +13,13 @@ class VacationGateway
 {
     public function __construct(
         private HttpClientInterface $httpClient,
-        private CacheInterface $cache
+        private CacheInterface $vacationCache,
     ) {}
 
     public function findByYear(string $year): array
     {
         try {
-            $content = $this->cache->get(
+            $content = $this->vacationCache->get(
                 'vacations ' . $year, 
                 function (ItemInterface $item) use ($year) {
                     $item->expiresAfter(3600 *24 * 30);
