@@ -1,5 +1,6 @@
 {% for day in schedule.days %}
-    <div class="row {{ day.free or day.vacation ? 'bg-secondary bg-opacity-10'}}" title="{{ day.weekend ? 'Wochenende' : (day.vacation ? day.vacationName )}}">
+    <div class="row {{ day.free ? 'bg-info bg-opacity-10' : (day.vacation ? 'bg-success bg-opacity-10') }}" 
+         title="{{ day.weekend ? 'Wochenende' : (day.vacation ? day.vacationName )}}">
         <div class="col-6 col-sm-1 border">
             {% if day.free %}<strong class="text-primary">{% endif %}
                 {{ day.dayNumber }}
