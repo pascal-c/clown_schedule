@@ -13,8 +13,11 @@
             {% for date in dates %}
                 {% if date is of_type('class', 'App\\Entity\\PlayDate') and not date.isSpecial %}
                     <tr>
-                        <td>
+                        <td class="lh-sm">
                             {{ date.date|date('d.m.Y') }} {{ date.daytime == 'am' ? 'vormittags' : 'nachmittags' }}
+                            {% if date.comment != '' %}
+                                <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
+                            {% endif %}
                         </td>
                         <td>{{ date.venue.name }}</td>
                         <td>{{ date.venue.meetingTime|date('H:i') }}</td>
@@ -26,8 +29,11 @@
                     </tr>
                  {% elseif date is of_type('class', 'App\\Entity\\PlayDate') and date.isSpecial %}
                     <tr>
-                        <td>
+                        <td class="lh-sm">
                             {{ date.date|date('d.m.Y') }} {{ date.daytime == 'am' ? 'vormittags' : 'nachmittags' }}
+                            {% if date.comment != '' %}
+                                <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
+                            {% endif %}
                         </td>
                         <td>{{ date.title }}</td>
                         <td colspan='3'>&nbsp;</td>

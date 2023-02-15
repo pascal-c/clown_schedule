@@ -44,6 +44,9 @@ class PlayDate implements TimeSlotInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
+    #[ORM\Column(type: Types::TEXT, options: ['default' => ''])]
+    private string $comment = '';
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -139,6 +142,18 @@ class PlayDate implements TimeSlotInterface
     public function setTitle(?string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(string $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

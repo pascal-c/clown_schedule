@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class PlayDateAssignClownsFormType extends AbstractType
 {
@@ -22,7 +23,11 @@ class PlayDateAssignClownsFormType extends AbstractType
                 'label' => 'Clowns',
                 'expanded' => true,
                 'multiple' => true,
-                ])    
+                ])
+            ->add('comment', TextareaType::class, [
+                'label' => 'Kommentar',
+                'required' => false,
+                ])
             ->add('save', SubmitType::class, ['label' => 'Zuordnung speichern'])
         ;
     }
