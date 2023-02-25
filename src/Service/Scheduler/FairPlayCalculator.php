@@ -67,6 +67,6 @@ class FairPlayCalculator
                     ?
                 $carry : $availability,
             $clownAvailabilities[0]    
-    )   ;
+        );
     }
 }

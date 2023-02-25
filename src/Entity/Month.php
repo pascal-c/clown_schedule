@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateInterval;
+use DatePeriod;
+use DateTimeImmutable;
+use IntlDateFormatter;
+
 class Month
 {
-    private \DateTimeImmutable $date;
+    private DateTimeImmutable $date;
 
-    public function __construct(\DateTimeImmutable $date) {
+    public function __construct(DateTimeImmutable $date) {
         $this->date = $date->modify('first day of midnight');
     }
 
     public function days()
     {
-        $interval = new \DateInterval('P1D');
-        return new \DatePeriod($this->date, $interval, $this->next()->date);
+        $interval = new DateInterval('P1D');
+        return new DatePeriod($this->date, $interval, $this->next()->date);
     }
 
     public function getKey(): string
@@ -30,15 +35,14 @@ class Month
 
     public function getLabel(): string
     {
-        $formatter = new \IntlDateFormatter(
+        $formatter = new IntlDateFormatter(
             'de_DE', 
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::FULL,
             'Europe/Berlin',
-            \IntlDateFormatter::GREGORIAN,
+            IntlDateFormatter::GREGORIAN,
             'MMM y');
         return $formatter->format($this->date);
-        #return $this->date->format('M Y');
     }
 
     public function dbFormat(): string
@@ -48,7 +52,7 @@ class Month
 
     public function next(): Month
     {
-        $interval = new \DateInterval('P1M');
+        $interval = new DateInterval('P1M');
         return new Month($this->date->add($interval));
     }
 

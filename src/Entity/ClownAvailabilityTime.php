@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Lib\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,6 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'clown_date_daytime_index', fields: ['clown', 'date', 'daytime'])]
 class ClownAvailabilityTime
 {
+    const AVAILABILITY_YES = 'yes';
+    const AVAILABILITY_MAYBE = 'maybe';
+    const AVAILABILITY_NO = 'no';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,6 +35,11 @@ class ClownAvailabilityTime
     #[ORM\ManyToOne(inversedBy: 'clownAvailabilityTimes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ClownAvailability $clownAvailability = null;
+
+    public static function getAvailabilityOptions(): Collection
+    {
+        return new Collection([self::AVAILABILITY_YES, self::AVAILABILITY_MAYBE, self::AVAILABILITY_NO]);
+    }
 
     public function getId(): ?int
     {
