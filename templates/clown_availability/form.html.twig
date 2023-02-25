@@ -9,8 +9,8 @@
     {{ form_start(form) }}
         {{ form_rest(form) }}
         
-        <button type="button" class="btn btn-info mb-3 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
-        <button type="button" class="btn btn-info mb-3 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
+        <button type="button" class="btn btn-link mb-3 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
+        <button type="button" class="btn btn-link mb-3 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
         
         <div class="container">
             {{ include('clown_availability/_edit_availabilites_in_schedue.html.twig') }}

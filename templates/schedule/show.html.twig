@@ -6,8 +6,8 @@
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     <h4 class="pt-3">Spielplan {{ month.label }}</h4>
 
-    <button type="button" class="btn btn-info mb-3 collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
-    <button type="button" class="btn btn-info mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
+    <button type="button" class="btn btn-link mb-3 collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
+    <button type="button" class="btn btn-link mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
 
     <div class="container pt-1">
         {{ include('schedule/_play_dates_schedule.html.twig') }}
