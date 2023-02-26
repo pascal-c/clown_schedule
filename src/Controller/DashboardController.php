@@ -70,6 +70,7 @@ class DashboardController extends AbstractController
             'afterNextMonth' => $afterNextMonth,
             'nextMonthFilled' => $nextMonthFilled,
             'afterNextMonthFilled' => $afterNextMonthFilled,
+            'feedbackUrl' => $this->getParameter('app.feedback_url'),
             'active' => 'dashboard',
         ]);
     }

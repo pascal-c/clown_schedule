@@ -72,6 +72,8 @@
         </li>
     </ul>
 
-    <h4 class="pt-3">Feedback zu dieser App</h4>
-    <a href="https://nextcloud.clowns-und-clowns.de/index.php/f/23243" target="_blank">Hier Wünsche und Anregungen eintragen</a>
+    {% if not feedbackUrl is empty %}
+        <h4 class="pt-3">Feedback zu dieser App</h4>
+        <a href="{{ feedbackUrl }}" target="_blank">Hier Wünsche und Anregungen eintragen</a>
+    {% endif %}
 {% endblock %}
