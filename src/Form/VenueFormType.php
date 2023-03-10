@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 class VenueFormType extends AbstractType
 {
@@ -33,6 +34,10 @@ class VenueFormType extends AbstractType
                     'required' => false,
                 ],
             ])
+            ->add('url', UrlType::class, [
+                'label' => 'URL (für weitere Infos zur Einrichtung)',
+                'required' => false,
+                ])
             ->add('responsibleClowns', EntityType::class, [
                 'class' => Clown::class,
                 'choice_label' => 'name',

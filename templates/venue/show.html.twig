@@ -23,6 +23,12 @@
                 </td>
             </tr>
             <tr>
+                <th>URL</th>
+                <td>
+                     <a target="_blank" href="{{ venue.url }}">{{ venue.url }}</href>
+                </td>
+            </tr>
+            <tr>
                 <th>Verantwortliche Clowns</th>
                 <td>
                     {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}

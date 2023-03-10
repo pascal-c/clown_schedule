@@ -19,7 +19,13 @@
                                 <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
                             {% endif %}
                         </td>
-                        <td>{{ date.venue.name }}</td>
+                        <td>
+                            {% if date.venue.url %}
+                                <a class="text-dark" href="{{ date.venue.url }}" target="_blank">{{ date.venue.name }}</a>
+                            {% else %}
+                                {{ date.venue.name }}
+                            {% endif %}
+                        </td>
                         <td>{{ date.venue.meetingTime|date('H:i') }}</td>
                         <td>{{ date.venue.playTimeFrom|date('H:i') }} - {{ date.venue.playTimeTo|date('H:i') }}</td>
                         <td>

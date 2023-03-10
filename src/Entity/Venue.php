@@ -47,6 +47,9 @@ class Venue
     #[ORM\Column]
     private bool $isSuper = false;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -194,6 +197,18 @@ class Venue
     public function setIsSuper(bool $isSuper): self
     {
         $this->isSuper = $isSuper;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
 
         return $this;
     }
