@@ -43,7 +43,7 @@ class TimeSlotController extends AbstractController
                 'class' => Clown::class,
                 'choice_label' => 'name',
                 'required' => false,
-                'label' => 'Springer',
+                'label' => 'Springer:in',
                 'expanded' => true,
                 'multiple' => false,
             ])        
@@ -57,10 +57,10 @@ class TimeSlotController extends AbstractController
             $this->entityManager->persist($timeSlot);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Springer wurde erfolgreich gespeichert.');
+            $this->addFlash('success', 'Springer:in wurde erfolgreich gespeichert.');
             return $this->redirectToRoute('schedule');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Springer konnte nicht gespeichert werden.');
+            $this->addFlash('warning', 'Springer:in konnte nicht gespeichert werden.');
         }
 
         return $this->render('time_slot/edit.html.twig', [
