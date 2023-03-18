@@ -72,10 +72,11 @@ class CreateExampleFixturesCommand extends Command
             10,
         );
 
-        $currentMonth = new Month(new DateTimeImmutable());
-        foreach ([$currentMonth, $currentMonth->next(), $currentMonth->next()->next()] as $i => $month) {
+        $month = new Month(new DateTimeImmutable());
+        $maxCount = 6;
+        for($i=0; $i<6; $i++) {
             foreach ($clowns as $clown) {
-                if (rand(1, 3) >= $i) {
+                if (rand(1, $maxCount*2) >= $i) {
                     $this->clownAvailabilityFactory->create($clown, $month);
                 }
             }
@@ -84,6 +85,7 @@ class CreateExampleFixturesCommand extends Command
                 fn() => $this->playDateFactory->create(month: $month, venue: $venues->sample()),
                 25,
             );
+            $month = $month->next();
         }
 
         $io->success('Yeah! Database was repopopulated with cool faker data!');
