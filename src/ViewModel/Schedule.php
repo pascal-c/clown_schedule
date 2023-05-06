@@ -2,13 +2,22 @@
 
 namespace App\ViewModel;
 
+use App\Value\TimeSlotInterface;
+use App\Value\TimeSlotPeriodInterface;
+
 class Schedule
 {
     private array $days = [];
 
-    public function add(\DateTimeInterface $date, string $daytime, string $key, mixed $entry)
+    public function add(TimeSlotInterface $timeSlot, string $key, mixed $entry): void
     {
-        $this->days[$date->format('d')]->addEntry($daytime, $key, $entry);
+        $date = $timeSlot->getDate()->format('d');
+        if (TimeSlotPeriodInterface::ALL === $timeSlot->getDaytime()) {
+            $this->days[$date]->addEntry(TimeSlotInterface::AM, $key, $entry);
+            $this->days[$date]->addEntry(TimeSlotInterface::PM, $key, $entry);
+        } else {
+            $this->days[$date]->addEntry($timeSlot->getDaytime(), $key, $entry);
+        }
     }
 
     public function getDays(): array

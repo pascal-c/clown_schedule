@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Month;
+use App\Value\TimeSlotPeriod;
+use App\Value\TimeSlotPeriodInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -167,15 +169,38 @@ class ClownAvailability
             ->first();
     }
 
-    public function getAvailabilityOn(\DateTimeInterface $date, string $daytime): string
+    public function getAvailabilityOn(TimeSlotPeriodInterface $timeSlotPeriod): string
     {
-        return $this->getTimeSlot($date, $daytime)
+        $date = $timeSlotPeriod->getDate();
+        if (TimeSlotPeriodInterface::ALL === $timeSlotPeriod->getDaytime()) {
+            $availablitites = [
+                $this->getTimeSlot($date, TimeSlotPeriod::AM)->getAvailability(),
+                $this->getTimeSlot($date, TimeSlotPeriod::PM)->getAvailability(),
+            ];
+            if (in_array('no', $availablitites)) {
+                return 'no';
+            } elseif (in_array('maybe', $availablitites)) {
+                return 'maybe';
+            } else {
+                return 'yes';
+            }
+        }
+        
+        return $this
+            ->getTimeSlot($date, $timeSlotPeriod->getDaytime())
             ->getAvailability();
     }
 
-    public function isAvailableOn(\DateTimeInterface $date, string $daytime): bool
+    public function isAvailableOn(TimeSlotPeriodInterface $timeSlotPeriod): bool
     {
-        return $this->getTimeSlot($date, $daytime)
+        $date = $timeSlotPeriod->getDate();
+        if (TimeSlotPeriodInterface::ALL === $timeSlotPeriod->getDaytime()) {
+            return $this->getTimeSlot($date, TimeSlotPeriodInterface::AM)->isAvailable()
+                && $this->getTimeSlot($date, TimeSlotPeriodInterface::PM)->isAvailable(); 
+        }
+
+        return $this
+            ->getTimeSlot($date, $timeSlotPeriod->getDaytime())
             ->isAvailable(); 
     }
 

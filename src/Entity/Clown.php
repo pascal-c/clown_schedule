@@ -40,7 +40,7 @@ class Clown
     #[ORM\Column(length: 7)]
     private ?string $gender = null;
 
-    #[ORM\OneToMany(mappedBy: 'substitutionClown', targetEntity: TimeSlot::class)]
+    #[ORM\OneToMany(mappedBy: 'substitutionClown', targetEntity: Substitution::class)]
     private Collection $substitutionTimeSlots;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -178,14 +178,14 @@ class Clown
     }
 
     /**
-     * @return Collection<int, TimeSlot>
+     * @return Collection<int, Substitution>
      */
     public function getSubstitutionTimeSlots(): Collection
     {
         return $this->substitutionTimeSlots;
     }
 
-    public function addSubstitutionTimeSlot(TimeSlot $substitutionTimeSlot): self
+    public function addSubstitutionTimeSlot(Substitution $substitutionTimeSlot): self
     {
         if (!$this->substitutionTimeSlots->contains($substitutionTimeSlot)) {
             $this->substitutionTimeSlots->add($substitutionTimeSlot);
@@ -195,7 +195,7 @@ class Clown
         return $this;
     }
 
-    public function removeSubstitutionTimeSlot(TimeSlot $substitutionTimeSlot): self
+    public function removeSubstitutionTimeSlot(Substitution $substitutionTimeSlot): self
     {
         if ($this->substitutionTimeSlots->removeElement($substitutionTimeSlot)) {
             // set the owning side to null (unless already changed)

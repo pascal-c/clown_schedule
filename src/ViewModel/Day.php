@@ -25,9 +25,9 @@ class Day
     
     public function addEntry(string $daytime, string $key, mixed $entry)
     {
-        if ($daytime == Daytime::AM) {
+        if ($daytime === Daytime::AM) {
             $this->entriesAm[$key][] = $entry;
-        } elseif ($daytime == Daytime::PM) {
+        } elseif ($daytime === Daytime::PM) {
             $this->entriesPm[$key][] = $entry;
         } else {
             throw new \InvalidArgumentException('this is not a valid daytime');

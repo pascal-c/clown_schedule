@@ -7,11 +7,11 @@ use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Entity\Month;
 use App\Entity\PlayDate;
-use App\Entity\TimeSlot;
+use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
-use App\Repository\TimeSlotRepository;
+use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
@@ -24,7 +24,7 @@ final class SchedulerTest extends TestCase
     {
         $playDates = $this->getPlayDates();
         list($playDate1, $playDate2, $playDate3) = $playDates;
-        $timeSlot = (new TimeSlot)->setSubstitutionClown(new Clown);
+        $substitution = (new Substitution)->setSubstitutionClown(new Clown);
         
         $playDateRepository = $this->createMock(PlayDateRepository::class);
         $playDateRepository->expects($this->once())
@@ -71,13 +71,13 @@ final class SchedulerTest extends TestCase
         $fairPlayCalculator->expects($this->once())
             ->method('calculateTargetPlays')
             ->with($clownAvailabilities, 6);
-        $timeSlotRepository = $this->createMock(TimeSlotRepository::class);
-        $timeSlotRepository->expects($this->once())
+        $substitutionRepository = $this->createMock(SubstitutionRepository::class);
+        $substitutionRepository->expects($this->once())
             ->method('byMonth')
-            ->willReturn([$timeSlot]);
+            ->willReturn([$substitution]);
 
         $scheduler = new Scheduler($playDateRepository, $clownAvailabilityRepository, $clownAssigner, 
-            $availabilityChecker, $fairPlayCalculator, $timeSlotRepository);
+            $availabilityChecker, $fairPlayCalculator, $substitutionRepository);
         $month = new Month(new \DateTimeImmutable('1978-12'));
         $scheduler->calculate($month);
 
@@ -89,7 +89,7 @@ final class SchedulerTest extends TestCase
             $this->assertNull($availability->getCalculatedPlaysMonth());
             $this->assertNull($availability->getCalculatedSubstitutions());
         }
-        $this->assertNull($timeSlot->getSubstitutionClown());
+        $this->assertNull($substitution->getSubstitutionClown());
     }
 
     private function getPlayDates(): array

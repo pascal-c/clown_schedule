@@ -22,6 +22,11 @@ class Collection implements Iterator
         return $collection;
     }
 
+    public function contains(mixed $element): bool
+    {
+        return in_array($element, $this->list);
+    }
+
     public function sample(): mixed
     {
         if (empty($this->list)) {

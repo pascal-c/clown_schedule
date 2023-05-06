@@ -5,6 +5,7 @@ namespace App\Tests\Entity;
 use PHPUnit\Framework\TestCase;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
+use App\Value\TimeSlotPeriod;
 
 final class ClownAvailabilityTest extends TestCase
 {
@@ -35,13 +36,17 @@ final class ClownAvailabilityTest extends TestCase
         $date2 = new \DateTimeImmutable('2022-04-02');
         $availability->addClownAvailabilityTime($this->buildTimeSlot('yes', $date1, 'am'));
         $availability->addClownAvailabilityTime($this->buildTimeSlot('no', $date1, 'pm'));
-        $availability->addClownAvailabilityTime($this->buildTimeSlot('no', $date2, 'am'));
+        $availability->addClownAvailabilityTime($this->buildTimeSlot('yes', $date2, 'am'));
         $availability->addClownAvailabilityTime($this->buildTimeSlot('maybe', $date2, 'pm'));
 
-        $this->assertTrue($availability->isAvailableOn($date1, 'am'));
-        $this->assertFalse($availability->isAvailableOn($date1, 'pm'));
-        $this->assertFalse($availability->isAvailableOn($date2, 'am'));
-        $this->assertTrue($availability->isAvailableOn($date2, 'pm'));
+        $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date1, 'am')));
+        $this->assertFalse($availability->isAvailableOn(new TimeSlotPeriod($date1, 'pm')));
+        $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'am')));
+        $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'pm')));
+
+        # all day
+        $this->assertFalse($availability->isAvailableOn(new TimeSlotPeriod($date1, 'all')));
+        $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'all')));
     }
 
     private function buildTimeSlot(string $availability, ?\DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime

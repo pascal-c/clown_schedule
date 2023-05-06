@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Lib\Collection;
+use App\Value\TimeSlotInterface;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'clown_date_daytime_index', fields: ['clown', 'date', 'daytime'])]
-class ClownAvailabilityTime
+class ClownAvailabilityTime implements TimeSlotInterface
 {
     const AVAILABILITY_YES = 'yes';
     const AVAILABILITY_MAYBE = 'maybe';
@@ -24,7 +26,7 @@ class ClownAvailabilityTime
     private ?Clown $clown = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    private ?DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 2)]
     private ?string $daytime = null;
@@ -58,7 +60,7 @@ class ClownAvailabilityTime
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeImmutable
     {
         return $this->date;
     }

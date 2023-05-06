@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Value\TimeSlot;
+use App\Value\TimeSlotInterface;
+use App\Value\TimeSlotPeriodInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
-class PlayDate implements TimeSlotInterface
+class PlayDate implements TimeSlotPeriodInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,7 +25,7 @@ class PlayDate implements TimeSlotInterface
     #[Assert\NotBlank]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 2)]
+    #[ORM\Column(length: 3)]
     private ?string $daytime = null;
 
     #[ORM\ManyToOne(inversedBy: 'playDates')]
@@ -84,6 +87,18 @@ class PlayDate implements TimeSlotInterface
         $this->daytime = $daytime;
 
         return $this;
+    }
+
+    public function getTimeSlots(): array
+    {
+        if (TimeSlotPeriodInterface::ALL === $this->getDaytime()) {
+            return [
+                new TimeSlot($this->getDate(), TimeSlotInterface::AM),
+                new TimeSlot($this->getDate(), TimeSlotInterface::PM),
+            ];
+        }
+
+        return [new TimeSlot($this->getDate(), $this->getDaytime())];
     }
 
     public function getVenue(): ?Venue

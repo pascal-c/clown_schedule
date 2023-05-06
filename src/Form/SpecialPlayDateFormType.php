@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,8 +27,9 @@ class SpecialPlayDateFormType extends AbstractType
                 ])
             ->add('daytime', ChoiceType::class, [
                 'choices'  => [
-                    'vormittags' => 'am',
-                    'nachmittags' => 'pm',
+                    'vormittags' => TimeSlotPeriodInterface::AM,
+                    'nachmittags' => TimeSlotPeriodInterface::PM,
+                    'ganztags'   => TimeSlotPeriodInterface::ALL,
                 ],
                 'label' => 'Tageszeit',
                 'expanded' => true,
