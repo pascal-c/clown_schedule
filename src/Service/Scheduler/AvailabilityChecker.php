@@ -26,7 +26,7 @@ class AvailabilityChecker
                 $playDate->getPlayingClowns()->contains($clownAvailability->getClown()) &&
                 array_reduce(
                     $timeSlotPeriod->getTimeSlots(), 
-                    fn(bool $carry, TimeSlot $timeSlot) => $carry || !empty(array_filter($playDate->getTimeSlots(), fn(TimeSlot $playDateTimeSlot) => $timeSlot->getDate() == $playDateTimeSlot->getDate() && $timeSlot->getDaytime() == $playDateTimeSlot->getDayTime())), 
+                    fn(bool $carry, TimeSlot $timeSlot) => $carry || !empty(array_filter($playDate->getTimeSlots(), fn(TimeSlot $playDateTimeSlot) => $timeSlot->getDate() == $playDateTimeSlot->getDate() && $timeSlot->getDaytime() == $playDateTimeSlot->getDaytime())), 
                     false
                 )
         );
@@ -77,15 +77,13 @@ class AvailabilityChecker
 
     private function isSubstitutionClownWithin(TimeSlotPeriodInterface $timeSlotPeriod, Clown $clown)
     {
-        if (TimeSlotPeriodInterface::ALL === $timeSlotPeriod->getDaytime()) {
-            $substitution1 = $this->substitutionRepository->find($timeSlotPeriod->getDate(), TimeSlotInterface::AM);
-            $substitution2 = $this->substitutionRepository->find($timeSlotPeriod->getDate(), TimeSlotInterface::PM);
-        } else {
-            $substitution1 = $this->substitutionRepository->find($timeSlotPeriod->getDate(), $timeSlotPeriod->getDaytime());
-            $substitution2 = null;
+        foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
+            $substitution = $this->substitutionRepository->find($timeSlot->getDate(), $timeSlot->getDaytime());
+            if (!is_null($substitution) && $substitution->getSubstitutionClown() === $clown) {
+                return true;
+            }
         }
 
-        return !is_null($substitution1) && $substitution1->getSubstitutionClown() === $clown ||
-               !is_null($substitution2) && $substitution2->getSubstitutionClown() === $clown;
+        return false;
     }
 }
