@@ -10,17 +10,7 @@ use InvalidArgumentException;
 
 class TimeSlotPeriod implements TimeSlotPeriodInterface
 {
-    public function getTimeSlots(): array
-    {
-        if (TimeSlotPeriodInterface::ALL === $this->getDaytime()) {
-            return [
-                new TimeSlot($this->getDate(), TimeSlotInterface::AM),
-                new TimeSlot($this->getDate(), TimeSlotInterface::PM),
-            ];
-        }
-
-        return [new TimeSlot($this->getDate(), $this->getDaytime())];
-    }
+    use TimeSlotPeriodTrait;
 
     public static function getDaytimeOptions(): Collection
     {
@@ -32,15 +22,5 @@ class TimeSlotPeriod implements TimeSlotPeriodInterface
         if (!static::getDaytimeOptions()->contains($daytime)) {
             throw new InvalidArgumentException($daytime . ' is not a valid daytime');
         } 
-    }
-    
-    public function getDate(): ?DateTimeImmutable
-    {
-        return $this->date;
-    }
-
-    public function getDaytime(): ?string
-    {
-        return $this->daytime;
     }
 }

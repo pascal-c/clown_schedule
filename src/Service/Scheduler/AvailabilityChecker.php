@@ -7,6 +7,7 @@ use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
+use App\Value\TimeSlot;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
 
@@ -22,9 +23,12 @@ class AvailabilityChecker
         $playDatesSameTimeSlot = array_filter(
             $playDates,
             fn($playDate) => 
-                $timeSlotPeriod->getDate() == $playDate->getDate() && 
-                ($timeSlotPeriod->getDaytime() === $playDate->getDaytime() || in_array(TimeSlotPeriodInterface::ALL, [$playDate->getDaytime(), $timeSlotPeriod->getDaytime()])) &&
-                $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+                $playDate->getPlayingClowns()->contains($clownAvailability->getClown()) &&
+                array_reduce(
+                    $timeSlotPeriod->getTimeSlots(), 
+                    fn(bool $carry, TimeSlot $timeSlot) => $carry || !empty(array_filter($playDate->getTimeSlots(), fn(TimeSlot $playDateTimeSlot) => $timeSlot->getDate() == $playDateTimeSlot->getDate() && $timeSlot->getDaytime() == $playDateTimeSlot->getDayTime())), 
+                    false
+                )
         );
 
         return 

@@ -9,7 +9,7 @@ use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\TimeService;
-use App\Value\TimeSlotPeriodInterface;
+use App\Value\TimeSlotInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -57,7 +57,7 @@ class DashboardController extends AbstractController
         $substitutions = $this->substitutionRepository->futureByClown($currentClown);
         $dates = array_merge($playDates, $substitutions);
         usort($dates, 
-            fn(TimeSlotPeriodInterface $a, TimeSlotPeriodInterface $b) => 
+            fn(TimeSlotInterface $a, TimeSlotInterface $b) => 
                 $a->getDate() == $b->getDate()
                 ?
                 $a->getDaytime() <=> $b->getDaytime()

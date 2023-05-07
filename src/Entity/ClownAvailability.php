@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Month;
-use App\Value\TimeSlotPeriod;
+use App\Value\TimeSlot;
+use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -162,46 +163,35 @@ class ClownAvailability
         return count($availableTimeSlots) / count($allTimeSlots);   
     }
 
-    private function getTimeSlot(\DateTimeInterface $date, string $daytime): ClownAvailabilityTime
+    private function getAvailabilityTimeSlot(TimeSlotInterface $timeSlot): ClownAvailabilityTime
     {
         return $this->getClownAvailabilityTimes()
-            ->filter(fn(ClownAvailabilityTime $timeSlot) => $timeSlot->getDate() == $date && $timeSlot->getDaytime() == $daytime)
+            ->filter(fn(ClownAvailabilityTime $availabilityTimeSlot) => 
+                $timeSlot->getDate() == $availabilityTimeSlot->getDate() && $timeSlot->getDaytime() == $availabilityTimeSlot->getDaytime())
             ->first();
     }
 
     public function getAvailabilityOn(TimeSlotPeriodInterface $timeSlotPeriod): string
     {
-        $date = $timeSlotPeriod->getDate();
-        if (TimeSlotPeriodInterface::ALL === $timeSlotPeriod->getDaytime()) {
-            $availablitites = [
-                $this->getTimeSlot($date, TimeSlotPeriod::AM)->getAvailability(),
-                $this->getTimeSlot($date, TimeSlotPeriod::PM)->getAvailability(),
-            ];
-            if (in_array('no', $availablitites)) {
+        $result = 'yes';
+        foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
+            if ('no' === $this->getAvailabilityTimeSlot($timeSlot)->getAvailability()) {
                 return 'no';
-            } elseif (in_array('maybe', $availablitites)) {
-                return 'maybe';
-            } else {
-                return 'yes';
+            } elseif ('maybe' === $this->getAvailabilityTimeSlot($timeSlot)->getAvailability()) {
+                $result = 'maybe';
             }
         }
-        
-        return $this
-            ->getTimeSlot($date, $timeSlotPeriod->getDaytime())
-            ->getAvailability();
+
+        return $result;
     }
 
     public function isAvailableOn(TimeSlotPeriodInterface $timeSlotPeriod): bool
     {
-        $date = $timeSlotPeriod->getDate();
-        if (TimeSlotPeriodInterface::ALL === $timeSlotPeriod->getDaytime()) {
-            return $this->getTimeSlot($date, TimeSlotPeriodInterface::AM)->isAvailable()
-                && $this->getTimeSlot($date, TimeSlotPeriodInterface::PM)->isAvailable(); 
-        }
-
-        return $this
-            ->getTimeSlot($date, $timeSlotPeriod->getDaytime())
-            ->isAvailable(); 
+        return array_reduce(
+            $timeSlotPeriod->getTimeSlots(),
+            fn(bool $result, TimeSlot $timeSlot) => $result && $this->getAvailabilityTimeSlot($timeSlot)->isAvailable(),
+            true,
+        );
     }
 
     public function getEntitledPlaysMonth(): ?float

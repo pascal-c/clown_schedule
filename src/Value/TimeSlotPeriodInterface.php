@@ -11,5 +11,8 @@ interface TimeSlotPeriodInterface extends TimeSlotInterface
     const ALL = 'all';
     const DAYTIMES = [self::ALL, self::AM, self::PM];
 
+    /** 
+     * @return array <int, TimeSlotInterface> 
+     */
     public function getTimeSlots(): array;
 }

@@ -5,7 +5,7 @@ namespace App\Tests\ViewModel;
 use PHPUnit\Framework\TestCase;
 use App\Entity\Daytime;
 use App\Entity\Month;
-use App\Value\TimeSlot;
+use App\Value\TimeSlotPeriod;
 use App\ViewModel\Day;
 use App\ViewModel\Schedule;
 use DateTimeImmutable;
@@ -20,8 +20,8 @@ final class ScheduleTest extends TestCase
             '23' => $this->buildDay(new DateTimeImmutable('2022-08-23')),
             '31' => $this->buildDay(new DateTimeImmutable('2022-08-31')),
         ]);
-        $timeSlot1 = new TimeSlot(new \DateTimeImmutable('2022-08-23'), Daytime::AM);
-        $timeSlot2 = new TimeSlot(new \DateTimeImmutable('2022-08-31'), Daytime::PM);
+        $timeSlot1 = new TimeSlotPeriod(new DateTimeImmutable('2022-08-23'), Daytime::AM);
+        $timeSlot2 = new TimeSlotPeriod(new DateTimeImmutable('2022-08-31'), Daytime::PM);
         $schedule->add($timeSlot1, 'key', '23. am first entry');
         $schedule->add($timeSlot1, 'key', '23. am second entry');
         $schedule->add($timeSlot2, 'key', '31. pm entry');

@@ -9,9 +9,7 @@ use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
-use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriod;
-use App\Value\TimeSlotPeriodInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -83,13 +81,8 @@ class ClownAssigner
         );
 
         $clownAvailability = $availableClownAvailabilities[0];
-        $clown = $clownAvailability->getClown();
-        $date = $timeSlotPeriod->getDate();
-        if (TimeSlotPeriodInterface::ALL === $timeSlotPeriod->getDaytime()) {
-            $this->upsertSubstitution($date, TimeSlotInterface::AM, $clown);
-            $this->upsertSubstitution($date, TimeSlotInterface::PM, $clown);
-        } else {
-            $this->upsertSubstitution($date, $timeSlotPeriod->getDaytime(), $clown);
+        foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
+            $this->upsertSubstitution($timeSlot->getDate(), $timeSlot->getDaytime(), $clownAvailability->getClown());
         }
 
         $clownAvailability->incCalculatedSubstitutions();
