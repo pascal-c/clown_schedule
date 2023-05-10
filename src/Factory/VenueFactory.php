@@ -36,6 +36,7 @@ class VenueFactory extends AbstractFactory
             ['am', new DateTimeImmutable('09:00'), new DateTimeImmutable('09:30'), new DateTimeImmutable('12:00')],
             ['pm', new DateTimeImmutable('14:30'), new DateTimeImmutable('15:00'), new DateTimeImmutable('17:00')],
             ['pm', new DateTimeImmutable('15:00'), new DateTimeImmutable('15:30'), new DateTimeImmutable('18:00')],
+            ['all', new DateTimeImmutable('11:00'), new DateTimeImmutable('12:30'), new DateTimeImmutable('16:00')],
         ]);
     }
 

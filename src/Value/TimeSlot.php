@@ -32,4 +32,3 @@ class TimeSlot implements TimeSlotInterface
         return $this->daytime;
     }
 }
-    
