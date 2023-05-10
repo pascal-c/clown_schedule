@@ -17,7 +17,7 @@ class PlayDateFactory extends AbstractFactory
         $date = $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin');
         $playDate = (new PlayDate)
             ->setDate(DateTimeImmutable::createFromMutable($date))
-            ->setDaytime(Daytime::getDaytimeOptions()->sample())
+            ->setDaytime($venue->getDaytimeDefault())
             ->setVenue($venue)
             ;
 

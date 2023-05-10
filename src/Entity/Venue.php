@@ -29,7 +29,7 @@ class Venue
     #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'venue_responsibilities')]
     private Collection $responsibleClowns;
 
-    #[ORM\Column(length: 2, nullable: true)]
+    #[ORM\Column(length: 3, nullable: true)]
     private ?string $daytime_default = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]

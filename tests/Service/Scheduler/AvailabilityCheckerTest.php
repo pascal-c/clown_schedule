@@ -7,9 +7,9 @@ use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Entity\Month;
 use App\Entity\PlayDate;
-use App\Entity\TimeSlot;
+use App\Entity\Substitution;
 use App\Repository\PlayDateRepository;
-use App\Repository\TimeSlotRepository;
+use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use PHPUnit\Framework\TestCase;
 
@@ -18,12 +18,12 @@ final class AvailabilityCheckerTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testisAvailableFor(
+    public function testIsAvailableFor(
         ClownAvailability $clownAvailability, 
         array $otherPlayDates,
         string $firstClownGender, 
         bool $expectedResult,
-        ?TimeSlot $isSubstitutionClown = null
+        ?Substitution $isSubstitutionClown = null
     ): void
     {
         $playDate = $this->buildPlayDate('am', (new Clown)->setGender($firstClownGender));
@@ -32,12 +32,12 @@ final class AvailabilityCheckerTest extends TestCase
             ->method('byMonth')
             ->with($this->equalTo(new Month(new \DateTimeImmutable('2022-04'))))
             ->willReturn($otherPlayDates);
-        $timeSlotRepository = $this->createMock(TimeSlotRepository::class);
-        $timeSlotRepository->expects($this->atMost(1))
+        $substitutionRepository = $this->createMock(SubstitutionRepository::class);
+        $substitutionRepository->expects($this->atMost(1))
             ->method('find')
             ->willReturn($isSubstitutionClown);
 
-        $availabilityChecker = new AvailabilityChecker($playDateRepository, $timeSlotRepository);
+        $availabilityChecker = new AvailabilityChecker($playDateRepository, $substitutionRepository);
         $result = $availabilityChecker->isAvailableFor($playDate, $clownAvailability);
         $this->assertSame($expectedResult, $result);
     }
@@ -52,7 +52,7 @@ final class AvailabilityCheckerTest extends TestCase
         $playDateOnSameTimeSlot = $this->buildPlayDate('am', $clownAvailability->getClown());
         $playDateOnSameDay = $this->buildPlayDate('pm', $clownAvailability->getClown());
 
-        $timeSlot = $this->buildTimeSlot()->setSubstitutionClown($clownAvailability->getClown());
+        $substitution = $this->buildSubstitution()->setSubstitutionClown($clownAvailability->getClown());
 
         return [
             [$this->buildClownAvailability('yes'), [], 'male', true], # clown is available
@@ -60,7 +60,7 @@ final class AvailabilityCheckerTest extends TestCase
             [$this->buildClownAvailability('no'), [], 'male', false], # clown is not available
             [$this->buildClownAvailability('yes', true), [], 'male', false], # maxPlays reached
             [$this->buildClownAvailability('yes'), [$this->buildPlayDate()], 'male', true], # other play on same timeslot, but not for this clown
-            [$clownAvailability, [], 'male', false, $timeSlot], # clown is available, but is already substitution clown
+            [$clownAvailability, [], 'male', false, $substitution], # clown is available, but is already substitution clown
             [$clownAvailability, [$playDateOnSameTimeSlot], 'male', false], # other play on same timeslot for this clown
             [$clownAvailability, [$playDateOnSameDay], 'male', false], # other play on same day for this clown
             [$clownAvailabilityWithMaxPlaysDay2, [$playDateOnSameDay], 'male', true], # other play on same day for this clown but higher max
@@ -80,9 +80,9 @@ final class AvailabilityCheckerTest extends TestCase
         return $playDate;
     }
 
-    private function buildTimeSlot(string $daytime = 'am'): TimeSlot
+    private function buildSubstitution(string $daytime = 'am'): Substitution
     {
-        return (new TimeSlot)
+        return (new Substitution)
             ->setDate(new \DateTimeImmutable('2022-04-01'))
             ->setDaytime($daytime);
     }

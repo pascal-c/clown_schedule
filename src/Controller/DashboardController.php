@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Month;
-use App\Entity\TimeSlotInterface;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
-use App\Repository\TimeSlotRepository;
+use App\Repository\SubstitutionRepository;
 use App\Service\TimeService;
+use App\Value\TimeSlotInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
 {
     public function __construct(
-        private TimeSlotRepository $timeSlotRepository, 
+        private SubstitutionRepository $substitutionRepository, 
         private PlayDateRepository $playDateRepository,
         private TimeService $timeService,
         private ClownAvailabilityRepository $clownAvailabilityRepository
@@ -54,8 +54,8 @@ class DashboardController extends AbstractController
         }
 
         $playDates = $this->playDateRepository->futureByClown($currentClown);
-        $timeSlots = $this->timeSlotRepository->futureByClown($currentClown);
-        $dates = array_merge($playDates, $timeSlots);
+        $substitutions = $this->substitutionRepository->futureByClown($currentClown);
+        $dates = array_merge($playDates, $substitutions);
         usort($dates, 
             fn(TimeSlotInterface $a, TimeSlotInterface $b) => 
                 $a->getDate() == $b->getDate()

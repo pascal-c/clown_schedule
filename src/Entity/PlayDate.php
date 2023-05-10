@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Value\TimeSlotPeriodInterface;
+use App\Value\TimeSlotPeriodTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,8 +13,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
-class PlayDate implements TimeSlotInterface
+class PlayDate implements TimeSlotPeriodInterface
 {
+    use TimeSlotPeriodTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,7 +26,7 @@ class PlayDate implements TimeSlotInterface
     #[Assert\NotBlank]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 2)]
+    #[ORM\Column(length: 3)]
     private ?string $daytime = null;
 
     #[ORM\ManyToOne(inversedBy: 'playDates')]
@@ -62,21 +66,11 @@ class PlayDate implements TimeSlotInterface
         return new Month($this->date);
     }   
 
-    public function getDate(): ?\DateTimeImmutable
-    {
-        return $this->date;
-    }
-
     public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
 
         return $this;
-    }
-
-    public function getDaytime(): ?string
-    {
-        return $this->daytime;
     }
 
     public function setDaytime(string $daytime): self

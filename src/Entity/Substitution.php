@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\TimeSlotRepository;
+use App\Value\TimeSlotPeriodInterface;
+use App\Value\TimeSlotPeriodTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'timeslot_date_daytime_index', fields: ['date', 'daytime'])]
-class TimeSlot implements TimeSlotInterface
+class Substitution implements TimeSlotPeriodInterface
 {
+    use TimeSlotPeriodTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,22 +40,12 @@ class TimeSlot implements TimeSlotInterface
         return new Month(new \DateTimeImmutable($this->month));
     }
 
-    public function getDate(): ?\DateTimeImmutable
-    {
-        return $this->date;
-    }
-
     public function setDate(\DateTimeImmutable $date): self
     {
         $this->date = $date;
         $this->month = (new Month($date))->getKey();
 
         return $this;
-    }
-
-    public function getDaytime(): ?string
-    {
-        return $this->daytime;
     }
 
     public function setDaytime(string $daytime): self

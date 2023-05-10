@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Entity\Month;
+use App\Value\TimeSlot;
+use App\Value\TimeSlotInterface;
+use App\Value\TimeSlotPeriodInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -160,23 +163,35 @@ class ClownAvailability
         return count($availableTimeSlots) / count($allTimeSlots);   
     }
 
-    private function getTimeSlot(\DateTimeInterface $date, string $daytime): ClownAvailabilityTime
+    private function getAvailabilityTimeSlot(TimeSlotInterface $timeSlot): ClownAvailabilityTime
     {
         return $this->getClownAvailabilityTimes()
-            ->filter(fn(ClownAvailabilityTime $timeSlot) => $timeSlot->getDate() == $date && $timeSlot->getDaytime() == $daytime)
+            ->filter(fn(ClownAvailabilityTime $availabilityTimeSlot) => 
+                $timeSlot->getDate() == $availabilityTimeSlot->getDate() && $timeSlot->getDaytime() == $availabilityTimeSlot->getDaytime())
             ->first();
     }
 
-    public function getAvailabilityOn(\DateTimeInterface $date, string $daytime): string
+    public function getAvailabilityOn(TimeSlotPeriodInterface $timeSlotPeriod): string
     {
-        return $this->getTimeSlot($date, $daytime)
-            ->getAvailability();
+        $result = 'yes';
+        foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
+            if ('no' === $this->getAvailabilityTimeSlot($timeSlot)->getAvailability()) {
+                return 'no';
+            } elseif ('maybe' === $this->getAvailabilityTimeSlot($timeSlot)->getAvailability()) {
+                $result = 'maybe';
+            }
+        }
+
+        return $result;
     }
 
-    public function isAvailableOn(\DateTimeInterface $date, string $daytime): bool
+    public function isAvailableOn(TimeSlotPeriodInterface $timeSlotPeriod): bool
     {
-        return $this->getTimeSlot($date, $daytime)
-            ->isAvailable(); 
+        return array_reduce(
+            $timeSlotPeriod->getTimeSlots(),
+            fn(bool $result, TimeSlot $timeSlot) => $result && $this->getAvailabilityTimeSlot($timeSlot)->isAvailable(),
+            true,
+        );
     }
 
     public function getEntitledPlaysMonth(): ?float

@@ -6,35 +6,42 @@ use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
-use App\Repository\TimeSlotRepository;
+use App\Repository\SubstitutionRepository;
+use App\Value\TimeSlot;
+use App\Value\TimeSlotInterface;
+use App\Value\TimeSlotPeriodInterface;
 
 class AvailabilityChecker
 {
-    public function __construct(private PlayDateRepository $playDateRepository, private TimeSlotRepository $timeSlotRepository)
+    public function __construct(private PlayDateRepository $playDateRepository, private SubstitutionRepository $substitutionRepository)
     {
     }
 
-    public function isAvailableOn(\DateTimeInterface $date, string $daytime, ClownAvailability $clownAvailability)
+    public function isAvailableOn(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability)
     {
         $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
         $playDatesSameTimeSlot = array_filter(
             $playDates,
-            fn($playDate) => $date == $playDate->getDate() && 
-                $daytime == $playDate->getDaytime() &&
-                $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+            fn($playDate) => 
+                $playDate->getPlayingClowns()->contains($clownAvailability->getClown()) &&
+                array_reduce(
+                    $timeSlotPeriod->getTimeSlots(), 
+                    fn(bool $carry, TimeSlot $timeSlot) => $carry || !empty(array_filter($playDate->getTimeSlots(), fn(TimeSlot $playDateTimeSlot) => $timeSlot->getDate() == $playDateTimeSlot->getDate() && $timeSlot->getDaytime() == $playDateTimeSlot->getDaytime())), 
+                    false
+                )
         );
 
         return 
-            $clownAvailability->isAvailableOn($date, $daytime) && 
+            $clownAvailability->isAvailableOn($timeSlotPeriod) && 
             count($playDatesSameTimeSlot) == 0 &&
-            !$this->isSubstitutionClown($date, $daytime, $clownAvailability->getClown())
+            !$this->isSubstitutionClownWithin($timeSlotPeriod, $clownAvailability->getClown())
         ;
     }
 
     public function isAvailableFor(PlayDate $playDate, ClownAvailability $clownAvailability): bool
     {
         return 
-            $this->isAvailableOn($playDate->getDate(), $playDate->getDaytime(), $clownAvailability) && 
+            $this->isAvailableOn($playDate, $clownAvailability) && 
             !$this->maxPlaysMonthReached($clownAvailability) &&
             !$this->maxPlaysDayReached($playDate->getDate(), $clownAvailability) &&
             !$this->onlyMen($playDate, $clownAvailability)
@@ -68,13 +75,15 @@ class AvailabilityChecker
             $clownAvailability->getClown()->getGender() == 'male';
     }
 
-    private function isSubstitutionClown(\DateTimeInterface $date, string $daytime, Clown $clown)
+    private function isSubstitutionClownWithin(TimeSlotPeriodInterface $timeSlotPeriod, Clown $clown)
     {
-        $timeSlot = $this->timeSlotRepository->find($date, $daytime);
-        if (is_null($timeSlot)) {
-            return false;
+        foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
+            $substitution = $this->substitutionRepository->find($timeSlot->getDate(), $timeSlot->getDaytime());
+            if (!is_null($substitution) && $substitution->getSubstitutionClown() === $clown) {
+                return true;
+            }
         }
 
-        return $timeSlot->getSubstitutionClown() === $clown;
+        return false;
     }
 }

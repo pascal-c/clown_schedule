@@ -8,7 +8,7 @@ use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
-use App\Repository\TimeSlotRepository;
+use App\Repository\SubstitutionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,7 +20,7 @@ class StatisticsController extends AbstractController
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
-        private TimeSlotRepository $timeSlotRepository,
+        private SubstitutionRepository $substitutionRepository,
         private ClownRepository $clownRepository)
     {
     }
@@ -53,7 +53,7 @@ class StatisticsController extends AbstractController
         $month = $this->monthRepository->find($session, $monthId);
         $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
-        $timeSlots = $this->timeSlotRepository->byMonth($month);
+        $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
 
         $substitutions = [];
         $plays = [];
@@ -69,9 +69,9 @@ class StatisticsController extends AbstractController
                 $plays[$clown->getId()]++;
             }
         }
-        foreach($timeSlots as $timeSlot) {
-            if (!is_null($timeSlot->getSubstitutionClown())) {
-                $substitutions[$timeSlot->getSubstitutionClown()->getId()]++;
+        foreach($substitutionTimeSlots as $substitutionTimeSlot) {
+            if (!is_null($substitutionTimeSlot->getSubstitutionClown())) {
+                $substitutions[$substitutionTimeSlot->getSubstitutionClown()->getId()]++;
             }
         }
 

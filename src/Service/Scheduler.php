@@ -7,10 +7,12 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
-use App\Repository\TimeSlotRepository;
+use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
+use App\Value\TimeSlotPeriod;
+use App\Value\TimeSlotPeriodInterface;
 
 class Scheduler
 {
@@ -20,20 +22,21 @@ class Scheduler
         private ClownAssigner $clownAssigner,
         private AvailabilityChecker $availabilityChecker,
         private FairPlayCalculator $fairPlayCalculator,
-        private TimeSlotRepository $timeSlotRepository
+        private SubstitutionRepository $substitutionRepository
     ) {}
 
     public function calculate(Month $month): void
     {
-        $timeSlots = [];
+        $timeSlotPeriods = [];
         $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
         
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
-            if (!in_array([$playDate->getDate(), $playDate->getDaytime()], $timeSlots)) {
-                $timeSlots[] = [$playDate->getDate(), $playDate->getDaytime()];
+            if (!in_array([$playDate->getDate(), $playDate->getDaytime()], $timeSlotPeriods) && 
+                !in_array([$playDate->getDate(), TimeSlotPeriodInterface::ALL], $timeSlotPeriods)) {
+                $timeSlotPeriods[] = [$playDate->getDate(), $playDate->getDaytime()];
             }
         }
 
@@ -45,8 +48,8 @@ class Scheduler
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
         }
-        foreach ($timeSlots as $timeSlot) {
-            $this->clownAssigner->assignSubstitutionClown($timeSlot[0], $timeSlot[1], $clownAvailabilities);
+        foreach ($timeSlotPeriods as $timeSlot) {
+            $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($timeSlot[0], $timeSlot[1]), $clownAvailabilities);
         }
     }
 
@@ -63,7 +66,7 @@ class Scheduler
             $availability->setCalculatedSubstitutions(null);
         }
 
-        foreach($this->timeSlotRepository->byMonth($month) as $timeSlot) {
+        foreach($this->substitutionRepository->byMonth($month) as $timeSlot) {
             $timeSlot->setSubstitutionClown(null);
         }
     }

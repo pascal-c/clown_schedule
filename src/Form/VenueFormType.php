@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Clown;
 use App\Entity\Venue;
+use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,8 +49,9 @@ class VenueFormType extends AbstractType
                 ])
             ->add('daytimeDefault', ChoiceType::class, [
                 'choices'  => [
-                    'vormittags' => 'am',
-                    'nachmittags' => 'pm',
+                    'vormittags' => TimeSlotPeriodInterface::AM,
+                    'nachmittags' => TimeSlotPeriodInterface::PM,
+                    'ganztags'   => TimeSlotPeriodInterface::ALL,
                 ],
                 'label' => 'Standard Tageszeit für Spieltermine',
                 'expanded' => true,

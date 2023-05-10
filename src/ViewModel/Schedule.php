@@ -2,13 +2,17 @@
 
 namespace App\ViewModel;
 
+use App\Value\TimeSlotPeriodInterface;
+
 class Schedule
 {
     private array $days = [];
 
-    public function add(\DateTimeInterface $date, string $daytime, string $key, mixed $entry)
+    public function add(TimeSlotPeriodInterface $timeSlotPeriod, string $key, mixed $entry): void
     {
-        $this->days[$date->format('d')]->addEntry($daytime, $key, $entry);
+        foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
+            $this->days[$timeSlot->getDate()->format('d')]->addEntry($timeSlot->getDaytime(), $key, $entry);
+        }
     }
 
     public function getDays(): array
