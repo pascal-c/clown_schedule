@@ -14,12 +14,13 @@ final class DayTest extends TestCase
             date: new \DateTimeImmutable('2022-08-08'),
             dayLongName: 'Freitag',
             dayShortName: 'Fr.',
+            dayNumber: '6. Mai',
             dayHolidayName: 'Himmelfahrt',
             isWeekend: false,
             isHoliday: true,
             vacation: null,
         );
-        $this->assertEquals('08', $day->getDayNumber());
+        $this->assertEquals('6. Mai', $day->getDayNumber());
         
         return $day;
     }

@@ -13,23 +13,23 @@ class DayViewController
 {
     private IntlDateFormatter $dayShortNameFormatter;
     private IntlDateFormatter $dayLongNameFormatter;
+    private IntlDateFormatter $dayNumberFormatter;
 
     public function __construct(private VacationRepository $vacationRepository)
     {
         $this->dayShortNameFormatter = new IntlDateFormatter(
             'de_DE', 
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            'Europe/Berlin',
-            \IntlDateFormatter::GREGORIAN,
-            'EEE');
+            timezone: 'Europe/Berlin',
+            pattern: 'EEE');
         $this->dayLongNameFormatter = new IntlDateFormatter(
+            'de_DE',
+            timezone: 'Europe/Berlin',
+            pattern: 'EEEE');
+        $this->dayNumberFormatter = new \IntlDateFormatter(
             'de_DE', 
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            'Europe/Berlin',
-            \IntlDateFormatter::GREGORIAN,
-            'EEEE');
+            timezone: 'Europe/Berlin',
+            pattern: 'dd. LLL');
+            
     }
 
     public function getDay(DateTimeImmutable $date): Day
@@ -38,6 +38,7 @@ class DayViewController
             date: $date,
             dayShortName: $this->dayShortNameFormatter->format($date),
             dayLongName: $this->dayLongNameFormatter->format($date),
+            dayNumber: $this->dayNumberFormatter->format($date),
             dayHolidayName: $this->getHolidayName($date),
             isWeekend: $this->isWeekend($date),
             isHoliday: $this->isHoliday($date),

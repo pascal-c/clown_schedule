@@ -15,6 +15,7 @@ class Day
         private DateTimeInterface $date,
         private string $dayLongName,
         private string $dayShortName,
+        private string $dayNumber,
         private ?string $dayHolidayName,
         private bool $isWeekend,
         private bool $isHoliday,
@@ -47,7 +48,7 @@ class Day
 
     public function getDayNumber(): string
     {
-        return $this->date->format('d');
+        return $this->dayNumber;
     }
 
     public function getDayShortName(): string

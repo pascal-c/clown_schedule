@@ -3,10 +3,8 @@
 namespace App\Tests\ViewController;
 
 use PHPUnit\Framework\TestCase;
-use App\Entity\Daytime;
 use App\Repository\VacationRepository;
 use App\ViewController\DayViewController;
-use App\ViewModel\Day;
 
 final class DayViewControllerTest extends TestCase
 {

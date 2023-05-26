@@ -37,11 +37,8 @@ class Month
     {
         $formatter = new IntlDateFormatter(
             'de_DE', 
-            IntlDateFormatter::FULL,
-            IntlDateFormatter::FULL,
-            'Europe/Berlin',
-            IntlDateFormatter::GREGORIAN,
-            'MMM y');
+            timezone: 'Europe/Berlin',
+            pattern: 'MMM y');
         return $formatter->format($this->date);
     }
 

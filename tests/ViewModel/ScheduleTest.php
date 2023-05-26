@@ -29,12 +29,12 @@ final class ScheduleTest extends TestCase
         $this->assertEquals(2, count($days));
 
         $twentythird = $days[0];
-        $this->assertEquals('23', $twentythird->getDayNumber());
+        $this->assertEquals('2022-08-23', $twentythird->getDateString());
         $this->assertEquals(['23. am first entry', '23. am second entry'], $twentythird->getEntries(Daytime::AM, 'key'));
         $this->assertEquals([], $twentythird->getEntries(Daytime::PM, 'key'));
 
         $thirtyfirst = $days[1];
-        $this->assertEquals('31', $thirtyfirst->getDayNumber());
+        $this->assertEquals('2022-08-31', $thirtyfirst->getDateString());
         $this->assertEquals([], $thirtyfirst->getEntries(Daytime::AM, 'key'));
         $this->assertEquals(['31. pm entry'], $thirtyfirst->getEntries(Daytime::PM, 'key'));
     }
@@ -45,6 +45,7 @@ final class ScheduleTest extends TestCase
             date: $date,
             dayLongName: 'Freitag',
             dayShortName: 'Fr.',
+            dayNumber: '06. Mai',
             dayHolidayName: 'Himmelfahrt',
             isWeekend: false,
             isHoliday: true,
