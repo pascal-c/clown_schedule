@@ -61,7 +61,7 @@
             <tr>
                 <th>Kilometergeld</th>
                 <td>
-                    {{ venue.kilometersFee|format_currency('EUR') }} ({{ venue.kilometers }} km) - für {{ venue.kilometersFeeForAllClowns ? 'beide Clowns' : 'nur einen Clown' }}
+                    {{ 0.3|format_currency('EUR') }} x {{ venue.kilometers }} km = {{ venue.kilometersFee|format_currency('EUR') }} ({{ venue.kilometersFeeForAllClowns ? 'pro Clown' : 'für nur einen Clown' }})
                 </td>
             </tr>
             <tr>
