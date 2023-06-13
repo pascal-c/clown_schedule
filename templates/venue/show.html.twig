@@ -17,15 +17,9 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Kontakt</th>
+                <th>Adresse</th>
                 <td>
-                    {{ venue.emails|filter(email => email is not empty)|join(' | ') }}
-                </td>
-            </tr>
-            <tr>
-                <th>URL</th>
-                <td>
-                     <a target="_blank" href="{{ venue.url }}">{{ venue.url }}</href>
+                     {{ venue.streetAndNumber }}, {{ venue.postalCode }} {{ venue.city }}
                 </td>
             </tr>
             <tr>
@@ -52,11 +46,41 @@
                     {{ venue.playTimeFrom|date('H:i') }} - {{ venue.playTimeTo|date('H:i') }}
                 </td>
             </tr>
+            <tr>
+                <th>Honorar Öffis</th>
+                <td>
+                    {{ venue.feeByPublicTransport|format_currency('EUR') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Honorar PKW</th>
+                <td>
+                    {{ venue.feeByCar|format_currency('EUR') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Kilometergeld</th>
+                <td>
+                    {{ venue.kilometersFee|format_currency('EUR') }} ({{ venue.kilometers }} km) - für {{ venue.kilometersFeeForAllClowns ? 'beide Clowns' : 'nur einen Clown' }}
+                </td>
+            </tr>
+            <tr>
+                <th>Bemerkungen</th>
+                <td>
+                    {{ venue.comments|nl2br }}
+                </td>
+            </tr>
             {% if venue.isSuper %}
                 <tr>
                     <td colspan="2">ist ein Super-Spielort!</td>
                 </tr>
             {% endif %}
+            <tr>
+                <th>Link mit weiteren Infos</th>
+                <td>
+                     <a target="_blank" href="{{ venue.url }}">{{ venue.url }}</href>
+                </td>
+            </tr>
         </tbody>
     </table>
     

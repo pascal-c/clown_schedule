@@ -2,7 +2,11 @@
     {% if playDate.isSpecial %}
         <strong class="text-secondary">{{ playDate.title }} {{ playDate.daytime == 'all' ? '(ganztags)' }}</strong>
     {% else %}
-        <strong class="{{ playDate.playingClowns.count !=2 ? 'text-danger' }}">{{ playDate.venue.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}</strong>
+        <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">
+            <strong class="{{ playDate.playingClowns.count !=2 ? 'text-danger' }}">
+                {{ playDate.venue.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}
+            </strong>
+        </a>
         <span class="text-muted">
             {{ playDate.venue.playTimeFrom|date('H:i') }}-{{ playDate.venue.playTimeTo|date('H:i') }}
         </span>
