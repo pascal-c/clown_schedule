@@ -14,7 +14,7 @@
                 {% if date is of_type('class', 'App\\Entity\\PlayDate') and not date.isSpecial %}
                     <tr>
                         <td class="lh-sm">
-                            {{ date.date|date('d.m.Y') }} {{ date.daytime == 'am' ? 'vormittags' : 'nachmittags' }}
+                            {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
                             {% if date.comment != '' %}
                                 <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
                             {% endif %}
@@ -36,7 +36,7 @@
                  {% elseif date is of_type('class', 'App\\Entity\\PlayDate') and date.isSpecial %}
                     <tr>
                         <td class="lh-sm">
-                            {{ date.date|date('d.m.Y') }} {{ date.daytime == 'am' ? 'vormittags' : 'nachmittags' }}
+                            {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
                             {% if date.comment != '' %}
                                 <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
                             {% endif %}
@@ -47,7 +47,7 @@
                  {% else %}
                     <tr>
                         <td>
-                            {{ date.date|date('d.m.Y') }} {{ date.daytime == 'am' ? 'vormittags' : 'nachmittags' }}
+                            {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
                         </td>
                         <td colspan='4'><i>Springer:in</i></td>
                     </tr>
