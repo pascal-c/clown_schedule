@@ -20,8 +20,8 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if date.venue.url %}
-                                <a class="text-dark" href="{{ date.venue.url }}" target="_blank">{{ date.venue.name }}</a>
+                            {% if date.venue %}
+                                <a class="text-dark" href="{{ path('venue_show', {id: date.venue.id}) }}">{{ date.venue.name }}</a>
                             {% else %}
                                 {{ date.venue.name }}
                             {% endif %}

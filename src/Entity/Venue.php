@@ -50,6 +50,39 @@ class Venue
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $streetAndNumber = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $postalCode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $contactPerson = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $contactPhone = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $contactEmail = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $feeByCar = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $feeByPublicTransport = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $kilometers = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $comments = null;
+
+    #[ORM\Column]
+    private bool $kilometersFeeForAllClowns = true;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -209,6 +242,143 @@ class Venue
     public function setUrl(?string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getStreetAndNumber(): ?string
+    {
+        return $this->streetAndNumber;
+    }
+
+    public function setStreetAndNumber(?string $streetAndNumber): self
+    {
+        $this->streetAndNumber = $streetAndNumber;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): self
+    {
+        $this->postalCode = $postalCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getContactPerson(): ?string
+    {
+        return $this->contactPerson;
+    }
+
+    public function setContactPerson(?string $contactPerson): self
+    {
+        $this->contactPerson = $contactPerson;
+
+        return $this;
+    }
+
+    public function getContactPhone(): ?string
+    {
+        return $this->contactPhone;
+    }
+
+    public function setContactPhone(?string $contactPhone): self
+    {
+        $this->contactPhone = $contactPhone;
+
+        return $this;
+    }
+
+    public function getContactEmail(): ?string
+    {
+        return $this->contactEmail;
+    }
+
+    public function setContactEmail(?string $contactEmail): self
+    {
+        $this->contactEmail = $contactEmail;
+
+        return $this;
+    }
+
+    public function getFeeByCar(): ?int
+    {
+        return $this->feeByCar;
+    }
+
+    public function setFeeByCar(?int $feeByCar): self
+    {
+        $this->feeByCar = $feeByCar;
+
+        return $this;
+    }
+
+    public function getFeeByPublicTransport(): ?int
+    {
+        return $this->feeByPublicTransport;
+    }
+
+    public function setFeeByPublicTransport(?int $feeByPublicTransport): self
+    {
+        $this->feeByPublicTransport = $feeByPublicTransport;
+
+        return $this;
+    }
+
+    public function getKilometersFee(): ?float
+    {
+        return $this->getKilometers() ? $this->getKilometers() * 0.3 : null;
+    }
+
+    public function getKilometers(): ?int
+    {
+        return $this->kilometers;
+    }
+
+    public function setKilometers(?int $kilometers): self
+    {
+        $this->kilometers = $kilometers;
+
+        return $this;
+    }
+
+    public function getComments(): ?string
+    {
+        return $this->comments;
+    }
+
+    public function setComments(?string $comments): self
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    public function isKilometersFeeForAllClowns(): bool
+    {
+        return $this->kilometersFeeForAllClowns;
+    }
+
+    public function setKilometersFeeForAllClowns(bool $kilometersFeeForAllClowns): self
+    {
+        $this->kilometersFeeForAllClowns = $kilometersFeeForAllClowns;
 
         return $this;
     }
