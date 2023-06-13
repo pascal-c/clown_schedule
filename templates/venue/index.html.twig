@@ -19,7 +19,7 @@
                 {% endfor %}
             </td>
             <td>
-                {{ venue.daytimeDefault == 'am' ? 'vormittags' : 'nachmittags' }}
+                {{ venue.daytimeDefault|trans }}
             </td>
           </tr>
     {% endfor %}
