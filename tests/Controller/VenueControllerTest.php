@@ -22,8 +22,7 @@ class VenueControllerTest extends WebTestCase
         $form = $buttonCrawlerNode->form();
 
         $form['venue_form[name]'] = 'DRK Leipzig';
-        $form['venue_form[emails][0]'] = 'erika@leipzig.de';
-        $form['venue_form[emails][1]'] = 'hugo@leipzig.de';
+        $form['venue_form[contactEmail]'] = 'erika@leipzig.de';
         $form['venue_form[responsibleClowns][1]']->tick();
 
         $form['venue_form[daytimeDefault]'] = 'am';
@@ -38,9 +37,8 @@ class VenueControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h4', 'DRK Leipzig');
     
-        $emailsRow = $this->findNodeByText($crawler, 'table tr', 'Kontakt');
+        $emailsRow = $this->findNodeByText($crawler, 'table tr', 'Email');
         $this->assertNodeTextContains($emailsRow, 'erika@leipzig.de');
-        $this->assertNodeTextContains($emailsRow, 'hugo@leipzig.de');
 
         $this->assertNodeTextContains(
             $this->findNodeByText($crawler, 'table tr', 'Verantwortliche Clowns'), 
