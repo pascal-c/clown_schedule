@@ -23,6 +23,24 @@
                 </td>
             </tr>
             <tr>
+                <th>Ansprechperson</th>
+                <td>
+                    {{ venue.contactPerson }}
+                </td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>
+                    {{ venue.contactEmail }}
+                </td>
+            </tr>
+            <tr>
+                <th>Telefon</th>
+                <td>
+                    {{ venue.contactPhone }}
+                </td>
+            </tr>
+            <tr>
                 <th>Verantwortliche Clowns</th>
                 <td>
                     {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}

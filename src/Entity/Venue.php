@@ -68,11 +68,11 @@ class Venue
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $contactEmail = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $feeByCar = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
+    private ?float $feeByCar = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $feeByPublicTransport = null;
+    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
+    private ?float $feeByPublicTransport = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $kilometers = null;
@@ -318,24 +318,24 @@ class Venue
         return $this;
     }
 
-    public function getFeeByCar(): ?int
+    public function getFeeByCar(): ?float
     {
         return $this->feeByCar;
     }
 
-    public function setFeeByCar(?int $feeByCar): self
+    public function setFeeByCar(?float $feeByCar): self
     {
         $this->feeByCar = $feeByCar;
 
         return $this;
     }
 
-    public function getFeeByPublicTransport(): ?int
+    public function getFeeByPublicTransport(): ?float
     {
         return $this->feeByPublicTransport;
     }
 
-    public function setFeeByPublicTransport(?int $feeByPublicTransport): self
+    public function setFeeByPublicTransport(?float $feeByPublicTransport): self
     {
         $this->feeByPublicTransport = $feeByPublicTransport;
 
