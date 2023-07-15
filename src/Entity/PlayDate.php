@@ -51,6 +51,9 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    #[ORM\Column]
+    private bool $isSuper = false;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -148,6 +151,18 @@ class PlayDate implements TimeSlotPeriodInterface
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function isSuper(): bool
+    {
+        return $this->isSuper;
+    }
+
+    public function setIsSuper(bool $isSuper): self
+    {
+        $this->isSuper = $isSuper;
 
         return $this;
     }

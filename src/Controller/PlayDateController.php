@@ -45,6 +45,7 @@ class PlayDateController extends AbstractController
         if (isset($venueId)) {
             $venue = $venueRepository->find(intval($venueId));
             $playDate->setVenue($venue);
+            $playDate->setIsSuper($venue->isSuper());
             $playDate->setDaytime($venue->getDaytimeDefault());
         }
         else {
@@ -89,6 +90,7 @@ class PlayDateController extends AbstractController
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $playDate = $editForm->getData();
+            $playDate->setIsSuper($editForm['isSuper']->isSubmitted());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spieltermin wurde aktualisiert. Sehr gut!');
