@@ -81,7 +81,7 @@ class ClownAvailabilityController extends AbstractController
     #[Route('/clowns/{clownId}/availabilities/{monthId}/new', name: 'clown_availability_new', methods: ['GET'])]
     public function new(int $clownId, string $monthId): Response
     {
-        $month = new Month(new \DateTimeImmutable($monthId));
+        $month = Month::build($monthId);
         $clown = $this->clownRepository->find($clownId);
         $schedule = $this->scheduleViewController->getSchedule($month);
         $clownAvailability = new ClownAvailability;
@@ -115,7 +115,7 @@ class ClownAvailabilityController extends AbstractController
     #[Route('/clowns/{clownId}/availabilities/{monthId}/new', methods: ['POST'])]
     public function create(Request $request, int $clownId, string $monthId): Response
     {
-        $month = new Month(new \DateTimeImmutable($monthId));
+        $month = Month::build($monthId);
         $clown = $this->clownRepository->find($clownId);
         $clownAvailability = new ClownAvailability;
         $clownAvailability->setMonth($month);
@@ -149,7 +149,7 @@ class ClownAvailabilityController extends AbstractController
     #[Route('/clowns/{clownId}/availabilities/{monthId}/edit', name: 'clown_availability_edit', methods: ['GET'])]
     public function edit(int $clownId, string $monthId): Response
     {
-        $month = new Month(new \DateTimeImmutable($monthId));
+        $month = Month::build($monthId);
         $clown = $this->clownRepository->find($clownId);
         $clownAvailability = $this->clownAvailabilityRepository->find($month, $clown);
         $schedule = $this->scheduleViewController->getSchedule($month);
@@ -174,7 +174,7 @@ class ClownAvailabilityController extends AbstractController
     #[Route('/clowns/{clownId}/availabilities/{monthId}/edit', methods: ['PATCH'])]
     public function update(Request $request, int $clownId, string $monthId): Response
     {
-        $month = new Month(new \DateTimeImmutable($monthId));
+        $month = Month::build($monthId);
         $clown = $this->clownRepository->find($clownId);
         $clownAvailability = $this->clownAvailabilityRepository->find($month, $clown);
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability, ['method' => 'PATCH']);

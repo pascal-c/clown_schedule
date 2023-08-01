@@ -14,7 +14,7 @@ final class ScheduleTest extends TestCase
 {
     public function testgetDays(): void
     {
-        $month = new Month(new \DateTimeImmutable('2022-08'));
+        $month = Month::build('2022-08');
         $schedule = new Schedule($month);
         $schedule->setDays([
             '23' => $this->buildDay(new DateTimeImmutable('2022-08-23')),

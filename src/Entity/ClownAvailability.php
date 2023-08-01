@@ -77,7 +77,7 @@ class ClownAvailability
 
     public function getMonth(): ?Month
     {
-        return new Month(new \DateTimeImmutable($this->month));
+        return Month::build($this->month);
     }
 
     public function setMonth(Month $month): self

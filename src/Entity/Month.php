@@ -17,6 +17,11 @@ class Month
         $this->date = $date->modify('first day of midnight');
     }
 
+    public static function build(string $dateString): self
+    {
+        return new Month(new DateTimeImmutable($dateString));
+    }
+
     public function days()
     {
         $interval = new DateInterval('P1D');

@@ -10,7 +10,7 @@ use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 #[AsTwigComponent('month_navigation')]
 class MonthNavigationComponent
 {
-    public ?string $active;
+    public string $active = 'now';
     public ?string $urlKey;
     public array $urlParams = [];
 
@@ -23,7 +23,7 @@ class MonthNavigationComponent
     public function getNavigationItems(): array
     {
         $currentMonth = new Month($this->timeService->today());
-        $activeMonth = new Month(new \DateTimeImmutable($this->active));
+        $activeMonth = Month::build($this->active);
         $navigationItems = [];
         $navigationItems['previous'] = [
             'label' => '<<',

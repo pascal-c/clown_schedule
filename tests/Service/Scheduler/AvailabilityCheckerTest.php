@@ -30,7 +30,7 @@ final class AvailabilityCheckerTest extends TestCase
         $playDateRepository = $this->createMock(PlayDateRepository::class);
         $playDateRepository->expects($this->atLeastOnce())
             ->method('byMonth')
-            ->with($this->equalTo(new Month(new \DateTimeImmutable('2022-04'))))
+            ->with($this->equalTo(Month::build('2022-04')))
             ->willReturn($otherPlayDates);
         $substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $substitutionRepository->expects($this->atMost(1))
@@ -95,7 +95,7 @@ final class AvailabilityCheckerTest extends TestCase
     {
         $clownAvailability = new ClownAvailability;
         $clownAvailability->setClown((new Clown)->setGender($gender));
-        $clownAvailability->setMonth(new Month(new \DateTimeImmutable('2022-04')));
+        $clownAvailability->setMonth(Month::build('2022-04'));
         $clownAvailability->setMaxPlaysMonth(2);
         $clownAvailability->setCalculatedPlaysMonth($maxPlaysReached ? 2 : 1);
         $date = new \DateTimeImmutable('2022-04-01');

@@ -37,7 +37,7 @@ class Substitution implements TimeSlotPeriodInterface
 
     public function getMonth(): Month
     {
-        return new Month(new \DateTimeImmutable($this->month));
+        return Month::build($this->month);
     }
 
     public function setDate(\DateTimeImmutable $date): self
