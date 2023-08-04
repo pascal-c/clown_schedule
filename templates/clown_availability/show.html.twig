@@ -4,7 +4,7 @@
 
 {% block content %}
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
-    <h4 class="pt-3">Fehlzeiten {{ clown.name }} {{ month.label }}</h4>
+    <h4 class="pt-3">Fehlzeiten {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
 
     <div class="container">
         <div class="row pb-3">

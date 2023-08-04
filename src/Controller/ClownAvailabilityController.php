@@ -14,7 +14,6 @@ use App\Repository\ClownAvailabilityRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\ViewController\ScheduleViewController;
-use App\ViewModel\Schedule;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +47,7 @@ class ClownAvailabilityController extends AbstractController
             'active' => 'availability',
             'clowns' => $clowns,
             'month' => $month,
+            'schedule' => $this->scheduleViewController->getSchedule($month),
         ]);
     }
 

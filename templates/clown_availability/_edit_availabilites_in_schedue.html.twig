@@ -17,7 +17,7 @@
 
     <div class="play_dates collapse">
         {% for playDate in day.entries('am', 'playDates') %}
-            {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+            {{ component('show_play_date', {playDate: playDate, month: month}) }}
         {% endfor %}
     </div>
 {% endblock %}
@@ -39,7 +39,7 @@
 
     <div class="play_dates collapse">
         {% for playDate in day.entries('pm', 'playDates') %}
-            {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+            {{ component('show_play_date', {playDate: playDate, month: month}) }}
         {% endfor %}
     </div>
 {% endblock %}
