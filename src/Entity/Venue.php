@@ -83,6 +83,9 @@ class Venue
     #[ORM\Column]
     private bool $kilometersFeeForAllClowns = true;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
+    private float $feePerKilometer = 0.35;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -344,7 +347,7 @@ class Venue
 
     public function getKilometersFee(): ?float
     {
-        return $this->getKilometers() ? $this->getKilometers() * 0.3 : null;
+        return $this->getKilometers() ? $this->getKilometers() * $this->getFeePerKilometer() : null;
     }
 
     public function getKilometers(): ?int
@@ -379,6 +382,18 @@ class Venue
     public function setKilometersFeeForAllClowns(bool $kilometersFeeForAllClowns): self
     {
         $this->kilometersFeeForAllClowns = $kilometersFeeForAllClowns;
+
+        return $this;
+    }
+
+    public function getFeePerKilometer(): float
+    {
+        return $this->feePerKilometer;
+    }
+
+    public function setFeePerKilometer(float $feePerKilometer): self
+    {
+        $this->feePerKilometer = $feePerKilometer;
 
         return $this;
     }
