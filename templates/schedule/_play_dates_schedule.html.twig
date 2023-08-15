@@ -2,12 +2,12 @@
 
 {% block am %}
     {% for playDate in day.entries('am', 'playDates') %}
-        {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+        {{ component('show_play_date', {playDate: playDate, month: month}) }}
     {% else %}
         <span class="text-muted">vormittags</span>
     {% endfor %}
     {% if day.entries('am', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
-        {{ component('show_substitution_clown', { date: day.date, daytime: 'am' }) }}
+        {{ component('show_substitution_clown', { date: day.date, daytime: 'am', month: month }) }}
     {% endif %}
     <div class="collapse available_clowns">
         {{ component('show_available_clowns', { date: day.date, daytime: 'am' }) }}
@@ -16,12 +16,12 @@
 
 {% block pm %}
     {% for playDate in day.entries('pm', 'playDates') %}
-        {{ include ('play_date/_show_in_schedule.html.twig', {playDate: playDate}) }}
+        {{ component('show_play_date', {playDate: playDate, month: month}) }}
     {% else %}
         <span class="text-muted">nachmittags</span>
     {% endfor %}
     {% if day.entries('pm', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
-            {{ component('show_substitution_clown', { date: day.date, daytime: 'pm' }) }}
+            {{ component('show_substitution_clown', { date: day.date, daytime: 'pm', month: month }) }}
     {% endif %}
     <div class="collapse available_clowns">
         {{ component('show_available_clowns', { date: day.date, daytime: 'pm' }) }}

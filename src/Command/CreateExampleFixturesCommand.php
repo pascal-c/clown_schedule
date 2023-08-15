@@ -72,7 +72,7 @@ class CreateExampleFixturesCommand extends Command
             10,
         );
 
-        $month = new Month(new DateTimeImmutable());
+        $month = Month::build('now');
         $maxCount = 6;
         for($i=0; $i<6; $i++) {
             foreach ($clowns as $clown) {

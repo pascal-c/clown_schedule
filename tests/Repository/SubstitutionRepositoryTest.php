@@ -2,31 +2,38 @@
 
 namespace App\Tests\Repository;
 
-use App\Entity\substitution;
+use App\Entity\Substitution;
 use App\Repository\SubstitutionRepository;
+use DateTimeInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class SubstitutionRepositoryTest extends KernelTestCase
 {
-    public function testfind()
+    private SubstitutionRepository $substitutionRepository;
+    private DateTimeInterface $date;
+    private Substitution $expectedSubstitution;
+
+    protected function setUp(): void
     {
         self::bootKernel();
+
         $container = static::getContainer();
-
-        # prepare database
-        $date = new \DateTimeImmutable('2020-04-18');
-        $expectedSubstitution = new Substitution;
-        $expectedSubstitution->setDate($date)->setDaytime('am');
         $entityManager = $container->get('doctrine.orm.default_entity_manager');
-        $entityManager->persist($expectedSubstitution);
-        $entityManager->flush();
+        $this->substitutionRepository = $container->get(SubstitutionRepository::class);        
 
-        $substitutionRepository = $container->get(SubstitutionRepository::class);
-        
-        $result = $substitutionRepository->find($date, 'pm');
+        $this->date = new \DateTimeImmutable('2020-04-18');
+        $this->expectedSubstitution = new Substitution;
+        $this->expectedSubstitution->setDate($this->date)->setDaytime('am');
+        $entityManager->persist($this->expectedSubstitution);
+        $entityManager->flush();
+    }
+
+    public function testFind(): void
+    {
+        $result = $this->substitutionRepository->find($this->date, 'pm');
         $this->assertNull($result);
 
-        $result2 = $substitutionRepository->find($date, 'am');
-        $this->assertEquals($expectedSubstitution, $result2);
+        $result2 = $this->substitutionRepository->find($this->date, 'am');
+        $this->assertEquals($this->expectedSubstitution, $result2);
     }
 }

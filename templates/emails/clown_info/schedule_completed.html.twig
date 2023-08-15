@@ -1,0 +1,15 @@
+<p>
+    Hey {{ clown.name }},
+</p>
+
+<p>
+    der Spielplan für {{ schedule.month.label }} wurde soeben fertiggestellt!
+</p>
+
+<p>
+    <a href="{{ url('schedule', {monthId: schedule.month.key}) }}">Check it out!</a>
+</p>
+
+<p>
+    Deine Dich liebende Spielplan App
+</p>

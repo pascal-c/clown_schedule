@@ -78,7 +78,7 @@ final class SchedulerTest extends TestCase
 
         $scheduler = new Scheduler($playDateRepository, $clownAvailabilityRepository, $clownAssigner, 
             $availabilityChecker, $fairPlayCalculator, $substitutionRepository);
-        $month = new Month(new \DateTimeImmutable('1978-12'));
+        $month = Month::build('1978-12');
         $scheduler->calculate($month);
 
         # remove existing clown assignments

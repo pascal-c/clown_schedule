@@ -5,6 +5,7 @@ namespace App\Tests\ViewModel;
 use PHPUnit\Framework\TestCase;
 use App\Entity\Daytime;
 use App\Entity\Month;
+use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriod;
 use App\ViewModel\Day;
 use App\ViewModel\Schedule;
@@ -14,8 +15,8 @@ final class ScheduleTest extends TestCase
 {
     public function testgetDays(): void
     {
-        $month = new Month(new \DateTimeImmutable('2022-08'));
-        $schedule = new Schedule($month);
+        $month = Month::build('2022-09');
+        $schedule = new Schedule(ScheduleStatus::IN_PROGRESS, $month);
         $schedule->setDays([
             '23' => $this->buildDay(new DateTimeImmutable('2022-08-23')),
             '31' => $this->buildDay(new DateTimeImmutable('2022-08-31')),
@@ -37,6 +38,10 @@ final class ScheduleTest extends TestCase
         $this->assertEquals('2022-08-31', $thirtyfirst->getDateString());
         $this->assertEquals([], $thirtyfirst->getEntries(Daytime::AM, 'key'));
         $this->assertEquals(['31. pm entry'], $thirtyfirst->getEntries(Daytime::PM, 'key'));
+        
+        $this->assertTrue($schedule->isInProgress());
+        $this->assertFalse($schedule->isCompleted());
+        $this->assertSame($month, $schedule->month);
     }
 
     private function buildDay(DateTimeImmutable $date): Day

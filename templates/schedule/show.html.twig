@@ -4,7 +4,9 @@
 
 {% block content %}
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
-    <h4 class="pt-3">Spielplan {{ month.label }}</h4>
+    <h4 class="pt-3">
+        Spielplan {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}
+    </h4>
 
     <button type="button" class="btn btn-link mb-3 collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
     <button type="button" class="btn btn-link mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
@@ -14,7 +16,8 @@
     </div>
     {% if currentClown.isAdmin %}
         <div class="pt-3">
-            {{ form(form) }}
+            {{ form(calculateForm) }}
+            {{ form(completeForm) }}
         </div>
         <div class="pt-3">
             <a href="{{ path('play_date_new') }}">
