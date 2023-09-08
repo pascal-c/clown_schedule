@@ -49,6 +49,7 @@ class SubstitutionRepository extends AbstractRepository
         return $this->cacheGet($date, $daytime);
     }
 
+    /** @return array<Substitution> */
     public function byMonth(Month $month): array
     {
         $substitutions = $this->doctrineRepository->findBy(['month' => $month->getKey()]);

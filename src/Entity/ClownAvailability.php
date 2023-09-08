@@ -27,22 +27,22 @@ class ClownAvailability
     private ?string $month = null;
 
     #[ORM\Column]
-    private ?int $max_plays_month = 10;
+    private int $maxPlaysMonth = 10;
 
     #[ORM\Column]
-    private ?int $wished_plays_month = 5;
+    private int $wishedPlaysMonth = 5;
 
     #[ORM\Column]
-    private ?int $max_plays_day = 1;
+    private int $maxPlaysDay = 1;
 
     #[ORM\OneToMany(mappedBy: 'clownAvailability', targetEntity: ClownAvailabilityTime::class, orphanRemoval: true)]
     private Collection $clownAvailabilityTimes;
 
     #[ORM\Column(nullable: true)]
-    private ?float $entitled_plays_month = null;
+    private ?float $entitledPlaysMonth = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $calculated_plays_month = null;
+    private ?int $calculatedPlaysMonth = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $targetPlays = null;
@@ -52,6 +52,12 @@ class ClownAvailability
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $additionalWishes = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $scheduledPlaysMonth = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $scheduledSubstitutions = null;
 
     public function __construct()
     {
@@ -89,36 +95,36 @@ class ClownAvailability
 
     public function getMaxPlaysMonth(): ?int
     {
-        return $this->max_plays_month;
+        return $this->maxPlaysMonth;
     }
 
-    public function setMaxPlaysMonth(int $max_plays_month): self
+    public function setMaxPlaysMonth(int $maxPlaysMonth): self
     {
-        $this->max_plays_month = $max_plays_month;
+        $this->maxPlaysMonth = $maxPlaysMonth;
 
         return $this;
     }
 
     public function getWishedPlaysMonth(): ?int
     {
-        return $this->wished_plays_month;
+        return $this->wishedPlaysMonth;
     }
 
-    public function setWishedPlaysMonth(int $wished_plays_month): self
+    public function setWishedPlaysMonth(int $wishedPlaysMonth): self
     {
-        $this->wished_plays_month = $wished_plays_month;
+        $this->wishedPlaysMonth = $wishedPlaysMonth;
 
         return $this;
     }
 
     public function getMaxPlaysDay(): ?int
     {
-        return $this->max_plays_day;
+        return $this->maxPlaysDay;
     }
 
-    public function setMaxPlaysDay(int $max_plays_day): self
+    public function setMaxPlaysDay(int $maxPlaysDay): self
     {
-        $this->max_plays_day = $max_plays_day;
+        $this->maxPlaysDay = $maxPlaysDay;
 
         return $this;
     }
@@ -196,34 +202,34 @@ class ClownAvailability
 
     public function getEntitledPlaysMonth(): ?float
     {
-        return $this->entitled_plays_month;
+        return $this->entitledPlaysMonth;
     }
 
-    public function setEntitledPlaysMonth(?float $entitled_plays_month): self
+    public function setEntitledPlaysMonth(?float $entitledPlaysMonth): self
     {
-        $this->entitled_plays_month = $entitled_plays_month;
+        $this->entitledPlaysMonth = $entitledPlaysMonth;
 
         return $this;
     }
 
     public function getCalculatedPlaysMonth(): ?int
     {
-        return $this->calculated_plays_month;
+        return $this->calculatedPlaysMonth;
     }
 
-    public function setCalculatedPlaysMonth(?int $calculated_plays_month): self
+    public function setCalculatedPlaysMonth(?int $calculatedPlaysMonth): self
     {
-        $this->calculated_plays_month = $calculated_plays_month;
+        $this->calculatedPlaysMonth = $calculatedPlaysMonth;
 
         return $this;
     }
 
     public function incCalculatedPlaysMonth(): self
     {
-        if (is_null($this->calculated_plays_month)) {
-            $this->calculated_plays_month = 1;
+        if (is_null($this->calculatedPlaysMonth)) {
+            $this->calculatedPlaysMonth = 1;
         } else {
-            $this->calculated_plays_month++;
+            $this->calculatedPlaysMonth++;
         }
 
         return $this;
@@ -312,6 +318,54 @@ class ClownAvailability
     public function setAdditionalWishes(?string $additionalWishes): self
     {
         $this->additionalWishes = $additionalWishes;
+
+        return $this;
+    }
+
+    public function getScheduledPlaysMonth(): ?int
+    {
+        return $this->scheduledPlaysMonth;
+    }
+
+    public function setScheduledPlaysMonth(?int $scheduledPlaysMonth): self
+    {
+        $this->scheduledPlaysMonth = $scheduledPlaysMonth;
+
+        return $this;
+    }
+
+
+    public function incScheduledPlaysMonth(): self
+    {
+        if (is_null($this->scheduledPlaysMonth)) {
+            $this->scheduledPlaysMonth = 1;
+        } else {
+            $this->scheduledPlaysMonth++;
+        }
+
+        return $this;
+    }
+
+    public function getScheduledSubstitutions(): ?int
+    {
+        return $this->scheduledSubstitutions;
+    }
+
+    public function setScheduledSubstitutions(?int $scheduledSubstitutions): self
+    {
+        $this->scheduledSubstitutions = $scheduledSubstitutions;
+
+        return $this;
+    }
+
+
+    public function incScheduledSubstitutions(): self
+    {
+        if (is_null($this->scheduledSubstitutions)) {
+            $this->scheduledSubstitutions = 1;
+        } else {
+            $this->scheduledSubstitutions++;
+        }
 
         return $this;
     }
