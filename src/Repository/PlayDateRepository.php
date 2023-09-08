@@ -30,22 +30,6 @@ class PlayDateRepository extends AbstractRepository
         );
     }
 
-    public function countRegularTimeSlotsPerMonth(Month $month): int
-    {
-        $results = $this->doctrineRepository->createQueryBuilder('pd')
-            ->select('count(pd.date)')
-            ->groupBy('pd.date', 'pd.daytime')
-            ->where('pd.date >= :this')
-            ->andWhere('pd.date < :next')
-            ->andWhere('pd.isSpecial = 0')
-            ->setParameter('this', $month->dbFormat())
-            ->setParameter('next', $month->next()->dbFormat())
-            ->getQuery()
-            ->getResult();
-
-        return count($results);
-    }
-
     public function regularByMonth(Month $month): Array
     {
         return $this->queryByMonth($month)

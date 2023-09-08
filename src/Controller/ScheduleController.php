@@ -10,10 +10,12 @@ use App\Form\ScheduleCalculateFormType;
 use App\Form\ScheduleCompleteFormType;
 use App\Form\ScheduleFormType;
 use App\Mailer\ClownInfoMailer;
+use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
+use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler;
 use App\Service\TimeService;
 use App\Value\ScheduleStatus;
@@ -40,6 +42,8 @@ class ScheduleController extends AbstractController
         private ClownRepository $clownRepository,
         private ClownInfoMailer $clownInfoMailer,
         private TimeService $timeService,
+        private ClownAvailabilityRepository $clownAvailabilityRepository,
+        private SubstitutionRepository $substitutionRepository,
         )
     {
         $this->entityManager = $doctrine->getManager();
@@ -96,14 +100,11 @@ class ScheduleController extends AbstractController
         $this->adminOnly();
         
         $month = $this->monthRepository->find($session, $monthId);
-        $schedule = $this->scheduleRepository->find($month);
-
-        if (null === $schedule) {
-            $schedule ??= (new Schedule())->setMonth($month);
-            $this->entityManager->persist($schedule);
+        $schedule = $this->scheduler->complete($month);
+        if (!$schedule) {
+            throw($this->createAccessDeniedException('Der Spielplan ist bereits abgeschlossen!'));
         }
 
-        $schedule->setStatus(ScheduleStatus::COMPLETED);
         $this->entityManager->flush();
 
         // send Email to active clowns, but only if Month not in the past

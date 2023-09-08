@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
 use App\Repository\MonthRepository;
@@ -81,8 +82,8 @@ class StatisticsController extends AbstractController
             'currentPlays' => $plays,
             'currentPlayDatesCount' => count($playDates),
             'currentSubstitutions' => $substitutions,
-            'currentSubstitutionsNeededCount' => $this->playDateRepository->countRegularTimeSlotsPerMonth($month),
             'active' => 'statistics',
         ]);
     }
+
 }
