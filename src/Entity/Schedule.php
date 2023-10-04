@@ -19,7 +19,7 @@ class Schedule
     private ?string $month = null;
 
     #[ORM\Column(length: 100)]
-    private string $status;
+    private ?string $status = null;
 
     public function getId(): ?int
     {
@@ -40,7 +40,7 @@ class Schedule
 
     public function getStatus(): ScheduleStatus
     {
-        return ScheduleStatus::from($this->status);
+        return ScheduleStatus::from($this->status ?? ScheduleStatus::NOT_STARTED->value);
     }
 
     public function setStatus(ScheduleStatus $status): self
