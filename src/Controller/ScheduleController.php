@@ -95,7 +95,7 @@ class ScheduleController extends AbstractController
 
 
     #[Route('/schedule/{monthId}', methods: ['PUT'])]
-    public function complete(Request $request, SessionInterface $session, ?string $monthId = null): Response 
+    public function complete(SessionInterface $session, ?string $monthId = null): Response 
     {
         $this->adminOnly();
         

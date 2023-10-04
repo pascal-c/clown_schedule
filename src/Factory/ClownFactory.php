@@ -14,7 +14,7 @@ class ClownFactory extends AbstractFactory
         $clown = (new Clown)
             ->setName($this->generate('firstName', $name))
             ->setGender('diverse')
-            ->setEmail($this->generate('email', $email))
+            ->setEmail($this->generate('safeEmail', $email))
             ->setPassword(password_hash($password, PASSWORD_DEFAULT))
             ->setIsAdmin($isAdmin)
             ;
