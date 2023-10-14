@@ -63,11 +63,6 @@ class PlayDate implements TimeSlotPeriodInterface
     {
         return $this->id;
     }
-    
-    public function getMonth(): Month
-    {
-        return new Month($this->date);
-    }   
 
     public function setDate(\DateTimeImmutable $date): self
     {
