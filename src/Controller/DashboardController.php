@@ -6,18 +6,13 @@ namespace App\Controller;
 
 use App\Entity\Month;
 use App\Repository\ClownAvailabilityRepository;
-use App\Repository\PlayDateRepository;
-use App\Repository\SubstitutionRepository;
 use App\Service\TimeService;
-use App\Value\TimeSlotInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
 {
     public function __construct(
-        private SubstitutionRepository $substitutionRepository, 
-        private PlayDateRepository $playDateRepository,
         private TimeService $timeService,
         private ClownAvailabilityRepository $clownAvailabilityRepository
     ) {}
@@ -53,19 +48,7 @@ class DashboardController extends AbstractController
             );
         }
 
-        $playDates = $this->playDateRepository->futureByClown($currentClown);
-        $substitutions = $this->substitutionRepository->futureByClown($currentClown);
-        $dates = array_merge($playDates, $substitutions);
-        usort($dates, 
-            fn(TimeSlotInterface $a, TimeSlotInterface $b) => 
-                $a->getDate() == $b->getDate()
-                ?
-                $a->getDaytime() <=> $b->getDaytime()
-                :
-                $a->getDate() <=> $b->getDate()
-        );
         return $this->render('dashboard/index.html.twig', [
-            'dates' => $dates,
             'nextMonth' => $nextMonth,
             'afterNextMonth' => $afterNextMonth,
             'nextMonthFilled' => $nextMonthFilled,

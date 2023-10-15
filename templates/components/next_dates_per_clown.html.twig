@@ -1,0 +1,54 @@
+<h4 class="pt-3">Deine nächsten Termine, {{ currentClown.name }}</h4>
+
+<table class="table">
+    <thead>
+        <tr><th>Wann</th><th>Wo</th><th>Treffen</th><th>Spielzeit</th><th>mit</th></tr>
+    </thead>
+    <tbody>
+        {% for key, date in dates %}
+            {% if date is of_type('class', 'App\\Entity\\PlayDate') and not date.isSpecial %}
+                <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
+                    <td class="lh-sm">
+                        {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
+                        {% if date.comment != '' %}
+                            <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if date.venue %}
+                            <a class="text-dark" href="{{ path('venue_show', {id: date.venue.id}) }}">{{ date.venue.name }}</a>
+                        {% else %}
+                            {{ date.venue.name }}
+                        {% endif %}
+                    </td>
+                    <td>{{ date.venue.meetingTime|date('H:i') }}</td>
+                    <td>{{ date.venue.playTimeFrom|date('H:i') }} - {{ date.venue.playTimeTo|date('H:i') }}</td>
+                    <td>
+                        {% set partner = (date.playingClowns|filter(v => v!=currentClown))|first %}
+                        {{ not partner ? '?' : partner.name }}
+                    </td>
+                </tr>
+                {% elseif date is of_type('class', 'App\\Entity\\PlayDate') and date.isSpecial %}
+                <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
+                    <td class="lh-sm">
+                        {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
+                        {% if date.comment != '' %}
+                            <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
+                        {% endif %}
+                    </td>
+                    <td>{{ date.title }}</td>
+                    <td colspan='3'>&nbsp;</td>
+                </tr> 
+                {% else %}
+                <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
+                    <td>
+                        {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
+                    </td>
+                    <td colspan='4'><i>Springer:in</i></td>
+                </tr>
+            {% endif %}
+        {% else %}
+            <tr><td colspan ="5">keene Termine, nüscht!</td>    
+        {% endfor %}    
+    </tbody>
+</table>

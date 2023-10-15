@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Value;
 
+use App\Entity\Month;
 use DateTimeImmutable;
 
 trait TimeSlotPeriodTrait
@@ -28,5 +29,10 @@ trait TimeSlotPeriodTrait
     public function getDaytime(): ?string
     {
         return $this->daytime;
+    }
+
+    public function getMonth(): Month
+    {
+        return new Month($this->date);
     }
 }
