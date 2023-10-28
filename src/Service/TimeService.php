@@ -10,11 +10,16 @@ class TimeService
 {
     public function today(): DateTimeImmutable
     {
-        return new \DateTimeImmutable('today');
+        return new DateTimeImmutable('today');
     }
 
     public function middleOfCurrentMonth(): DateTimeImmutable
     {
         return $this->today()->modify('first day of')->modify('+15 days');
+    }
+
+    public function now(): DateTimeImmutable
+    {
+        return new DateTimeImmutable();
     }
 }

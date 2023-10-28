@@ -16,9 +16,7 @@
                     </td>
                     <td>
                         {% if date.venue %}
-                            <a class="text-dark" href="{{ path('venue_show', {id: date.venue.id}) }}">{{ date.venue.name }}</a>
-                        {% else %}
-                            {{ date.venue.name }}
+                            <a class="text-dark" href="{{ path('play_date_show', {id: date.id}) }}">{{ date.venue.name }}</a>
                         {% endif %}
                     </td>
                     <td>{{ date.venue.meetingTime|date('H:i') }}</td>

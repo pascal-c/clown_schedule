@@ -1,0 +1,82 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Spieltermin{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">
+        Spieltermin
+    </h4>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Wann</th>
+                <td>
+                    {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }}
+                    {% if playDate.comment != '' %}
+                        <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Wo</th>
+                <td>
+                    {% if playDate.venue %}
+                        <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.venue.name }}</a>
+                    {% else %}
+                        {{ playDate.venue.name }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Treffen</th>
+                <td>
+                    {{ playDate.venue.meetingTime|date('H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spielzeit</th>
+                <td>
+                    {{ playDate.venue.playTimeFrom|date('H:i') }} - {{ playDate.venue.playTimeTo|date('H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spielende Clowns</th>
+                <td>
+                    {{ playDate.playingClowns|map(clown => clown.name)|join(' | ') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Springer:in</th>
+                <td>
+                    {{ substitutionClowns|map(clown => clown.name)|join(' | ') }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-link mb-3 collapse show history" data-bs-target=".history" data-bs-toggle="collapse">Historie anzeigen</button>
+    <button type="button" class="btn btn-link mb-3 collapse history" data-bs-target=".history" data-bs-toggle="collapse">Historie verstecken</button>
+        
+    <table class="table collapse history">
+        <thead>
+            <caption>Historie</caption>
+            <tr>
+                <th>Datum</th>
+                <th>Spielende Clowns</th>
+                <th>geändert durch</th>
+                <th>Grund</th>
+        </thead>
+        <tbody>
+            {% for history in playDate.playDateHistory %}
+            <tr>
+                <td>{{ history.changedAt|date('d.m.Y H:i') }}</td>
+                <td>{{ history.playingClowns|map(clown => clown.name)|join(' | ') }}</td>
+                <td>{{ history.changedBy ? history.changedBy.name : 'Spielplan App' }}</td>
+                <td>{{ history.reason.value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

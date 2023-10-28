@@ -4,6 +4,7 @@ namespace App\Tests\Repository;
 
 use App\Entity\Substitution;
 use App\Repository\SubstitutionRepository;
+use App\Value\TimeSlotPeriod;
 use DateTimeInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -35,5 +36,15 @@ final class SubstitutionRepositoryTest extends KernelTestCase
 
         $result2 = $this->substitutionRepository->find($this->date, 'am');
         $this->assertEquals($this->expectedSubstitution, $result2);
+    }
+
+
+    public function testFindByTimeSlotPeriod(): void
+    {
+        $result = $this->substitutionRepository->findByTimeSlotPeriod(new TimeSlotPeriod($this->date, 'pm'));
+        $this->assertEmpty($result);
+
+        $result2 = $this->substitutionRepository->findByTimeSlotPeriod(new TimeSlotPeriod($this->date, 'all'));
+        $this->assertEquals([$this->expectedSubstitution], $result2);
     }
 }

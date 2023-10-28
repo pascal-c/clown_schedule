@@ -49,4 +49,9 @@ class Schedule
 
         return $this;
     }
+
+    public function isCompleted(): bool
+    {
+        return ScheduleStatus::COMPLETED === $this->getStatus();
+    }
 }
