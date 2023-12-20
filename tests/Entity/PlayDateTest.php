@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PlayDateTest extends TestCase
 {
-    public function testsetDaytime(): void
+    public function testSetDaytime(): void
     {
         $playDate = new PlayDate;
         $playDate->setDaytime('pm');

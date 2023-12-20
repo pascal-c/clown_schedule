@@ -58,6 +58,19 @@ class PlayDateRepository extends AbstractRepository
             ->addOrderBy('pd.daytime', 'ASC');
     }
 
+    public function futureByMonth(Month $month): Array
+    {
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->where('pd.date >= :min_date')
+            ->andWhere('pd.date < :max_date')
+            ->setParameter('min_date', max($month->dbFormat(), $this->timeService->today()->format('Y-m-d')))
+            ->setParameter('max_date', $month->next()->dbFormat())
+            ->orderBy('pd.date', 'ASC')
+            ->addOrderBy('pd.daytime', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function futureByClown(Clown $clown): Array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')

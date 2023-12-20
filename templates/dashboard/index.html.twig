@@ -3,6 +3,8 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+    {{ include('dashboard/_waiting_change_requests.html.twig', {sentChangeRequests: sentChangeRequests, receivedChangeRequests: receivedChangeRequests}) }}
+    
     {{ component('next_dates_per_clown', {currentClown: currentClown}) }}
 
     <h4 class="pt-3">Fehlzeiten verwalten</h4>

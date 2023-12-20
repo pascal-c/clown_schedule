@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Month;
 use App\Repository\ClownAvailabilityRepository;
+use App\Repository\PlayDateChangeRequestRepository;
 use App\Service\TimeService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +15,8 @@ class DashboardController extends AbstractController
 {
     public function __construct(
         private TimeService $timeService,
-        private ClownAvailabilityRepository $clownAvailabilityRepository
+        private ClownAvailabilityRepository $clownAvailabilityRepository,
+        private PlayDateChangeRequestRepository $playDateChangeRequestRepository,
     ) {}
 
     #[Route('/', name: 'root', methods: ['GET'])]
@@ -41,7 +43,7 @@ class DashboardController extends AbstractController
                     $currentClown->getName(), $nextMonth->getLabel())
             );
         }
-        if ($currentClown->isActive() && $today >= $this->timeService->middleOfCurrentMonth() && !$afterNextMonthFilled) {
+        if ($currentClown->isActive() && $today >= $this->timeService->NearlyEndOfMonth() && !$afterNextMonthFilled) {
             $this->addFlash('warning', 
                 sprintf('Hey %s, Du musst noch Deine Fehlzeiten für %s eintragen', 
                     $currentClown->getName(), $afterNextMonth->getLabel())
@@ -55,6 +57,8 @@ class DashboardController extends AbstractController
             'afterNextMonthFilled' => $afterNextMonthFilled,
             'feedbackUrl' => $this->getParameter('app.feedback_url'),
             'active' => 'dashboard',
+            'sentChangeRequests' => $this->playDateChangeRequestRepository->findSentRequestsWaiting($currentClown),
+            'receivedChangeRequests' => $this->playDateChangeRequestRepository->findReceivedRequestsWaiting($currentClown),
         ]);
     }
 }

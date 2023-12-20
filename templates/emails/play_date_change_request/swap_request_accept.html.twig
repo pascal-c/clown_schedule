@@ -1,0 +1,33 @@
+<p>
+    Hallo {{ swapRequest.requestedBy.name }},
+</p>
+
+<p>
+    Gute Neuigkeiten!<br />
+    {{ swapRequest.requestedTo.name }} hat Deine Tauschanfrage akzeptiert! Es ging um:
+</p>
+
+<p>
+    {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
+    gegen:<br />
+    {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
+</p>
+
+{% if personalComment is not empty %}
+    <p>
+        Persönliche Nachricht von {{ swapRequest.requestedTo.name }}:
+    </p>
+    <p>
+        <i>{{ personalComment|nl2br }}</i>
+    </p>
+{% endif %}
+
+<p>
+    Ich habe den Tausch für Euch in der Spielplan App schon durchgeführt und wünsche Euch ein schönes Spiel!<br />
+    Hier kannste nochmal gucken: <a href="{{ url('dashboard') }}">Dashboard</a>.<br />
+</p>
+
+<p>
+    <br />
+    Deine Dich liebende Spielplan App
+</p>

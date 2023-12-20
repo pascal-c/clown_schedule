@@ -1,3 +1,8 @@
 all: 'ganztags'
 am: 'vormittags'
 pm: 'nachmittags'
+
+waiting: '⏳ wartet'
+accepted: '✅ angenommen'
+declined: '❌ abgelehnt'
+closed: '❌ geschlossen'

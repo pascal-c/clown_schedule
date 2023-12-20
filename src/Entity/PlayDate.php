@@ -58,10 +58,18 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\OrderBy(['id' => 'ASC'])]
     private Collection $playDateHistory;
 
+    #[ORM\OneToMany(mappedBy: 'playDateToGiveOff', targetEntity: PlayDateChangeRequest::class, orphanRemoval: true)]
+    private Collection $playDateGiveOffRequests;
+
+    #[ORM\OneToMany(mappedBy: 'PlayDateWanted', targetEntity: PlayDateChangeRequest::class)]
+    private Collection $playDateSwapRequests;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
         $this->playDateHistory = new ArrayCollection();
+        $this->playDateGiveOffRequests = new ArrayCollection();
+        $this->playDateSwapRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,6 +151,11 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this;
     }
 
+    public function getName(): ?string
+    {
+        return is_null($this->getVenue()) ? $this->getTitle() : $this->getVenue()->getName();
+    }
+
     public function getComment(): ?string
     {
         return $this->comment;
@@ -180,6 +193,66 @@ class PlayDate implements TimeSlotPeriodInterface
         if (!$this->playDateHistory->contains($playDateHistoryEntry)) {
             $this->playDateHistory->add($playDateHistoryEntry);
             $playDateHistoryEntry->setPlayDate($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlayDateChangeRequest>
+     */
+    public function getPlayDateGiveOffRequests(): Collection
+    {
+        return $this->playDateGiveOffRequests;
+    }
+
+    public function addPlayDateGiveOffRequest(PlayDateChangeRequest $playDateChangeRequest): self
+    {
+        if (!$this->playDateGiveOffRequests->contains($playDateChangeRequest)) {
+            $this->playDateGiveOffRequests->add($playDateChangeRequest);
+            $playDateChangeRequest->setPlayDateToGiveOff($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayDateGiveOffRequest(PlayDateChangeRequest $playDateChangeRequest): self
+    {
+        if ($this->playDateGiveOffRequests->removeElement($playDateChangeRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($playDateChangeRequest->getPlayDateToGiveOff() === $this) {
+                $playDateChangeRequest->setPlayDateToGiveOff(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlayDateChangeRequest>
+     */
+    public function getPlayDateSwapRequests(): Collection
+    {
+        return $this->playDateSwapRequests;
+    }
+
+    public function addPlayDateSwapRequest(PlayDateChangeRequest $playDateSwapRequest): self
+    {
+        if (!$this->playDateSwapRequests->contains($playDateSwapRequest)) {
+            $this->playDateSwapRequests->add($playDateSwapRequest);
+            $playDateSwapRequest->setPlayDateWanted($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayDateSwapRequest(PlayDateChangeRequest $playDateSwapRequest): self
+    {
+        if ($this->playDateSwapRequests->removeElement($playDateSwapRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($playDateSwapRequest->getPlayDateWanted() === $this) {
+                $playDateSwapRequest->setPlayDateWanted(null);
+            }
         }
 
         return $this;

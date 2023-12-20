@@ -10,21 +10,21 @@
     <table class="table">
         <tbody>
             <tr>
+                <th>Wo</th>
+                <td>
+                    {% if playDate.venue %}
+                        <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.name }}</a>
+                    {% else %}
+                        {{ playDate.name }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th>Wann</th>
                 <td>
                     {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }}
                     {% if playDate.comment != '' %}
                         <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Wo</th>
-                <td>
-                    {% if playDate.venue %}
-                        <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.venue.name }}</a>
-                    {% else %}
-                        {{ playDate.venue.name }}
                     {% endif %}
                 </td>
             </tr>
@@ -49,15 +49,97 @@
             <tr>
                 <th>Springer:in</th>
                 <td>
-                    {{ substitutionClowns|map(clown => clown.name)|join(' | ') }}
+                    {{ substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
                 </td>
             </tr>
         </tbody>
     </table>
 
+    {% if showChangeRequestLink %}
+        <a href="{{ path('play_date_new_swap_request', {id: playDate.id}) }}">Diesen Spieltermin tauschen</a>
+    {% endif %}
+
+    {% if playDate.playDateGiveOffRequests is not empty or playDate.playDateSwapRequests is not empty%}
+        <h5 class="pt-3">Tauschanfragen</h5>
+        <table class="table">
+            <tbody>
+                {% for sentChangeRequest in playDate.playDateGiveOffRequests %}
+                    <tr>
+                        {% if sentChangeRequest.isSwap %}
+                            <td>
+                                {% if sentChangeRequest.requestedBy == currentClown %}
+                                    Du möchtest diesen Spieltermin an {{ sentChangeRequest.requestedTo.name }} abgeben gegen:
+                                {% elseif sentChangeRequest.requestedTo == currentClown and sentChangeRequest.isWaiting %}
+                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin an Dich abgeben gegen:    
+                                {% else %}
+                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin an {{ sentChangeRequest.requestedTo.name }} abgeben gegen:
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ path('play_date_show', {id: sentChangeRequest.playDateWanted.id}) }}">
+                                    {{ sentChangeRequest.playDateWanted.date|date('d.m.Y') }} {{ sentChangeRequest.playDateWanted.name }} 
+                                </a>
+                            </td>
+                            <td>
+                                {% if sentChangeRequest.requestedTo == currentClown and sentChangeRequest.isWaiting %}
+                                    <a href="{{ path('play_date_change_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">annehmen</a> oder
+                                    <a href="{{ path('play_date_change_request_decline', {id: sentChangeRequest.id}) }}" class="link-danger">ablehnen</a>
+                                {% else %}    
+                                    <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
+                                {% endif %}
+                            <td>
+                        {% elseif sentChangeRequest.isGiveOff %}
+                            <td>
+                                {% if sentChangeRequest.requestedBy == currentClown %}
+                                    Du möchtest Diesen Spieltermin abgeben.
+                                {% else %}
+                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin abgeben.
+                                {% endif %}
+                            </td>
+                            <td>---</td>
+                            <td>
+                                <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
+                                {% if sentChangeRequest.isAccepted %}
+                                    {{ sentChangeRequest.requestedTo.name }} hat übernommen
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                {% for swapRequest in playDate.playDateSwapRequests %}
+                    <tr>
+                        <td>
+                            {% if swapRequest.requestedBy == currentClown %}
+                                Du möchtest diesen Spieltermin von {{ swapRequest.requestedTo.name }} übernehmen gegen:
+                            {% elseif swapRequest.requestedTo == currentClown  %}
+                                {{ swapRequest.requestedBy.name }} möchte diesen Spieltermin von Dir übernehmen gegen:
+                            {% else  %}
+                                {{ swapRequest.requestedBy.name }} möchte diesen Spieltermin von {{ swapRequest.requestedTo.name }} übernehmen gegen:
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('play_date_show', {id: swapRequest.playDateToGiveOff.id}) }}">
+                                {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }} 
+                            </a>
+                        </td>
+                        <td>
+                            {% if swapRequest.requestedTo == currentClown and swapRequest.isWaiting %}
+                                <a href="{{ path('play_date_change_request_accept', {id: swapRequest.id}) }}" class="link-success">annehmen</a> oder
+                                <a href="{{ path('play_date_change_request_decline', {id: swapRequest.id}) }}" class="link-danger">ablehnen</a>
+                            {% else %}    
+                                <i class="badge bg-secondary">{{ swapRequest.status.value|trans }}</i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <p class="pt-3">
     <button type="button" class="btn btn-link mb-3 collapse show history" data-bs-target=".history" data-bs-toggle="collapse">Historie anzeigen</button>
     <button type="button" class="btn btn-link mb-3 collapse history" data-bs-target=".history" data-bs-toggle="collapse">Historie verstecken</button>
-        
+       </p> 
     <table class="table collapse history">
         <thead>
             <caption>Historie</caption>

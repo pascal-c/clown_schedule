@@ -1,0 +1,25 @@
+<p>
+    Hallo {{ swapRequest.requestedBy.name }}, hallo {{ swapRequest.requestedTo.name }},
+</p>
+
+<p>
+    die Tauschanfrage von {{ swapRequest.requestedBy.name }} hat sich erledigt!<br />
+    Es ging um:
+</p>
+
+<p>
+    {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
+    gegen:<br />
+    {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
+</p>
+
+<p>
+    Ich kann leider nicht mehr genau sagen, warum, aber die Tauschanfrage wurde geschlossen.<br />
+    Wahrscheinlich wurde der Termin schon von einem anderen Clown übernommen oder getauscht oder es wurden anderweitige Änderungen vorgenommen, die einen Tausch unmöglich machen.<br />
+    Ihr könnt selber mal gucken: <a href="{{ url('dashboard') }}">Dashboard</a>.<br />
+</p>
+
+<p>
+    <br />
+    Eure verliebte Spielplan App
+</p>

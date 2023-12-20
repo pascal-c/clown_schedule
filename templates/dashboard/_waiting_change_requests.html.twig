@@ -1,0 +1,47 @@
+ {% if receivedChangeRequests %}
+    <h4 class="pt-3">Offene Tauschanfragen an Dich</h4>
+    <table class="table">
+        <tbody>
+            {% for changeRequest in receivedChangeRequests %}
+            <tr>
+                <td><strong>{{ changeRequest.requestedBy.name }}</strong> möchte</th>
+                <td>
+                    {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
+                </td>
+                <td>
+                    abgeben gegen
+                </td>
+                <td>
+                    {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
+                </td>
+                <td>
+                    <a href="{{ path('play_date_change_request_accept', {id: changeRequest.id}) }}" class="link-success">annehmen</a> oder
+                    <a href="{{ path('play_date_change_request_decline', {id: changeRequest.id}) }}" class="link-danger">ablehnen</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+ {% if sentChangeRequests %}
+    <h4 class="pt-3">Von Dir gestellte Tauschanfragen</h4>
+    <table class="table">
+        <tbody>
+            {% for changeRequest in sentChangeRequests %}
+            <tr>
+                <td>Du möchtest</td>
+                <td>
+                    {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
+                </td>
+                <td>
+                    abgeben an <strong>{{ changeRequest.requestedTo.name }}</strong> gegen
+                </td>
+                <td>
+                    {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

@@ -5,17 +5,23 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDate;
+use App\Entity\PlayDateChangeRequest;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Form\PlayDateAssignClownsFormType;
 use App\Form\PlayDateFormType;
+use App\Form\PlayDateSwapRequestFormType;
 use App\Form\SpecialPlayDateFormType;
+use App\Mailer\PlayDateSwapRequestMailer;
+use App\Repository\ClownRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Repository\VenueRepository;
 use App\Service\PlayDateHistoryService;
+use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
+use App\Value\PlayDateChangeRequestType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -33,6 +39,8 @@ class PlayDateController extends AbstractController
         private PlayDateRepository $playDateRepository,
         private ScheduleRepository $scheduleRepository,
         private PlayDateHistoryService $playDateHistoryService,
+        private ClownRepository $clownRepository,
+        private TimeService $timeService,
     )
     {
         $this->entityManager = $doctrine->getManager();
@@ -43,23 +51,6 @@ class PlayDateController extends AbstractController
     {
         return $this->render('play_date/index.html.twig', [
             'play_dates' => $this->playDateRepository->all(),
-        ]);
-    }
-
-    #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(SubstitutionRepository $substitutionRepository, int $id): Response
-    {
-        $playDate = $this->playDateRepository->find($id);
-        if (is_null($playDate)) {
-            throw(new NotFoundHttpException);  
-        }
-
-        return $this->render('play_date/show.html.twig', [
-            'playDate' => $playDate,
-            'substitutionClowns' => array_map(
-                fn(Substitution $substitution) => $substitution->getSubstitutionClown(),
-                $substitutionRepository->findByTimeSlotPeriod($playDate),
-            ),
         ]);
     }
 
@@ -101,7 +92,47 @@ class PlayDateController extends AbstractController
         ]);
     }
 
-    #[Route('/play_dates/edit{id}', name: 'play_date_edit', methods: ['GET', 'PATCH'])]
+    #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
+    public function show(SubstitutionRepository $substitutionRepository, int $id): Response
+    {
+        $playDate = $this->playDateRepository->find($id);
+        if (is_null($playDate)) {
+            throw(new NotFoundHttpException);  
+        }
+
+        // formChangeRequest
+        $playDateChangeRequestForms = [];
+        foreach ($playDate->getPlayDateGiveOffRequests() as $playDateChangeRequest) {
+            $playDateChangeRequestForms[$playDateChangeRequest->getId()] = [];
+            if ($this->getCurrentClown() === $playDateChangeRequest->getRequestedTo() && $playDateChangeRequest->isWaiting()) {
+                $playDateChangeRequestForms[$playDateChangeRequest->getId()][] = 
+                    $this->createFormBuilder($playDate)
+                        ->add('accept', SubmitType::class, [
+                            'label' => 'Tauschanfrage jetzt annehmen!', 
+                            'attr' => [
+                                'onclick' => 'return confirm("Sicher?")',
+                                'title' => 'Tauschanfrage verbindlich annehmen',
+                            ],
+                        ])
+                        ->setAction($this->generateUrl('play_date_change_request_accept', ['id' => $playDateChangeRequest->getId()]))
+                        ->setMethod('PATCH')
+                        ->getForm()
+                        ->createView();
+            }
+        }
+
+        return $this->render('play_date/show.html.twig', [
+            'playDate' => $playDate,
+            'substitutionClowns' => array_map(
+                fn(Substitution $substitution) => $substitution->getSubstitutionClown(),
+                $substitutionRepository->findByTimeSlotPeriod($playDate),
+            ),
+            'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() > $this->timeService->today(),
+            'playDateChangeRequestForms' => $playDateChangeRequestForms,
+        ]);
+    }
+
+    #[Route('/play_dates/edit/{id}', name: 'play_date_edit', methods: ['GET', 'PATCH'])]
     public function edit(Request $request, int $id): Response
     {
         $this->adminOnly();
@@ -133,7 +164,7 @@ class PlayDateController extends AbstractController
         ]);
     }
 
-    #[Route('/play_dates/assign_clowns/{id}', name: 'play_date_assign_clowns', methods: ['GET', 'PATCH'])]
+    #[Route('/play_dates/{id}/assign_clowns', name: 'play_date_assign_clowns', methods: ['GET', 'PATCH'])]
     public function assignClowns(Request $request, int $id): Response
     {
         $this->adminOnly();
