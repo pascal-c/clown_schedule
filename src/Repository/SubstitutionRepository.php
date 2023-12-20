@@ -6,6 +6,8 @@ use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\Substitution;
 use App\Service\TimeService;
+use App\Value\TimeSlotInterface;
+use App\Value\TimeSlotPeriodInterface;
 
 class SubstitutionRepository extends AbstractRepository
 {
@@ -47,6 +49,17 @@ class SubstitutionRepository extends AbstractRepository
     public function find(\DateTimeInterface $date, string $daytime): ?Substitution
     {
         return $this->cacheGet($date, $daytime);
+    }
+
+    /**
+     * @return array<Substitution>
+     */
+    public function findByTimeSlotPeriod(TimeSlotPeriodInterface $timeSlotPeriod): array
+    {
+        return array_filter(array_map(
+            fn(TimeSlotInterface $timeSlot) => $this->find($timeSlot->getDate(), $timeSlot->getDaytime()),
+            $timeSlotPeriod->getTimeSlots(),
+        ));
     }
 
     /** @return array<Substitution> */

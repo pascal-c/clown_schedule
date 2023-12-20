@@ -54,9 +54,14 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column]
     private bool $isSuper = false;
 
+    #[ORM\OneToMany(mappedBy: 'playDate', targetEntity: PlayDateHistory::class, orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
+    private Collection $playDateHistory;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
+        $this->playDateHistory = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,6 +163,24 @@ class PlayDate implements TimeSlotPeriodInterface
     public function setIsSuper(bool $isSuper): self
     {
         $this->isSuper = $isSuper;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlayDateHistory>
+     */
+    public function getPlayDateHistory(): Collection
+    {
+        return $this->playDateHistory;
+    }
+
+    public function addPlayDateHistoryEntry(PlayDateHistory $playDateHistoryEntry): self
+    {
+        if (!$this->playDateHistory->contains($playDateHistoryEntry)) {
+            $this->playDateHistory->add($playDateHistoryEntry);
+            $playDateHistoryEntry->setPlayDate($this);
+        }
 
         return $this;
     }

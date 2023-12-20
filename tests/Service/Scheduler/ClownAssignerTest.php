@@ -6,11 +6,14 @@ use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Entity\PlayDate;
+use App\Entity\PlayDateHistory;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\SubstitutionRepository;
+use App\Service\PlayDateHistoryService;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
+use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -69,11 +72,11 @@ final class ClownAssignerTest extends TestCase
         array $availableForResults, 
         ?ClownAvailability $expectedClownAvailability): void
     {
-        $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults);
+        $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
         $clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
-            $this->assertTrue($playDate->getPlayingClowns()->isEmpty());    
+            $this->assertTrue($playDate->getPlayingClowns()->isEmpty());
         } else {
             $this->assertSame($expectedClownAvailability->getClown(), $playDate->getPlayingClowns()->first());
         }
@@ -132,7 +135,7 @@ final class ClownAssignerTest extends TestCase
         array $availableForResults, 
         ?ClownAvailability $expectedClownAvailability): void
     {
-        $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults);
+        $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
         $clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
@@ -194,7 +197,7 @@ final class ClownAssignerTest extends TestCase
     /**
      * @dataProvider substitutionClownDataProvider
      */
-    public function testassignSubstitutionClown(
+    public function testAssignSubstitutionClown(
         array $clownAvailabilities, 
         array $availableOnResults, 
         ?ClownAvailability $expectedClownAvailability,
@@ -224,8 +227,10 @@ final class ClownAssignerTest extends TestCase
                 ->method('find')
                 ->willReturn($substitution);    
         }
+        $playDateHistoryService = $this->createMock(PlayDateHistoryService::class);
+        $playDateHistoryService->expects($this->never())->method($this->anything());
 
-        $clownAssigner = new ClownAssigner($availabilityChecker, $substitutionRepository, $entityManager);
+        $clownAssigner = new ClownAssigner($availabilityChecker, $substitutionRepository, $entityManager, $playDateHistoryService);
         $clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($date, $daytime), $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
@@ -245,7 +250,12 @@ final class ClownAssignerTest extends TestCase
         }
     }
 
-    private function buildClownAssigner(array $clownAvailabilities, PlayDate $playDate, array $availableForResults): ClownAssigner
+    private function buildClownAssigner(
+        array $clownAvailabilities, 
+        PlayDate $playDate, 
+        array $availableForResults, 
+        ?ClownAvailability $expectedClownAvailability
+    ): ClownAssigner
     {
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
@@ -263,7 +273,14 @@ final class ClownAssignerTest extends TestCase
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $substitutionRepository = $this->createMock(SubstitutionRepository::class);
-        $clownAssigner = new ClownAssigner($availabilityChecker, $substitutionRepository, $entityManager);
+        $substitutionRepository->expects($this->never())->method($this->anything());
+        $playDateHistoryService = $this->createMock(PlayDateHistoryService::class);
+        if (is_null($expectedClownAvailability)) {
+            $playDateHistoryService->expects($this->never())->method($this->anything());
+        } else {
+            $playDateHistoryService->expects($this->once())->method('add')->with($playDate, null, PlayDateChangeReason::CALCULATION);
+        }
+        $clownAssigner = new ClownAssigner($availabilityChecker, $substitutionRepository, $entityManager, $playDateHistoryService);
 
         return $clownAssigner;
     }

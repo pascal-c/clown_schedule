@@ -5,10 +5,13 @@ namespace App\Service\Scheduler;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
+use App\Entity\PlayDateHistory;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\SubstitutionRepository;
+use App\Service\PlayDateHistoryService;
 use App\Service\Scheduler\AvailabilityChecker;
+use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +21,8 @@ class ClownAssigner
     public function __construct(
         private AvailabilityChecker $availabilityChecker, 
         private SubstitutionRepository $substitutionRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private PlayDateHistoryService $playDateHistoryService,
         ) {}
 
     public function assignFirstClown(PlayDate $playDate, array $clownAvailabilities): void
@@ -103,6 +107,7 @@ class ClownAssigner
     {
         $playDate->addPlayingClown($clownAvailability->getClown());
         $clownAvailability->incCalculatedPlaysMonth();
+        $this->playDateHistoryService->add($playDate, null, PlayDateChangeReason::CALCULATION);
     }
 
     private function getAvailabilitiesFor(PlayDate $playDate, array $clownAvailabilities)

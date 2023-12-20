@@ -2,7 +2,7 @@
     {% if playDate.isSpecial %}
         <strong class="text-secondary">{{ playDate.title }} {{ playDate.daytime == 'all' ? '(ganztags)' }}</strong>
     {% else %}
-        <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">
+        <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id}) }}">
             <strong class="{{ colorClass }}">
                 {{ playDate.venue.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}
             </strong>

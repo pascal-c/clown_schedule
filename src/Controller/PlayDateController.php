@@ -5,24 +5,35 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDate;
+use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Form\PlayDateAssignClownsFormType;
 use App\Form\PlayDateFormType;
 use App\Form\SpecialPlayDateFormType;
 use App\Repository\PlayDateRepository;
+use App\Repository\ScheduleRepository;
+use App\Repository\SubstitutionRepository;
 use App\Repository\VenueRepository;
+use App\Service\PlayDateHistoryService;
+use App\Value\PlayDateChangeReason;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PlayDateController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, private PlayDateRepository $playDateRepository)
+    public function __construct(
+        ManagerRegistry $doctrine, 
+        private PlayDateRepository $playDateRepository,
+        private ScheduleRepository $scheduleRepository,
+        private PlayDateHistoryService $playDateHistoryService,
+    )
     {
         $this->entityManager = $doctrine->getManager();
     }
@@ -32,6 +43,23 @@ class PlayDateController extends AbstractController
     {
         return $this->render('play_date/index.html.twig', [
             'play_dates' => $this->playDateRepository->all(),
+        ]);
+    }
+
+    #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
+    public function show(SubstitutionRepository $substitutionRepository, int $id): Response
+    {
+        $playDate = $this->playDateRepository->find($id);
+        if (is_null($playDate)) {
+            throw(new NotFoundHttpException);  
+        }
+
+        return $this->render('play_date/show.html.twig', [
+            'playDate' => $playDate,
+            'substitutionClowns' => array_map(
+                fn(Substitution $substitution) => $substitution->getSubstitutionClown(),
+                $substitutionRepository->findByTimeSlotPeriod($playDate),
+            ),
         ]);
     }
 
@@ -73,7 +101,7 @@ class PlayDateController extends AbstractController
         ]);
     }
 
-    #[Route('/play_dates/{id}', name: 'play_date_edit', methods: ['GET', 'PATCH'])]
+    #[Route('/play_dates/edit{id}', name: 'play_date_edit', methods: ['GET', 'PATCH'])]
     public function edit(Request $request, int $id): Response
     {
         $this->adminOnly();
@@ -111,10 +139,15 @@ class PlayDateController extends AbstractController
         $this->adminOnly();
 
         $playDate = $this->playDateRepository->find($id);
-
+        
         $form = $this->createForm(PlayDateAssignClownsFormType::class, $playDate, ['method' => 'PATCH']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $schedule = $this->scheduleRepository->find($playDate->getMonth());
+            $changeReason = !is_null($schedule) && $schedule->isCompleted() 
+                ? PlayDateChangeReason::MANUAL_CHANGE 
+                : PlayDateChangeReason::MANUAL_CHANGE_FOR_SCHEDULE;
+            $this->playDateHistoryService->add($playDate, $this->getCurrentClown(), $changeReason);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clowns wurden zugeordnet. Tip top!');
