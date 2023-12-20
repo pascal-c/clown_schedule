@@ -100,27 +100,6 @@ class PlayDateController extends AbstractController
             throw(new NotFoundHttpException);  
         }
 
-        // formChangeRequest
-        $playDateChangeRequestForms = [];
-        foreach ($playDate->getPlayDateGiveOffRequests() as $playDateChangeRequest) {
-            $playDateChangeRequestForms[$playDateChangeRequest->getId()] = [];
-            if ($this->getCurrentClown() === $playDateChangeRequest->getRequestedTo() && $playDateChangeRequest->isWaiting()) {
-                $playDateChangeRequestForms[$playDateChangeRequest->getId()][] = 
-                    $this->createFormBuilder($playDate)
-                        ->add('accept', SubmitType::class, [
-                            'label' => 'Tauschanfrage jetzt annehmen!', 
-                            'attr' => [
-                                'onclick' => 'return confirm("Sicher?")',
-                                'title' => 'Tauschanfrage verbindlich annehmen',
-                            ],
-                        ])
-                        ->setAction($this->generateUrl('play_date_change_request_accept', ['id' => $playDateChangeRequest->getId()]))
-                        ->setMethod('PATCH')
-                        ->getForm()
-                        ->createView();
-            }
-        }
-
         return $this->render('play_date/show.html.twig', [
             'playDate' => $playDate,
             'substitutionClowns' => array_map(
@@ -128,7 +107,6 @@ class PlayDateController extends AbstractController
                 $substitutionRepository->findByTimeSlotPeriod($playDate),
             ),
             'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() > $this->timeService->today(),
-            'playDateChangeRequestForms' => $playDateChangeRequestForms,
         ]);
     }
 
