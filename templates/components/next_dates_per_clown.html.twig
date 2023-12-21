@@ -26,7 +26,7 @@
                         {{ not partner ? '?' : partner.name }}
                     </td>
                 </tr>
-                {% elseif date is of_type('class', 'App\\Entity\\PlayDate') and date.isSpecial %}
+            {% elseif date is of_type('class', 'App\\Entity\\PlayDate') and date.isSpecial %}
                 <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
                     <td class="lh-sm">
                         {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
@@ -37,7 +37,7 @@
                     <td>{{ date.title }}</td>
                     <td colspan='3'>&nbsp;</td>
                 </tr> 
-                {% else %}
+            {% else %}
                 <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
                     <td>
                         {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}

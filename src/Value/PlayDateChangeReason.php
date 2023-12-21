@@ -7,6 +7,7 @@ namespace App\Value;
 enum PlayDateChangeReason: string
 {
     case CALCULATION = 'calculation';
+    case GIVE_OFF = 'give-off';
     case MANUAL_CHANGE_FOR_SCHEDULE = 'manual-change-for-schedule';
     case MANUAL_CHANGE = 'manual-change';
     case SWAP = 'swap';

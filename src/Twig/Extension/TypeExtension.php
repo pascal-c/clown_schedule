@@ -20,7 +20,7 @@ final class TypeExtension extends AbstractExtension
             'array' => \is_array($var),
             'bool' => \is_bool($var),
             'object' => \is_object($var),
-            'class' => \is_object($var) && $class === \get_class($var),
+            'class' => \is_object($var) && $var instanceof $class,
             'float' => \is_float($var),
             'int' => \is_int($var),
             'numeric' => is_numeric($var),

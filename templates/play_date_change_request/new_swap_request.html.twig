@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Tauschanfrage stellen</h4>
+
+    <h5>
+        für {{ playDate.name }}, {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }} 
+    </h5>    
+
+    {{ form(form) }}
+{% endblock %}

@@ -13,9 +13,10 @@ class TimeService
         return new DateTimeImmutable('today');
     }
 
-    public function middleOfCurrentMonth(): DateTimeImmutable
+
+    public function NearlyEndOfMonth(): DateTimeImmutable
     {
-        return $this->today()->modify('first day of')->modify('+15 days');
+        return $this->today()->modify('first day of')->modify('+25 days');
     }
 
     public function now(): DateTimeImmutable
