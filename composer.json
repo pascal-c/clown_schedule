@@ -10,7 +10,7 @@
         "doctrine/annotations": "^1.0",
         "doctrine/dbal": "^3.2",
         "doctrine/doctrine-bundle": "^2.7",
-        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.16",
         "fakerphp/faker": "^1.21",
         "phpdocumentor/reflection-docblock": "^5.3",
