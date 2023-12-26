@@ -1,5 +1,5 @@
- {% if receivedChangeRequests %}
-    <h4 class="pt-3">Offene Tauschanfragen an Dich</h4>
+ {% if receivedChangeRequests or sentChangeRequests %}
+    <h4 class="pt-3">Offene Tauschanfragen</h4>
     <table class="table">
         <tbody>
             {% for changeRequest in receivedChangeRequests %}
@@ -9,7 +9,7 @@
                     {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
                 </td>
                 <td>
-                    abgeben gegen
+                    an Dich abgeben gegen
                 </td>
                 <td>
                     {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
@@ -20,14 +20,7 @@
                 </td>
             </tr>
             {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
 
- {% if sentChangeRequests %}
-    <h4 class="pt-3">Von Dir gestellte Tauschanfragen</h4>
-    <table class="table">
-        <tbody>
             {% for changeRequest in sentChangeRequests %}
             <tr>
                 <td>Du möchtest</td>
@@ -35,10 +28,13 @@
                     {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
                 </td>
                 <td>
-                    abgeben an <strong>{{ changeRequest.requestedTo.name }}</strong> gegen
+                    an <strong>{{ changeRequest.requestedTo.name }}</strong> abgeben gegen
                 </td>
                 <td>
                     {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
+                </td>
+                <td>
+                    <a href="{{ path('play_date_change_request_close', {id: changeRequest.id}) }}" class="link-danger">zurücknehmen</a>
                 </td>
             </tr>
             {% endfor %}

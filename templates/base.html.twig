@@ -16,7 +16,7 @@
     <body >
         
         <div class="container py-4">
-            {% for label, messages in app.flashes(['success', 'warning', 'danger']) %}
+            {% for label, messages in app.flashes(['success', 'warning', 'danger', 'info']) %}
                 {% for message in messages %}
                     <div class="alert alert-{{ label }} alert-dismissible fade show d-flex" role="alert">
                         <div>{{ message }}</div>

@@ -1,0 +1,33 @@
+<p>
+    Hallo {{ swapRequest.requestedTo.name }},
+</p>
+
+<p>
+    {{ swapRequest.requestedBy.name }} hat seine Tauschanfrage zurückgenommen. <br />
+    Es ging um:
+</p>
+
+<p>
+    {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
+    gegen:<br />
+    {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
+</p>
+
+<p>
+    Warum, kann ich leider auch nicht sagen!
+</p>
+
+{% if personalComment is not empty %}
+    <p>
+        Aber {{ swapRequest.requestedBy.name }} hat eine persönliche Nachricht für Dich hinterlassen:
+    </p>
+    <p>
+        <i>{{ personalComment|nl2br }}</i>
+    </p>
+{% endif %}
+
+<p>
+    <br />
+    Es lebe das Leben!<br />
+    Deine Spielplan App
+</p>
