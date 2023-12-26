@@ -1,0 +1,74 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Tauschanfrage abbrechen</h4>
+
+    <p>
+        Du wolltest mit{{ requestedTo.name }} tauschen. Du würdest {{ playDateToGiveOff.name }} abgeben und dafür {{ playDateWanted.name }} bekommen.<br />
+        Hier nochmal alles für Dich im Überblick:
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Du wolltest</th>
+                <th>gegen</th>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Wo</th>
+                <td>
+                    {{ playDateToGiveOff.name }}
+                </td>
+                <td>
+                    {{ playDateWanted.name }}
+                </td>
+            </tr>
+            <tr>
+                <th>Wann</th>
+                <td>
+                    {{ playDateToGiveOff.date|date('d.m.Y') }} {{ playDateToGiveOff.daytime|trans }}
+                    {% if playDateToGiveOff.comment != '' %}
+                        <br /><span class="fst-itlic fw-light">{{ playDateToGiveOff.comment|nl2br }}</i>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ playDateWanted.date|date('d.m.Y') }} {{ playDateWanted.daytime|trans }}
+                    {% if playDateWanted.comment != '' %}
+                        <br /><span class="fst-itlic fw-light">{{ playDateWanted.comment|nl2br }}</i>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Treffen</th>
+                <td>
+                    {{ playDateToGiveOff.venue.meetingTime|date('H:i') }}
+                </td>
+                <td>
+                    {{ playDateWanted.venue.meetingTime|date('H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spielzeit</th>
+                <td>
+                    {{ playDateToGiveOff.venue.playTimeFrom|date('H:i') }} - {{ playDateToGiveOff.venue.playTimeTo|date('H:i') }}
+                </td>
+                <td>
+                    {{ playDateWanted.venue.playTimeFrom|date('H:i') }} - {{ playDateWanted.venue.playTimeTo|date('H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spielende Clowns</th>
+                <td>
+                    {{ playDateToGiveOff.playingClowns|map(clown => clown.name)|join(' | ') }}
+                </td>
+                <td>
+                    {{ playDateWanted.playingClowns|map(clown => clown.name)|join(' | ') }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{ form(form) }}
+{% endblock %}

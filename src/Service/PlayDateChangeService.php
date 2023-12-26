@@ -42,4 +42,10 @@ class PlayDateChangeService
     {
         $playDateChangeRequest->setStatus(PlayDateChangeRequestStatus::DECLINED);
     }
+
+
+    public function close(PlayDateChangeRequest $playDateChangeRequest)
+    {
+        $playDateChangeRequest->setStatus(PlayDateChangeRequestStatus::CLOSED);
+    }
 }

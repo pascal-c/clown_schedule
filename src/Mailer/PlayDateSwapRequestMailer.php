@@ -59,6 +59,22 @@ class PlayDateSwapRequestMailer
         $this->mailer->send($email);
     }
 
+    public function sendCancelSwapRequestMail(PlayDateChangeRequest $playDateChangeRequest, ?string $personalComment): void
+    {
+        $receiver = $playDateChangeRequest->getRequestedTo();
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+            ->to(new Address($receiver->getEmail(), $receiver->getName()))
+            ->subject($playDateChangeRequest->getRequestedBy()->getName() . ' hat seine Tauschanfrage zurückgenommen')
+            ->htmlTemplate('emails/play_date_change_request/swap_request_cancel.html.twig')
+            ->context([
+                'swapRequest' => $playDateChangeRequest,
+                'personalComment' => $personalComment,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
     /**
      * send email to requesting and requested clown to inform about a request that has been closed
      */
