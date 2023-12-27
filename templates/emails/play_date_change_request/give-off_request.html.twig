@@ -1,0 +1,32 @@
+<p>
+    Hey Leute,<br />
+</p>
+
+<p>
+    {{ changeRequest.requestedBy.name }} möchte gerne einen Spieltermin abgeben. Und zwar:
+</p>
+
+<p>
+    {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.name }}
+</p>
+
+{% if personalComment is not empty %}
+    <p>
+        Persönliche Nachricht von {{ changeRequest.requestedBy.name }}:
+    </p>
+    <p>
+        <i>{{ personalComment|nl2br }}</i>
+    </p>
+{% endif %}
+
+<p>
+    Du kannst den Spieltermin
+    <a href="{{ url('play_date_show', {id: changeRequest.playDateToGiveOff.id }) }}">hier übernehmen</a>, wenn Du willst.<br />
+    Wer zuerst kommt, mahlt zuerst!<br />
+</p>
+
+<p>
+    Das Leben ist schön!
+    <br />
+    Eure liebende Spielplan App
+</p>

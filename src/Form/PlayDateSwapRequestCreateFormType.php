@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class PlayDateSwapRequestFormType extends AbstractType
+class PlayDateSwapRequestCreateFormType extends AbstractType
 {
     public function __construct(
         private PlayDateRepository $playDateRepository, 

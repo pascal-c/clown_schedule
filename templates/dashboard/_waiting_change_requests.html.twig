@@ -8,16 +8,28 @@
                 <td>
                     {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
                 </td>
-                <td>
-                    an Dich abgeben gegen
-                </td>
-                <td>
-                    {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
-                </td>
-                <td>
-                    <a href="{{ path('play_date_change_request_accept', {id: changeRequest.id}) }}" class="link-success">annehmen</a> oder
-                    <a href="{{ path('play_date_change_request_decline', {id: changeRequest.id}) }}" class="link-danger">ablehnen</a>
-                </td>
+                {% if changeRequest.isSwap %}
+                    <td>
+                        an Dich abgeben gegen
+                    </td>
+                    <td>
+                        {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
+                    </td>
+                    <td>
+                        <a href="{{ path('play_date_swap_request_accept', {id: changeRequest.id}) }}" class="link-success">annehmen</a> oder
+                        <a href="{{ path('play_date_swap_request_decline', {id: changeRequest.id}) }}" class="link-danger">ablehnen</a>
+                    </td>
+                {% elseif changeRequest.isGiveOff %}
+                    <td>
+                        abgeben
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-success">übernehmen</a>
+                    </td>
+                {% endif %}
             </tr>
             {% endfor %}
 
@@ -27,15 +39,27 @@
                 <td>
                     {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
                 </td>
-                <td>
-                    an <strong>{{ changeRequest.requestedTo.name }}</strong> abgeben gegen
-                </td>
-                <td>
-                    {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
-                </td>
-                <td>
-                    <a href="{{ path('play_date_change_request_close', {id: changeRequest.id}) }}" class="link-danger">zurücknehmen</a>
-                </td>
+                {% if changeRequest.isSwap %}
+                    <td>
+                        an <strong>{{ changeRequest.requestedTo.name }}</strong> abgeben gegen
+                    </td>
+                    <td>
+                        {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
+                    </td>
+                    <td>
+                        <a href="{{ path('play_date_swap_request_cancel', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                    </td>
+                {% elseif changeRequest.isGiveOff %}
+                    <td>
+                        abgeben
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                    </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>

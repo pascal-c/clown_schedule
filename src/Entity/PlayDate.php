@@ -55,13 +55,15 @@ class PlayDate implements TimeSlotPeriodInterface
     private bool $isSuper = false;
 
     #[ORM\OneToMany(mappedBy: 'playDate', targetEntity: PlayDateHistory::class, orphanRemoval: true, cascade: ['persist'])]
-    #[ORM\OrderBy(['id' => 'ASC'])]
+    #[ORM\OrderBy(['id' => 'DESC'])]
     private Collection $playDateHistory;
 
     #[ORM\OneToMany(mappedBy: 'playDateToGiveOff', targetEntity: PlayDateChangeRequest::class, orphanRemoval: true)]
+    #[ORM\OrderBy(["requestedAt" => "DESC"])]
     private Collection $playDateGiveOffRequests;
 
     #[ORM\OneToMany(mappedBy: 'PlayDateWanted', targetEntity: PlayDateChangeRequest::class)]
+    #[ORM\OrderBy(["requestedAt" => "DESC"])]
     private Collection $playDateSwapRequests;
 
     public function __construct()

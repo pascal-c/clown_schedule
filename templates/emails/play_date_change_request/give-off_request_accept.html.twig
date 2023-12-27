@@ -1,0 +1,31 @@
+<p>
+    Hey {{ changeRequest.requestedBy.name }},<br />
+</p>
+
+<p>
+    gute Neuigkeiten!<br />
+    {{ changeRequest.requestedTo.name }} übernimmt Dein Spiel:
+</p>
+
+<p>
+    {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.name }}
+</p>
+
+{% if personalComment is not empty %}
+    <p>
+        Persönliche Nachricht von {{ changeRequest.requestedTo.name }}:
+    </p>
+    <p>
+        <i>{{ personalComment|nl2br }}</i>
+    </p>
+{% endif %}
+
+<p>
+    Super, Du musst Dich um nichts weiter kümmern. Ich habe den Spielplan bereits entsprechend aktualisiert.
+</p>
+
+<p>
+    Das Leben ist schön!
+    <br />
+    Deine Dich liebende Spielplan App
+</p>
