@@ -97,6 +97,7 @@ class PlayDateSwapRequestController extends AbstractController
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
         
         if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         } 
@@ -139,6 +140,7 @@ class PlayDateSwapRequestController extends AbstractController
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
         
         if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         } 
@@ -178,6 +180,7 @@ class PlayDateSwapRequestController extends AbstractController
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
         
         if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         } 

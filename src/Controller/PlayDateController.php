@@ -15,6 +15,7 @@ use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Repository\VenueRepository;
+use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\PlayDateHistoryService;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
@@ -102,7 +103,7 @@ class PlayDateController extends AbstractController
                 fn(Substitution $substitution) => $substitution->getSubstitutionClown(),
                 $substitutionRepository->findByTimeSlotPeriod($playDate),
             ),
-            'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() > $this->timeService->today(),
+            'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() >= $this->timeService->today()->modify(PlayDateChangeRequestCloseInvalidService::CREATABLE_UNTIL_PERIOD),
         ]);
     }
 

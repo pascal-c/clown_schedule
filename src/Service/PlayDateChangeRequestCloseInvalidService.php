@@ -11,7 +11,10 @@ use App\Value\PlayDateChangeRequestStatus;
 
 class PlayDateChangeRequestCloseInvalidService
 {
-    public function __construct(private PlayDateSwapRequestMailer $mailer)
+    public const ACCEPTABLE_UNTIL_PERIOD = '+3 days';
+    public const CREATABLE_UNTIL_PERIOD = '+7 days';
+
+    public function __construct(private PlayDateSwapRequestMailer $mailer, private TimeService $timeService)
     {}
 
     public function closeInvalidChangeRequests(PlayDate $playDate)
@@ -24,11 +27,24 @@ class PlayDateChangeRequestCloseInvalidService
 
     public function closeIfInvalid(PlayDateChangeRequest $playDateChangeRequest): void
     {
-        if ($playDateChangeRequest->isWaiting() && !$playDateChangeRequest->isValid()) {
+        if ($playDateChangeRequest->isWaiting() && (!$playDateChangeRequest->isValid() || !$this->deadlineIsMet($playDateChangeRequest))) {
             $playDateChangeRequest->setStatus(PlayDateChangeRequestStatus::CLOSED);
             if ($playDateChangeRequest->isSwap()) {
                 $this->mailer->sendSwapRequestClosedMail($playDateChangeRequest);
             }
         }
+    }
+
+    private function deadlineIsMet(PlayDateChangeRequest $playDateChangeRequest)
+    {
+        $deadline = $this->timeService->today()->modify(self::ACCEPTABLE_UNTIL_PERIOD);
+        if ($playDateChangeRequest->getPlayDateToGiveOff()->getDate() < $deadline) {
+            return false;
+        }
+        if ($playDateChangeRequest->isGiveOff()) {
+            return true;
+        }
+
+        return $playDateChangeRequest->getPlayDateWanted()->getDate() >= $deadline;
     }
 }
