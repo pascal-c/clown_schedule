@@ -122,6 +122,7 @@ class PlayDateController extends AbstractController
             ->add('delete', SubmitType::class, 
                 ['label' => 'Spieltermin löschen', 'attr' => array('onclick' => 'return confirm("Spieltermin endgültig löschen?")')])
             ->setMethod('DELETE')
+            ->setAction($this->generateUrl('play_date_delete', ['id' => $id]))
             ->getForm();
 
         $editForm->handleRequest($request);
