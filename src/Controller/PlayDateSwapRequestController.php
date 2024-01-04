@@ -7,8 +7,8 @@ namespace App\Controller;
 use App\Entity\PlayDateChangeRequest;
 use App\Form\PlayDateSwapRequestAcceptFormType;
 use App\Form\PlayDateSwapRequestCloseFormType;
-use App\Form\PlayDateSwapRequestDeclineFormType;
 use App\Form\PlayDateSwapRequestCreateFormType;
+use App\Form\PlayDateSwapRequestDeclineFormType;
 use App\Mailer\PlayDateSwapRequestMailer;
 use App\Repository\ClownRepository;
 use App\Repository\PlayDateChangeRequestRepository;
@@ -34,14 +34,14 @@ class PlayDateSwapRequestController extends AbstractController
         private PlayDateChangeRequestCloseInvalidService $playDateChangeRequestCloseInvalidService,
         private EntityManagerInterface $entityManager,
         private PlayDateSwapRequestMailer $mailer,
-    )
-    {}
+    ) {
+    }
 
     #[Route('/play_date/{id}/swap_request/new', name: 'play_date_new_swap_request', methods: ['GET', 'POST'])]
     public function new(Request $request, int $id): Response
     {
         $playDate = $this->playDateRepository->find($id);
-        
+
         $form = $this->createForm(PlayDateSwapRequestCreateFormType::class, null, [
             'currentClown' => $this->getCurrentClown(),
             'playDateToGiveOff' => $playDate,
@@ -60,14 +60,14 @@ class PlayDateSwapRequestController extends AbstractController
                 ->setRequestedTo($requestedTo)
                 ->setRequestedAt($this->timeService->now())
                 ->setType(PlayDateChangeRequestType::SWAP)
-                ;
+            ;
 
             $this->entityManager->persist($playDateChangeRequest);
             $this->entityManager->flush();
 
             $this->mailer->sendSwapRequestMail($playDateChangeRequest, $formData['comment']);
 
-            $this->addFlash('success', 'Tauschanfrage wurde erfolgreich gestellt. ' . $requestedTo->getName() . ' hat eine Email bekommen. Hoffentlich klappt das!');
+            $this->addFlash('success', 'Tauschanfrage wurde erfolgreich gestellt. '.$requestedTo->getName().' hat eine Email bekommen. Hoffentlich klappt das!');
             $this->addFlash('info', 'Übrigens: Du kannst für einen Spieltermin auch mehrere Tauschanfragen parallel stellen! Sobald eine der Tauschanfragen angenommen wird, werden die anderen automtisch geschlossen.');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
@@ -86,22 +86,23 @@ class PlayDateSwapRequestController extends AbstractController
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
-            throw(new NotFoundHttpException);
+            throw new NotFoundHttpException();
         } elseif (
             !is_null($playDateChangeRequest->getRequestedTo())
             && $playDateChangeRequest->getRequestedTo() !== $this->getCurrentClown()
         ) {
-            throw($this->createAccessDeniedException('Betrug! Nur die angefragte Person darf den Tausch annehmen!'));
-        } 
-        
+            throw $this->createAccessDeniedException('Betrug! Nur die angefragte Person darf den Tausch annehmen!');
+        }
+
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
-        
+
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
-        } 
-        
+        }
+
         $form = $this->createForm(PlayDateSwapRequestAcceptFormType::class);
         $form->handleRequest($request);
 
@@ -112,7 +113,7 @@ class PlayDateSwapRequestController extends AbstractController
             $this->mailer->sendAcceptSwapRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
             $this->addFlash('success', 'Yippieh! Spieltermin wurde getauscht! Die anfragende Person wird per Email informiert.');
-            
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
 
@@ -129,22 +130,23 @@ class PlayDateSwapRequestController extends AbstractController
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
-            throw(new NotFoundHttpException);
+            throw new NotFoundHttpException();
         } elseif (
             !is_null($playDateChangeRequest->getRequestedTo())
             && $playDateChangeRequest->getRequestedTo() !== $this->getCurrentClown()
         ) {
-            throw($this->createAccessDeniedException('Betrug! Nur die angefragte Person darf den Tausch ablehnen!'));
-        } 
-        
+            throw $this->createAccessDeniedException('Betrug! Nur die angefragte Person darf den Tausch ablehnen!');
+        }
+
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
-        
+
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
-        } 
-        
+        }
+
         $form = $this->createForm(PlayDateSwapRequestDeclineFormType::class);
         $form->handleRequest($request);
 
@@ -155,7 +157,7 @@ class PlayDateSwapRequestController extends AbstractController
             $this->mailer->sendDeclineSwapRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
             $this->addFlash('success', 'Gut gemacht! Tauschanfrage wurde erfolgreich abgelehnt! Du kannst Dich ja hier nicht um alles kümmern!');
-            
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
 
@@ -172,19 +174,20 @@ class PlayDateSwapRequestController extends AbstractController
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
-            throw(new NotFoundHttpException);
+            throw new NotFoundHttpException();
         } elseif ($playDateChangeRequest->getRequestedBy() !== $this->getCurrentClown()) {
-            throw($this->createAccessDeniedException('Betrug! Nur die anfragende Person darf den Tausch abbrechen!'));
-        } 
-        
+            throw $this->createAccessDeniedException('Betrug! Nur die anfragende Person darf den Tausch abbrechen!');
+        }
+
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
-        
+
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
-        } 
-        
+        }
+
         $form = $this->createForm(PlayDateSwapRequestCloseFormType::class);
         $form->handleRequest($request);
 
@@ -195,7 +198,7 @@ class PlayDateSwapRequestController extends AbstractController
             $this->mailer->sendCancelSwapRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
             $this->addFlash('success', 'Ok! Tauschanfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.');
-            
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
 

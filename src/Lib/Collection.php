@@ -3,6 +3,7 @@
 namespace App\Lib;
 
 use Iterator;
+use ReturnTypeWillChange;
 
 class Collection implements Iterator
 {
@@ -14,8 +15,8 @@ class Collection implements Iterator
 
     public static function create(callable $callable, int $count): self
     {
-        $collection = new Collection;
-        for ($i=0; $i<$count; $i++) {
+        $collection = new Collection();
+        for ($i = 0; $i < $count; ++$i) {
             $collection->push($callable());
         }
 
@@ -36,7 +37,7 @@ class Collection implements Iterator
         return $this->list[array_rand($this->list)];
     }
 
-    public function samples(int $min, ?int $max = null): array
+    public function samples(int $min, int $max = null): array
     {
         $count = is_null($max) ? $min : rand($min, $max);
         $list = $this->list;
@@ -81,29 +82,29 @@ class Collection implements Iterator
     }*/
 
     // Iterator
-    public function rewind(): void 
+    public function rewind(): void
     {
         $this->position = 0;
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current(): mixed
     {
         return $this->list[$this->position];
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function key(): mixed
     {
         return $this->position;
     }
 
-    public function next(): void 
+    public function next(): void
     {
         ++$this->position;
     }
 
-    public function valid(): bool 
+    public function valid(): bool
     {
         return isset($this->list[$this->position]);
     }

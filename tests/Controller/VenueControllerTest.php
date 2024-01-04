@@ -2,8 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\Controller\WebTestCase;
-
 class VenueControllerTest extends WebTestCase
 {
     public function testcreateAndShow(): void
@@ -17,7 +15,7 @@ class VenueControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h4', 'Spielorte');
 
-        $crawler = $client->clickLink(('Spielort anlegen'));
+        $crawler = $client->clickLink('Spielort anlegen');
         $buttonCrawlerNode = $crawler->selectButton('Spielort speichern');
         $form = $buttonCrawlerNode->form();
 
@@ -36,29 +34,29 @@ class VenueControllerTest extends WebTestCase
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h4', 'DRK Leipzig');
-    
+
         $emailsRow = $this->findNodeByText($crawler, 'table tr', 'Email');
         $this->assertNodeTextContains($emailsRow, 'erika@leipzig.de');
 
         $this->assertNodeTextContains(
-            $this->findNodeByText($crawler, 'table tr', 'Verantwortliche Clowns'), 
+            $this->findNodeByText($crawler, 'table tr', 'Verantwortliche Clowns'),
             'Erika'
         );
 
         $this->assertNodeTextContains(
-            $this->findNodeByText($crawler, 'table tr', 'Standard Tageszeit für Spieltermine'), 
+            $this->findNodeByText($crawler, 'table tr', 'Standard Tageszeit für Spieltermine'),
             'vormittags'
         );
         $this->assertNodeTextContains(
-            $this->findNodeByText($crawler, 'table tr', 'Treffen'), 
+            $this->findNodeByText($crawler, 'table tr', 'Treffen'),
             '09:30'
         );
         $this->assertNodeTextContains(
-            $this->findNodeByText($crawler, 'table tr', 'Spielzeit'), 
+            $this->findNodeByText($crawler, 'table tr', 'Spielzeit'),
             '10:00 - 12:00'
         );
     }
-    
+
     /**
      * @depends testcreateAndShow
      */
@@ -72,9 +70,8 @@ class VenueControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h4', 'Spielorte');
 
         $this->assertNodeTextContains(
-            $this->findNodeByText($crawler, 'table tr', 'DRK Leipzig'), 
+            $this->findNodeByText($crawler, 'table tr', 'DRK Leipzig'),
             'nachmittags'
         );
     }
 }
-

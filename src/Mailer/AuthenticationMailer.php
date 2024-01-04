@@ -10,7 +10,9 @@ use Symfony\Component\Mime\Address;
 
 class AuthenticationMailer
 {
-    public function __construct(private MailerInterface $mailer, private AuthService $authService) {}
+    public function __construct(private MailerInterface $mailer, private AuthService $authService)
+    {
+    }
 
     public function sendLoginByTokenMail(Clown $clown): void
     {

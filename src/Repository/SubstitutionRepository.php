@@ -8,10 +8,13 @@ use App\Entity\Substitution;
 use App\Service\TimeService;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
+use DateTimeInterface;
 
 class SubstitutionRepository extends AbstractRepository
 {
-    public function __construct(private TimeService $timeService) {}
+    public function __construct(private TimeService $timeService)
+    {
+    }
 
     private array $cache = [];
 
@@ -28,7 +31,7 @@ class SubstitutionRepository extends AbstractRepository
         return empty($this->cache[$month->getKey()]);
     }
 
-    private function cacheGet(\DateTimeInterface $date, string $daytime): ?Substitution
+    private function cacheGet(DateTimeInterface $date, string $daytime): ?Substitution
     {
         $month = new Month($date);
         if ($this->cacheNeedsWarmUp($month)) {
@@ -38,6 +41,7 @@ class SubstitutionRepository extends AbstractRepository
         if (!isset($this->cache[$month->getKey()][$date->format('d')][$daytime])) {
             return null;
         }
+
         return $this->cache[$month->getKey()][$date->format('d')][$daytime];
     }
 
@@ -46,7 +50,7 @@ class SubstitutionRepository extends AbstractRepository
         return Substitution::class;
     }
 
-    public function find(\DateTimeInterface $date, string $daytime): ?Substitution
+    public function find(DateTimeInterface $date, string $daytime): ?Substitution
     {
         return $this->cacheGet($date, $daytime);
     }
@@ -57,7 +61,7 @@ class SubstitutionRepository extends AbstractRepository
     public function findByTimeSlotPeriod(TimeSlotPeriodInterface $timeSlotPeriod): array
     {
         return array_filter(array_map(
-            fn(TimeSlotInterface $timeSlot) => $this->find($timeSlot->getDate(), $timeSlot->getDaytime()),
+            fn (TimeSlotInterface $timeSlot) => $this->find($timeSlot->getDate(), $timeSlot->getDaytime()),
             $timeSlotPeriod->getTimeSlots(),
         ));
     }
@@ -67,10 +71,11 @@ class SubstitutionRepository extends AbstractRepository
     {
         $substitutions = $this->doctrineRepository->findBy(['month' => $month->getKey()]);
         $this->cacheWarmUp($month, $substitutions);
+
         return $substitutions;
     }
 
-    public function futureByClown(Clown $clown): Array
+    public function futureByClown(Clown $clown): array
     {
         return $this->doctrineRepository->createQueryBuilder('ts')
             ->leftJoin('ts.substitutionClown', 'clown')

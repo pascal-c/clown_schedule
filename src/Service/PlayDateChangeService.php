@@ -12,8 +12,9 @@ use App\Value\PlayDateChangeRequestStatus;
 class PlayDateChangeService
 {
     public function __construct(private PlayDateHistoryService $playDateHistoryService)
-    {}
-    
+    {
+    }
+
     public function accept(PlayDateChangeRequest $playDateChangeRequest, Clown $acceptedBy)
     {
         $playDateChangeRequest->setStatus(PlayDateChangeRequestStatus::ACCEPTED);
@@ -21,7 +22,7 @@ class PlayDateChangeService
         $playDateChangeRequest->getPlayDateToGiveOff()->removePlayingClown($playDateChangeRequest->getRequestedBy());
         $playDateChangeRequest->getPlayDateToGiveOff()->addPlayingClown($acceptedBy);
         $this->playDateHistoryService->add(
-            playDate: $playDateChangeRequest->getPlayDateToGiveOff(), 
+            playDate: $playDateChangeRequest->getPlayDateToGiveOff(),
             changedBy: $playDateChangeRequest->getRequestedBy(),
             reason: $playDateChangeRequest->isSwap() ? PlayDateChangeReason::SWAP : PlayDateChangeReason::GIVE_OFF,
         );
@@ -30,7 +31,7 @@ class PlayDateChangeService
             $playDateChangeRequest->getPlayDateWanted()->removePlayingClown($playDateChangeRequest->getRequestedTo());
             $playDateChangeRequest->getPlayDateWanted()->addPlayingClown($playDateChangeRequest->getRequestedBy());
             $this->playDateHistoryService->add(
-                playDate: $playDateChangeRequest->getPlayDateWanted(), 
+                playDate: $playDateChangeRequest->getPlayDateWanted(),
                 changedBy: $playDateChangeRequest->getRequestedBy(),
                 reason: PlayDateChangeReason::SWAP,
             );
@@ -43,7 +44,6 @@ class PlayDateChangeService
     {
         $playDateChangeRequest->setStatus(PlayDateChangeRequestStatus::DECLINED);
     }
-
 
     public function close(PlayDateChangeRequest $playDateChangeRequest)
     {

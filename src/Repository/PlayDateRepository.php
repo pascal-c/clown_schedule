@@ -10,7 +10,9 @@ use Doctrine\ORM\QueryBuilder;
 
 class PlayDateRepository extends AbstractRepository
 {
-    public function __construct(private TimeService $timeService) {}
+    public function __construct(private TimeService $timeService)
+    {
+    }
 
     protected function getEntityName(): string
     {
@@ -22,7 +24,7 @@ class PlayDateRepository extends AbstractRepository
         return $this->doctrineRepository->find($id);
     }
 
-    public function all(): Array
+    public function all(): array
     {
         return $this->doctrineRepository->findBy(
             [],
@@ -30,7 +32,7 @@ class PlayDateRepository extends AbstractRepository
         );
     }
 
-    public function regularByMonth(Month $month): Array
+    public function regularByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
             ->andWhere('pd.isSpecial = 0')
@@ -38,13 +40,13 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
-    public function byMonth(Month $month): Array
+    public function byMonth(Month $month): array
     {
         return $this->queryByMonth($month)
             ->getQuery()
             ->enableResultCache(1)
             ->getResult()
-            ;
+        ;
     }
 
     private function queryByMonth(Month $month): QueryBuilder
@@ -58,7 +60,7 @@ class PlayDateRepository extends AbstractRepository
             ->addOrderBy('pd.daytime', 'ASC');
     }
 
-    public function futureByMonth(Month $month): Array
+    public function futureByMonth(Month $month): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->where('pd.date >= :min_date')
@@ -71,7 +73,7 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
-    public function futureByClown(Clown $clown): Array
+    public function futureByClown(Clown $clown): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->leftJoin('pd.playingClowns', 'clown')

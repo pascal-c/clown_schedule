@@ -22,7 +22,7 @@ class ClownController extends AbstractController
     }
 
     #[Route('/clowns', name: 'clown_index', methods: ['GET'])]
-    public function index(): Response 
+    public function index(): Response
     {
         return $this->render('clown/index.html.twig', [
             'clowns' => $this->clownRepository->all(),
@@ -40,12 +40,13 @@ class ClownController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $clown = $form->getData();  
+            $clown = $form->getData();
 
             $this->entityManager->persist($clown);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich angelegt.');
+
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Clown konnte nicht angelegt werden.');
@@ -66,24 +67,28 @@ class ClownController extends AbstractController
 
         $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($clown)
-            ->add('delete', SubmitType::class, 
-                ['label' => 'Clown löschen', 'attr' => array('onclick' => 'return confirm("Clown endgültig löschen?")')])
+            ->add(
+                'delete',
+                SubmitType::class,
+                ['label' => 'Clown löschen', 'attr' => ['onclick' => 'return confirm("Clown endgültig löschen?")']]
+            )
             ->setMethod('DELETE')
             ->getForm();
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $clown = $form->getData();
-            $clown->setIsActive($form['isActive']->isSubmitted());   
-            $clown->setIsAdmin($form['isAdmin']->isSubmitted());  
+            $clown->setIsActive($form['isActive']->isSubmitted());
+            $clown->setIsAdmin($form['isAdmin']->isSubmitted());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich gespeichert.');
+
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Clown konnte nicht gespeichert werden.');
         }
-        
+
         return $this->render('clown/edit.html.twig', [
             'form' => $form,
             'delete_form' => $deleteForm,
@@ -95,7 +100,7 @@ class ClownController extends AbstractController
     public function delete(Request $request, $id): Response
     {
         $this->adminOnly();
-        
+
         $clown = $this->clownRepository->find($id);
 
         $deleteForm = $this->createFormBuilder($clown)
@@ -109,10 +114,12 @@ class ClownController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich gelöscht.');
+
             return $this->redirectToRoute('clown_index');
         }
 
         $this->addFlash('warning', 'Clown konnte nicht gelöscht werden.');
+
         return $this->redirectToRoute('clown_edit', ['id' => $clown->getId()]);
     }
 }

@@ -1,14 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Service;
 
 use App\Entity\Clown;
 use App\Entity\PlayDate;
 use App\Entity\PlayDateChangeRequest;
-use App\Entity\PlayDateHistory;
 use App\Service\PlayDateChangeService;
 use App\Service\PlayDateHistoryService;
-use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
 use App\Value\PlayDateChangeRequestStatus;
 use App\Value\PlayDateChangeRequestType;
@@ -28,29 +28,29 @@ final class PlayDateChangeServiceTest extends TestCase
         );
     }
 
-    public function testAccept_giveOff(): void
+    public function testAcceptGiveOff(): void
     {
-        $requestedBy = new Clown;
-        $requestedTo = new Clown;
-        $playingClown1 = new Clown;
+        $requestedBy = new Clown();
+        $requestedTo = new Clown();
+        $playingClown1 = new Clown();
         $playingClown2 = $requestedBy;
-        $playDateToGiveOff = (new PlayDate)
+        $playDateToGiveOff = (new PlayDate())
             ->addPlayingClown($playingClown1)
             ->addPlayingClown($playingClown2);
-        $playDateChangeRequest = (new PlayDateChangeRequest)
+        $playDateChangeRequest = (new PlayDateChangeRequest())
             ->setPlayDateToGiveOff($playDateToGiveOff)
             ->setPlayDateWanted(null)
             ->setRequestedBy($requestedBy)
             ->setRequestedTo(null)
             ->setType(PlayDateChangeRequestType::GIVE_OFF)
             ->setStatus(PlayDateChangeRequestStatus::WAITING);
-           
+
         $this->playDateHistoryService->expects($this->once())
             ->method('add')
             ->with($playDateToGiveOff, $requestedBy, PlayDateChangeReason::GIVE_OFF);
 
         $this->playDateChangeService->accept($playDateChangeRequest, $requestedTo);
-        
+
         // first playing clown did not change
         $this->assertContains($playingClown1, $playDateToGiveOff->getPlayingClowns());
         $this->assertNotContains($requestedBy, $playDateToGiveOff->getPlayingClowns());
@@ -59,25 +59,25 @@ final class PlayDateChangeServiceTest extends TestCase
         $this->assertSame($requestedTo, $playDateChangeRequest->getRequestedTo());
     }
 
-    public function testAccept_swap(): void
+    public function testAcceptSwap(): void
     {
-        $requestedBy = new Clown;
-        $requestedTo = new Clown;
-        $playingClown1 = new Clown;
-        $playDateToGiveOff = (new PlayDate)
+        $requestedBy = new Clown();
+        $requestedTo = new Clown();
+        $playingClown1 = new Clown();
+        $playDateToGiveOff = (new PlayDate())
             ->addPlayingClown($playingClown1)
             ->addPlayingClown($requestedBy);
-        $playDateWanted = (new PlayDate)
+        $playDateWanted = (new PlayDate())
             ->addPlayingClown($playingClown1)
-            ->addPlayingClown($requestedTo);    
-        $playDateChangeRequest = (new PlayDateChangeRequest)
+            ->addPlayingClown($requestedTo);
+        $playDateChangeRequest = (new PlayDateChangeRequest())
             ->setPlayDateToGiveOff($playDateToGiveOff)
             ->setPlayDateWanted($playDateWanted)
             ->setRequestedBy($requestedBy)
             ->setRequestedTo($requestedTo)
             ->setType(PlayDateChangeRequestType::SWAP)
             ->setStatus(PlayDateChangeRequestStatus::WAITING);
-           
+
         $this->playDateHistoryService->expects($this->exactly(2))
             ->method('add')
             ->withConsecutive(
@@ -86,7 +86,7 @@ final class PlayDateChangeServiceTest extends TestCase
             );
 
         $this->playDateChangeService->accept($playDateChangeRequest, $requestedTo);
-        
+
         $this->assertTrue($playDateChangeRequest->isAccepted());
         // first playing clown did not change
         $this->assertContains($playingClown1, $playDateToGiveOff->getPlayingClowns());

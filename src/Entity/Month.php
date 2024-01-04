@@ -13,7 +13,8 @@ class Month
 {
     private DateTimeImmutable $date;
 
-    public function __construct(DateTimeImmutable $date) {
+    public function __construct(DateTimeImmutable $date)
+    {
         $this->date = $date->modify('first day of midnight');
     }
 
@@ -25,6 +26,7 @@ class Month
     public function days()
     {
         $interval = new DateInterval('P1D');
+
         return new DatePeriod($this->date, $interval, $this->next()->date);
     }
 
@@ -41,9 +43,11 @@ class Month
     public function getLabel(): string
     {
         $formatter = new IntlDateFormatter(
-            'de_DE', 
+            'de_DE',
             timezone: 'Europe/Berlin',
-            pattern: 'MMM y');
+            pattern: 'MMM y'
+        );
+
         return $formatter->format($this->date);
     }
 
@@ -55,6 +59,7 @@ class Month
     public function next(): Month
     {
         $interval = new DateInterval('P1M');
+
         return new Month($this->date->add($interval));
     }
 

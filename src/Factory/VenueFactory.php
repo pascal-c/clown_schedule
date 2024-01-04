@@ -13,19 +13,20 @@ class VenueFactory extends AbstractFactory
     public function create(string $name = null, array $playingClowns = [], string $daytimeDefault = null)
     {
         list($daytimeDefault, $meetingTime, $playTimeFrom, $playTimeTo) = $this->timeOptions()->sample();
-        $venue = (new Venue)
+        $venue = (new Venue())
             ->setName($this->generateName($name))
             ->setDaytimeDefault($daytimeDefault)
             ->setMeetingTime($meetingTime)
             ->setPlayTimeFrom($playTimeFrom)
             ->setPlayTimeTo($playTimeTo)
-            ;
+        ;
         foreach ($playingClowns as $clown) {
             $venue->addResponsibleClown($clown);
         }
 
         $this->entityManager->persist($venue);
         $this->entityManager->flush();
+
         return $venue;
     }
 
@@ -47,6 +48,7 @@ class VenueFactory extends AbstractFactory
         }
 
         $prefix = (new Collection(['Klinik', 'Seniorenheim', 'Senior:innenparadies']))->sample();
-        return $prefix . ' ' . $this->generate('city', $name);
+
+        return $prefix.' '.$this->generate('city', $name);
     }
 }

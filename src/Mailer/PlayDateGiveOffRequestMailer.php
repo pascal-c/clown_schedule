@@ -11,18 +11,20 @@ use Symfony\Component\Mime\Address;
 
 class PlayDateGiveOffRequestMailer
 {
-    public function __construct(private MailerInterface $mailer, private ClownRepository $clownRepository) {}
+    public function __construct(private MailerInterface $mailer, private ClownRepository $clownRepository)
+    {
+    }
 
     public function sendGiveOffRequestMail(PlayDateChangeRequest $playDateChangeRequest, ?string $personalComment): void
     {
         $receivers = array_map(
-            fn(Clown $clown): Address => new Address($clown->getEmail(), $clown->getName()),
+            fn (Clown $clown): Address => new Address($clown->getEmail(), $clown->getName()),
             $this->clownRepository->allActive(),
         );
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
             ->to(...$receivers)
-            ->subject($playDateChangeRequest->getRequestedBy()->getName() . ' möchte ein Spiel abgeben')
+            ->subject($playDateChangeRequest->getRequestedBy()->getName().' möchte ein Spiel abgeben')
             ->htmlTemplate('emails/play_date_change_request/give-off_request.html.twig')
             ->context([
                 'changeRequest' => $playDateChangeRequest,
@@ -38,7 +40,7 @@ class PlayDateGiveOffRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject($playDateChangeRequest->getRequestedTo()->getName() . ' übernimmt Dein Spiel')
+            ->subject($playDateChangeRequest->getRequestedTo()->getName().' übernimmt Dein Spiel')
             ->htmlTemplate('emails/play_date_change_request/give-off_request_accept.html.twig')
             ->context([
                 'changeRequest' => $playDateChangeRequest,

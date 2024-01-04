@@ -11,14 +11,16 @@ use Symfony\Component\Mime\Address;
 
 class ClownInfoMailer
 {
-    public function __construct(private MailerInterface $mailer, private AuthService $authService) {}
+    public function __construct(private MailerInterface $mailer, private AuthService $authService)
+    {
+    }
 
     public function sendScheduleCompletedMail(Clown $clown, Schedule $schedule): void
     {
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
-            ->subject('Spielplan für ' . $schedule->getMonth()->getLabel() . ' ist fertig!')
+            ->subject('Spielplan für '.$schedule->getMonth()->getLabel().' ist fertig!')
             ->htmlTemplate('emails/clown_info/schedule_completed.html.twig')
             ->context([
                 'clown' => $clown,

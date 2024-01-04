@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Service;
 
@@ -9,9 +11,9 @@ use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\PlayDateHistoryService;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
-use DateTimeImmutable;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 final class PlayDateHistoryServiceTest extends TestCase
 {
@@ -31,12 +33,12 @@ final class PlayDateHistoryServiceTest extends TestCase
 
     public function testAdd(): void
     {
-        $playDate = new PlayDate;
-        $playingClown = new Clown;
+        $playDate = new PlayDate();
+        $playingClown = new Clown();
         $playDate->addPlayingClown($playingClown);
         $changingClown = new Clown();
-        
-        $now = new DateTimeImmutable();    
+
+        $now = new DateTimeImmutable();
         $this->timeService->expects($this->once())->method('now')->willReturn($now);
         $this->closeInvalidService->expects($this->once())->method('closeInvalidChangeRequests');
 

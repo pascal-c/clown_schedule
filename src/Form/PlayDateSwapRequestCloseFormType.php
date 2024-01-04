@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class PlayDateSwapRequestCloseFormType extends AbstractType
 {
@@ -15,10 +15,10 @@ class PlayDateSwapRequestCloseFormType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Hier wäre noch Platz für eine persönliche Nachricht an die angefragte Person:',
                 'required' => false,
-                'attr' => ['placeholder' => 'optional']
+                'attr' => ['placeholder' => 'optional'],
                 ])
             ->add('accept', SubmitType::class, [
-                'label' => 'Tauschanfrage abbrechen', 
+                'label' => 'Tauschanfrage abbrechen',
                 'attr' => [
                     'class' => 'btn-danger',
                 ],

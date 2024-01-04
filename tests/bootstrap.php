@@ -1,6 +1,6 @@
 <?php
 
-require dirname(__FILE__) . '/Controller/WebTestCase.php';
+require dirname(__FILE__).'/Controller/WebTestCase.php';
 
 use Symfony\Component\Dotenv\Dotenv;
 

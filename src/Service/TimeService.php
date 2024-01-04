@@ -13,7 +13,6 @@ class TimeService
         return new DateTimeImmutable('today');
     }
 
-
     public function NearlyEndOfMonth(): DateTimeImmutable
     {
         return $this->today()->modify('first day of')->modify('+25 days');

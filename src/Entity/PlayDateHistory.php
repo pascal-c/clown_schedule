@@ -6,6 +6,7 @@ use App\Value\PlayDateChangeReason;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 #[ORM\Entity]
 class PlayDateHistory
@@ -23,7 +24,7 @@ class PlayDateHistory
     private Collection $playingClowns;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $changedAt = null;
+    private ?DateTimeImmutable $changedAt = null;
 
     #[ORM\ManyToOne]
     private ?Clown $changedBy = null;
@@ -77,12 +78,12 @@ class PlayDateHistory
         return $this;
     }
 
-    public function getChangedAt(): ?\DateTimeImmutable
+    public function getChangedAt(): ?DateTimeImmutable
     {
         return $this->changedAt;
     }
 
-    public function setChangedAt(\DateTimeImmutable $changedAt): self
+    public function setChangedAt(DateTimeImmutable $changedAt): self
     {
         $this->changedAt = $changedAt;
 

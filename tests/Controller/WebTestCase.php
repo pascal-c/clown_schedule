@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\Entity\Clown;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as SymfonyWebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use InvalidArgumentException;
 
 class WebTestCase extends SymfonyWebTestCase
 {
@@ -12,14 +13,15 @@ class WebTestCase extends SymfonyWebTestCase
     {
         $allElements = $crawler->filter($selector)->each(function ($element, $i) use ($search) {
             $text = $element->text();
+
             return str_contains($text, $search) ? $element : null;
         });
-        
+
         $elements = array_filter($allElements);
         if (empty($elements)) {
-             new \InvalidArgumentException('Nothing found for selector "' . $selector . '" with text "' . $search . '"');
+            new InvalidArgumentException('Nothing found for selector "'.$selector.'" with text "'.$search.'"');
         } elseif (count($elements) > 1) {
-            throw new \InvalidArgumentException('More than one entry found for selector "' . $selector . '" with text "' . $search . '"');
+            throw new InvalidArgumentException('More than one entry found for selector "'.$selector.'" with text "'.$search.'"');
         }
 
         return array_shift($elements);
@@ -32,24 +34,26 @@ class WebTestCase extends SymfonyWebTestCase
 
     protected function buildClown(string $name, string $email, $password): Clown
     {
-        $clown = new Clown;
+        $clown = new Clown();
         $clown
             ->setGender('female')
             ->setName($name)
             ->setEmail($email)
             ->setPassword(password_hash($password, PASSWORD_DEFAULT))
             ->setIsAdmin(true)
-            ;
+        ;
+
         return $clown;
     }
 
-    protected function createClown(string $name = 'Hugo', string $email='hugo@test.de', $password = 'secret123'): Clown
+    protected function createClown(string $name = 'Hugo', string $email = 'hugo@test.de', $password = 'secret123'): Clown
     {
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.default_entity_manager');
         $clown = $this->buildClown($name, $email, $password);
         $entityManager->persist($clown);
         $entityManager->flush();
+
         return $clown;
     }
 

@@ -9,7 +9,7 @@ use App\Entity\Vacation;
 use App\Gateway\VacationGateway;
 use DateTimeImmutable;
 
-class VacationRepository 
+class VacationRepository
 {
     public function __construct(private VacationGateway $vacationGateway)
     {
@@ -18,13 +18,14 @@ class VacationRepository
     public function byYear(Month $month): array
     {
         $byYear = $this->vacationGateway->findByYear($month->getYear());
+
         return array_map(
-            fn(array $x) => new Vacation(
-                new DateTimeImmutable($x['start']), 
-                new DateTimeImmutable($x['end']), 
-                $x['name']  
+            fn (array $x) => new Vacation(
+                new DateTimeImmutable($x['start']),
+                new DateTimeImmutable($x['end']),
+                $x['name']
             ),
-            $byYear 
+            $byYear
         );
     }
 }

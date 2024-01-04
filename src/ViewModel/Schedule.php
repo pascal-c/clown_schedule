@@ -10,7 +10,9 @@ class Schedule
 {
     private array $days = [];
 
-    public function __construct(private ScheduleStatus $status, public readonly Month $month) {}
+    public function __construct(private ScheduleStatus $status, public readonly Month $month)
+    {
+    }
 
     public function isInProgress(): bool
     {

@@ -17,18 +17,20 @@ class DashboardController extends AbstractController
         private TimeService $timeService,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private PlayDateChangeRequestRepository $playDateChangeRequestRepository,
-    ) {}
+    ) {
+    }
 
     #[Route('/', name: 'root', methods: ['GET'])]
-    public function root(): Response 
+    public function root(): Response
     {
         $route = $this->getCurrentClown()->isAdmin() && !$this->getCurrentClown()->isActive()
             ? 'schedule' : 'dashboard';
+
         return $this->redirectToRoute($route);
     }
 
     #[Route('/dashboard', name: 'dashboard', methods: ['GET'])]
-    public function dashboard(): Response 
+    public function dashboard(): Response
     {
         $today = $this->timeService->today();
         $currentMonth = new Month($today);
@@ -38,15 +40,23 @@ class DashboardController extends AbstractController
         $nextMonthFilled = $this->clownAvailabilityRepository->find($nextMonth, $currentClown);
         $afterNextMonthFilled = $this->clownAvailabilityRepository->find($afterNextMonth, $currentClown);
         if ($currentClown->isActive() && !$nextMonthFilled) {
-            $this->addFlash('danger', 
-                sprintf('Hey %s, Du musst DRINGEND noch Deine Fehlzeiten für %s eintragen', 
-                    $currentClown->getName(), $nextMonth->getLabel())
+            $this->addFlash(
+                'danger',
+                sprintf(
+                    'Hey %s, Du musst DRINGEND noch Deine Fehlzeiten für %s eintragen',
+                    $currentClown->getName(),
+                    $nextMonth->getLabel()
+                )
             );
         }
         if ($currentClown->isActive() && $today >= $this->timeService->NearlyEndOfMonth() && !$afterNextMonthFilled) {
-            $this->addFlash('warning', 
-                sprintf('Hey %s, Du musst noch Deine Fehlzeiten für %s eintragen', 
-                    $currentClown->getName(), $afterNextMonth->getLabel())
+            $this->addFlash(
+                'warning',
+                sprintf(
+                    'Hey %s, Du musst noch Deine Fehlzeiten für %s eintragen',
+                    $currentClown->getName(),
+                    $afterNextMonth->getLabel()
+                )
             );
         }
 

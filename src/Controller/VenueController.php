@@ -24,7 +24,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/venues', name: 'venue_index', methods: ['GET'])]
-    public function index(): Response 
+    public function index(): Response
     {
         return $this->render('venue/index.html.twig', [
             'venues' => $this->venueRepository->all(),
@@ -49,6 +49,7 @@ class VenueController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spielort wurde angelegt. Phantastisch!');
+
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Spielort konnte nicht angelegt werden.');
@@ -69,8 +70,11 @@ class VenueController extends AbstractController
 
         $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($venue)
-            ->add('delete', SubmitType::class, 
-                ['label' => 'Spielort löschen', 'attr' => array('onclick' => 'return confirm("Spielort endgültig löschen?")')])
+            ->add(
+                'delete',
+                SubmitType::class,
+                ['label' => 'Spielort löschen', 'attr' => ['onclick' => 'return confirm("Spielort endgültig löschen?")']]
+            )
             ->setMethod('DELETE')
             ->setAction($this->generateUrl('venue_delete', ['id' => $id]))
             ->getForm();
@@ -82,6 +86,7 @@ class VenueController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+
             return $this->redirectToRoute('venue_show', ['id' => $id]);
         } elseif ($editForm->isSubmitted()) {
             $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
@@ -99,7 +104,7 @@ class VenueController extends AbstractController
     public function delete(Request $request, int $id): Response
     {
         $this->adminOnly();
-        
+
         $venue = $this->venueRepository->find($id);
 
         $deleteForm = $this->createFormBuilder($venue)
@@ -112,16 +117,18 @@ class VenueController extends AbstractController
             $this->entityManager->remove($venue);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort '. $venue->getName() . ' wurde gelöscht. Danke fürs Aufräumen!');
+            $this->addFlash('success', 'Spielort '.$venue->getName().' wurde gelöscht. Danke fürs Aufräumen!');
+
             return $this->redirectToRoute('venue_index');
         }
 
         $this->addFlash('warning', 'Achtung! Spielort konnte nicht gelöscht werden.');
+
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
 
     #[Route('/venues/{id}', name: 'venue_show', methods: ['GET'])]
-    public function show(int $id): Response 
+    public function show(int $id): Response
     {
         return $this->render('venue/show.html.twig', [
             'venue' => $this->venueRepository->find($id),

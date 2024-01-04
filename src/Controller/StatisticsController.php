@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
 use App\Repository\MonthRepository;
@@ -22,19 +21,19 @@ class StatisticsController extends AbstractController
         private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
         private SubstitutionRepository $substitutionRepository,
-        private ClownRepository $clownRepository)
-    {
+        private ClownRepository $clownRepository
+    ) {
     }
 
     #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]
-    public function showInfinity(): Response 
+    public function showInfinity(): Response
     {
         $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts();
         $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts();
-        
-        foreach($clownsWithTotalCount as $k => $clownWithTotalCount) {
+
+        foreach ($clownsWithTotalCount as $k => $clownWithTotalCount) {
             $clownsWithTotalCount[$k]['superCount'] = 0;
-            foreach($clownsWithSuperCount as $clownWithSuperCount) {
+            foreach ($clownsWithSuperCount as $clownWithSuperCount) {
                 if ($clownWithSuperCount['clown'] === $clownWithTotalCount['clown']) {
                     $clownsWithTotalCount[$k]['superCount'] = $clownWithSuperCount['superCount'];
                 }
@@ -49,7 +48,7 @@ class StatisticsController extends AbstractController
     }
 
     #[Route('/statistics/{monthId}', name: 'statistics', methods: ['GET'])]
-    public function showPerMonth(SessionInterface $session, Request $request, ?string $monthId = null): Response 
+    public function showPerMonth(SessionInterface $session, Request $request, string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $playDates = $this->playDateRepository->regularByMonth($month);
@@ -58,21 +57,21 @@ class StatisticsController extends AbstractController
 
         $substitutions = [];
         $plays = [];
-        foreach ($clownAvailabilities as $availability) { 
+        foreach ($clownAvailabilities as $availability) {
             $plays[$availability->getClown()->getId()] = 0;
             $substitutions[$availability->getClown()->getId()] = 0;
         }
-        foreach($playDates as $playDate) {
-            foreach($playDate->getPlayingClowns() as $clown) {
+        foreach ($playDates as $playDate) {
+            foreach ($playDate->getPlayingClowns() as $clown) {
                 if (!isset($plays[$clown->getId()])) {
                     $plays[$clown->getId()] = 0;
                 }
-                $plays[$clown->getId()]++;
+                ++$plays[$clown->getId()];
             }
         }
-        foreach($substitutionTimeSlots as $substitutionTimeSlot) {
+        foreach ($substitutionTimeSlots as $substitutionTimeSlot) {
             if (!is_null($substitutionTimeSlot->getSubstitutionClown())) {
-                $substitutions[$substitutionTimeSlot->getSubstitutionClown()->getId()]++;
+                ++$substitutions[$substitutionTimeSlot->getSubstitutionClown()->getId()];
             }
         }
 
@@ -85,5 +84,4 @@ class StatisticsController extends AbstractController
             'active' => 'statistics',
         ]);
     }
-
 }

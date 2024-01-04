@@ -14,30 +14,30 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use DateTimeImmutable;
 
 class SubstitutionController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
     public function __construct(
-        ManagerRegistry $doctrine, 
+        ManagerRegistry $doctrine,
         private SubstitutionRepository $substitutionRepository
-    )
-    {
+    ) {
         $this->entityManager = $doctrine->getManager();
     }
 
     #[Route('/substitutions/{date}/{daytime}', name: 'substitution_edit', methods: ['GET', 'PUT'])]
-    public function edit(Request $request, \DateTimeImmutable $date, string $daytime): Response 
+    public function edit(Request $request, DateTimeImmutable $date, string $daytime): Response
     {
         $this->adminOnly();
-        
+
         $substitution = $this->substitutionRepository->find($date, $daytime);
         if (is_null($substitution)) {
-            $substitution = new Substitution;
+            $substitution = new Substitution();
             $substitution->setDate($date)->setDaytime($daytime);
         }
-    
+
         $form = $this->createFormBuilder($substitution)
             ->add('substitutionClown', EntityType::class, [
                 'class' => Clown::class,
@@ -46,11 +46,11 @@ class SubstitutionController extends AbstractController
                 'label' => 'Springer:in',
                 'expanded' => true,
                 'multiple' => false,
-            ])        
+            ])
             ->add('save', SubmitType::class, ['label' => 'speichern'])
             ->setMethod('PUT')
             ->getForm();
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $form->getData();
@@ -58,6 +58,7 @@ class SubstitutionController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Springer:in wurde erfolgreich gespeichert.');
+
             return $this->redirectToRoute('schedule');
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Springer:in konnte nicht gespeichert werden.');

@@ -2,13 +2,13 @@
 
 namespace App\Tests\ViewModel;
 
-use PHPUnit\Framework\TestCase;
 use App\Entity\Daytime;
 use App\Entity\Month;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriod;
 use App\ViewModel\Day;
 use App\ViewModel\Schedule;
+use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 
 final class ScheduleTest extends TestCase
@@ -38,7 +38,7 @@ final class ScheduleTest extends TestCase
         $this->assertEquals('2022-08-31', $thirtyfirst->getDateString());
         $this->assertEquals([], $thirtyfirst->getEntries(Daytime::AM, 'key'));
         $this->assertEquals(['31. pm entry'], $thirtyfirst->getEntries(Daytime::PM, 'key'));
-        
+
         $this->assertTrue($schedule->isInProgress());
         $this->assertFalse($schedule->isCompleted());
         $this->assertSame($month, $schedule->month);

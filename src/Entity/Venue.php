@@ -6,8 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use DateTimeInterface;
 
 #[ORM\Entity]
 #[UniqueEntity('name')]
@@ -23,7 +24,7 @@ class Venue
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'venue', targetEntity: PlayDate::class)]
-    #[ORM\OrderBy(["date" => "ASC"])]
+    #[ORM\OrderBy(['date' => 'ASC'])]
     private Collection $playDates;
 
     #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'venue_responsibilities')]
@@ -33,13 +34,13 @@ class Venue
     private ?string $daytime_default = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $meetingTime = null;
+    private ?DateTimeInterface $meetingTime = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $playTimeFrom = null;
+    private ?DateTimeInterface $playTimeFrom = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $playTimeTo = null;
+    private ?DateTimeInterface $playTimeTo = null;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $emails = ['', '', ''];
@@ -177,36 +178,36 @@ class Venue
         return $this;
     }
 
-    public function getMeetingTime(): ?\DateTimeInterface
+    public function getMeetingTime(): ?DateTimeInterface
     {
         return $this->meetingTime;
     }
 
-    public function setMeetingTime(?\DateTimeInterface $meetingTime): self
+    public function setMeetingTime(?DateTimeInterface $meetingTime): self
     {
         $this->meetingTime = $meetingTime;
 
         return $this;
     }
 
-    public function getPlayTimeFrom(): ?\DateTimeInterface
+    public function getPlayTimeFrom(): ?DateTimeInterface
     {
         return $this->playTimeFrom;
     }
 
-    public function setPlayTimeFrom(?\DateTimeInterface $playTimeFrom): self
+    public function setPlayTimeFrom(?DateTimeInterface $playTimeFrom): self
     {
         $this->playTimeFrom = $playTimeFrom;
 
         return $this;
     }
 
-    public function getPlayTimeTo(): ?\DateTimeInterface
+    public function getPlayTimeTo(): ?DateTimeInterface
     {
         return $this->playTimeTo;
     }
 
-    public function setPlayTimeTo(?\DateTimeInterface $playTimeTo): self
+    public function setPlayTimeTo(?DateTimeInterface $playTimeTo): self
     {
         $this->playTimeTo = $playTimeTo;
 

@@ -12,8 +12,13 @@ class AuthService
 {
     private ?Clown $currentClown = null;
 
-    public function __construct(private ClownRepository $clownRepository, private RequestStack $requestStack,
-        private TokenGeneratorInterface $tokenGenerator, private EntityManagerInterface $entityManager) {}
+    public function __construct(
+        private ClownRepository $clownRepository,
+        private RequestStack $requestStack,
+        private TokenGeneratorInterface $tokenGenerator,
+        private EntityManagerInterface $entityManager
+    ) {
+    }
 
     public function login($email, $password): bool
     {
@@ -29,6 +34,7 @@ class AuthService
             $session->set('currentClownId', $clown->getId());
             $this->currentClown = $clown;
         }
+
         return $ok;
     }
 
@@ -43,6 +49,7 @@ class AuthService
     public function isLoggedIn(): bool
     {
         $session = $this->requestStack->getSession();
+
         return $session->get('isLoggedIn', false);
     }
 
@@ -62,19 +69,21 @@ class AuthService
         $token = $this->tokenGenerator->generateToken();
         $session->set('loginToken', $token);
         $session->set('loginTokenClownId', $clown->getId());
+
         return $token;
     }
 
     public function loginByToken(string $token): bool
     {
         $session = $this->requestStack->getSession();
-    
+
         if ($token === $session->get('loginToken')) {
             $session->set('isLoggedIn', true);
             $session->set('currentClownId', $session->remove('loginTokenClownId'));
             $this->currentClown = null;
 
             $session->remove('loginToken');
+
             return true;
         }
 

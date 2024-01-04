@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component;
 
 use App\Entity\Clown;
@@ -13,9 +14,12 @@ class MainNavigationComponent
     public string $active = 'clown';
     public ?Clown $currentClown;
 
-    public function __construct(private UrlGeneratorInterface $urlHelper, private AuthService $authService) {}
+    public function __construct(private UrlGeneratorInterface $urlHelper, private AuthService $authService)
+    {
+    }
 
-    public function mount() {
+    public function mount()
+    {
         $this->currentClown = $this->authService->getCurrentClown();
         $this->navigationItems = [
             'dashboard' => ['label' => 'Dashboard', 'url' => $this->urlHelper->generate('dashboard')],

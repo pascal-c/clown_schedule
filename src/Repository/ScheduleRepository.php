@@ -7,7 +7,6 @@ use App\Entity\Schedule;
 
 class ScheduleRepository extends AbstractRepository
 {
-
     protected function getEntityName(): string
     {
         return Schedule::class;
@@ -21,6 +20,6 @@ class ScheduleRepository extends AbstractRepository
             ->getQuery()
             ->enableResultCache(1)
             ->getOneOrNullResult()
-            ;
+        ;
     }
 }

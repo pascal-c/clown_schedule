@@ -20,7 +20,7 @@ trait TimeSlotPeriodTrait
 
         return [new TimeSlot($this->getDate(), $this->getDaytime())];
     }
-    
+
     public function getDate(): ?DateTimeImmutable
     {
         return $this->date;

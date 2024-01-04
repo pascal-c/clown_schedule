@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component;
 
 use App\Entity\ClownAvailability;
@@ -8,6 +9,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use App\Value\TimeSlotPeriod;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use DateTimeImmutable;
 
 #[AsTwigComponent('show_available_clowns')]
 final class ShowAvailableClownsComponent
@@ -17,17 +19,19 @@ final class ShowAvailableClownsComponent
     public function __construct(
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private AvailabilityChecker $availabilityChecker
-    ) {}
+    ) {
+    }
 
-    public function mount(\DateTimeImmutable $date, string $daytime) {
+    public function mount(DateTimeImmutable $date, string $daytime)
+    {
         $timeSlotPeriod = new TimeSlotPeriod($date, $daytime);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth(new Month($date));
         $availableClownAvailabilities = array_filter(
             $clownAvailabilities,
-            fn(ClownAvailability $availability) => $this->availabilityChecker->isAvailableOn($timeSlotPeriod, $availability)
+            fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableOn($timeSlotPeriod, $availability)
         );
         $this->entries = array_map(
-            fn(ClownAvailability $availability) => [
+            fn (ClownAvailability $availability) => [
                 'clown' => $availability->getClown(),
                 'type' => $this->getType($timeSlotPeriod, $availability),
                 'messages' => $this->getMessages($timeSlotPeriod, $availability),
@@ -36,10 +40,10 @@ final class ShowAvailableClownsComponent
         );
 
         usort(
-            $this->entries, 
-            function(array $entry1, array $entry2)
-            {
+            $this->entries,
+            function (array $entry1, array $entry2) {
                 $mapping = ['success' => 0, 'warning' => 1, 'danger' => 2];
+
                 return $mapping[$entry1['type']] <=> $mapping[$entry2['type']];
             }
         );
@@ -47,11 +51,10 @@ final class ShowAvailableClownsComponent
 
     private function getType(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): string
     {
-        if ($this->availabilityChecker->maxPlaysMonthReached($clownAvailability) ||
-            $this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
-            return 'danger';   
-        } elseif ($clownAvailability->getAvailabilityOn($timeSlotPeriod) == 'maybe')
-        {
+        if ($this->availabilityChecker->maxPlaysMonthReached($clownAvailability)
+            || $this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
+            return 'danger';
+        } elseif ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
             return 'warning';
         }
 
@@ -61,8 +64,8 @@ final class ShowAvailableClownsComponent
     private function getMessages(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): array
     {
         $messages = [];
-        if ($clownAvailability->getAvailabilityOn($timeSlotPeriod) == 'maybe') {
-            $messages[] = 'Clown kann nur wenn\'s sein muss.'; 
+        if ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
+            $messages[] = 'Clown kann nur wenn\'s sein muss.';
         }
         if ($this->availabilityChecker->maxPlaysMonthReached($clownAvailability)) {
             $messages[] = 'Maximale Anzahl monatlicher Spiele erreicht!';

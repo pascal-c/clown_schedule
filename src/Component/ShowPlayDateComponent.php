@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component;
 
 use App\Entity\Clown;
@@ -6,7 +7,6 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Repository\ScheduleRepository;
 use App\Service\AuthService;
-use App\Service\Scheduler;
 use App\Value\ScheduleStatus;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
@@ -18,7 +18,9 @@ final class ShowPlayDateComponent
     public string $colorClass = '';
     public bool $showClowns = true;
 
-    public function __construct(private AuthService $authService, private ScheduleRepository $scheduleRepository) {}
+    public function __construct(private AuthService $authService, private ScheduleRepository $scheduleRepository)
+    {
+    }
 
     public function mount(PlayDate $playDate, Month $month): void
     {
@@ -26,8 +28,7 @@ final class ShowPlayDateComponent
         $this->playDate = $playDate;
 
         $schedule = $this->scheduleRepository->find($month);
-        $this->colorClass = null !== $schedule && $playDate->getPlayingClowns()->count() != 2 ? 'text-danger' : '';
+        $this->colorClass = null !== $schedule && 2 != $playDate->getPlayingClowns()->count() ? 'text-danger' : '';
         $this->showClowns = $this->currentClown->isAdmin() || ScheduleStatus::COMPLETED === $schedule?->getStatus();
     }
-
 }

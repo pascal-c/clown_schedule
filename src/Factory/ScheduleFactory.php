@@ -14,13 +14,14 @@ class ScheduleFactory extends AbstractFactory
     {
         $status ??= ScheduleStatus::IN_PROGRESS;
 
-        $schedule = (new Schedule)
+        $schedule = (new Schedule())
             ->setMonth($month)
             ->setStatus($status)
-            ;
+        ;
 
         $this->entityManager->persist($schedule);
         $this->entityManager->flush();
+
         return $schedule;
     }
 }

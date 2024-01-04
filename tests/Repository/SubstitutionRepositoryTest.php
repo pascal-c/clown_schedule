@@ -1,12 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Repository;
 
 use App\Entity\Substitution;
 use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlotPeriod;
-use DateTimeInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 final class SubstitutionRepositoryTest extends KernelTestCase
 {
@@ -20,10 +23,10 @@ final class SubstitutionRepositoryTest extends KernelTestCase
 
         $container = static::getContainer();
         $entityManager = $container->get('doctrine.orm.default_entity_manager');
-        $this->substitutionRepository = $container->get(SubstitutionRepository::class);        
+        $this->substitutionRepository = $container->get(SubstitutionRepository::class);
 
-        $this->date = new \DateTimeImmutable('2020-04-18');
-        $this->expectedSubstitution = new Substitution;
+        $this->date = new DateTimeImmutable('2020-04-18');
+        $this->expectedSubstitution = new Substitution();
         $this->expectedSubstitution->setDate($this->date)->setDaytime('am');
         $entityManager->persist($this->expectedSubstitution);
         $entityManager->flush();
@@ -37,7 +40,6 @@ final class SubstitutionRepositoryTest extends KernelTestCase
         $result2 = $this->substitutionRepository->find($this->date, 'am');
         $this->assertEquals($this->expectedSubstitution, $result2);
     }
-
 
     public function testFindByTimeSlotPeriod(): void
     {

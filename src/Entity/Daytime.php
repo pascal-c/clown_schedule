@@ -6,8 +6,8 @@ use App\Lib\Collection;
 
 class Daytime
 {
-    const AM = 'am';
-    const PM = 'pm';
+    public const AM = 'am';
+    public const PM = 'pm';
 
     public static function getDaytimeOptions(): Collection
     {

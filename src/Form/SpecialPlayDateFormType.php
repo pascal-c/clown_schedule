@@ -3,16 +3,15 @@
 namespace App\Form;
 
 use App\Entity\PlayDate;
-use App\Entity\Venue;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SpecialPlayDateFormType extends AbstractType
 {
@@ -21,15 +20,15 @@ class SpecialPlayDateFormType extends AbstractType
         $builder
             ->add('title', TextType::class, ['label' => 'Titel'])
             ->add('date', DateType::class, [
-                'widget' => 'single_text', 
+                'widget' => 'single_text',
                 'label' => 'Datum',
                 'input' => 'datetime_immutable',
                 ])
             ->add('daytime', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,
                     'nachmittags' => TimeSlotPeriodInterface::PM,
-                    'ganztags'   => TimeSlotPeriodInterface::ALL,
+                    'ganztags' => TimeSlotPeriodInterface::ALL,
                 ],
                 'label' => 'Tageszeit',
                 'expanded' => true,

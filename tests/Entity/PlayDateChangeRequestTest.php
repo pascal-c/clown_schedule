@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
@@ -9,35 +11,35 @@ use PHPUnit\Framework\TestCase;
 
 final class PlayDateChangeRequestTest extends TestCase
 {
-    public function testIsValid_giveOff(): void
+    public function testIsValidGiveOff(): void
     {
-        $requestedBy = new Clown;
-        $playDateToGiveOff = (new PlayDate)
-            ->addPlayingClown(new Clown);
-        $playDateChangeRequest = (new PlayDateChangeRequest)
+        $requestedBy = new Clown();
+        $playDateToGiveOff = (new PlayDate())
+            ->addPlayingClown(new Clown());
+        $playDateChangeRequest = (new PlayDateChangeRequest())
             ->setRequestedBy($requestedBy)
             ->setPlayDateToGiveOff($playDateToGiveOff);
-        
+
         $this->assertFalse($playDateChangeRequest->isValid());
 
         $playDateToGiveOff->addPlayingClown($requestedBy);
         $this->assertTrue($playDateChangeRequest->isValid());
     }
 
-    public function testIsValid_swap(): void
+    public function testIsValidSwap(): void
     {
-        $requestedBy = new Clown;
-        $requestedTo = new Clown;
-        $playDateToGiveOff = (new PlayDate)
-            ->addPlayingClown(new Clown);
-        $playDateWanted = (new PlayDate)
-        ->addPlayingClown(new Clown);
-        $playDateChangeRequest = (new PlayDateChangeRequest)
+        $requestedBy = new Clown();
+        $requestedTo = new Clown();
+        $playDateToGiveOff = (new PlayDate())
+            ->addPlayingClown(new Clown());
+        $playDateWanted = (new PlayDate())
+        ->addPlayingClown(new Clown());
+        $playDateChangeRequest = (new PlayDateChangeRequest())
             ->setRequestedBy($requestedBy)
             ->setPlayDateToGiveOff($playDateToGiveOff)
             ->setRequestedTo($requestedTo)
             ->setPlayDateWanted($playDateWanted);
-        
+
         // requestedBy does not match
         $this->assertFalse($playDateChangeRequest->isValid());
 

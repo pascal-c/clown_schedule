@@ -15,12 +15,13 @@ class PlayDateChangeRequestCloseInvalidService
     public const CREATABLE_UNTIL_PERIOD = '+7 days';
 
     public function __construct(private PlayDateSwapRequestMailer $mailer, private TimeService $timeService)
-    {}
+    {
+    }
 
     public function closeInvalidChangeRequests(PlayDate $playDate)
     {
         $playDateChangeRequests = array_merge($playDate->getPlayDateGiveOffRequests()->toArray(), $playDate->getPlayDateSwapRequests()->toArray());
-        foreach($playDateChangeRequests as $playDateChangeRequest) {
+        foreach ($playDateChangeRequests as $playDateChangeRequest) {
             $this->closeIfInvalid($playDateChangeRequest);
         }
     }

@@ -19,13 +19,14 @@ use Symfony\Component\Validator\Constraints\Length;
 class LoginController extends AbstractController
 {
     public function __construct(
-        private ClownRepository $clownRepository, 
+        private ClownRepository $clownRepository,
         protected AuthService $authService,
         private AuthenticationMailer $mailer
-        ) {}
+    ) {
+    }
 
     #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
-    public function login(Request $request): Response 
+    public function login(Request $request): Response
     {
         $loginForm = $this->createForm(LoginFormType::class);
 
@@ -39,22 +40,26 @@ class LoginController extends AbstractController
                 if ($this->authService->login($email, $password)) {
                     return $this->handleLoginSuccess();
                 }
-                
+
                 $this->addFlash('warning', $this->getFailureMessage());
             } elseif ($loginForm['login_by_email']->isClicked()) {
                 $clown = $this->clownRepository->findOneByEmail($loginForm['email']->getData());
                 if (!is_null($clown)) {
                     $this->mailer->sendLoginByTokenMail($clown);
                 }
-                $this->addFlash('success', 
-                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email']));
+                $this->addFlash(
+                    'success',
+                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email'])
+                );
             } elseif ($loginForm['change_password']->isClicked()) {
                 $clown = $this->clownRepository->findOneByEmail($loginForm['email']->getData());
                 if (!is_null($clown)) {
                     $this->mailer->sendChangePasswordByTokenMail($clown);
                 }
-                $this->addFlash('success', 
-                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email']));
+                $this->addFlash(
+                    'success',
+                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email'])
+                );
             }
         }
 
@@ -65,26 +70,27 @@ class LoginController extends AbstractController
     }
 
     #[Route('/login/{token}', name: 'login_by_token', methods: ['GET'])]
-    public function loginByToken(string $token): Response 
+    public function loginByToken(string $token): Response
     {
         if ($this->authService->loginByToken($token)) {
             return $this->handleLoginSuccess();
         }
 
         $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.');
+
         return $this->redirectToRoute('login');
     }
 
     #[Route('/change_password/{token}', name: 'change_password', methods: ['GET', 'PATCH'])]
-    public function changePassword(Request $request, string $token): Response 
+    public function changePassword(Request $request, string $token): Response
     {
         $passwordForm = $this->createFormBuilder()
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Die Passwörter stimmen nicht überein.',
-                'options' => ['label' => false, 'constraints' => [new Length(['min' => 8])],],
+                'options' => ['label' => false, 'constraints' => [new Length(['min' => 8])]],
                 'required' => true,
-                'first_options'  => ['attr' => ['placeholder' => 'Neues Passwort', 'autocomplete' => 'new-password']],
+                'first_options' => ['attr' => ['placeholder' => 'Neues Passwort', 'autocomplete' => 'new-password']],
                 'second_options' => ['attr' => ['placeholder' => 'Neues Passwort Wiederholung', 'autocomplete' => 'new-password']],
             ])
             ->add('change_password', SubmitType::class, [
@@ -99,13 +105,16 @@ class LoginController extends AbstractController
         }
         if (!$this->authService->isLoggedIn()) {
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.');
-                
+
             return $this->redirectToRoute('login');
         }
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $this->authService->changePassword($passwordForm['password']->getData());
-            $this->addFlash('success',
-                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName()));
+            $this->addFlash(
+                'success',
+                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName())
+            );
+
             return $this->redirectToRoute('login');
         }
 
@@ -116,15 +125,17 @@ class LoginController extends AbstractController
     }
 
     #[Route('/logout', name: 'logout', methods: ['GET', 'POST'])]
-    public function logout(Request $request): Response 
+    public function logout(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('logout_token', $request->query->get('logout_token'))) {
             $this->addFlash('warning', 'Logout ist schiefgegangen!');
+
             return $this->redirectToRoute('root');
         }
 
         $this->authService->logout();
         $this->addFlash('success', 'Du wurdest mit großem Erfolg abgemeldet. Bis bald!');
+
         return $this->redirectToRoute('login');
     }
 
@@ -143,8 +154,11 @@ class LoginController extends AbstractController
 
     private function handleLoginSuccess(): Response
     {
-        $this->addFlash('success',
-            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName()));
+        $this->addFlash(
+            'success',
+            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName())
+        );
+
         return $this->redirectToRoute('root');
     }
 }

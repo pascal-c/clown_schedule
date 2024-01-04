@@ -2,27 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\Clown;
-use App\Entity\Month;
 use App\Repository\PlayDateRepository;
 use App\Service\AuthService;
 use App\Service\Scheduler\AvailabilityChecker;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PlayDateSwapRequestCreateFormType extends AbstractType
 {
     public function __construct(
-        private PlayDateRepository $playDateRepository, 
+        private PlayDateRepository $playDateRepository,
         private AvailabilityChecker $availabilityChecker,
         private AuthService $authService,
-    )
-    {}
+    ) {
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -35,14 +33,14 @@ class PlayDateSwapRequestCreateFormType extends AbstractType
                 continue;
             }
             $clownChoices = [];
-            foreach($playDate->getPlayingClowns() as $clown) {
+            foreach ($playDate->getPlayingClowns() as $clown) {
                 $clownAvailability = $clown->getAvailabilityFor($month);
                 if (!$clownAvailability || !$this->availabilityChecker->isAvailableOn($options['playDateToGiveOff'], $clownAvailability)) {
                     continue;
                 }
-                $clownChoices[$clown->getName()] = $playDate->getId() . '-' . $clown->getId();
+                $clownChoices[$clown->getName()] = $playDate->getId().'-'.$clown->getId();
             }
-            $choices[$playDate->getDate()->format('d.m.Y') . ' ' . $playDate->getName()] = $clownChoices;
+            $choices[$playDate->getDate()->format('d.m.Y').' '.$playDate->getName()] = $clownChoices;
         }
 
         $builder

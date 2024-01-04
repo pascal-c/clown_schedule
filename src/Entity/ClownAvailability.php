@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Month;
 use App\Value\TimeSlot;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
@@ -161,19 +160,18 @@ class ClownAvailability
 
     public function getAvailabilityRatio(): float
     {
-        $allTimeSlots = $this->getClownAvailabilityTimes(); 
+        $allTimeSlots = $this->getClownAvailabilityTimes();
         $availableTimeSlots = $allTimeSlots->filter(
-            fn($timeSlot) => $timeSlot->getAvailability() != 'no'
+            fn ($timeSlot) => 'no' != $timeSlot->getAvailability()
         );
 
-        return count($availableTimeSlots) / count($allTimeSlots);   
+        return count($availableTimeSlots) / count($allTimeSlots);
     }
 
     private function getAvailabilityTimeSlot(TimeSlotInterface $timeSlot): ClownAvailabilityTime
     {
         return $this->getClownAvailabilityTimes()
-            ->filter(fn(ClownAvailabilityTime $availabilityTimeSlot) => 
-                $timeSlot->getDate() == $availabilityTimeSlot->getDate() && $timeSlot->getDaytime() == $availabilityTimeSlot->getDaytime())
+            ->filter(fn (ClownAvailabilityTime $availabilityTimeSlot) => $timeSlot->getDate() == $availabilityTimeSlot->getDate() && $timeSlot->getDaytime() == $availabilityTimeSlot->getDaytime())
             ->first();
     }
 
@@ -195,7 +193,7 @@ class ClownAvailability
     {
         return array_reduce(
             $timeSlotPeriod->getTimeSlots(),
-            fn(bool $result, TimeSlot $timeSlot) => $result && $this->getAvailabilityTimeSlot($timeSlot)->isAvailable(),
+            fn (bool $result, TimeSlot $timeSlot) => $result && $this->getAvailabilityTimeSlot($timeSlot)->isAvailable(),
             true,
         );
     }
@@ -229,7 +227,7 @@ class ClownAvailability
         if (is_null($this->calculatedPlaysMonth)) {
             $this->calculatedPlaysMonth = 1;
         } else {
-            $this->calculatedPlaysMonth++;
+            ++$this->calculatedPlaysMonth;
         }
 
         return $this;
@@ -261,7 +259,7 @@ class ClownAvailability
         if (is_null($this->targetPlays)) {
             $this->targetPlays = 1;
         } else {
-            $this->targetPlays++;
+            ++$this->targetPlays;
         }
 
         return $this;
@@ -272,7 +270,7 @@ class ClownAvailability
         if (is_null($this->targetPlays)) {
             $this->targetPlays = -1;
         } else {
-            $this->targetPlays--;
+            --$this->targetPlays;
         }
 
         return $this;
@@ -295,7 +293,7 @@ class ClownAvailability
         if (is_null($this->calculatedSubstitutions)) {
             $this->calculatedSubstitutions = 1;
         } else {
-            $this->calculatedSubstitutions++;
+            ++$this->calculatedSubstitutions;
         }
 
         return $this;
@@ -334,13 +332,12 @@ class ClownAvailability
         return $this;
     }
 
-
     public function incScheduledPlaysMonth(): self
     {
         if (is_null($this->scheduledPlaysMonth)) {
             $this->scheduledPlaysMonth = 1;
         } else {
-            $this->scheduledPlaysMonth++;
+            ++$this->scheduledPlaysMonth;
         }
 
         return $this;
@@ -358,13 +355,12 @@ class ClownAvailability
         return $this;
     }
 
-
     public function incScheduledSubstitutions(): self
     {
         if (is_null($this->scheduledSubstitutions)) {
             $this->scheduledSubstitutions = 1;
         } else {
-            $this->scheduledSubstitutions++;
+            ++$this->scheduledSubstitutions;
         }
 
         return $this;

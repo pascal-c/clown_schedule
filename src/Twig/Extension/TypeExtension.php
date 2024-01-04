@@ -6,6 +6,7 @@ namespace App\Twig\Extension;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigTest;
+use InvalidArgumentException;
 
 final class TypeExtension extends AbstractExtension
 {
@@ -26,7 +27,7 @@ final class TypeExtension extends AbstractExtension
             'numeric' => is_numeric($var),
             'scalar' => \is_scalar($var),
             'string' => \is_string($var),
-            default => throw new \InvalidArgumentException(sprintf('Invalid "%s" type test.', $test)),
+            default => throw new InvalidArgumentException(sprintf('Invalid "%s" type test.', $test)),
         };
     }
 }

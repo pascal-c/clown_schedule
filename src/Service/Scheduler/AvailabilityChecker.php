@@ -8,8 +8,8 @@ use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlot;
-use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
+use DateTimeInterface;
 
 class AvailabilityChecker
 {
@@ -22,29 +22,28 @@ class AvailabilityChecker
         $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
         $playDatesSameTimeSlot = array_filter(
             $playDates,
-            fn($playDate) => 
-                $playDate->getPlayingClowns()->contains($clownAvailability->getClown()) &&
-                array_reduce(
-                    $timeSlotPeriod->getTimeSlots(), 
-                    fn(bool $carry, TimeSlot $timeSlot) => $carry || !empty(array_filter($playDate->getTimeSlots(), fn(TimeSlot $playDateTimeSlot) => $timeSlot->getDate() == $playDateTimeSlot->getDate() && $timeSlot->getDaytime() == $playDateTimeSlot->getDaytime())), 
+            fn ($playDate) => $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+                && array_reduce(
+                    $timeSlotPeriod->getTimeSlots(),
+                    fn (bool $carry, TimeSlot $timeSlot) => $carry || !empty(array_filter($playDate->getTimeSlots(), fn (TimeSlot $playDateTimeSlot) => $timeSlot->getDate() == $playDateTimeSlot->getDate() && $timeSlot->getDaytime() == $playDateTimeSlot->getDaytime())),
                     false
                 )
         );
 
-        return 
-            $clownAvailability->isAvailableOn($timeSlotPeriod) && 
-            count($playDatesSameTimeSlot) == 0 &&
-            !$this->isSubstitutionClownWithin($timeSlotPeriod, $clownAvailability->getClown())
+        return
+            $clownAvailability->isAvailableOn($timeSlotPeriod)
+            && 0 == count($playDatesSameTimeSlot)
+            && !$this->isSubstitutionClownWithin($timeSlotPeriod, $clownAvailability->getClown())
         ;
     }
 
     public function isAvailableFor(PlayDate $playDate, ClownAvailability $clownAvailability): bool
     {
-        return 
-            $this->isAvailableOn($playDate, $clownAvailability) && 
-            !$this->maxPlaysMonthReached($clownAvailability) &&
-            !$this->maxPlaysDayReached($playDate->getDate(), $clownAvailability) &&
-            !$this->onlyMen($playDate, $clownAvailability)
+        return
+            $this->isAvailableOn($playDate, $clownAvailability)
+            && !$this->maxPlaysMonthReached($clownAvailability)
+            && !$this->maxPlaysDayReached($playDate->getDate(), $clownAvailability)
+            && !$this->onlyMen($playDate, $clownAvailability)
         ;
     }
 
@@ -53,13 +52,13 @@ class AvailabilityChecker
         return $clownAvailability->getCalculatedPlaysMonth() >= $clownAvailability->getMaxPlaysMonth();
     }
 
-    public function maxPlaysDayReached(\DateTimeInterface $date, ClownAvailability $clownAvailability)
+    public function maxPlaysDayReached(DateTimeInterface $date, ClownAvailability $clownAvailability)
     {
         $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
         $playDatesSameDay = array_filter(
             $playDates,
-            fn($playDate) => $date == $playDate->getDate() && 
-                $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+            fn ($playDate) => $date == $playDate->getDate()
+                && $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
         );
 
         return count($playDatesSameDay) >= $clownAvailability->getMaxPlaysDay();
@@ -67,12 +66,12 @@ class AvailabilityChecker
 
     private function onlyMen(PlayDate $playDate, ClownAvailability $clownAvailability)
     {
-        if ($playDate->getPlayingClowns()->count() != 1) {
+        if (1 != $playDate->getPlayingClowns()->count()) {
             return false;
         }
 
-        return $playDate->getPlayingClowns()->first()->getGender() == 'male' && 
-            $clownAvailability->getClown()->getGender() == 'male';
+        return 'male' == $playDate->getPlayingClowns()->first()->getGender()
+            && 'male' == $clownAvailability->getClown()->getGender();
     }
 
     private function isSubstitutionClownWithin(TimeSlotPeriodInterface $timeSlotPeriod, Clown $clown)

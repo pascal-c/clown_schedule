@@ -15,15 +15,15 @@ abstract class AbstractController extends SymfonyAbstractController
     protected AuthService $authService;
 
     #[Required]
-    public function setAuthService(AuthService $authService) 
-    { 
+    public function setAuthService(AuthService $authService)
+    {
         $this->authService = $authService;
     }
 
     protected function adminOnly(): void
     {
         if (!$this->getCurrentClown()->isAdmin()) {
-            throw($this->createAccessDeniedException('Das darfst Du nicht.'));
+            throw $this->createAccessDeniedException('Das darfst Du nicht.');
         }
     }
 

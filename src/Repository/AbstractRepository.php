@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Contracts\Service\Attribute\Required;
 
-abstract class AbstractRepository 
+abstract class AbstractRepository
 {
     protected EntityRepository $doctrineRepository;
 
