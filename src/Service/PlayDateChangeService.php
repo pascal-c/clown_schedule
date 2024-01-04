@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Clown;
-use App\Entity\PlayDate;
 use App\Entity\PlayDateChangeRequest;
 use App\Value\PlayDateChangeReason;
 use App\Value\PlayDateChangeRequestStatus;
@@ -15,12 +14,12 @@ class PlayDateChangeService
     public function __construct(private PlayDateHistoryService $playDateHistoryService)
     {}
     
-    public function accept(PlayDateChangeRequest $playDateChangeRequest, Clown $requestedTo)
+    public function accept(PlayDateChangeRequest $playDateChangeRequest, Clown $acceptedBy)
     {
         $playDateChangeRequest->setStatus(PlayDateChangeRequestStatus::ACCEPTED);
 
         $playDateChangeRequest->getPlayDateToGiveOff()->removePlayingClown($playDateChangeRequest->getRequestedBy());
-        $playDateChangeRequest->getPlayDateToGiveOff()->addPlayingClown($requestedTo);
+        $playDateChangeRequest->getPlayDateToGiveOff()->addPlayingClown($acceptedBy);
         $this->playDateHistoryService->add(
             playDate: $playDateChangeRequest->getPlayDateToGiveOff(), 
             changedBy: $playDateChangeRequest->getRequestedBy(),
@@ -35,6 +34,8 @@ class PlayDateChangeService
                 changedBy: $playDateChangeRequest->getRequestedBy(),
                 reason: PlayDateChangeReason::SWAP,
             );
+        } else {
+            $playDateChangeRequest->setRequestedTo($acceptedBy);
         }
     }
 

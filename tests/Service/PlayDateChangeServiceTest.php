@@ -55,6 +55,8 @@ final class PlayDateChangeServiceTest extends TestCase
         $this->assertContains($playingClown1, $playDateToGiveOff->getPlayingClowns());
         $this->assertNotContains($requestedBy, $playDateToGiveOff->getPlayingClowns());
         $this->assertContains($requestedTo, $playDateToGiveOff->getPlayingClowns());
+
+        $this->assertSame($requestedTo, $playDateChangeRequest->getRequestedTo());
     }
 
     public function testAccept_swap(): void

@@ -34,9 +34,13 @@ class PlayDateChangeRequestRepository  extends AbstractRepository
      */
     public function findReceivedRequestsWaiting(Clown $requestedTo): array
     {
-        return $this->doctrineRepository->findBy([
-            'status' => PlayDateChangeRequestStatus::WAITING->value,
-            'requestedTo' => $requestedTo,
-        ]);
+        return $this->doctrineRepository->createQueryBuilder('cr')
+            ->select('cr')
+            ->where('cr.status = :status AND (cr.requestedTo = :requestedTo OR cr.requestedTo IS NULL) AND cr.requestedBy != :requestedTo')
+            ->orderBy('cr.requestedAt', 'DESC')
+            ->setParameter('status', PlayDateChangeRequestStatus::WAITING->value)
+            ->setParameter('requestedTo', $requestedTo)
+            ->getQuery()
+            ->getResult();
     }
 }

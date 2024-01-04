@@ -1,0 +1,63 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Spieltermin übernehmen</h4>
+
+    <p>
+        {% if requestedBy == currentClown %}
+          Hey {{ currentClown.name }}, Du möchtest den Spieltermin doch nicht abgeben?<br />
+          Du kannst einfach unten den grünen Button klicken und damit den Spieltermin selber übernehmen.<br />
+          Dadurch behälst Du den Termin und die Abgabe-Anfrage wird für die anderen geschlossen.
+        {% else %}
+            {{ requestedBy.name }} möchte gerne {{ playDateToGiveOff.name }} abgeben. Es wäre toll, wenn Du das Spiel übernehmen könntest!
+        {% endif %}
+    </p>
+    <p>
+        Hier nochmal alles für Dich im Überblick:
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Du übernimmst</th>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Wo</th>
+                <td>
+                    {{ playDateToGiveOff.name }}
+                </td>
+            </tr>
+            <tr>
+                <th>Wann</th>
+                <td>
+                    {{ playDateToGiveOff.date|date('d.m.Y') }} {{ playDateToGiveOff.daytime|trans }}
+                    {% if playDateToGiveOff.comment != '' %}
+                        <br /><span class="fst-itlic fw-light">{{ playDateToGiveOff.comment|nl2br }}</i>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Treffen</th>
+                <td>
+                    {{ playDateToGiveOff.venue.meetingTime|date('H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spielzeit</th>
+                <td>
+                    {{ playDateToGiveOff.venue.playTimeFrom|date('H:i') }} - {{ playDateToGiveOff.venue.playTimeTo|date('H:i') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Spielende Clowns</th>
+                <td>
+                    {{ playDateToGiveOff.playingClowns|map(clown => clown.name)|join(' | ') }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{ form(form) }}
+{% endblock %}

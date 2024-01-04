@@ -8,7 +8,7 @@ use App\Entity\PlayDateChangeRequest;
 use App\Form\PlayDateSwapRequestAcceptFormType;
 use App\Form\PlayDateSwapRequestCloseFormType;
 use App\Form\PlayDateSwapRequestDeclineFormType;
-use App\Form\PlayDateSwapRequestFormType;
+use App\Form\PlayDateSwapRequestCreateFormType;
 use App\Mailer\PlayDateSwapRequestMailer;
 use App\Repository\ClownRepository;
 use App\Repository\PlayDateChangeRequestRepository;
@@ -18,13 +18,12 @@ use App\Service\PlayDateChangeService;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeRequestType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PlayDateChangeRequestController extends AbstractController
+class PlayDateSwapRequestController extends AbstractController
 {
     public function __construct(
         private ClownRepository $clownRepository,
@@ -39,11 +38,11 @@ class PlayDateChangeRequestController extends AbstractController
     {}
 
     #[Route('/play_date/{id}/swap_request/new', name: 'play_date_new_swap_request', methods: ['GET', 'POST'])]
-    public function newSwapRequest(Request $request, int $id): Response
+    public function new(Request $request, int $id): Response
     {
         $playDate = $this->playDateRepository->find($id);
         
-        $form = $this->createForm(PlayDateSwapRequestFormType::class, null, [
+        $form = $this->createForm(PlayDateSwapRequestCreateFormType::class, null, [
             'currentClown' => $this->getCurrentClown(),
             'playDateToGiveOff' => $playDate,
         ]);
@@ -82,8 +81,8 @@ class PlayDateChangeRequestController extends AbstractController
         ]);
     }
 
-    #[Route('/play_date_change_request/{id}/accept', name: 'play_date_change_request_accept', methods: ['GET', 'POST'])]
-    public function acceptChangeRequest(Request $request, int $id): Response
+    #[Route('/play_date_swap_request/{id}/accept', name: 'play_date_swap_request_accept', methods: ['GET', 'POST'])]
+    public function accept(Request $request, int $id): Response
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
@@ -98,6 +97,7 @@ class PlayDateChangeRequestController extends AbstractController
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
         
         if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         } 
@@ -124,8 +124,8 @@ class PlayDateChangeRequestController extends AbstractController
         ]);
     }
 
-    #[Route('/play_date_change_request/{id}/decline', name: 'play_date_change_request_decline', methods: ['GET', 'POST'])]
-    public function declineChangeRequest(Request $request, int $id): Response
+    #[Route('/play_date_swap_request/{id}/decline', name: 'play_date_swap_request_decline', methods: ['GET', 'POST'])]
+    public function decline(Request $request, int $id): Response
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
@@ -140,6 +140,7 @@ class PlayDateChangeRequestController extends AbstractController
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
         
         if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         } 
@@ -166,8 +167,8 @@ class PlayDateChangeRequestController extends AbstractController
         ]);
     }
 
-    #[Route('/play_date_change_request/{id}/close', name: 'play_date_change_request_close', methods: ['GET', 'POST'])]
-    public function cancelChangeRequest(Request $request, int $id): Response
+    #[Route('/play_date_swap_request/{id}/cancel', name: 'play_date_swap_request_cancel', methods: ['GET', 'POST'])]
+    public function cancel(Request $request, int $id): Response
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
@@ -179,6 +180,7 @@ class PlayDateChangeRequestController extends AbstractController
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
         
         if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         } 
