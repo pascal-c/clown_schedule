@@ -40,15 +40,23 @@ class DashboardController extends AbstractController
         $nextMonthFilled = $this->clownAvailabilityRepository->find($nextMonth, $currentClown);
         $afterNextMonthFilled = $this->clownAvailabilityRepository->find($afterNextMonth, $currentClown);
         if ($currentClown->isActive() && !$nextMonthFilled) {
-            $this->addFlash('danger',
-                sprintf('Hey %s, Du musst DRINGEND noch Deine Fehlzeiten für %s eintragen',
-                    $currentClown->getName(), $nextMonth->getLabel())
+            $this->addFlash(
+                'danger',
+                sprintf(
+                    'Hey %s, Du musst DRINGEND noch Deine Fehlzeiten für %s eintragen',
+                    $currentClown->getName(),
+                    $nextMonth->getLabel()
+                )
             );
         }
         if ($currentClown->isActive() && $today >= $this->timeService->NearlyEndOfMonth() && !$afterNextMonthFilled) {
-            $this->addFlash('warning',
-                sprintf('Hey %s, Du musst noch Deine Fehlzeiten für %s eintragen',
-                    $currentClown->getName(), $afterNextMonth->getLabel())
+            $this->addFlash(
+                'warning',
+                sprintf(
+                    'Hey %s, Du musst noch Deine Fehlzeiten für %s eintragen',
+                    $currentClown->getName(),
+                    $afterNextMonth->getLabel()
+                )
             );
         }
 

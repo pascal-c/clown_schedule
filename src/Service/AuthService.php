@@ -12,9 +12,12 @@ class AuthService
 {
     private ?Clown $currentClown = null;
 
-    public function __construct(private ClownRepository $clownRepository, private RequestStack $requestStack,
-        private TokenGeneratorInterface $tokenGenerator, private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private ClownRepository $clownRepository,
+        private RequestStack $requestStack,
+        private TokenGeneratorInterface $tokenGenerator,
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
     public function login($email, $password): bool

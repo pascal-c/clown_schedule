@@ -21,8 +21,8 @@ class StatisticsController extends AbstractController
         private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
         private SubstitutionRepository $substitutionRepository,
-        private ClownRepository $clownRepository)
-    {
+        private ClownRepository $clownRepository
+    ) {
     }
 
     #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]

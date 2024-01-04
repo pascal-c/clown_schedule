@@ -115,8 +115,11 @@ class PlayDateController extends AbstractController
 
         $editForm = $this->createForm($playDate->isSpecial() ? SpecialPlayDateFormType::class : PlayDateFormType::class, $playDate, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($playDate)
-            ->add('delete', SubmitType::class,
-                ['label' => 'Spieltermin löschen', 'attr' => ['onclick' => 'return confirm("Spieltermin endgültig löschen?")']])
+            ->add(
+                'delete',
+                SubmitType::class,
+                ['label' => 'Spieltermin löschen', 'attr' => ['onclick' => 'return confirm("Spieltermin endgültig löschen?")']]
+            )
             ->setMethod('DELETE')
             ->setAction($this->generateUrl('play_date_delete', ['id' => $id]))
             ->getForm();

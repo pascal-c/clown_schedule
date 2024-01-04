@@ -40,7 +40,8 @@ class Month
         $formatter = new \IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
-            pattern: 'MMM y');
+            pattern: 'MMM y'
+        );
 
         return $formatter->format($this->date);
     }

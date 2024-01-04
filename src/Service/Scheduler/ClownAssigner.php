@@ -142,7 +142,8 @@ class ClownAssigner
     {
         foreach (array_reverse($venue->getPlayDates()->getValues()) as $playDate) {
             foreach ($playDate->getPlayingClowns() as $playingClown) {
-                $clownAvailabilities = array_filter($clownAvailabilities,
+                $clownAvailabilities = array_filter(
+                    $clownAvailabilities,
                     fn ($availability) => $availability->getClown() !== $playingClown
                 );
                 if (1 == count($clownAvailabilities)) {

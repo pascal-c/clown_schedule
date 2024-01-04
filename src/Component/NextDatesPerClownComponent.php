@@ -34,7 +34,8 @@ class NextDatesPerClownComponent
         $substitutions = $this->substitutionRepository->futureByClown($currentClown);
         $this->currentClown = $currentClown;
         $this->dates = array_merge($playDates, $substitutions);
-        usort($this->dates,
+        usort(
+            $this->dates,
             fn (TimeSlotInterface $a, TimeSlotInterface $b) => $a->getDate() == $b->getDate()
                 ?
                 $a->getDaytime() <=> $b->getDaytime()

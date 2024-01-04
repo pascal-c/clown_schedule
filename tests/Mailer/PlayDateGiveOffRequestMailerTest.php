@@ -38,20 +38,22 @@ final class PlayDateGiveOffRequestMailerTest extends TestCase
         $playDateChangeRequest = (new PlayDateChangeRequest())->setRequestedBy((new Clown())->setName('Emil'));
 
         $this->mailer->expects($this->once())->method('send')->with(
-            self::callback(function (TemplatedEmail $email) use ($playDateChangeRequest): bool {
-                $receivers = $email->getTo();
+            self::callback(
+                function (TemplatedEmail $email) use ($playDateChangeRequest): bool {
+                    $receivers = $email->getTo();
 
-                return
-                    2 === count($receivers)
-                    && 'Numero 1' === $receivers[0]->getName() && 'c1@clown.de' === $receivers[0]->getAddress()
-                    && 'Numero 2' === $receivers[1]->getName() && 'c2@clown.de' === $receivers[1]->getAddress()
-                    && 'Emil möchte ein Spiel abgeben' === $email->getSubject()
-                    && $email->getContext() === [
-                        'changeRequest' => $playDateChangeRequest,
-                        'personalComment' => 'Hallöle',
-                    ];
-            }
-            ));
+                    return
+                        2 === count($receivers)
+                        && 'Numero 1' === $receivers[0]->getName() && 'c1@clown.de' === $receivers[0]->getAddress()
+                        && 'Numero 2' === $receivers[1]->getName() && 'c2@clown.de' === $receivers[1]->getAddress()
+                        && 'Emil möchte ein Spiel abgeben' === $email->getSubject()
+                        && $email->getContext() === [
+                            'changeRequest' => $playDateChangeRequest,
+                            'personalComment' => 'Hallöle',
+                        ];
+                }
+            )
+        );
 
         $this->playDateGiveOffRequestMailer->sendGiveOffRequestMail($playDateChangeRequest, 'Hallöle');
     }

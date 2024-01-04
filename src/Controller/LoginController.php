@@ -47,15 +47,19 @@ class LoginController extends AbstractController
                 if (!is_null($clown)) {
                     $this->mailer->sendLoginByTokenMail($clown);
                 }
-                $this->addFlash('success',
-                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email']));
+                $this->addFlash(
+                    'success',
+                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email'])
+                );
             } elseif ($loginForm['change_password']->isClicked()) {
                 $clown = $this->clownRepository->findOneByEmail($loginForm['email']->getData());
                 if (!is_null($clown)) {
                     $this->mailer->sendChangePasswordByTokenMail($clown);
                 }
-                $this->addFlash('success',
-                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email']));
+                $this->addFlash(
+                    'success',
+                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email'])
+                );
             }
         }
 
@@ -106,8 +110,10 @@ class LoginController extends AbstractController
         }
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $this->authService->changePassword($passwordForm['password']->getData());
-            $this->addFlash('success',
-                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName()));
+            $this->addFlash(
+                'success',
+                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName())
+            );
 
             return $this->redirectToRoute('login');
         }
@@ -148,8 +154,10 @@ class LoginController extends AbstractController
 
     private function handleLoginSuccess(): Response
     {
-        $this->addFlash('success',
-            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName()));
+        $this->addFlash(
+            'success',
+            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName())
+        );
 
         return $this->redirectToRoute('root');
     }

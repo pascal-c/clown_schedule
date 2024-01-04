@@ -70,8 +70,11 @@ class VenueController extends AbstractController
 
         $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($venue)
-            ->add('delete', SubmitType::class,
-                ['label' => 'Spielort löschen', 'attr' => ['onclick' => 'return confirm("Spielort endgültig löschen?")']])
+            ->add(
+                'delete',
+                SubmitType::class,
+                ['label' => 'Spielort löschen', 'attr' => ['onclick' => 'return confirm("Spielort endgültig löschen?")']]
+            )
             ->setMethod('DELETE')
             ->setAction($this->generateUrl('venue_delete', ['id' => $id]))
             ->getForm();

@@ -7,8 +7,8 @@ class Vacation
     public function __construct(
         private \DateTimeImmutable $start,
         private \DateTimeImmutable $end,
-        private string $name)
-    {
+        private string $name
+    ) {
     }
 
     public function getStartDate(): \DateTimeImmutable

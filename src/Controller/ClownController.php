@@ -67,8 +67,11 @@ class ClownController extends AbstractController
 
         $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($clown)
-            ->add('delete', SubmitType::class,
-                ['label' => 'Clown löschen', 'attr' => ['onclick' => 'return confirm("Clown endgültig löschen?")']])
+            ->add(
+                'delete',
+                SubmitType::class,
+                ['label' => 'Clown löschen', 'attr' => ['onclick' => 'return confirm("Clown endgültig löschen?")']]
+            )
             ->setMethod('DELETE')
             ->getForm();
 

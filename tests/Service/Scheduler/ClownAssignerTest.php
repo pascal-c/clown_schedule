@@ -70,8 +70,8 @@ final class ClownAssignerTest extends TestCase
         PlayDate $playDate,
         array $clownAvailabilities,
         array $availableForResults,
-        ?ClownAvailability $expectedClownAvailability): void
-    {
+        ?ClownAvailability $expectedClownAvailability
+    ): void {
         $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
         $clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
 
@@ -133,8 +133,8 @@ final class ClownAssignerTest extends TestCase
         PlayDate $playDate,
         array $clownAvailabilities,
         array $availableForResults,
-        ?ClownAvailability $expectedClownAvailability): void
-    {
+        ?ClownAvailability $expectedClownAvailability
+    ): void {
         $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
         $clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
 

@@ -18,15 +18,18 @@ class DayViewController
         $this->dayShortNameFormatter = new \IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
-            pattern: 'EEE');
+            pattern: 'EEE'
+        );
         $this->dayLongNameFormatter = new \IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
-            pattern: 'EEEE');
+            pattern: 'EEEE'
+        );
         $this->dayNumberFormatter = new \IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
-            pattern: 'dd. LLL');
+            pattern: 'dd. LLL'
+        );
     }
 
     public function getDay(\DateTimeImmutable $date): Day
