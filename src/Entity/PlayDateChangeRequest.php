@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Value\PlayDateChangeRequestStatus;
 use App\Value\PlayDateChangeRequestType;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 #[ORM\Entity]
 class PlayDateChangeRequest
@@ -35,7 +36,7 @@ class PlayDateChangeRequest
     private ?string $type = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $requestedAt = null;
+    private ?DateTimeImmutable $requestedAt = null;
 
     public function getId(): ?int
     {
@@ -134,12 +135,12 @@ class PlayDateChangeRequest
         return PlayDateChangeRequestType::GIVE_OFF === $this->getType();
     }
 
-    public function getRequestedAt(): ?\DateTimeImmutable
+    public function getRequestedAt(): ?DateTimeImmutable
     {
         return $this->requestedAt;
     }
 
-    public function setRequestedAt(\DateTimeImmutable $requestedAt): self
+    public function setRequestedAt(DateTimeImmutable $requestedAt): self
     {
         $this->requestedAt = $requestedAt;
 

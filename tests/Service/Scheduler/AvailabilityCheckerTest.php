@@ -14,6 +14,8 @@ use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 final class AvailabilityCheckerTest extends TestCase
 {
@@ -73,7 +75,7 @@ final class AvailabilityCheckerTest extends TestCase
     private function buildPlayDate(string $daytime = 'am', Clown $clown = null): PlayDate
     {
         $playDate = new PlayDate();
-        $playDate->setDate(new \DateTimeImmutable('2022-04-01'));
+        $playDate->setDate(new DateTimeImmutable('2022-04-01'));
         $playDate->setDaytime($daytime);
         if (!is_null($clown)) {
             $playDate->addPlayingClown($clown);
@@ -85,7 +87,7 @@ final class AvailabilityCheckerTest extends TestCase
     private function buildSubstitution(string $daytime = 'am'): Substitution
     {
         return (new Substitution())
-            ->setDate(new \DateTimeImmutable('2022-04-01'))
+            ->setDate(new DateTimeImmutable('2022-04-01'))
             ->setDaytime($daytime);
     }
 
@@ -99,13 +101,13 @@ final class AvailabilityCheckerTest extends TestCase
         $clownAvailability->setMonth(Month::build('2022-04'));
         $clownAvailability->setMaxPlaysMonth(2);
         $clownAvailability->setCalculatedPlaysMonth($maxPlaysReached ? 2 : 1);
-        $date = new \DateTimeImmutable('2022-04-01');
+        $date = new DateTimeImmutable('2022-04-01');
         $clownAvailability->addClownAvailabilityTime($this->buildAvailabilityTimeSlot($availability, $date, 'am'));
 
         return $clownAvailability;
     }
 
-    private function buildAvailabilityTimeSlot(string $availability, \DateTimeInterface $date, string $daytime): ClownAvailabilityTime
+    private function buildAvailabilityTimeSlot(string $availability, DateTimeInterface $date, string $daytime): ClownAvailabilityTime
     {
         $timeSlot = new ClownAvailabilityTime();
         $timeSlot->setAvailability($availability);

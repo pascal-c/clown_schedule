@@ -6,6 +6,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\Month;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 final class MonthTest extends TestCase
 {
@@ -18,6 +19,6 @@ final class MonthTest extends TestCase
     public function testBuildNow(): void
     {
         $month = Month::build('now');
-        $this->assertSame((new \DateTimeImmutable())->format('Y-m'), $month->getKey());
+        $this->assertSame((new DateTimeImmutable())->format('Y-m'), $month->getKey());
     }
 }

@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\Entity\Clown;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as SymfonyWebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use InvalidArgumentException;
 
 class WebTestCase extends SymfonyWebTestCase
 {
@@ -18,9 +19,9 @@ class WebTestCase extends SymfonyWebTestCase
 
         $elements = array_filter($allElements);
         if (empty($elements)) {
-            new \InvalidArgumentException('Nothing found for selector "'.$selector.'" with text "'.$search.'"');
+            new InvalidArgumentException('Nothing found for selector "'.$selector.'" with text "'.$search.'"');
         } elseif (count($elements) > 1) {
-            throw new \InvalidArgumentException('More than one entry found for selector "'.$selector.'" with text "'.$search.'"');
+            throw new InvalidArgumentException('More than one entry found for selector "'.$selector.'" with text "'.$search.'"');
         }
 
         return array_shift($elements);

@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Month;
 use App\Entity\Vacation;
 use App\Gateway\VacationGateway;
+use DateTimeImmutable;
 
 class VacationRepository
 {
@@ -20,8 +21,8 @@ class VacationRepository
 
         return array_map(
             fn (array $x) => new Vacation(
-                new \DateTimeImmutable($x['start']),
-                new \DateTimeImmutable($x['end']),
+                new DateTimeImmutable($x['start']),
+                new DateTimeImmutable($x['end']),
                 $x['name']
             ),
             $byYear

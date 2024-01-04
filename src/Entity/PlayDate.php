@@ -10,6 +10,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
@@ -24,7 +26,7 @@ class PlayDate implements TimeSlotPeriodInterface
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Assert\NotBlank]
-    private ?\DateTimeInterface $date = null;
+    private ?DateTimeInterface $date = null;
 
     #[ORM\Column(length: 3)]
     private ?string $daytime = null;
@@ -79,7 +81,7 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this->id;
     }
 
-    public function setDate(\DateTimeImmutable $date): self
+    public function setDate(DateTimeImmutable $date): self
     {
         $this->date = $date;
 

@@ -9,6 +9,7 @@ use App\Value\TimeSlotPeriod;
 use App\ViewModel\Day;
 use App\ViewModel\Schedule;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 final class ScheduleTest extends TestCase
 {
@@ -17,11 +18,11 @@ final class ScheduleTest extends TestCase
         $month = Month::build('2022-09');
         $schedule = new Schedule(ScheduleStatus::IN_PROGRESS, $month);
         $schedule->setDays([
-            '23' => $this->buildDay(new \DateTimeImmutable('2022-08-23')),
-            '31' => $this->buildDay(new \DateTimeImmutable('2022-08-31')),
+            '23' => $this->buildDay(new DateTimeImmutable('2022-08-23')),
+            '31' => $this->buildDay(new DateTimeImmutable('2022-08-31')),
         ]);
-        $timeSlot1 = new TimeSlotPeriod(new \DateTimeImmutable('2022-08-23'), Daytime::AM);
-        $timeSlot2 = new TimeSlotPeriod(new \DateTimeImmutable('2022-08-31'), Daytime::PM);
+        $timeSlot1 = new TimeSlotPeriod(new DateTimeImmutable('2022-08-23'), Daytime::AM);
+        $timeSlot2 = new TimeSlotPeriod(new DateTimeImmutable('2022-08-31'), Daytime::PM);
         $schedule->add($timeSlot1, 'key', '23. am first entry');
         $schedule->add($timeSlot1, 'key', '23. am second entry');
         $schedule->add($timeSlot2, 'key', '31. pm entry');
@@ -43,7 +44,7 @@ final class ScheduleTest extends TestCase
         $this->assertSame($month, $schedule->month);
     }
 
-    private function buildDay(\DateTimeImmutable $date): Day
+    private function buildDay(DateTimeImmutable $date): Day
     {
         return new Day(
             date: $date,

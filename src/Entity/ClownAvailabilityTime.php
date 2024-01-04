@@ -7,6 +7,8 @@ use App\Value\TimeSlotPeriodInterface;
 use App\Value\TimeSlotPeriodTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'clown_date_daytime_index', fields: ['clown', 'date', 'daytime'])]
@@ -28,7 +30,7 @@ class ClownAvailabilityTime implements TimeSlotPeriodInterface
     private ?Clown $clown = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date = null;
+    private ?DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 2)]
     private ?string $daytime = null;
@@ -62,7 +64,7 @@ class ClownAvailabilityTime implements TimeSlotPeriodInterface
         return $this;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(DateTimeInterface $date): self
     {
         $this->date = $date;
 

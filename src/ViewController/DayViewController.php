@@ -6,33 +6,36 @@ use App\Entity\Month;
 use App\Entity\Vacation;
 use App\Repository\VacationRepository;
 use App\ViewModel\Day;
+use DateTimeImmutable;
+use DateTimeZone;
+use IntlDateFormatter;
 
 class DayViewController
 {
-    private \IntlDateFormatter $dayShortNameFormatter;
-    private \IntlDateFormatter $dayLongNameFormatter;
-    private \IntlDateFormatter $dayNumberFormatter;
+    private IntlDateFormatter $dayShortNameFormatter;
+    private IntlDateFormatter $dayLongNameFormatter;
+    private IntlDateFormatter $dayNumberFormatter;
 
     public function __construct(private VacationRepository $vacationRepository)
     {
-        $this->dayShortNameFormatter = new \IntlDateFormatter(
+        $this->dayShortNameFormatter = new IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
             pattern: 'EEE'
         );
-        $this->dayLongNameFormatter = new \IntlDateFormatter(
+        $this->dayLongNameFormatter = new IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
             pattern: 'EEEE'
         );
-        $this->dayNumberFormatter = new \IntlDateFormatter(
+        $this->dayNumberFormatter = new IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
             pattern: 'dd. LLL'
         );
     }
 
-    public function getDay(\DateTimeImmutable $date): Day
+    public function getDay(DateTimeImmutable $date): Day
     {
         return new Day(
             date: $date,
@@ -46,7 +49,7 @@ class DayViewController
         );
     }
 
-    private function getVacation(\DateTimeImmutable $date): ?Vacation
+    private function getVacation(DateTimeImmutable $date): ?Vacation
     {
         foreach ($this->vacationRepository->byYear(new Month($date)) as $vacation) {
             if ($vacation->getStartDate() <= $date && $vacation->getEndDate() >= $date) {
@@ -57,21 +60,21 @@ class DayViewController
         return null;
     }
 
-    private function isWeekend(\DateTimeImmutable $date): bool
+    private function isWeekend(DateTimeImmutable $date): bool
     {
         return $date->format('N') >= 6;
     }
 
-    private function isHoliday(\DateTimeImmutable $date): bool
+    private function isHoliday(DateTimeImmutable $date): bool
     {
         return array_key_exists($date->format('Y-m-d'), $this->holidaysForYear($date->format('Y')));
     }
 
     private function holidaysForYear(string $year): array
     {
-        $easterDate = \DateTimeImmutable::createFromFormat('U', easter_date($year))
-            ->setTimezone(new \DateTimeZone('Europe/Berlin'));
-        $busAndBedDate = (new \DateTimeImmutable($year.'-11-23'))->modify('last Wednesday');
+        $easterDate = DateTimeImmutable::createFromFormat('U', easter_date($year))
+            ->setTimezone(new DateTimeZone('Europe/Berlin'));
+        $busAndBedDate = (new DateTimeImmutable($year.'-11-23'))->modify('last Wednesday');
 
         return [
             $year.'-01-01' => 'Neujahr', // new year
@@ -89,7 +92,7 @@ class DayViewController
         ];
     }
 
-    private function getHolidayName(\DateTimeImmutable $date)
+    private function getHolidayName(DateTimeImmutable $date)
     {
         return $this->isHoliday($date)
         ? $this->holidaysForYear($date->format('Y'))[$date->format('Y-m-d')]

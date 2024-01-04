@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use DateTimeImmutable;
 
 class SubstitutionController extends AbstractController
 {
@@ -27,7 +28,7 @@ class SubstitutionController extends AbstractController
     }
 
     #[Route('/substitutions/{date}/{daytime}', name: 'substitution_edit', methods: ['GET', 'PUT'])]
-    public function edit(Request $request, \DateTimeImmutable $date, string $daytime): Response
+    public function edit(Request $request, DateTimeImmutable $date, string $daytime): Response
     {
         $this->adminOnly();
 

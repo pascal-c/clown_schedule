@@ -18,6 +18,7 @@ use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 final class ClownAssignerTest extends TestCase
 {
@@ -203,7 +204,7 @@ final class ClownAssignerTest extends TestCase
         ?ClownAvailability $expectedClownAvailability,
         string $daytime = 'am',
     ): void {
-        $date = new \DateTimeImmutable('2022-04-01');
+        $date = new DateTimeImmutable('2022-04-01');
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableOn')
@@ -289,7 +290,7 @@ final class ClownAssignerTest extends TestCase
         $venue->addResponsibleClown($clownAvailabilites[1]->getClown());
 
         $playDate = new PlayDate();
-        $playDate->setDate(new \DateTimeImmutable('2022-04-01'));
+        $playDate->setDate(new DateTimeImmutable('2022-04-01'));
         $playDate->setDaytime('am');
         $playDate->setVenue($venue);
 
@@ -311,13 +312,13 @@ final class ClownAssignerTest extends TestCase
         $clownAvailability->setCalculatedSubstitutions($calculatedSubstitutions);
         $clownAvailability->addClownAvailabilityTime(
             (new ClownAvailabilityTime())
-                ->setDate(new \DateTimeImmutable('2022-04-01'))
+                ->setDate(new DateTimeImmutable('2022-04-01'))
                 ->setDaytime('am')
                 ->setAvailability($availability)
         );
         $clownAvailability->addClownAvailabilityTime(
             (new ClownAvailabilityTime())
-                ->setDate(new \DateTimeImmutable('2022-04-01'))
+                ->setDate(new DateTimeImmutable('2022-04-01'))
                 ->setDaytime('pm')
                 ->setAvailability($availableAllDay ? $availability : 'no')
         );

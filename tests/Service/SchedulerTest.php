@@ -24,6 +24,7 @@ use App\Value\ScheduleStatus;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 final class SchedulerTest extends TestCase
 {
@@ -191,7 +192,7 @@ final class SchedulerTest extends TestCase
         static $counter = 0;
         ++$counter;
         $playDate = new PlayDate();
-        $playDate->setDate(new \DateTimeImmutable('2018-12'));
+        $playDate->setDate(new DateTimeImmutable('2018-12'));
         $playDate->setDaytime('pm');
         $playDate->addPlayingClown($playingClown1 ?? new Clown());
         $playDate->addPlayingClown($playingClown2 ?? new Clown());

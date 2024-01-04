@@ -13,6 +13,7 @@ use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 final class PlayDateHistoryServiceTest extends TestCase
 {
@@ -37,7 +38,7 @@ final class PlayDateHistoryServiceTest extends TestCase
         $playDate->addPlayingClown($playingClown);
         $changingClown = new Clown();
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $this->timeService->expects($this->once())->method('now')->willReturn($now);
         $this->closeInvalidService->expects($this->once())->method('closeInvalidChangeRequests');
 

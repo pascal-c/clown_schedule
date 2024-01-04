@@ -8,11 +8,13 @@ use App\Entity\Substitution;
 use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlotPeriod;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 final class SubstitutionRepositoryTest extends KernelTestCase
 {
     private SubstitutionRepository $substitutionRepository;
-    private \DateTimeInterface $date;
+    private DateTimeInterface $date;
     private Substitution $expectedSubstitution;
 
     protected function setUp(): void
@@ -23,7 +25,7 @@ final class SubstitutionRepositoryTest extends KernelTestCase
         $entityManager = $container->get('doctrine.orm.default_entity_manager');
         $this->substitutionRepository = $container->get(SubstitutionRepository::class);
 
-        $this->date = new \DateTimeImmutable('2020-04-18');
+        $this->date = new DateTimeImmutable('2020-04-18');
         $this->expectedSubstitution = new Substitution();
         $this->expectedSubstitution->setDate($this->date)->setDaytime('am');
         $entityManager->persist($this->expectedSubstitution);

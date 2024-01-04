@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use DateTimeImmutable;
 
 class PlayDateFactory extends AbstractFactory
 {
@@ -14,7 +15,7 @@ class PlayDateFactory extends AbstractFactory
     {
         $date = $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin');
         $playDate = (new PlayDate())
-            ->setDate(\DateTimeImmutable::createFromMutable($date))
+            ->setDate(DateTimeImmutable::createFromMutable($date))
             ->setDaytime($venue->getDaytimeDefault())
             ->setVenue($venue)
         ;

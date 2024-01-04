@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Value;
 
 use App\Entity\Month;
+use DateTimeImmutable;
 
 trait TimeSlotPeriodTrait
 {
@@ -20,7 +21,7 @@ trait TimeSlotPeriodTrait
         return [new TimeSlot($this->getDate(), $this->getDaytime())];
     }
 
-    public function getDate(): ?\DateTimeImmutable
+    public function getDate(): ?DateTimeImmutable
     {
         return $this->date;
     }

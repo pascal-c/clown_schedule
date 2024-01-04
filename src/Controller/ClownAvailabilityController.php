@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use DateTimeImmutable;
 
 class ClownAvailabilityController extends AbstractController
 {
@@ -127,7 +128,7 @@ class ClownAvailabilityController extends AbstractController
                 foreach ($timeSlots as $daytime => $availability) {
                     $timeSlot = new ClownAvailabilityTime();
                     $timeSlot->setClown($clown);
-                    $timeSlot->setDate(new \DateTimeImmutable($date));
+                    $timeSlot->setDate(new DateTimeImmutable($date));
                     $timeSlot->setDaytime($daytime);
                     $timeSlot->setAvailability($availability);
                     $clownAvailability->addClownAvailabilityTime($timeSlot);

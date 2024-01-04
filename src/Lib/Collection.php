@@ -3,8 +3,9 @@
 namespace App\Lib;
 
 use Iterator;
+use ReturnTypeWillChange;
 
-class Collection implements \Iterator
+class Collection implements Iterator
 {
     private $position = 0;
 
@@ -86,13 +87,13 @@ class Collection implements \Iterator
         $this->position = 0;
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current(): mixed
     {
         return $this->list[$this->position];
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function key(): mixed
     {
         return $this->position;

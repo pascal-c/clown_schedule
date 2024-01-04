@@ -12,6 +12,8 @@ use App\Service\TimeService;
 use App\Value\PlayDateChangeRequestStatus;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
+use Generator;
 
 final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
 {
@@ -23,7 +25,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
     {
         $this->mailer = $this->createMock(PlayDateSwapRequestMailer::class);
         $this->timeService = $this->createMock(TimeService::class);
-        $this->timeService->method('today')->willReturn(new \DateTimeImmutable('2024-01-05'));
+        $this->timeService->method('today')->willReturn(new DateTimeImmutable('2024-01-05'));
         $this->closeInvalidService = new PlayDateChangeRequestCloseInvalidService($this->mailer, $this->timeService);
     }
 
@@ -35,8 +37,8 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $playDateChangeRequest->method('isValid')->willReturn($isValid);
         $playDateChangeRequest->method('isSwap')->willReturn(true);
         $playDateChangeRequest->method('isGiveOff')->willReturn(false);
-        $playDateChangeRequest->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable($giveOffDate)));
-        $playDateChangeRequest->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable($wantedDate)));
+        $playDateChangeRequest->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable($giveOffDate)));
+        $playDateChangeRequest->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new DateTimeImmutable($wantedDate)));
 
         if ($expectClose) {
             $playDateChangeRequest->expects($this->once())->method('setStatus')->with(PlayDateChangeRequestStatus::CLOSED);
@@ -57,7 +59,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $playDateChangeRequest->method('isValid')->willReturn($isValid);
         $playDateChangeRequest->method('isSwap')->willReturn(false);
         $playDateChangeRequest->method('isGiveOff')->willReturn(true);
-        $playDateChangeRequest->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable($giveOffDate)));
+        $playDateChangeRequest->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable($giveOffDate)));
 
         if ($expectClose) {
             $playDateChangeRequest->expects($this->once())->method('setStatus')->with(PlayDateChangeRequestStatus::CLOSED);
@@ -70,7 +72,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $this->closeInvalidService->closeIfInvalid($playDateChangeRequest);
     }
 
-    public function closeInvalidDataProvider(): \Generator
+    public function closeInvalidDataProvider(): Generator
     {
         yield 'not waiting and valid' => [
             'isWaiting' => false,
@@ -124,22 +126,22 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $playDateSwapRequest = $this->createMock(PlayDateChangeRequest::class);
         $playDateSwapRequest->method('isWaiting')->willReturn(true);
         $playDateSwapRequest->method('isValid')->willReturn(false);
-        $playDateSwapRequest->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable('2024-08-05')));
-        $playDateSwapRequest->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable('2024-08-05')));
+        $playDateSwapRequest->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
+        $playDateSwapRequest->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
 
         // valid!
         $playDateGiveOffRequest1 = $this->createMock(PlayDateChangeRequest::class);
         $playDateGiveOffRequest1->method('isWaiting')->willReturn(true);
         $playDateGiveOffRequest1->method('isValid')->willReturn(true);
-        $playDateGiveOffRequest1->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable('2024-08-05')));
-        $playDateGiveOffRequest1->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable('2024-08-05')));
+        $playDateGiveOffRequest1->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
+        $playDateGiveOffRequest1->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
 
         // invalid
         $playDateGiveOffRequest2 = $this->createMock(PlayDateChangeRequest::class);
         $playDateGiveOffRequest2->method('isWaiting')->willReturn(true);
         $playDateGiveOffRequest2->method('isValid')->willReturn(false);
-        $playDateGiveOffRequest2->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable('2024-08-05')));
-        $playDateGiveOffRequest2->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new \DateTimeImmutable('2024-08-05')));
+        $playDateGiveOffRequest2->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
+        $playDateGiveOffRequest2->method('getPlayDateWanted')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
 
         $playDate->addPlayDateSwapRequest($playDateSwapRequest);
         $playDate->addPlayDateGiveOffRequest($playDateGiveOffRequest1);

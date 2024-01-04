@@ -8,6 +8,7 @@ use App\Entity\Substitution;
 use App\Service\TimeService;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
+use DateTimeInterface;
 
 class SubstitutionRepository extends AbstractRepository
 {
@@ -30,7 +31,7 @@ class SubstitutionRepository extends AbstractRepository
         return empty($this->cache[$month->getKey()]);
     }
 
-    private function cacheGet(\DateTimeInterface $date, string $daytime): ?Substitution
+    private function cacheGet(DateTimeInterface $date, string $daytime): ?Substitution
     {
         $month = new Month($date);
         if ($this->cacheNeedsWarmUp($month)) {
@@ -49,7 +50,7 @@ class SubstitutionRepository extends AbstractRepository
         return Substitution::class;
     }
 
-    public function find(\DateTimeInterface $date, string $daytime): ?Substitution
+    public function find(DateTimeInterface $date, string $daytime): ?Substitution
     {
         return $this->cacheGet($date, $daytime);
     }

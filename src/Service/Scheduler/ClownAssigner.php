@@ -12,6 +12,7 @@ use App\Service\PlayDateHistoryService;
 use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
 use Doctrine\ORM\EntityManagerInterface;
+use DateTimeImmutable;
 
 class ClownAssigner
 {
@@ -91,7 +92,7 @@ class ClownAssigner
         $clownAvailability->incCalculatedSubstitutions();
     }
 
-    private function upsertSubstitution(\DateTimeImmutable $date, string $daytime, Clown $clown): void
+    private function upsertSubstitution(DateTimeImmutable $date, string $daytime, Clown $clown): void
     {
         $substitution = $this->substitutionRepository->find($date, $daytime);
         if (is_null($substitution)) {

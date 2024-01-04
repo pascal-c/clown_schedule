@@ -6,6 +6,7 @@ use App\Value\TimeSlotPeriodInterface;
 use App\Value\TimeSlotPeriodTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: 'timeslot_date_daytime_index', fields: ['date', 'daytime'])]
@@ -22,7 +23,7 @@ class Substitution implements TimeSlotPeriodInterface
     private ?string $month = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date = null;
+    private ?DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 2)]
     private ?string $daytime = null;
@@ -40,7 +41,7 @@ class Substitution implements TimeSlotPeriodInterface
         return Month::build($this->month);
     }
 
-    public function setDate(\DateTimeImmutable $date): self
+    public function setDate(DateTimeImmutable $date): self
     {
         $this->date = $date;
         $this->month = (new Month($date))->getKey();

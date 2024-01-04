@@ -9,6 +9,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use App\Value\TimeSlotPeriod;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use DateTimeImmutable;
 
 #[AsTwigComponent('show_available_clowns')]
 final class ShowAvailableClownsComponent
@@ -21,7 +22,7 @@ final class ShowAvailableClownsComponent
     ) {
     }
 
-    public function mount(\DateTimeImmutable $date, string $daytime)
+    public function mount(DateTimeImmutable $date, string $daytime)
     {
         $timeSlotPeriod = new TimeSlotPeriod($date, $daytime);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth(new Month($date));

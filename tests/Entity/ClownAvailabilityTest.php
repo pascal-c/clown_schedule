@@ -8,6 +8,8 @@ use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Value\TimeSlotPeriod;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 final class ClownAvailabilityTest extends TestCase
 {
@@ -34,8 +36,8 @@ final class ClownAvailabilityTest extends TestCase
     public function testisAvailableOn(): void
     {
         $availability = new ClownAvailability();
-        $date1 = new \DateTimeImmutable('2022-04-01');
-        $date2 = new \DateTimeImmutable('2022-04-02');
+        $date1 = new DateTimeImmutable('2022-04-01');
+        $date2 = new DateTimeImmutable('2022-04-02');
         $availability->addClownAvailabilityTime($this->buildTimeSlot('yes', $date1, 'am'));
         $availability->addClownAvailabilityTime($this->buildTimeSlot('no', $date1, 'pm'));
         $availability->addClownAvailabilityTime($this->buildTimeSlot('yes', $date2, 'am'));
@@ -51,11 +53,11 @@ final class ClownAvailabilityTest extends TestCase
         $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'all')));
     }
 
-    private function buildTimeSlot(string $availability, \DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
+    private function buildTimeSlot(string $availability, DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
     {
         $timeSlot = new ClownAvailabilityTime();
         $timeSlot->setAvailability($availability);
-        $timeSlot->setDate($date ?? new \DateTimeImmutable());
+        $timeSlot->setDate($date ?? new DateTimeImmutable());
         $timeSlot->setDaytime($daytime);
 
         return $timeSlot;

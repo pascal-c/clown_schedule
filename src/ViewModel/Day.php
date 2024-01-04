@@ -4,6 +4,9 @@ namespace App\ViewModel;
 
 use App\Entity\Daytime;
 use App\Entity\Vacation;
+use DateTimeImmutable;
+use DateTimeInterface;
+use InvalidArgumentException;
 
 class Day
 {
@@ -11,7 +14,7 @@ class Day
     private array $entriesPm = [];
 
     public function __construct(
-        private \DateTimeInterface $date,
+        private DateTimeInterface $date,
         private string $dayLongName,
         private string $dayShortName,
         private string $dayNumber,
@@ -29,7 +32,7 @@ class Day
         } elseif (Daytime::PM === $daytime) {
             $this->entriesPm[$key][] = $entry;
         } else {
-            throw new \InvalidArgumentException('this is not a valid daytime');
+            throw new InvalidArgumentException('this is not a valid daytime');
         }
     }
 
@@ -40,7 +43,7 @@ class Day
         } elseif (Daytime::PM == $daytime) {
             return array_key_exists($key, $this->entriesPm) ? $this->entriesPm[$key] : [];
         } else {
-            throw new \InvalidArgumentException('this is not a valid daytime');
+            throw new InvalidArgumentException('this is not a valid daytime');
         }
     }
 
@@ -59,7 +62,7 @@ class Day
         return $this->isHoliday() ? $this->dayHolidayName : $this->dayLongName;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }

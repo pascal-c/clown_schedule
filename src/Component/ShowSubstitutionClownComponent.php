@@ -10,6 +10,7 @@ use App\Repository\SubstitutionRepository;
 use App\Service\AuthService;
 use App\Value\ScheduleStatus;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use DateTimeImmutable;
 
 #[AsTwigComponent('show_substitution_clown')]
 final class ShowSubstitutionClownComponent
@@ -26,7 +27,7 @@ final class ShowSubstitutionClownComponent
     ) {
     }
 
-    public function mount(\DateTimeImmutable $date, string $daytime, Month $month): void
+    public function mount(DateTimeImmutable $date, string $daytime, Month $month): void
     {
         $this->substitution = $this->substitutionRepository->find($date, $daytime);
         if (is_null($this->substitution)) {

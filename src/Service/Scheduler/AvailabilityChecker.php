@@ -9,6 +9,7 @@ use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlot;
 use App\Value\TimeSlotPeriodInterface;
+use DateTimeInterface;
 
 class AvailabilityChecker
 {
@@ -51,7 +52,7 @@ class AvailabilityChecker
         return $clownAvailability->getCalculatedPlaysMonth() >= $clownAvailability->getMaxPlaysMonth();
     }
 
-    public function maxPlaysDayReached(\DateTimeInterface $date, ClownAvailability $clownAvailability)
+    public function maxPlaysDayReached(DateTimeInterface $date, ClownAvailability $clownAvailability)
     {
         $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
         $playDatesSameDay = array_filter(
