@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use App\Entity\ClownAvailability;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[UniqueEntity('name')]
@@ -72,6 +71,7 @@ class Clown
     public function setId(int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -151,7 +151,7 @@ class Clown
 
     public function hasAvailabilityFor(Month $month): bool
     {
-        foreach($this->clownAvailabilities as $availability) {
+        foreach ($this->clownAvailabilities as $availability) {
             if ($availability->getMonth() == $month) {
                 return true;
             }
@@ -162,7 +162,7 @@ class Clown
 
     public function getAvailabilityFor(Month $month): ?ClownAvailability
     {
-        foreach($this->clownAvailabilities as $availability) {
+        foreach ($this->clownAvailabilities as $availability) {
             if ($availability->getMonth() == $month) {
                 return $availability;
             }

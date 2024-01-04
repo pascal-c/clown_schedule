@@ -32,19 +32,18 @@ class PlayDateController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     public function __construct(
-        ManagerRegistry $doctrine, 
+        ManagerRegistry $doctrine,
         private PlayDateRepository $playDateRepository,
         private ScheduleRepository $scheduleRepository,
         private PlayDateHistoryService $playDateHistoryService,
         private ClownRepository $clownRepository,
         private TimeService $timeService,
-    )
-    {
+    ) {
         $this->entityManager = $doctrine->getManager();
     }
 
     #[Route('/play_dates', name: 'play_date_index', methods: ['GET'])]
-    public function index(): Response 
+    public function index(): Response
     {
         return $this->render('play_date/index.html.twig', [
             'play_dates' => $this->playDateRepository->all(),
@@ -55,7 +54,7 @@ class PlayDateController extends AbstractController
     public function new(Request $request, VenueRepository $venueRepository): Response
     {
         $this->adminOnly();
-        
+
         $playDate = new PlayDate();
         $venueId = $request->query->get('venue_id');
         if (isset($venueId)) {
@@ -63,8 +62,7 @@ class PlayDateController extends AbstractController
             $playDate->setVenue($venue);
             $playDate->setIsSuper($venue->isSuper());
             $playDate->setDaytime($venue->getDaytimeDefault());
-        }
-        else {
+        } else {
             $venue = null;
         }
 
@@ -79,6 +77,7 @@ class PlayDateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spieltermin wurde erfolgreich angelegt.');
+
             return $this->redirectAfterSuccess($venue);
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Spieltermin konnte nicht angelegt werden.');
@@ -94,13 +93,13 @@ class PlayDateController extends AbstractController
     {
         $playDate = $this->playDateRepository->find($id);
         if (is_null($playDate)) {
-            throw(new NotFoundHttpException);  
+            throw new NotFoundHttpException();
         }
 
         return $this->render('play_date/show.html.twig', [
             'playDate' => $playDate,
             'substitutionClowns' => array_map(
-                fn(Substitution $substitution) => $substitution->getSubstitutionClown(),
+                fn (Substitution $substitution) => $substitution->getSubstitutionClown(),
                 $substitutionRepository->findByTimeSlotPeriod($playDate),
             ),
             'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() >= $this->timeService->today()->modify(PlayDateChangeRequestCloseInvalidService::CREATABLE_UNTIL_PERIOD),
@@ -116,8 +115,8 @@ class PlayDateController extends AbstractController
 
         $editForm = $this->createForm($playDate->isSpecial() ? SpecialPlayDateFormType::class : PlayDateFormType::class, $playDate, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($playDate)
-            ->add('delete', SubmitType::class, 
-                ['label' => 'Spieltermin löschen', 'attr' => array('onclick' => 'return confirm("Spieltermin endgültig löschen?")')])
+            ->add('delete', SubmitType::class,
+                ['label' => 'Spieltermin löschen', 'attr' => ['onclick' => 'return confirm("Spieltermin endgültig löschen?")']])
             ->setMethod('DELETE')
             ->setAction($this->generateUrl('play_date_delete', ['id' => $id]))
             ->getForm();
@@ -129,6 +128,7 @@ class PlayDateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spieltermin wurde aktualisiert. Sehr gut!');
+
             return $this->redirectAfterSuccess($request->query->get('venue_id') ? $playDate->getVenue() : null);
         } elseif ($editForm->isSubmitted()) {
             $this->addFlash('warning', 'Hach! Spieltermin konnte irgendwie nicht aktualisiert werden.');
@@ -146,18 +146,19 @@ class PlayDateController extends AbstractController
         $this->adminOnly();
 
         $playDate = $this->playDateRepository->find($id);
-        
+
         $form = $this->createForm(PlayDateAssignClownsFormType::class, $playDate, ['method' => 'PATCH']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $schedule = $this->scheduleRepository->find($playDate->getMonth());
-            $changeReason = !is_null($schedule) && $schedule->isCompleted() 
-                ? PlayDateChangeReason::MANUAL_CHANGE 
+            $changeReason = !is_null($schedule) && $schedule->isCompleted()
+                ? PlayDateChangeReason::MANUAL_CHANGE
                 : PlayDateChangeReason::MANUAL_CHANGE_FOR_SCHEDULE;
             $this->playDateHistoryService->add($playDate, $this->getCurrentClown(), $changeReason);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clowns wurden zugeordnet. Tip top!');
+
             return $this->redirectToRoute('schedule');
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Mist, das hat nicht geklappt!');
@@ -187,10 +188,12 @@ class PlayDateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spieltermin wurde gelöscht. Das ist gut!');
+
             return $this->redirectAfterSuccess($request->query->get('venue_id') ? $playDate->getVenue() : null);
         }
 
         $this->addFlash('warning', 'Achtung! Spieltermin konnte nicht gelöscht werden.');
+
         return $this->redirectToRoute('play_date_edit', ['id' => $playDate->getId()]);
     }
 
@@ -199,6 +202,7 @@ class PlayDateController extends AbstractController
         if (isset($venue)) {
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         }
+
         return $this->redirectToRoute('schedule');
     }
 

@@ -8,14 +8,14 @@ use App\Entity\Clown;
 use App\Entity\PlayDate;
 use App\Entity\PlayDateHistory;
 use App\Value\PlayDateChangeReason;
-use App\Value\PlayDateChangeRequestStatus;
 
 class PlayDateHistoryService
 {
     public function __construct(
         private TimeService $timeService,
         private PlayDateChangeRequestCloseInvalidService $closeInvalidService,
-    ) {}
+    ) {
+    }
 
     public function add(PlayDate $playDate, ?Clown $changedBy, PlayDateChangeReason $reason): void
     {
@@ -25,7 +25,7 @@ class PlayDateHistoryService
             ->setChangedAt($this->timeService->now())
             ->setChangedBy($changedBy)
             ->setReason($reason);
-        
+
         foreach ($playDate->getPlayingClowns() as $clown) {
             $playDateHistoryEntry->addPlayingClown($clown);
         }

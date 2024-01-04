@@ -6,7 +6,7 @@ use App\Entity\Clown;
 use App\Entity\PlayDateChangeRequest;
 use App\Value\PlayDateChangeRequestStatus;
 
-class PlayDateChangeRequestRepository  extends AbstractRepository
+class PlayDateChangeRequestRepository extends AbstractRepository
 {
     protected function getEntityName(): string
     {

@@ -2,9 +2,9 @@
 
 namespace App\Tests\ViewModel;
 
-use PHPUnit\Framework\TestCase;
 use App\Entity\Daytime;
 use App\ViewModel\Day;
+use PHPUnit\Framework\TestCase;
 
 final class DayTest extends TestCase
 {
@@ -21,7 +21,7 @@ final class DayTest extends TestCase
             vacation: null,
         );
         $this->assertEquals('6. Mai', $day->getDayNumber());
-        
+
         return $day;
     }
 
@@ -51,7 +51,7 @@ final class DayTest extends TestCase
      * @depends testgetDayNumber
      */
     public function testisWeekend(Day $day): void
-    {   
+    {
         $this->assertEquals(false, $day->isWeekend());
     }
 

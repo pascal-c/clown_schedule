@@ -22,7 +22,6 @@ final class Version20221226154341 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_1B3294A57A76FF5 ON time_slot (substitution_clown_id)');
         $this->addSql('COMMENT ON COLUMN time_slot.date IS \'(DC2Type:date_immutable)\'');
         $this->addSql('ALTER TABLE time_slot ADD CONSTRAINT FK_1B3294A57A76FF5 FOREIGN KEY (substitution_clown_id) REFERENCES clown (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        
     }
 
     public function down(Schema $schema): void

@@ -2,9 +2,9 @@
 
 namespace App\Tests\ViewController;
 
-use PHPUnit\Framework\TestCase;
 use App\Repository\VacationRepository;
 use App\ViewController\DayViewController;
+use PHPUnit\Framework\TestCase;
 
 final class DayViewControllerTest extends TestCase
 {
@@ -14,7 +14,7 @@ final class DayViewControllerTest extends TestCase
         $viewController = new DayViewController($vacationRepository);
         $date = new \DateTimeImmutable('2022-08-08');
         $day = $viewController->getDay($date);
-        
+
         $this->assertEquals('Mo.', $day->getDayShortName());
     }
 
@@ -22,11 +22,11 @@ final class DayViewControllerTest extends TestCase
      * @dataProvider isWeekendProvider
      */
     public function testisWeekend(\DateTimeImmutable $date, bool $expectedResult): void
-    {   
+    {
         $vacationRepository = $this->createMock(VacationRepository::class);
         $viewController = new DayViewController($vacationRepository);
         $day = $viewController->getDay($date);
-        
+
         $this->assertEquals($expectedResult, $day->isWeekend());
     }
 
@@ -48,14 +48,13 @@ final class DayViewControllerTest extends TestCase
         $vacationRepository = $this->createMock(VacationRepository::class);
         $viewController = new DayViewController($vacationRepository);
         $day = $viewController->getDay($date);
-        
+
         $this->assertEquals($expectedResult, $day->isHoliday());
     }
 
     public function isHolidayProvider(): array
     {
         return [
-
             [new \DateTimeImmutable('2022-01-01'), true], // new year
             [new \DateTimeImmutable('2022-01-02'), false], // no holiday
             [new \DateTimeImmutable('1974-04-12'), true], // Easter Friday

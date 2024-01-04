@@ -1,17 +1,19 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Entity;
 
-use PHPUnit\Framework\TestCase;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Value\TimeSlotPeriod;
+use PHPUnit\Framework\TestCase;
 
 final class ClownAvailabilityTest extends TestCase
 {
     public function testgetOpenTargetPlays(): void
     {
-        $availability = new ClownAvailability;
+        $availability = new ClownAvailability();
         $availability->setTargetPlays(3);
         $availability->setCalculatedPlaysMonth(1);
 
@@ -20,7 +22,7 @@ final class ClownAvailabilityTest extends TestCase
 
     public function testgetAvailabilityRatio(): void
     {
-        $availability = new ClownAvailability;
+        $availability = new ClownAvailability();
         $availability->addClownAvailabilityTime($this->buildTimeSlot('yes'));
         $availability->addClownAvailabilityTime($this->buildTimeSlot('maybe'));
         $availability->addClownAvailabilityTime($this->buildTimeSlot('no'));
@@ -31,7 +33,7 @@ final class ClownAvailabilityTest extends TestCase
 
     public function testisAvailableOn(): void
     {
-        $availability = new ClownAvailability;
+        $availability = new ClownAvailability();
         $date1 = new \DateTimeImmutable('2022-04-01');
         $date2 = new \DateTimeImmutable('2022-04-02');
         $availability->addClownAvailabilityTime($this->buildTimeSlot('yes', $date1, 'am'));
@@ -44,17 +46,18 @@ final class ClownAvailabilityTest extends TestCase
         $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'am')));
         $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'pm')));
 
-        # all day
+        // all day
         $this->assertFalse($availability->isAvailableOn(new TimeSlotPeriod($date1, 'all')));
         $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'all')));
     }
 
-    private function buildTimeSlot(string $availability, ?\DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
+    private function buildTimeSlot(string $availability, \DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
     {
-        $timeSlot = new ClownAvailabilityTime;
+        $timeSlot = new ClownAvailabilityTime();
         $timeSlot->setAvailability($availability);
-        $timeSlot->setDate($date ?? new \DateTimeImmutable);
+        $timeSlot->setDate($date ?? new \DateTimeImmutable());
         $timeSlot->setDaytime($daytime);
+
         return $timeSlot;
     }
 }

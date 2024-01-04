@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component;
 
 use App\Entity\Clown;
@@ -8,34 +9,33 @@ use App\Repository\SubstitutionRepository;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
-use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 
 #[AsTwigComponent('next_dates_per_clown')]
 class NextDatesPerClownComponent
 {
     public Clown $currentClown;
-    
-    /** @var  array<TimeSlotInterface> $dates */
+
+    /** @var array<TimeSlotInterface> */
     public array $dates = [];
-    
-    /** @var array<bool> $datesScheduled */
+
+    /** @var array<bool> */
     public array $datesScheduled = [];
 
     public function __construct(
-        private PlayDateRepository $playDateRepository, 
+        private PlayDateRepository $playDateRepository,
         private SubstitutionRepository $substitutionRepository,
         private ScheduleRepository $scheduleRepository,
-    ) {}
+    ) {
+    }
 
-    public function mount(Clown $currentClown) 
+    public function mount(Clown $currentClown)
     {
         $playDates = $this->playDateRepository->futureByClown($currentClown);
         $substitutions = $this->substitutionRepository->futureByClown($currentClown);
         $this->currentClown = $currentClown;
         $this->dates = array_merge($playDates, $substitutions);
-        usort($this->dates, 
-            fn(TimeSlotInterface $a, TimeSlotInterface $b) => 
-                $a->getDate() == $b->getDate()
+        usort($this->dates,
+            fn (TimeSlotInterface $a, TimeSlotInterface $b) => $a->getDate() == $b->getDate()
                 ?
                 $a->getDaytime() <=> $b->getDaytime()
                 :

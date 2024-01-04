@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component;
 
 use App\Entity\Clown;
@@ -8,7 +9,6 @@ use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\AuthService;
 use App\Value\ScheduleStatus;
-use DateTimeImmutable;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent('show_substitution_clown')]
@@ -23,13 +23,14 @@ final class ShowSubstitutionClownComponent
         private SubstitutionRepository $substitutionRepository,
         private ScheduleRepository $scheduleRepository,
         private AuthService $authService,
-    ) {}
+    ) {
+    }
 
-    public function mount(DateTimeImmutable $date, string $daytime, Month $month): void
+    public function mount(\DateTimeImmutable $date, string $daytime, Month $month): void
     {
         $this->substitution = $this->substitutionRepository->find($date, $daytime);
         if (is_null($this->substitution)) {
-            $this->substitution = new Substitution;
+            $this->substitution = new Substitution();
             $this->substitution->setDate($date)->setDaytime($daytime);
         }
 
@@ -39,5 +40,4 @@ final class ShowSubstitutionClownComponent
         $this->colorClass = $schedule && !$this->substitution->getSubstitutionClown() ? 'text-danger' : '';
         $this->showIt = $this->currentClown->isAdmin() || ScheduleStatus::COMPLETED === $schedule?->getStatus();
     }
-
 }

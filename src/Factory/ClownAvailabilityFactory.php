@@ -14,17 +14,17 @@ class ClownAvailabilityFactory extends AbstractFactory
     public function create(Clown $clown, Month $month): ClownAvailability
     {
         $wishedPlaysMonth = rand(2, 10);
-        $clownAvailability = (new ClownAvailability)
+        $clownAvailability = (new ClownAvailability())
             ->setClown($clown)
             ->setMonth($month)
             ->setMaxPlaysMonth($wishedPlaysMonth + rand(0, 5))
             ->setWishedPlaysMonth($wishedPlaysMonth)
             ->setMaxPlaysDay(rand(1, 2))
             ->setAdditionalWishes($this->generator->optional()->text(100))
-            ;
+        ;
         foreach ($month->days() as $date) {
             foreach (['am', 'pm'] as $daytime) {
-                $timeSlot = (new ClownAvailabilityTime)
+                $timeSlot = (new ClownAvailabilityTime())
                     ->setClown($clown)
                     ->setDate($date)
                     ->setDaytime($daytime)
@@ -36,6 +36,7 @@ class ClownAvailabilityFactory extends AbstractFactory
 
         $this->entityManager->persist($clownAvailability);
         $this->entityManager->flush();
+
         return $clownAvailability;
     }
 }

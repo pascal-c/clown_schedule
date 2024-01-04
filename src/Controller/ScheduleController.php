@@ -8,7 +8,6 @@ use App\Entity\Month;
 use App\Entity\Schedule;
 use App\Form\ScheduleCalculateFormType;
 use App\Form\ScheduleCompleteFormType;
-use App\Form\ScheduleFormType;
 use App\Mailer\ClownInfoMailer;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
@@ -32,8 +31,8 @@ class ScheduleController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     public function __construct(
-        ManagerRegistry $doctrine, 
-        private PlayDateRepository $playDateRepository, 
+        ManagerRegistry $doctrine,
+        private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
         private ScheduleViewController $scheduleViewController,
         private Scheduler $scheduler,
@@ -43,13 +42,12 @@ class ScheduleController extends AbstractController
         private TimeService $timeService,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private SubstitutionRepository $substitutionRepository,
-        )
-    {
+    ) {
         $this->entityManager = $doctrine->getManager();
     }
 
     #[Route('/schedule/{monthId}', name: 'schedule', methods: ['GET'])]
-    public function schedule(SessionInterface $session, Request $request, ?string $monthId = null): Response 
+    public function schedule(SessionInterface $session, Request $request, string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $scheduleViewModel = $this->scheduleViewController->getSchedule($month);
@@ -70,38 +68,38 @@ class ScheduleController extends AbstractController
     }
 
     #[Route('/schedule/{monthId}', methods: ['POST'])]
-    public function calculate(Request $request, SessionInterface $session, ?string $monthId = null): Response 
+    public function calculate(Request $request, SessionInterface $session, string $monthId = null): Response
     {
         $this->adminOnly();
-        
+
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month);
-        
+
         if (null === $schedule) {
             $schedule ??= (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::IN_PROGRESS);
             $this->entityManager->persist($schedule);
         }
         if (ScheduleStatus::COMPLETED === $schedule->getStatus()) {
-            throw($this->createAccessDeniedException('Spielplan ist bereits abgeschlossen!'));
+            throw $this->createAccessDeniedException('Spielplan ist bereits abgeschlossen!');
         }
-            
+
         $this->scheduler->calculate($month);
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Yes! Spielplan wurde erstellt. Bitte nochmal prüfen, ob alles so passt!');
+
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }
 
-
     #[Route('/schedule/{monthId}', methods: ['PUT'])]
-    public function complete(SessionInterface $session, ?string $monthId = null): Response 
+    public function complete(SessionInterface $session, string $monthId = null): Response
     {
         $this->adminOnly();
-        
+
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduler->complete($month);
         if (!$schedule) {
-            throw($this->createAccessDeniedException('Der Spielplan ist bereits abgeschlossen!'));
+            throw $this->createAccessDeniedException('Der Spielplan ist bereits abgeschlossen!');
         }
 
         $this->entityManager->flush();
@@ -114,9 +112,9 @@ class ScheduleController extends AbstractController
         }
 
         $this->addFlash('success', 'Cool, Spielplan ist abgeschlossen und ist nun für alle sichtbar. Manuelle Änderungen können trotzdem noch vorgenommen werden.');
+
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }
-
 
     protected function render(string $view, array $parameters = [], Response $response = null): Response
     {

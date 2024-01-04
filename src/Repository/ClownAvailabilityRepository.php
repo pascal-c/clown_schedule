@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Month;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
+use App\Entity\Month;
 
 class ClownAvailabilityRepository extends AbstractRepository
 {

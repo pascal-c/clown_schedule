@@ -10,7 +10,7 @@ class FairPlayCalculator
     {
         $fullClownNumber = array_reduce(
             $clownAvailabilities,
-            fn(float $number, ClownAvailability $availability) => $number + $availability->getAvailabilityRatio(),
+            fn (float $number, ClownAvailability $availability) => $number + $availability->getAvailabilityRatio(),
             0.0
         );
         $playsPerFullClown = $totalPlays / $fullClownNumber;
@@ -30,12 +30,12 @@ class FairPlayCalculator
 
         $diff = $wishedPlaysSum - $totalPlays;
         if ($diff > 0) {
-            for ($i=0; $i<$diff; $i++) {
+            for ($i = 0; $i < $diff; ++$i) {
                 $clownAvailability = $this->getMaxDiff($clownAvailabilities);
                 $clownAvailability->decrTargetPlays();
             }
         } elseif ($diff < 0) {
-            for ($i=0; $i>$diff; $i--) {
+            for ($i = 0; $i > $diff; --$i) {
                 $clownAvailability = $this->getMinDiff($clownAvailabilities);
                 $clownAvailability->incTargetPlays();
             }
@@ -46,8 +46,7 @@ class FairPlayCalculator
     {
         return array_reduce(
             $clownAvailabilities,
-            fn(ClownAvailability $carry, ClownAvailability $availability) => 
-                $carry->getTargetPlays() - $carry->getEntitledPlaysMonth() 
+            fn (ClownAvailability $carry, ClownAvailability $availability) => $carry->getTargetPlays() - $carry->getEntitledPlaysMonth()
                     >
                 $availability->getTargetPlays() - $availability->getEntitledPlaysMonth()
                     ?
@@ -60,13 +59,12 @@ class FairPlayCalculator
     {
         return array_reduce(
             $clownAvailabilities,
-            fn(ClownAvailability $carry, ClownAvailability $availability) => 
-                $carry->getTargetPlays() - $carry->getEntitledPlaysMonth() 
+            fn (ClownAvailability $carry, ClownAvailability $availability) => $carry->getTargetPlays() - $carry->getEntitledPlaysMonth()
                     <
                 $availability->getTargetPlays() - $availability->getEntitledPlaysMonth()
                     ?
                 $carry : $availability,
-            $clownAvailabilities[0]    
+            $clownAvailabilities[0]
         );
     }
 }

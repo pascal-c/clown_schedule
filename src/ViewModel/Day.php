@@ -4,15 +4,14 @@ namespace App\ViewModel;
 
 use App\Entity\Daytime;
 use App\Entity\Vacation;
-use DateTimeInterface;
 
 class Day
 {
     private array $entriesAm = [];
     private array $entriesPm = [];
-    
+
     public function __construct(
-        private DateTimeInterface $date,
+        private \DateTimeInterface $date,
         private string $dayLongName,
         private string $dayShortName,
         private string $dayNumber,
@@ -20,15 +19,14 @@ class Day
         private bool $isWeekend,
         private bool $isHoliday,
         private ?Vacation $vacation,
-    ) 
-    {
+    ) {
     }
-    
+
     public function addEntry(string $daytime, string $key, mixed $entry)
     {
-        if ($daytime === Daytime::AM) {
+        if (Daytime::AM === $daytime) {
             $this->entriesAm[$key][] = $entry;
-        } elseif ($daytime === Daytime::PM) {
+        } elseif (Daytime::PM === $daytime) {
             $this->entriesPm[$key][] = $entry;
         } else {
             throw new \InvalidArgumentException('this is not a valid daytime');
@@ -37,9 +35,9 @@ class Day
 
     public function getEntries(string $daytime, string $key): array
     {
-        if ($daytime == Daytime::AM) {
+        if (Daytime::AM == $daytime) {
             return array_key_exists($key, $this->entriesAm) ? $this->entriesAm[$key] : [];
-        } elseif ($daytime == Daytime::PM) {
+        } elseif (Daytime::PM == $daytime) {
             return array_key_exists($key, $this->entriesPm) ? $this->entriesPm[$key] : [];
         } else {
             throw new \InvalidArgumentException('this is not a valid daytime');
@@ -88,7 +86,7 @@ class Day
 
     public function isVacation(): bool
     {
-        return $this->vacation != null;
+        return null != $this->vacation;
     }
 
     public function getVacationName(): ?string

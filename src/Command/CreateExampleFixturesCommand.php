@@ -8,7 +8,6 @@ use App\Factory\ClownFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
 use App\Lib\Collection;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -30,8 +29,7 @@ class CreateExampleFixturesCommand extends Command
         private ClownAvailabilityFactory $clownAvailabilityFactory,
         private PlayDateFactory $playDateFactory,
         private VenueFactory $venueFactory,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -63,27 +61,27 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailabilityTime')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailability')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Clown')->execute();
-        
+
         $clowns = $this->clownFactory->createList(8);
         $clowns->push($this->clownFactory->create(email: 'admin-clown@clowns-und-clowns.de', isAdmin: true));
         $clowns->push($this->clownFactory->create(email: 'clown@clowns-und-clowns.de'));
 
         $venues = Collection::create(
-            fn() => $this->venueFactory->create(playingClowns: $clowns->samples(0, 4)),
+            fn () => $this->venueFactory->create(playingClowns: $clowns->samples(0, 4)),
             10,
         );
 
         $month = Month::build('now');
         $maxCount = 6;
-        for($i=0; $i<6; $i++) {
+        for ($i = 0; $i < 6; ++$i) {
             foreach ($clowns as $clown) {
-                if (rand(1, $maxCount*2) >= $i) {
+                if (rand(1, $maxCount * 2) >= $i) {
                     $this->clownAvailabilityFactory->create($clown, $month);
                 }
             }
 
             Collection::create(
-                fn() => $this->playDateFactory->create(month: $month, venue: $venues->sample()),
+                fn () => $this->playDateFactory->create(month: $month, venue: $venues->sample()),
                 25,
             );
             $month = $month->next();

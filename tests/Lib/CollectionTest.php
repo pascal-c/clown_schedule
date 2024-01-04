@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
 namespace App\Tests\Lib;
 
-use PHPUnit\Framework\TestCase;
 use App\Lib\Collection;
+use PHPUnit\Framework\TestCase;
 
 final class CollectionTest extends TestCase
 {

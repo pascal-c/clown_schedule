@@ -11,7 +11,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class AuthenticationSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private AuthService $authService) {}
+    public function __construct(private AuthService $authService)
+    {
+    }
 
     public function onKernelController(ControllerEvent $event)
     {
@@ -24,7 +26,8 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         }
 
         if (!$controller instanceof LoginController && !$this->authService->isLoggedIn()) {
-            $event->setController(fn() => new RedirectResponse('/login'));
+            $event->setController(fn () => new RedirectResponse('/login'));
+
             return;
         }
     }
@@ -33,7 +36,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::CONTROLLER => 'onKernelController',
-            #RequestEvent::class => 'onKernelRequest',
+            // RequestEvent::class => 'onKernelRequest',
         ];
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class PlayDateGiveOffRequestAcceptFormType extends AbstractType
 {
@@ -15,7 +15,7 @@ class PlayDateGiveOffRequestAcceptFormType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Hier kannst Du noch eine persönliche Nachricht an die anfragende Person hinterlassen.',
                 'required' => false,
-                'attr' => ['placeholder' => 'optional']
+                'attr' => ['placeholder' => 'optional'],
                 ])
             ->add('accept', SubmitType::class, [
                 'label' => 'Diesen Spieltermin verbindlich übernehmen',

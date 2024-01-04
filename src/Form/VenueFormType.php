@@ -5,10 +5,8 @@ namespace App\Form;
 use App\Entity\Clown;
 use App\Entity\Venue;
 use App\Value\TimeSlotPeriodInterface;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -20,6 +18,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VenueFormType extends AbstractType
 {
@@ -47,27 +47,27 @@ class VenueFormType extends AbstractType
                 'expanded' => true,
                 ])
             ->add('daytimeDefault', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,
                     'nachmittags' => TimeSlotPeriodInterface::PM,
-                    'ganztags'   => TimeSlotPeriodInterface::ALL,
+                    'ganztags' => TimeSlotPeriodInterface::ALL,
                 ],
                 'label' => 'Standard Tageszeit für Spieltermine',
                 'expanded' => true,
                 'multiple' => false,
                 ])
             ->add('meetingTime', TimeType::class, [
-                'input'  => 'datetime',
+                'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Treffen',
-                ])   
+                ])
             ->add('playTimeFrom', TimeType::class, [
-                'input'  => 'datetime',
+                'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Spielzeit (von)',
-            ])    
+            ])
             ->add('playTimeTo', TimeType::class, [
-                'input'  => 'datetime',
+                'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Spielzeit (bis)',
             ])
@@ -81,7 +81,7 @@ class VenueFormType extends AbstractType
                 ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spielort? (nur relevant für Statistik)',
-                'required' => false
+                'required' => false,
                 ])
             ->add('save', SubmitType::class, ['label' => 'Spielort speichern'])
         ;

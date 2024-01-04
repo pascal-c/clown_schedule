@@ -5,14 +5,14 @@ namespace App\Form;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
 use App\Value\TimeSlotPeriodInterface;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PlayDateFormType extends AbstractType
 {
@@ -20,15 +20,15 @@ class PlayDateFormType extends AbstractType
     {
         $builder
             ->add('date', DateType::class, [
-                'widget' => 'single_text', 
+                'widget' => 'single_text',
                 'label' => 'Datum',
                 'input' => 'datetime_immutable',
                 ])
             ->add('daytime', ChoiceType::class, [
-                'choices'  => [
+                'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,
                     'nachmittags' => TimeSlotPeriodInterface::PM,
-                    'ganztags'   => TimeSlotPeriodInterface::ALL,
+                    'ganztags' => TimeSlotPeriodInterface::ALL,
                 ],
                 'label' => 'Tageszeit',
                 'expanded' => true,
@@ -42,8 +42,8 @@ class PlayDateFormType extends AbstractType
                 ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
-                'required' => false
-                ])    
+                'required' => false,
+                ])
             ->add('save', SubmitType::class, ['label' => 'Spieltermin speichern'])
         ;
     }

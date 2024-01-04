@@ -16,7 +16,7 @@ class VenueRepository extends AbstractRepository
         return $this->doctrineRepository->find($id);
     }
 
-    public function all() : Array
+    public function all(): array
     {
         return $this->doctrineRepository->findBy(
             [],

@@ -21,7 +21,6 @@ final class Version20221107171629 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('UPDATE venue SET emails = \'a:0:{}\'');
-
     }
 
     public function down(Schema $schema): void

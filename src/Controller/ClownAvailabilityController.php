@@ -9,8 +9,8 @@ use App\Entity\ClownAvailabilityTime;
 use App\Entity\Daytime;
 use App\Entity\Month;
 use App\Form\ClownAvailabilityFormType;
-use App\Repository\ClownRepository;
 use App\Repository\ClownAvailabilityRepository;
+use App\Repository\ClownRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\ViewController\ScheduleViewController;
@@ -26,19 +26,18 @@ class ClownAvailabilityController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     public function __construct(
-        ManagerRegistry $doctrine, 
+        ManagerRegistry $doctrine,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownRepository $clownRepository,
         private MonthRepository $monthRepository,
         private PlayDateRepository $playDateRepository,
         private ScheduleViewController $scheduleViewController
-    )
-    {
+    ) {
         $this->entityManager = $doctrine->getManager();
     }
 
     #[Route('/clowns/availabilities/{monthId}', name: 'clown_availability_index', methods: ['GET'])]
-    public function index(SessionInterface $session, ?string $monthId = null): Response 
+    public function index(SessionInterface $session, string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clowns = $this->clownRepository->all();
@@ -52,7 +51,7 @@ class ClownAvailabilityController extends AbstractController
     }
 
     #[Route('/clowns/{clownId}/availabilities/{monthId}', name: 'clown_availability_show', methods: ['GET'])]
-    public function show(SessionInterface $session, int $clownId, ?string $monthId = null): Response 
+    public function show(SessionInterface $session, int $clownId, string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);
@@ -60,7 +59,7 @@ class ClownAvailabilityController extends AbstractController
         if (is_null($clownAvailability)) {
             return $this->redirectToRoute('clown_availability_new', ['monthId' => $month->getkey(), 'clownId' => $clown->getId()]);
         }
-    
+
         $schedule = $this->scheduleViewController->getSchedule($month);
         foreach ($clownAvailability->getClownAvailabilityTimes($month) as $timeSlot) {
             $schedule->add($timeSlot, 'availabilities', $timeSlot->getAvailability());
@@ -84,7 +83,7 @@ class ClownAvailabilityController extends AbstractController
         $month = Month::build($monthId);
         $clown = $this->clownRepository->find($clownId);
         $schedule = $this->scheduleViewController->getSchedule($month);
-        $clownAvailability = new ClownAvailability;
+        $clownAvailability = new ClownAvailability();
         $lastMonthAvailability = $this->clownAvailabilityRepository->find($month->previous(), $clown);
         if (!is_null($lastMonthAvailability)) {
             $clownAvailability->setWishedPlaysMonth($lastMonthAvailability->getWishedPlaysMonth());
@@ -93,14 +92,13 @@ class ClownAvailabilityController extends AbstractController
         }
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability);
 
-        foreach($schedule->getDays() as $day) {
+        foreach ($schedule->getDays() as $day) {
             $day->addEntry(Daytime::AM, 'availabilities', 'yes');
             $day->addEntry(Daytime::PM, 'availabilities', 'yes');
         }
         foreach ($this->playDateRepository->byMonth($month) as $playDate) {
             $schedule->add($playDate, 'playDates', $playDate);
         }
-
 
         return $this->render('clown_availability/form.html.twig', [
             'active' => 'availability',
@@ -117,7 +115,7 @@ class ClownAvailabilityController extends AbstractController
     {
         $month = Month::build($monthId);
         $clown = $this->clownRepository->find($clownId);
-        $clownAvailability = new ClownAvailability;
+        $clownAvailability = new ClownAvailability();
         $clownAvailability->setMonth($month);
         $clownAvailability->setClown($clown);
 
@@ -125,9 +123,9 @@ class ClownAvailabilityController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $availabilities = $request->request->all()['availability'];
-            foreach($availabilities as $date => $timeSlots) {
+            foreach ($availabilities as $date => $timeSlots) {
                 foreach ($timeSlots as $daytime => $availability) {
-                    $timeSlot = new ClownAvailabilityTime;
+                    $timeSlot = new ClownAvailabilityTime();
                     $timeSlot->setClown($clown);
                     $timeSlot->setDate(new \DateTimeImmutable($date));
                     $timeSlot->setDaytime($daytime);
@@ -139,10 +137,12 @@ class ClownAvailabilityController extends AbstractController
             $this->entityManager->persist($clownAvailability);
             $this->entityManager->flush();
             $this->addFlash('success', 'Fehlzeiten wurden gespeichert. Vielen Dank!');
+
             return $this->redirectToRoute('clown_availability_show', ['clownId' => $clown->getId()]);
         }
 
         $this->addFlash('warning', 'Speichern fehlgeschlagen! Bitte nochmal versuchen!');
+
         return $this->redirectToRoute('clown_availability_new', ['clownId' => $clown->getId(), 'monthId' => $month->getKey()]);
     }
 
@@ -187,10 +187,12 @@ class ClownAvailabilityController extends AbstractController
             }
             $this->entityManager->flush();
             $this->addFlash('success', 'Fehlzeiten wurden geändert. Gut!');
+
             return $this->redirectToRoute('clown_availability_show', ['clownId' => $clown->getId()]);
         }
 
         $this->addFlash('warning', 'Speichern fehlgeschlagen! Bitte nochmal versuchen!');
+
         return $this->redirectToRoute('clown_availability_edit', ['clownId' => $clown->getId(), 'monthId' => $month->getKey()]);
     }
 }

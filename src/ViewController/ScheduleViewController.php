@@ -19,11 +19,11 @@ class ScheduleViewController
         $schedule = new Schedule($status ?? ScheduleStatus::NOT_STARTED, $month);
 
         $days = [];
-        foreach($month->days() as $date) {
+        foreach ($month->days() as $date) {
             $days[$date->format('d')] = $this->dayViewController->getDay($date);
         }
         $schedule->setDays($days);
-        
+
         return $schedule;
     }
 }

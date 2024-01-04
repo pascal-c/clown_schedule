@@ -6,33 +6,30 @@ use App\Entity\Month;
 use App\Entity\Vacation;
 use App\Repository\VacationRepository;
 use App\ViewModel\Day;
-use DateTimeImmutable;
-use IntlDateFormatter;
 
 class DayViewController
 {
-    private IntlDateFormatter $dayShortNameFormatter;
-    private IntlDateFormatter $dayLongNameFormatter;
-    private IntlDateFormatter $dayNumberFormatter;
+    private \IntlDateFormatter $dayShortNameFormatter;
+    private \IntlDateFormatter $dayLongNameFormatter;
+    private \IntlDateFormatter $dayNumberFormatter;
 
     public function __construct(private VacationRepository $vacationRepository)
     {
-        $this->dayShortNameFormatter = new IntlDateFormatter(
-            'de_DE', 
+        $this->dayShortNameFormatter = new \IntlDateFormatter(
+            'de_DE',
             timezone: 'Europe/Berlin',
             pattern: 'EEE');
-        $this->dayLongNameFormatter = new IntlDateFormatter(
+        $this->dayLongNameFormatter = new \IntlDateFormatter(
             'de_DE',
             timezone: 'Europe/Berlin',
             pattern: 'EEEE');
         $this->dayNumberFormatter = new \IntlDateFormatter(
-            'de_DE', 
+            'de_DE',
             timezone: 'Europe/Berlin',
             pattern: 'dd. LLL');
-            
     }
 
-    public function getDay(DateTimeImmutable $date): Day
+    public function getDay(\DateTimeImmutable $date): Day
     {
         return new Day(
             date: $date,
@@ -71,15 +68,15 @@ class DayViewController
     {
         $easterDate = \DateTimeImmutable::createFromFormat('U', easter_date($year))
             ->setTimezone(new \DateTimeZone('Europe/Berlin'));
-        $busAndBedDate = (new \DateTimeImmutable($year . '-11-23'))->modify('last Wednesday');
+        $busAndBedDate = (new \DateTimeImmutable($year.'-11-23'))->modify('last Wednesday');
 
         return [
-            $year . '-01-01' => 'Neujahr', // new year
-            $year . '-05-01' => 'Tag der Arbeit', // day of work!
-            $year . '-10-03' => 'Tag der deutschen Einheit', // reunion day
-            $year . '-10-31' => 'Reformationstag', // reformation day
-            $year . '-12-25' => '1. Weihnachtsfeiertag', // chrismas 1
-            $year . '-12-26' => '2. Weihnachtsfeiertag', // chrismas 2
+            $year.'-01-01' => 'Neujahr', // new year
+            $year.'-05-01' => 'Tag der Arbeit', // day of work!
+            $year.'-10-03' => 'Tag der deutschen Einheit', // reunion day
+            $year.'-10-31' => 'Reformationstag', // reformation day
+            $year.'-12-25' => '1. Weihnachtsfeiertag', // chrismas 1
+            $year.'-12-26' => '2. Weihnachtsfeiertag', // chrismas 2
             $easterDate->format('Y-m-d') => 'Ostersonntag', // easter
             $easterDate->modify('-2 days')->format('Y-m-d') => 'Karfreitag', // easter friday
             $easterDate->modify('+1 day')->format('Y-m-d') => 'Ostermontag', // easter monday
@@ -89,9 +86,9 @@ class DayViewController
         ];
     }
 
-    private function getHolidayName(\DateTimeImmutable $date) 
+    private function getHolidayName(\DateTimeImmutable $date)
     {
-        return $this->isHoliday($date) 
+        return $this->isHoliday($date)
         ? $this->holidaysForYear($date->format('Y'))[$date->format('Y-m-d')]
         : null;
     }

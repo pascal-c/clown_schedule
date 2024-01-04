@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Tests\Service\Scheduler;
 
@@ -6,7 +8,6 @@ use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Entity\PlayDate;
-use App\Entity\PlayDateHistory;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\SubstitutionRepository;
@@ -22,25 +23,24 @@ final class ClownAssignerTest extends TestCase
 {
     public function firstClownDataProvider(): array
     {
-        $buildResultSet = function(array $params): array {
-            $clownAvailabilities = array_map(fn($x) => $this->buildClownAvailability(), range(0, 3));
-            $venue = new Venue;
-            $venue->addPlayDate((new PlayDate)
+        $buildResultSet = function (array $params): array {
+            $clownAvailabilities = array_map(fn ($x) => $this->buildClownAvailability(), range(0, 3));
+            $venue = new Venue();
+            $venue->addPlayDate((new PlayDate())
                 ->addPlayingClown($clownAvailabilities[0]->getClown())
                 ->addPlayingClown($clownAvailabilities[1]->getClown()));
-            $venue->addPlayDate((new PlayDate)
-                ->addPlayingClown($clownAvailabilities[3]->getClown()));    
+            $venue->addPlayDate((new PlayDate())
+                ->addPlayingClown($clownAvailabilities[3]->getClown()));
 
             $expectedResultIndex = $params['expectedResultIndex'];
-            
+
             return [
                 $this->buildPlayDate($clownAvailabilities, $venue),
                 $clownAvailabilities,
                 'availableForResults' => $params['availableForResults'],
                 'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
-            ]; 
+            ];
         };
-
 
         // the first two clowns are responsible for the venue
         return [
@@ -67,9 +67,9 @@ final class ClownAssignerTest extends TestCase
      * @dataProvider firstClownDataProvider
      */
     public function testassignFirstClown(
-        PlayDate $playDate, 
-        array $clownAvailabilities, 
-        array $availableForResults, 
+        PlayDate $playDate,
+        array $clownAvailabilities,
+        array $availableForResults,
         ?ClownAvailability $expectedClownAvailability): void
     {
         $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
@@ -80,7 +80,7 @@ final class ClownAssignerTest extends TestCase
         } else {
             $this->assertSame($expectedClownAvailability->getClown(), $playDate->getPlayingClowns()->first());
         }
-        
+
         foreach ($clownAvailabilities as $availability) {
             if ($availability === $expectedClownAvailability) {
                 $this->assertSame(1, $availability->getCalculatedPlaysMonth());
@@ -92,7 +92,7 @@ final class ClownAssignerTest extends TestCase
 
     public function secondClownDataProvider(): array
     {
-        $buildResultSet = function(array $params): array {
+        $buildResultSet = function (array $params): array {
             $clownAvailabilities = [
                 $this->buildClownAvailability('no', 2, 1),
                 $this->buildClownAvailability('maybe', 2, 1),
@@ -101,13 +101,13 @@ final class ClownAssignerTest extends TestCase
                 $this->buildClownAvailability('yes', 3, 1),
             ];
             $expectedResultIndex = $params['expectedResultIndex'];
-            
+
             return [
-                $this->buildPlayDate($clownAvailabilities)->addPlayingClown(new Clown),
+                $this->buildPlayDate($clownAvailabilities)->addPlayingClown(new Clown()),
                 $clownAvailabilities,
                 'availableForResults' => $params['availableForResults'],
                 'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
-            ]; 
+            ];
         };
 
         return [
@@ -115,7 +115,7 @@ final class ClownAssignerTest extends TestCase
                 'availableForResults' => [false, true, true, true, true],
                 'expectedResultIndex' => 4,
             ]),
-            $buildResultSet([ # only clowns with availability 'maybe' available
+            $buildResultSet([ // only clowns with availability 'maybe' available
                 'availableForResults' => [false, true, false, true, false],
                 'expectedResultIndex' => 3,
             ]),
@@ -130,21 +130,21 @@ final class ClownAssignerTest extends TestCase
      * @dataProvider secondClownDataProvider
      */
     public function testassignSecondClown(
-        PlayDate $playDate, 
-        array $clownAvailabilities, 
-        array $availableForResults, 
+        PlayDate $playDate,
+        array $clownAvailabilities,
+        array $availableForResults,
         ?ClownAvailability $expectedClownAvailability): void
     {
         $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
         $clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
-            $this->assertSame(1, $playDate->getPlayingClowns()->count());    
+            $this->assertSame(1, $playDate->getPlayingClowns()->count());
         } else {
             $this->assertSame(2, $playDate->getPlayingClowns()->count());
             $this->assertSame($expectedClownAvailability->getClown(), $playDate->getPlayingClowns()->last());
         }
-        
+
         foreach ($clownAvailabilities as $availability) {
             if ($availability === $expectedClownAvailability) {
                 $this->assertSame(2, $availability->getCalculatedPlaysMonth());
@@ -156,7 +156,7 @@ final class ClownAssignerTest extends TestCase
 
     public function substitutionClownDataProvider(): array
     {
-        $buildResultSet = function(array $availableOnResults, ?int $expectedResultIndex = null, $isAllDay = false): array {
+        $buildResultSet = function (array $availableOnResults, int $expectedResultIndex = null, $isAllDay = false): array {
             $clownAvailabilities = [
                 $this->buildClownAvailability('no', targetPlays: 0, calculatedPlays: 4),
                 $this->buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 4),
@@ -164,13 +164,13 @@ final class ClownAssignerTest extends TestCase
                 $this->buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 8, availableAllDay: true),
                 $this->buildClownAvailability('yes', targetPlays: 0, calculatedPlays: 6, calculatedSubstitutions: 3),
             ];
-            
+
             return [
                 $clownAvailabilities,
                 'availableOnResults' => $availableOnResults,
                 'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
                 'daytime' => $isAllDay ? TimeSlotPeriod::ALL : TimeSlotPeriod::AM,
-            ]; 
+            ];
         };
 
         return [
@@ -178,15 +178,15 @@ final class ClownAssignerTest extends TestCase
                 availableOnResults: [false, true, true, true, true],
                 expectedResultIndex: 2,
             ),
-            $buildResultSet( # only clowns with availability 'maybe' available
+            $buildResultSet( // only clowns with availability 'maybe' available
                 availableOnResults: [false, true, false, true, false],
                 expectedResultIndex: 3,
             ),
-            $buildResultSet( # no clown available at all
+            $buildResultSet( // no clown available at all
                 availableOnResults: [false, false, false, false, false],
                 expectedResultIndex: null,
             ),
-            $buildResultSet( # no clown available at all
+            $buildResultSet( // no clown available at all
                 availableOnResults: [false, true, true, true, true],
                 expectedResultIndex: 2,
                 isAllDay: true,
@@ -198,19 +198,18 @@ final class ClownAssignerTest extends TestCase
      * @dataProvider substitutionClownDataProvider
      */
     public function testAssignSubstitutionClown(
-        array $clownAvailabilities, 
-        array $availableOnResults, 
+        array $clownAvailabilities,
+        array $availableOnResults,
         ?ClownAvailability $expectedClownAvailability,
         string $daytime = 'am',
-    ): void
-    {
+    ): void {
         $date = new \DateTimeImmutable('2022-04-01');
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableOn')
             ->withConsecutive(
                 ...array_map(
-                    fn($availability) => [
+                    fn ($availability) => [
                         $this->equalTo(new TimeSlotPeriod($date, $daytime)),
                         $this->identicalTo($availability),
                     ],
@@ -221,11 +220,11 @@ final class ClownAssignerTest extends TestCase
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $substitutionRepository = $this->createMock(SubstitutionRepository::class);
-        $substitution = new Substitution;
+        $substitution = new Substitution();
         if (!is_null($expectedClownAvailability)) {
             $substitutionRepository->expects($this->atMost(2))
                 ->method('find')
-                ->willReturn($substitution);    
+                ->willReturn($substitution);
         }
         $playDateHistoryService = $this->createMock(PlayDateHistoryService::class);
         $playDateHistoryService->expects($this->never())->method($this->anything());
@@ -234,15 +233,15 @@ final class ClownAssignerTest extends TestCase
         $clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($date, $daytime), $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
-            $this->assertNull($substitution->getSubstitutionClown());    
+            $this->assertNull($substitution->getSubstitutionClown());
         } else {
             $this->assertSame($expectedClownAvailability->getClown(), $substitution->getSubstitutionClown());
         }
-        
+
         foreach ($clownAvailabilities as $key => $availability) {
             if ($availability === $expectedClownAvailability) {
                 $this->assertSame(1, $availability->getCalculatedSubstitutions());
-            } elseif ($key == 4) {
+            } elseif (4 == $key) {
                 $this->assertSame(3, $availability->getCalculatedSubstitutions());
             } else {
                 $this->assertNull($availability->getCalculatedSubstitutions());
@@ -251,19 +250,18 @@ final class ClownAssignerTest extends TestCase
     }
 
     private function buildClownAssigner(
-        array $clownAvailabilities, 
-        PlayDate $playDate, 
-        array $availableForResults, 
+        array $clownAvailabilities,
+        PlayDate $playDate,
+        array $availableForResults,
         ?ClownAvailability $expectedClownAvailability
-    ): ClownAssigner
-    {
+    ): ClownAssigner {
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableFor')
             ->withConsecutive(
                 ...array_map(
-                    fn($availability) => [
-                        $this->identicalTo($playDate), 
+                    fn ($availability) => [
+                        $this->identicalTo($playDate),
                         $this->identicalTo($availability),
                     ],
                     $clownAvailabilities
@@ -285,46 +283,47 @@ final class ClownAssignerTest extends TestCase
         return $clownAssigner;
     }
 
-    private function buildPlayDate(array $clownAvailabilites, Venue $venue = new Venue): PlayDate
+    private function buildPlayDate(array $clownAvailabilites, Venue $venue = new Venue()): PlayDate
     {
         $venue->addResponsibleClown($clownAvailabilites[0]->getClown());
         $venue->addResponsibleClown($clownAvailabilites[1]->getClown());
 
-        $playDate = new PlayDate;
+        $playDate = new PlayDate();
         $playDate->setDate(new \DateTimeImmutable('2022-04-01'));
         $playDate->setDaytime('am');
         $playDate->setVenue($venue);
+
         return $playDate;
     }
-    
+
     private function buildClownAvailability(
-        string $availability = 'yes', 
-        int $targetPlays = 2, 
-        ?int $calculatedPlays = null,
-        ?int $calculatedSubstitutions = null,
+        string $availability = 'yes',
+        int $targetPlays = 2,
+        int $calculatedPlays = null,
+        int $calculatedSubstitutions = null,
         bool $availableAllDay = false
-    ): ClownAvailability
-    {
+    ): ClownAvailability {
         static $counter = 0;
-        $clownAvailability = new ClownAvailability;
-        $clownAvailability->setClown((new Clown)->setName("Ulrike $counter av: $availability targetPlays: $targetPlays calcPlays: $calculatedPlays allDay: $availableAllDay"));
+        $clownAvailability = new ClownAvailability();
+        $clownAvailability->setClown((new Clown())->setName("Ulrike $counter av: $availability targetPlays: $targetPlays calcPlays: $calculatedPlays allDay: $availableAllDay"));
         $clownAvailability->setTargetPlays($targetPlays);
         $clownAvailability->setCalculatedPlaysMonth($calculatedPlays);
         $clownAvailability->setCalculatedSubstitutions($calculatedSubstitutions);
         $clownAvailability->addClownAvailabilityTime(
-            (new ClownAvailabilityTime)
+            (new ClownAvailabilityTime())
                 ->setDate(new \DateTimeImmutable('2022-04-01'))
                 ->setDaytime('am')
                 ->setAvailability($availability)
         );
         $clownAvailability->addClownAvailabilityTime(
-            (new ClownAvailabilityTime)
+            (new ClownAvailabilityTime())
                 ->setDate(new \DateTimeImmutable('2022-04-01'))
                 ->setDaytime('pm')
                 ->setAvailability($availableAllDay ? $availability : 'no')
         );
 
-        $counter++;
+        ++$counter;
+
         return $clownAvailability;
     }
 }

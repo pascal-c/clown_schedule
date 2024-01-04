@@ -29,7 +29,8 @@ class Scheduler
         private SubstitutionRepository $substitutionRepository,
         private ScheduleRepository $scheduleRepository,
         private EntityManagerInterface $entityManager,
-    ) {}
+    ) {
+    }
 
     public function calculate(Month $month): void
     {
@@ -37,11 +38,11 @@ class Scheduler
         $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
-        
+
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
-            if (!in_array([$playDate->getDate(), $playDate->getDaytime()], $timeSlotPeriods) && 
-                !in_array([$playDate->getDate(), TimeSlotPeriodInterface::ALL], $timeSlotPeriods)) {
+            if (!in_array([$playDate->getDate(), $playDate->getDaytime()], $timeSlotPeriods)
+                && !in_array([$playDate->getDate(), TimeSlotPeriodInterface::ALL], $timeSlotPeriods)) {
                 $timeSlotPeriods[] = [$playDate->getDate(), $playDate->getDaytime()];
             }
         }
@@ -76,19 +77,19 @@ class Scheduler
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month, indexedByClown: true);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
 
-        foreach($clownAvailabilities as $clownAvailability) {
+        foreach ($clownAvailabilities as $clownAvailability) {
             $clownAvailability
                 ->setScheduledPlaysMonth(0)
                 ->setScheduledSubstitutions(0);
         }
-        foreach($playDates as $playDate) {
-            foreach($playDate->getPlayingClowns() as $clown) {
+        foreach ($playDates as $playDate) {
+            foreach ($playDate->getPlayingClowns() as $clown) {
                 if (array_key_exists($clown->getId(), $clownAvailabilities)) {
                     $clownAvailabilities[$clown->getId()]->incScheduledPlaysMonth();
                 }
             }
         }
-        foreach($substitutionTimeSlots as $substitutionTimeSlot) {
+        foreach ($substitutionTimeSlots as $substitutionTimeSlot) {
             $clown = $substitutionTimeSlot->getSubstitutionClown();
             if (!is_null($clown) && array_key_exists($clown->getId(), $clownAvailabilities)) {
                 $clownAvailabilities[$clown->getId()]->incScheduledSubstitutions();
@@ -96,23 +97,24 @@ class Scheduler
         }
 
         $schedule->setStatus(ScheduleStatus::COMPLETED);
+
         return $schedule;
     }
 
     private function removeClownAssignments(array $playDates, array $clownAvailabilities, Month $month): void
     {
         foreach ($playDates as $playDate) {
-            foreach($playDate->getPlayingClowns() as $clown) {
+            foreach ($playDate->getPlayingClowns() as $clown) {
                 $playDate->removePlayingClown($clown);
             }
         }
-        
-        foreach($clownAvailabilities as $availability) {
+
+        foreach ($clownAvailabilities as $availability) {
             $availability->setCalculatedPlaysMonth(null);
             $availability->setCalculatedSubstitutions(null);
         }
 
-        foreach($this->substitutionRepository->byMonth($month) as $timeSlot) {
+        foreach ($this->substitutionRepository->byMonth($month) as $timeSlot) {
             $timeSlot->setSubstitutionClown(null);
         }
     }
@@ -120,16 +122,15 @@ class Scheduler
     private function orderByAvailabilities(array $playDates, array $clownAvailabilities): array
     {
         usort(
-            $playDates, 
-            fn(PlayDate $playDate1, PlayDate $playDate2) => 
-                count(array_filter(
-                    $clownAvailabilities, 
-                    fn(ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate2, $availability)
-                ))
+            $playDates,
+            fn (PlayDate $playDate1, PlayDate $playDate2) => count(array_filter(
+                $clownAvailabilities,
+                fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate2, $availability)
+            ))
                 <=>
                 count(array_filter(
-                    $clownAvailabilities, 
-                    fn(ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate1, $availability)
+                    $clownAvailabilities,
+                    fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate1, $availability)
                 ))
         );
 

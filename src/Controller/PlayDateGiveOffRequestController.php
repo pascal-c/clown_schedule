@@ -32,14 +32,14 @@ class PlayDateGiveOffRequestController extends AbstractController
         private PlayDateChangeRequestCloseInvalidService $playDateChangeRequestCloseInvalidService,
         private EntityManagerInterface $entityManager,
         private PlayDateGiveOffRequestMailer $mailer,
-    )
-    {}
+    ) {
+    }
 
     #[Route('/play_date/{id}/give-off_request/new', name: 'play_date_new_give-off_request', methods: ['GET', 'POST'])]
     public function new(Request $request, int $id): Response
     {
         $playDate = $this->playDateRepository->find($id);
-        
+
         $form = $this->createForm(PlayDateGiveOffRequestCreateFormType::class);
 
         $form->handleRequest($request);
@@ -74,17 +74,18 @@ class PlayDateGiveOffRequestController extends AbstractController
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
-            throw(new NotFoundHttpException);
+            throw new NotFoundHttpException();
         }
-        
+
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
-        
+
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
             $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
-        } 
-        
+        }
+
         $form = $this->createForm(PlayDateGiveOffRequestAcceptFormType::class);
         $form->handleRequest($request);
 
@@ -95,7 +96,7 @@ class PlayDateGiveOffRequestController extends AbstractController
             $this->mailer->sendAcceptGiveOffRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
             $this->addFlash('success', 'Super! Du hast den Spieltermin übernommen, Danke! Die anfragende Person wird per Email informiert.');
-            
+
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
 

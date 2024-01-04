@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use App\Lib\Collection;
-use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
 use App\Value\TimeSlotPeriodTrait;
-use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,9 +14,9 @@ class ClownAvailabilityTime implements TimeSlotPeriodInterface
 {
     use TimeSlotPeriodTrait;
 
-    const AVAILABILITY_YES = 'yes';
-    const AVAILABILITY_MAYBE = 'maybe';
-    const AVAILABILITY_NO = 'no';
+    public const AVAILABILITY_YES = 'yes';
+    public const AVAILABILITY_MAYBE = 'maybe';
+    public const AVAILABILITY_NO = 'no';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,7 +28,7 @@ class ClownAvailabilityTime implements TimeSlotPeriodInterface
     private ?Clown $clown = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?DateTimeImmutable $date = null;
+    private ?\DateTimeImmutable $date = null;
 
     #[ORM\Column(length: 2)]
     private ?string $daytime = null;
@@ -92,7 +90,7 @@ class ClownAvailabilityTime implements TimeSlotPeriodInterface
 
     public function isAvailable(): bool
     {
-        return $this->availability != 'no';
+        return 'no' != $this->availability;
     }
 
     public function getClownAvailability(): ?ClownAvailability

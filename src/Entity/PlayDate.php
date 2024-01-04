@@ -8,8 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
@@ -34,7 +34,7 @@ class PlayDate implements TimeSlotPeriodInterface
     #[Assert\When(
         expression: '!this.isSpecial()',
         constraints: [
-            new Assert\NotBlank()
+            new Assert\NotBlank(),
         ],
     )]
     private ?Venue $venue = null;
@@ -59,11 +59,11 @@ class PlayDate implements TimeSlotPeriodInterface
     private Collection $playDateHistory;
 
     #[ORM\OneToMany(mappedBy: 'playDateToGiveOff', targetEntity: PlayDateChangeRequest::class, orphanRemoval: true)]
-    #[ORM\OrderBy(["requestedAt" => "DESC"])]
+    #[ORM\OrderBy(['requestedAt' => 'DESC'])]
     private Collection $playDateGiveOffRequests;
 
     #[ORM\OneToMany(mappedBy: 'PlayDateWanted', targetEntity: PlayDateChangeRequest::class)]
-    #[ORM\OrderBy(["requestedAt" => "DESC"])]
+    #[ORM\OrderBy(['requestedAt' => 'DESC'])]
     private Collection $playDateSwapRequests;
 
     public function __construct()

@@ -8,9 +8,9 @@ use App\Entity\Month;
 
 interface TimeSlotInterface
 {
-    const AM = 'am';
-    const PM = 'pm';
-    const DAYTIMES = [self::AM, self::PM];
+    public const AM = 'am';
+    public const PM = 'pm';
+    public const DAYTIMES = [self::AM, self::PM];
 
     public function getDate(): ?\DateTimeImmutable;
 

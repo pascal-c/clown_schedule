@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace App\Value;
 
-use App\Value\TimeSlotInterface;
-
 interface TimeSlotPeriodInterface extends TimeSlotInterface
 {
-    const ALL = 'all';
-    const DAYTIMES = [self::ALL, self::AM, self::PM];
+    public const ALL = 'all';
+    public const DAYTIMES = [self::ALL, self::AM, self::PM];
 
-    /** 
-     * @return array <int, TimeSlotInterface> 
+    /**
+     * @return array <int, TimeSlotInterface>
      */
     public function getTimeSlots(): array;
 }

@@ -2,23 +2,21 @@
 
 namespace App\Entity;
 
-use DateTimeImmutable;
-
 class Vacation
 {
     public function __construct(
-        private DateTimeImmutable $start, 
-        private DateTimeImmutable $end, 
+        private \DateTimeImmutable $start,
+        private \DateTimeImmutable $end,
         private string $name)
     {
     }
 
-    public function getStartDate(): DateTimeImmutable
+    public function getStartDate(): \DateTimeImmutable
     {
         return $this->start;
     }
 
-    public function getEndDate(): DateTimeImmutable
+    public function getEndDate(): \DateTimeImmutable
     {
         return $this->end;
     }

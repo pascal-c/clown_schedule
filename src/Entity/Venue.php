@@ -6,8 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[UniqueEntity('name')]
@@ -23,7 +23,7 @@ class Venue
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'venue', targetEntity: PlayDate::class)]
-    #[ORM\OrderBy(["date" => "ASC"])]
+    #[ORM\OrderBy(['date' => 'ASC'])]
     private Collection $playDates;
 
     #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'venue_responsibilities')]

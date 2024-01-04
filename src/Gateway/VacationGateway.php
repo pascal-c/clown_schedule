@@ -14,27 +14,29 @@ class VacationGateway
     public function __construct(
         private HttpClientInterface $httpClient,
         private CacheInterface $vacationCache,
-    ) {}
+    ) {
+    }
 
     public function findByYear(string $year): array
     {
         try {
             $content = $this->vacationCache->get(
-                'vacations ' . $year, 
+                'vacations '.$year,
                 function (ItemInterface $item) use ($year) {
-                    $item->expiresAfter(3600 *24 * 30);
-                    
+                    $item->expiresAfter(3600 * 24 * 30);
+
                     $response = $this->httpClient->request(
                         'GET',
-                        'https://ferien-api.de/api/v1/holidays/SN/' . $year
+                        'https://ferien-api.de/api/v1/holidays/SN/'.$year
                     );
+
                     return $response->toArray();
                 }
             );
         } catch (TransportExceptionInterface $exception) {
             $content = [];
         }
-        
+
         return $content;
     }
 }

@@ -6,7 +6,7 @@ use App\Entity\Clown;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
-class ClownRepository 
+class ClownRepository
 {
     protected EntityRepository $doctrineRepository;
 
@@ -15,7 +15,7 @@ class ClownRepository
         $this->doctrineRepository = $entityManager->getRepository(Clown::class);
     }
 
-    public function all(): Array
+    public function all(): array
     {
         return $this->doctrineRepository->findBy(
             [],
@@ -23,7 +23,7 @@ class ClownRepository
         );
     }
 
-    public function allActive(): Array
+    public function allActive(): array
     {
         return $this->doctrineRepository->findBy(
             ['isActive' => true],
@@ -41,7 +41,7 @@ class ClownRepository
         return $this->doctrineRepository->findOneByEmail($email);
     }
 
-    public function allWithTotalPlayDateCounts(): Array
+    public function allWithTotalPlayDateCounts(): array
     {
         return $this->doctrineRepository->createQueryBuilder('cl')
             ->select('cl AS clown, count(pd.id) AS totalCount')
@@ -54,7 +54,7 @@ class ClownRepository
             ->getResult();
     }
 
-    public function allWithSuperPlayDateCounts(): Array
+    public function allWithSuperPlayDateCounts(): array
     {
         return $this->doctrineRepository->createQueryBuilder('cl')
             ->select('cl AS clown, count(pd.id) AS superCount')

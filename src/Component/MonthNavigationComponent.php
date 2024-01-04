@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component;
 
 use App\Entity\Month;
@@ -17,7 +18,8 @@ class MonthNavigationComponent
     public function __construct(
         private UrlGeneratorInterface $urlHelper,
         private TimeService $timeService
-    ) {}
+    ) {
+    }
 
     #[ExposeInTemplate()]
     public function getNavigationItems(): array
@@ -32,9 +34,9 @@ class MonthNavigationComponent
                 array_merge($this->urlParams, ['monthId' => $activeMonth->previous()->getKey()])
             ),
         ];
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 3; ++$i) {
             $navigationItems[$currentMonth->getKey()] = [
-                'label' => $currentMonth->getLabel(), 
+                'label' => $currentMonth->getLabel(),
                 'url' => $this->urlHelper->generate(
                     $this->urlKey,
                     array_merge($this->urlParams, ['monthId' => $currentMonth->getKey()])
