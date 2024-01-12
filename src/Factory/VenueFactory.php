@@ -10,15 +10,15 @@ use DateTimeImmutable;
 
 class VenueFactory extends AbstractFactory
 {
-    public function create(string $name = null, array $playingClowns = [], string $daytimeDefault = null)
+    public function create(string $name = null, array $playingClowns = [], string $daytimeDefault = null, string $meetingTime = null, string $playTimeFrom = null, string $playTimeTo = null)
     {
-        list($daytimeDefault, $meetingTime, $playTimeFrom, $playTimeTo) = $this->timeOptions()->sample();
+        list($daytimeDefaultGenerated, $meetingTimeGenerated, $playTimeFromGenerated, $playTimeToGenerated) = $this->timeOptions()->sample();
         $venue = (new Venue())
             ->setName($this->generateName($name))
-            ->setDaytimeDefault($daytimeDefault)
-            ->setMeetingTime($meetingTime)
-            ->setPlayTimeFrom($playTimeFrom)
-            ->setPlayTimeTo($playTimeTo)
+            ->setDaytimeDefault($daytimeDefault ?? $daytimeDefaultGenerated)
+            ->setMeetingTime(new DateTimeImmutable($meetingTime ?? $meetingTimeGenerated))
+            ->setPlayTimeFrom(new DateTimeImmutable($playTimeFrom ?? $playTimeFromGenerated))
+            ->setPlayTimeTo(new DateTimeImmutable($playTimeTo ?? $playTimeToGenerated))
         ;
         foreach ($playingClowns as $clown) {
             $venue->addResponsibleClown($clown);
@@ -33,11 +33,11 @@ class VenueFactory extends AbstractFactory
     private function timeOptions(): Collection
     {
         return new Collection([
-            ['am', new DateTimeImmutable('08:30'), new DateTimeImmutable('09:00'), new DateTimeImmutable('11:00')],
-            ['am', new DateTimeImmutable('09:00'), new DateTimeImmutable('09:30'), new DateTimeImmutable('12:00')],
-            ['pm', new DateTimeImmutable('14:30'), new DateTimeImmutable('15:00'), new DateTimeImmutable('17:00')],
-            ['pm', new DateTimeImmutable('15:00'), new DateTimeImmutable('15:30'), new DateTimeImmutable('18:00')],
-            ['all', new DateTimeImmutable('11:00'), new DateTimeImmutable('12:30'), new DateTimeImmutable('16:00')],
+            ['am', '08:30', '09:00', '11:00'],
+            ['am', '09:00', '09:30', '12:00'],
+            ['pm', '14:30', '15:00', '17:00'],
+            ['pm', '15:00', '15:30', '18:00'],
+            ['all', '11:00', '12:30', '16:00'],
         ]);
     }
 
