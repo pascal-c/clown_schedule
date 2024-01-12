@@ -9,7 +9,7 @@ use App\Lib\Collection;
 
 class ClownFactory extends AbstractFactory
 {
-    public function create(string $name = null, string $email = null, string $password = 'clown', $isAdmin = false)
+    public function create(string $name = null, string $email = null, string $password = 'clown', $isAdmin = false): Clown
     {
         $clown = (new Clown())
             ->setName($this->generate('firstName', $name))
