@@ -36,7 +36,6 @@ class DashboardCest extends AbstractCest
         $this->playDateFactory->create(
             date: new DateTimeImmutable('2025-01-01'),
             daytime: TimeSlotInterface::AM,
-            venue: $venue,
             playingClowns: [$currentClown],
             isSpecial: true,
             title: 'Spezialtermin',

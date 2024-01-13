@@ -6,7 +6,7 @@
     </thead>
     <tbody>
         {% for key, date in dates %}
-            {% if date is of_type('class', 'App\\Entity\\PlayDate') and not date.isSpecial %}
+            {% if date is of_type('class', 'App\\Entity\\PlayDate') %}
                 <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
                     <td class="lh-sm">
                         {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
@@ -15,28 +15,14 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if date.venue %}
-                            <a class="text-dark" href="{{ path('play_date_show', {id: date.id}) }}">{{ date.venue.name }}</a>
-                        {% endif %}
+                        <a class="text-dark" href="{{ path('play_date_show', {id: date.id}) }}">{{ date.name }}</a>
                     </td>
-                    <td>{{ date.venue.meetingTime|date('H:i') }}</td>
-                    <td>{{ date.venue.playTimeFrom|date('H:i') }} - {{ date.venue.playTimeTo|date('H:i') }}</td>
+                    <td>{{ date.meetingTime is not empty ? date.meetingTime|date('H:i') }}</td>
+                    <td>{{ date.playTimeFrom is not empty ? date.playTimeFrom|date('H:i') ~ ' -' }} {{ date.playTimeTo is not empty ? date.playTimeTo|date('H:i') }}</td>
                     <td>
-                        {% set partner = (date.playingClowns|filter(v => v!=currentClown))|first %}
-                        {{ not partner ? '?' : partner.name }}
+                        {{ date.playingClowns.count > 3 ? 'vielen' : date.playingClowns|filter(clown => clown!=currentClown)|map(clown => clown.name)|join('| ') }}
                     </td>
                 </tr>
-            {% elseif date is of_type('class', 'App\\Entity\\PlayDate') and date.isSpecial %}
-                <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
-                    <td class="lh-sm">
-                        {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
-                        {% if date.comment != '' %}
-                            <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
-                        {% endif %}
-                    </td>
-                    <td>{{ date.title }}</td>
-                    <td colspan='3'>&nbsp;</td>
-                </tr> 
             {% else %}
                 <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
                     <td>

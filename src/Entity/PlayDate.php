@@ -68,6 +68,15 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\OrderBy(['requestedAt' => 'DESC'])]
     private Collection $playDateSwapRequests;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $meetingTime = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $playTimeFrom = null;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $playTimeTo = null;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -157,7 +166,7 @@ class PlayDate implements TimeSlotPeriodInterface
 
     public function getName(): ?string
     {
-        return is_null($this->getVenue()) ? $this->getTitle() : $this->getVenue()->getName();
+        return $this->getTitle() ?? ($this->getVenue() ? $this->getVenue()->getName() : null);
     }
 
     public function getComment(): ?string
@@ -258,6 +267,42 @@ class PlayDate implements TimeSlotPeriodInterface
                 $playDateSwapRequest->setPlayDateWanted(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMeetingTime(): ?DateTimeInterface
+    {
+        return $this->meetingTime ?? ($this->venue ? $this->venue->getMeetingTime() : null);
+    }
+
+    public function setMeetingTime(?DateTimeInterface $meetingTime): static
+    {
+        $this->meetingTime = $meetingTime;
+
+        return $this;
+    }
+
+    public function getPlayTimeFrom(): ?DateTimeInterface
+    {
+        return $this->playTimeFrom ?? ($this->venue ? $this->venue->getPlayTimeFrom() : null);
+    }
+
+    public function setPlayTimeFrom(?DateTimeInterface $playTimeFrom): static
+    {
+        $this->playTimeFrom = $playTimeFrom;
+
+        return $this;
+    }
+
+    public function getPlayTimeTo(): ?DateTimeInterface
+    {
+        return $this->playTimeTo ?? ($this->venue ? $this->venue->getPlayTimeTo() : null);
+    }
+
+    public function setPlayTimeTo(?DateTimeInterface $playTimeTo): static
+    {
+        $this->playTimeTo = $playTimeTo;
 
         return $this;
     }

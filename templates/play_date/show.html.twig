@@ -31,13 +31,13 @@
             <tr>
                 <th>Treffen</th>
                 <td>
-                    {{ playDate.venue.meetingTime|date('H:i') }}
+                    {{ playDate.meetingTime is not empty ? playDate.meetingTime|date('H:i') }}
                 </td>
             </tr>
             <tr>
                 <th>Spielzeit</th>
                 <td>
-                    {{ playDate.venue.playTimeFrom|date('H:i') }} - {{ playDate.venue.playTimeTo|date('H:i') }}
+                    {{ playDate.playTimeFrom is not empty ? playDate.playTimeFrom|date('H:i') }} - {{ playDate.playTimeTo is not empty ? playDate.playTimeTo|date('H:i') }}
                 </td>
             </tr>
             <tr>
