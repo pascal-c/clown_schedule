@@ -35,4 +35,9 @@ trait TimeSlotPeriodTrait
     {
         return new Month($this->date);
     }
+
+    public function equalsTimeSlotPeriod(TimeSlotPeriodInterface $other): bool
+    {
+        return $this->getDate() == $other->getDate() && $this->getDaytime() == $other->getDaytime();
+    }
 }

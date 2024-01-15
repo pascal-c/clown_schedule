@@ -13,4 +13,6 @@ interface TimeSlotPeriodInterface extends TimeSlotInterface
      * @return array <int, TimeSlotInterface>
      */
     public function getTimeSlots(): array;
+
+    public function equalsTimeSlotPeriod(TimeSlotPeriodInterface $other): bool;
 }

@@ -43,19 +43,19 @@
             <tr>
                 <th>Treffen</th>
                 <td>
-                    {{ playDateToGiveOff.venue.meetingTime|date('H:i') }}
+                    {{ playDateToGiveOff.meetingTime is not empty ? playDateToGiveOff.meetingTime|date('H:i') }}
                 </td>
                 <td>
-                    {{ playDateWanted.venue.meetingTime|date('H:i') }}
+                    {{ playDateWanted.meetingTime|date('H:i') }}
                 </td>
             </tr>
             <tr>
                 <th>Spielzeit</th>
                 <td>
-                    {{ playDateToGiveOff.venue.playTimeFrom|date('H:i') }} - {{ playDateToGiveOff.venue.playTimeTo|date('H:i') }}
+                    {{ playDateToGiveOff.playTimeFrom  is not empty ? playDateToGiveOff.playTimeFrom|date('H:i') }} - {{ playDateToGiveOff.playTimeTo is not empty ? playDateToGiveOff.playTimeTo|date('H:i') }}
                 </td>
                 <td>
-                    {{ playDateWanted.venue.playTimeFrom|date('H:i') }} - {{ playDateWanted.venue.playTimeTo|date('H:i') }}
+                    {{ playDateWanted.playTimeFrom is not empty ? playDateWanted.playTimeFrom|date('H:i') }} - {{ playDateWanted.playTimeTo is not empty ? playDateWanted.playTimeTo|date('H:i') }}
                 </td>
             </tr>
             <tr>
