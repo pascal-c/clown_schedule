@@ -28,14 +28,15 @@ class PlayDateSwapRequestCreateFormType extends AbstractType
         $playDates = $this->playDateRepository->futureByMonth($month);
         $choices = ['--- bitte wählen ---' => null];
         foreach ($playDates as $playDate) {
+            $sameTimeSlotPeriod = $playDate->equalsTimeSlotPeriod($options['playDateToGiveOff']) && $playDate != $options['playDateToGiveOff'];
             $clownAvailability = $options['currentClown']->getAvailabilityFor($month);
-            if (!$clownAvailability || !$this->availabilityChecker->isAvailableOn($playDate, $clownAvailability)) {
+            if (!$clownAvailability || (!$sameTimeSlotPeriod && !$this->availabilityChecker->isAvailableOn($playDate, $clownAvailability))) {
                 continue;
             }
             $clownChoices = [];
             foreach ($playDate->getPlayingClowns() as $clown) {
                 $clownAvailability = $clown->getAvailabilityFor($month);
-                if (!$clownAvailability || !$this->availabilityChecker->isAvailableOn($options['playDateToGiveOff'], $clownAvailability)) {
+                if (!$clownAvailability || (!$sameTimeSlotPeriod && !$this->availabilityChecker->isAvailableOn($options['playDateToGiveOff'], $clownAvailability))) {
                     continue;
                 }
                 $clownChoices[$clown->getName()] = $playDate->getId().'-'.$clown->getId();
