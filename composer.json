@@ -110,7 +110,7 @@
         "codeception/module-phpbrowser": "^3.0",
         "codeception/module-symfony": "^3.2",
         "dama/doctrine-test-bundle": "^7.1",
-        "friendsofphp/php-cs-fixer": "^3.46",
+        "friendsofphp/php-cs-fixer": "^3.47",
         "phpunit/phpunit": "^9.5",
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/browser-kit": "6.4.*",
