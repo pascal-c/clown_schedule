@@ -10,7 +10,7 @@ use DateTimeImmutable;
 
 class VenueFactory extends AbstractFactory
 {
-    public function create(string $name = null, array $playingClowns = [], string $daytimeDefault = null, string $meetingTime = null, string $playTimeFrom = null, string $playTimeTo = null)
+    public function create(string $name = null, array $playingClowns = [], string $daytimeDefault = null, string $meetingTime = null, string $playTimeFrom = null, string $playTimeTo = null): Venue
     {
         list($daytimeDefaultGenerated, $meetingTimeGenerated, $playTimeFromGenerated, $playTimeToGenerated) = $this->timeOptions()->sample();
         $venue = (new Venue())

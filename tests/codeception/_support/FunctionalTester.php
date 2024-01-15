@@ -2,6 +2,8 @@
 
 namespace App\Tests;
 
+use App\Factory\ClownFactory;
+
 /**
  * Inherited Methods.
  *
@@ -29,6 +31,13 @@ class FunctionalTester extends \Codeception\Actor
         $I->fillField('login_form[email]', $email);
         $I->fillField('login_form[password]', $password);
         $I->click('anmelden');
+    }
+
+    public function loginAsClown(): void
+    {
+        $I = $this;
+        $clown = $I->grabService(ClownFactory::class)->create(isAdmin: false, password: 'secret');
+        $I->login($clown->getEmail(), 'secret');
     }
 
     public function selectTimeOption(string $classNamePrefix, string $time): void
