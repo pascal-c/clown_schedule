@@ -9,6 +9,7 @@ use App\Form\PlayDateSwapRequestAcceptFormType;
 use App\Form\PlayDateSwapRequestCloseFormType;
 use App\Form\PlayDateSwapRequestCreateFormType;
 use App\Form\PlayDateSwapRequestDeclineFormType;
+use App\Mailer\PlayDateGiveOffRequestMailer;
 use App\Mailer\PlayDateSwapRequestMailer;
 use App\Repository\ClownRepository;
 use App\Repository\PlayDateChangeRequestRepository;
@@ -82,7 +83,7 @@ class PlayDateSwapRequestController extends AbstractController
     }
 
     #[Route('/play_date_swap_request/{id}/accept', name: 'play_date_swap_request_accept', methods: ['GET', 'POST'])]
-    public function accept(Request $request, int $id): Response
+    public function accept(Request $request, int $id, PlayDateGiveOffRequestMailer $playDateGiveOffRequestMailer): Response
     {
         $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
         if (is_null($playDateChangeRequest)) {
@@ -111,6 +112,8 @@ class PlayDateSwapRequestController extends AbstractController
             $this->entityManager->flush();
 
             $this->mailer->sendAcceptSwapRequestMail($playDateChangeRequest, $form->getData()['comment']);
+            $this->mailer->sendInformPartnersAboutChangeMail($playDateChangeRequest); // inform about change in wantedPlayDate
+            $playDateGiveOffRequestMailer->sendInformPartnersAboutChangeMail($playDateChangeRequest); // inform about change in PlayDateToGiveOff
 
             $this->addFlash('success', 'Yippieh! Spieltermin wurde getauscht! Die anfragende Person wird per Email informiert.');
 

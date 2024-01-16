@@ -49,4 +49,27 @@ class PlayDateGiveOffRequestMailer
 
         $this->mailer->send($email);
     }
+
+    public function sendInformPartnersAboutChangeMail(PlayDateChangeRequest $playDateChangeRequest): void
+    {
+        $playDate = $playDateChangeRequest->getPlayDateToGiveOff();
+        $oldPartner = $playDateChangeRequest->getRequestedBy();
+        $newPartner = $playDateChangeRequest->getRequestedTo();
+        $receivers = $playDate->getPlayingClowns()->filter(fn (Clown $clown): bool => $clown !== $newPartner);
+        foreach ($receivers as $receiver) {
+            $email = (new TemplatedEmail())
+                ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+                ->to(new Address($receiver->getEmail(), $receiver->getName()))
+                ->subject('Endlich mal wieder ein Spiel mit '.$newPartner->getName().'!')
+                ->htmlTemplate('emails/play_date_change_request/change_request_inform_partner.html.twig')
+                ->context([
+                    'playDate' => $playDate,
+                    'oldPartner' => $oldPartner,
+                    'newPartner' => $newPartner,
+                    'clown' => $receiver,
+                ]);
+
+            $this->mailer->send($email);
+        }
+    }
 }

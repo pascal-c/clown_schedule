@@ -94,6 +94,7 @@ class PlayDateGiveOffRequestController extends AbstractController
             $this->entityManager->flush();
 
             $this->mailer->sendAcceptGiveOffRequestMail($playDateChangeRequest, $form->getData()['comment']);
+            $this->mailer->sendInformPartnersAboutChangeMail($playDateChangeRequest);
 
             $this->addFlash('success', 'Super! Du hast den Spieltermin übernommen, Danke! Die anfragende Person wird per Email informiert.');
 
