@@ -208,7 +208,7 @@ class PlayDateSwapRequestController extends AbstractController
         return $this->render('play_date_change_request/cancel_swap_request.html.twig', [
             'playDateToGiveOff' => $playDateChangeRequest->getPlayDateToGiveOff(),
             'playDateWanted' => $playDateChangeRequest->getPlayDateWanted(),
-            'requestedTo' => $playDateChangeRequest->getRequestedBy(),
+            'requestedTo' => $playDateChangeRequest->getRequestedTo(),
             'form' => $form,
         ]);
     }
