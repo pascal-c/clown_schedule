@@ -87,6 +87,9 @@ class Venue
     #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
     private float $feePerKilometer = 0.35;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $officialName = null;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -395,6 +398,18 @@ class Venue
     public function setFeePerKilometer(float $feePerKilometer): self
     {
         $this->feePerKilometer = $feePerKilometer;
+
+        return $this;
+    }
+
+    public function getOfficialName(): ?string
+    {
+        return $this->officialName ?? $this->getName();
+    }
+
+    public function setOfficialName(?string $officialName): static
+    {
+        $this->officialName = $officialName;
 
         return $this;
     }

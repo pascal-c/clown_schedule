@@ -23,7 +23,8 @@ class CreateVenueCest extends AbstractCest
         $I->amOnPage('/venues');
         $I->click('Spielort anlegen');
         $I->see('Spielort anlegen');
-        $I->fillField('Name', 'DRK Leipzig');
+        $I->fillField('Kurzname', 'DRK Leipzig');
+        $I->fillField('Offizieller Name', 'Deutsches Rotes Kreuz Leipzig');
         $I->fillField('Straße und Hausnummer', 'Teststr. 34');
         $I->fillField('PLZ', '04277');
         $I->fillField('Ort', 'Leipzig');
@@ -44,6 +45,7 @@ class CreateVenueCest extends AbstractCest
         $I->click('Spielort speichern');
 
         $I->see('DRK Leipzig', 'h4');
+        $I->see('Deutsches Rotes Kreuz Leipzig', Locator::contains('table tr', text: 'Offizieller Name'));
         $I->see('Teststr. 34, 04277 Leipzig', Locator::contains('table tr', text: 'Adresse'));
         $I->see('Anneliese', Locator::contains('table tr', text: 'Ansprechperson'));
         $I->see('01234567', Locator::contains('table tr', text: 'Telefon'));

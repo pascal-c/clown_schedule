@@ -26,7 +26,8 @@ class VenueFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['label' => 'Name'])
+            ->add('name', TextType::class, ['label' => 'Kurzname'])
+            ->add('officialName', TextType::class, ['label' => 'Offizieller Name'])
             ->add('streetAndNumber', TextType::class, ['label' => 'Straße und Hausnummer', 'required' => false])
             ->add('postalCode', TextType::class, ['label' => 'PLZ', 'required' => false])
             ->add('city', TextType::class, ['label' => 'Ort', 'required' => false])
