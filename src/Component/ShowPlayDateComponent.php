@@ -5,6 +5,7 @@ namespace App\Component;
 use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\PlayDate;
+use App\Entity\Schedule;
 use App\Repository\ScheduleRepository;
 use App\Service\AuthService;
 use App\Value\ScheduleStatus;
@@ -28,7 +29,20 @@ final class ShowPlayDateComponent
         $this->playDate = $playDate;
 
         $schedule = $this->scheduleRepository->find($month);
-        $this->colorClass = null !== $schedule && 2 != $playDate->getPlayingClowns()->count() ? 'text-danger' : '';
+        $this->colorClass = $this->getColorClass($playDate, $schedule);
         $this->showClowns = $this->currentClown->isAdmin() || ScheduleStatus::COMPLETED === $schedule?->getStatus();
+    }
+
+    private function getColorClass(PlayDate $playDate, ?Schedule $schedule): string
+    {
+        if ($playDate->isSpecial()) {
+            return 'text-secondary';
+        }
+
+        if (null === $schedule || 2 === $playDate->getPlayingClowns()->count()) {
+            return 'text-dark';
+        }
+
+        return 'text-danger';
     }
 }

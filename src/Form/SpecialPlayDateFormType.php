@@ -5,11 +5,13 @@ namespace App\Form;
 use App\Entity\PlayDate;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -33,6 +35,31 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Tageszeit',
                 'expanded' => true,
                 'multiple' => false,
+                ])
+            ->add('meetingTime', TimeType::class, [
+                'input' => 'datetime',
+                'widget' => 'choice',
+                'label' => 'Treffen',
+                'required' => false,
+                'minutes' => [0, 15, 30, 45],
+                ])
+            ->add('playTimeFrom', TimeType::class, [
+                'input' => 'datetime',
+                'widget' => 'choice',
+                'label' => 'Spielzeit (von)',
+                'required' => false,
+                'minutes' => [0, 15, 30, 45],
+            ])
+            ->add('playTimeTo', TimeType::class, [
+                'input' => 'datetime',
+                'widget' => 'choice',
+                'label' => 'Spielzeit (bis)',
+                'required' => false,
+                'minutes' => [0, 15, 30, 45],
+                ])
+            ->add('isSuper', CheckboxType::class, [
+                'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
+                'required' => false,
                 ])
             ->add('isSpecial', HiddenType::class, ['attr' => ['value' => '1']])
             ->add('save', SubmitType::class, ['label' => 'Sondertermin speichern'])

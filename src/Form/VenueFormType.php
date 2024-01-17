@@ -61,16 +61,19 @@ class VenueFormType extends AbstractType
                 'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Treffen',
+                'minutes' => [0, 15, 30, 45],
                 ])
             ->add('playTimeFrom', TimeType::class, [
                 'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Spielzeit (von)',
+                'minutes' => [0, 15, 30, 45],
             ])
             ->add('playTimeTo', TimeType::class, [
                 'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Spielzeit (bis)',
+                'minutes' => [0, 15, 30, 45],
             ])
             ->add('comments', TextareaType::class, [
                 'label' => 'Bemerkungen',
