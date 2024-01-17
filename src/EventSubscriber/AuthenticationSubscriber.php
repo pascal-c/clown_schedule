@@ -26,6 +26,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         }
 
         if (!$controller instanceof LoginController && !$this->authService->isLoggedIn()) {
+            $this->authService->setLastUri($event->getRequest());
             $event->setController(fn () => new RedirectResponse('/login'));
 
             return;

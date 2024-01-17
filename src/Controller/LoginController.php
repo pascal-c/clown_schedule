@@ -159,6 +159,11 @@ class LoginController extends AbstractController
             sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName())
         );
 
+        $uri = $this->authService->getLastUri();
+        if (!is_null($uri)) {
+            return $this->redirect($uri);
+        }
+
         return $this->redirectToRoute('root');
     }
 }

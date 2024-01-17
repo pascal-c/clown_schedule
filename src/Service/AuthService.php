@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Clown;
 use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
@@ -96,5 +97,27 @@ class AuthService
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $clown->setPassword($passwordHash);
         $this->entityManager->flush();
+    }
+
+    public function setLastUri(Request $request): void
+    {
+        $session = $this->requestStack->getSession();
+        $uri = $request->getRequestUri();
+        if (!$request->isXmlHttpRequest() && 'GET' === $request->getMethod() && !in_array($uri, ['', '/', '/dashboard'])) {
+            $session->set('lastUri', $uri);
+        }
+    }
+
+    public function getLastUri(): ?string
+    {
+        $session = $this->requestStack->getSession();
+        if ($session->has('lastUri')) {
+            $uri = $session->get('lastUri');
+            $session->remove('lastUri');
+        } else {
+            $uri = null;
+        }
+
+        return $uri;
     }
 }
