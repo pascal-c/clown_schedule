@@ -1,0 +1,63 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Rechnungsansicht{% endblock %}
+
+{% block content %}
+    {{ component('month_navigation', { active: month.key, urlKey: 'clown_invoice_show', urlParams: {clownId: clown.id} }) }}
+    {{ currentClown.isAdmin ? include('/clown_invoice/_clown_navigation.html.twig', {activeClowns: activeClowns, clown: clown}) }}
+   
+
+    <h4 class="pt-3">Rechnungsansicht {{ clown.name }} {{ month.label }}</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Spieltermin</th>
+                <th>Bezeichnung</th>
+                <th>Datum</th>
+                <th>Honorar Öffis</th>
+                <th>Honorar PKW</th>
+                <th>Kilometergeld</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for playDate in playDates %}
+            <tr>
+                <td>{{ playDate.name }}</td>
+                {% if playDate.special %}
+                    <td>Sondertermin</td>
+                    <td class="lh-sm">
+                        {{ playDate.date|date('d.m.Y') }}
+                        {% if playDate.comment != '' %}
+                            <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
+                        {% endif %}
+                    </td>
+                    <td>?</td>
+                    <td>?</td>
+                    <td>?</td>
+                {% else %}
+                    <td><a href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.venue.officialName }}</a></td>
+                    <td class="lh-sm">
+                        {{ playDate.date|date('d.m.Y') }}
+                        {% if playDate.comment != '' %}
+                            <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
+                        {% endif %}
+                    </td>
+                    <td>{{ playDate.venue.feeByPublicTransport|format_currency('EUR') }}</td>
+                    <td>{{ playDate.venue.feeByCar|format_currency('EUR') }}</td>
+                    <td>{{ include('venue/_kilometer_fee.html.twig', {venue: playDate.venue, long: false}) }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <th>Summe</th>
+                <th>Achtung, dient nur der Orientierung!</th>
+                <th>{{ month.label }}</th>
+                <th>{{ feeByPublicTransportSum|format_currency('EUR') }}</td>
+                <th>{{ feeByCarSum|format_currency('EUR') }}</td>
+                <th>{{ kilometersFeeSum|format_currency('EUR') }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
