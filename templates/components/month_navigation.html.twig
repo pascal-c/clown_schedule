@@ -10,6 +10,8 @@
     </ul>
 
     {% if urlKey == 'statistics' %}
-        <a href="{{ path('statistics_infinity') }}">Ewige Statistik</a>    
+        <a href="{{ path('statistics_infinity') }}">Ewige Statistik</a>
+    {% elseif urlKey == 'schedule' %}  
+        <a href="{{ path('clown_invoice_show', {clownId: currentClown.id}) }}">Rechnungsansicht</a>
     {% endif %}
 </nav>

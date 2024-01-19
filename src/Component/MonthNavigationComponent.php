@@ -2,28 +2,34 @@
 
 namespace App\Component;
 
+use App\Entity\Clown;
 use App\Entity\Month;
+use App\Service\AuthService;
 use App\Service\TimeService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
-use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 
 #[AsTwigComponent('month_navigation')]
 class MonthNavigationComponent
 {
-    public string $active = 'now';
+    public string $active;
     public ?string $urlKey;
-    public array $urlParams = [];
+    public array $navigationItems;
+    public Clown $currentClown;
 
     public function __construct(
         private UrlGeneratorInterface $urlHelper,
-        private TimeService $timeService
+        private TimeService $timeService,
+        private AuthService $authService,
     ) {
     }
 
-    #[ExposeInTemplate()]
-    public function getNavigationItems(): array
+    public function mount(string $urlKey, array $urlParams = [], string $active = 'now'): void
     {
+        $this->currentClown = $this->authService->getCurrentClown();
+        $this->urlKey = $urlKey;
+        $this->active = $active;
+
         $currentMonth = new Month($this->timeService->today());
         $activeMonth = Month::build($this->active);
         $navigationItems = [];
@@ -31,7 +37,7 @@ class MonthNavigationComponent
             'label' => '<<',
             'url' => $this->urlHelper->generate(
                 $this->urlKey,
-                array_merge($this->urlParams, ['monthId' => $activeMonth->previous()->getKey()])
+                array_merge($urlParams, ['monthId' => $activeMonth->previous()->getKey()])
             ),
         ];
         for ($i = 1; $i <= 3; ++$i) {
@@ -39,7 +45,7 @@ class MonthNavigationComponent
                 'label' => $currentMonth->getLabel(),
                 'url' => $this->urlHelper->generate(
                     $this->urlKey,
-                    array_merge($this->urlParams, ['monthId' => $currentMonth->getKey()])
+                    array_merge($urlParams, ['monthId' => $currentMonth->getKey()])
                 ),
             ];
             $currentMonth = $currentMonth->next();
@@ -48,10 +54,10 @@ class MonthNavigationComponent
             'label' => '>>',
             'url' => $this->urlHelper->generate(
                 $this->urlKey,
-                array_merge($this->urlParams, ['monthId' => $activeMonth->next()->getKey()])
+                array_merge($urlParams, ['monthId' => $activeMonth->next()->getKey()])
             ),
         ];
 
-        return $navigationItems;
+        $this->navigationItems = $navigationItems;
     }
 }

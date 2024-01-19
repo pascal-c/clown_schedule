@@ -10,8 +10,18 @@ use DateTimeImmutable;
 
 class VenueFactory extends AbstractFactory
 {
-    public function create(string $name = null, array $playingClowns = [], string $daytimeDefault = null, string $meetingTime = null, string $playTimeFrom = null, string $playTimeTo = null): Venue
-    {
+    public function create(
+        string $name = null,
+        array $playingClowns = [],
+        string $daytimeDefault = null,
+        string $meetingTime = null,
+        string $playTimeFrom = null,
+        string $playTimeTo = null,
+        float $feeByPublicTransport = null,
+        float $feeByCar = null,
+        int $kilometers = null,
+        float $feePerKilometer = 0.35,
+    ): Venue {
         list($daytimeDefaultGenerated, $meetingTimeGenerated, $playTimeFromGenerated, $playTimeToGenerated) = $this->timeOptions()->sample();
         $venue = (new Venue())
             ->setName($this->generateName($name))
@@ -19,6 +29,10 @@ class VenueFactory extends AbstractFactory
             ->setMeetingTime(new DateTimeImmutable($meetingTime ?? $meetingTimeGenerated))
             ->setPlayTimeFrom(new DateTimeImmutable($playTimeFrom ?? $playTimeFromGenerated))
             ->setPlayTimeTo(new DateTimeImmutable($playTimeTo ?? $playTimeToGenerated))
+            ->setFeeByPublicTransport($feeByPublicTransport)
+            ->setFeeByCar($feeByCar)
+            ->setKilometers($kilometers)
+            ->setFeePerKilometer($feePerKilometer)
         ;
         foreach ($playingClowns as $clown) {
             $venue->addResponsibleClown($clown);

@@ -1,0 +1,8 @@
+{% if venue.kilometers  %}
+    {% if long %}
+        {{ venue.feePerKilometer|format_currency('EUR') }} x {{ venue.kilometers }} km (Hin- und Rück) = 
+    {% endif %}
+    {{ venue.kilometersFee|format_currency('EUR') }} ({{ venue.kilometersFeeForAllClowns ? 'pro Clown' : 'für nur einen Clown' }})
+{% else %}
+    --
+{% endif %}
