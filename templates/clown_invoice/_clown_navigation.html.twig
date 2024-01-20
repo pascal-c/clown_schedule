@@ -2,7 +2,7 @@
     <ul class="nav nav-tabs">
         {% for activeClown in activeClowns %}
             <li class="nav-item">
-                <a class="nav-link {{ activeClown == clown ? 'active' }} {{ activeClown == clown ? 'aria-current="page"' }} "  href="{{ path('clown_invoice_show', {clownId: activeClown.id}) }}">
+                <a class="nav-link {{ activeClown == clown ? 'active' }}" {{ activeClown == clown ? 'aria-current="page"' }} href="{{ path('clown_invoice_show', {clownId: activeClown.id}) }}">
                     {{ activeClown.name }}
                 </a>
             </li>

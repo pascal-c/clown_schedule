@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\PlayDate;
 use App\Entity\Venue;
 use App\Form\VenueFormType;
 use App\Repository\VenueRepository;
+use App\Service\TimeService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -18,7 +21,7 @@ class VenueController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, private VenueRepository $venueRepository)
+    public function __construct(ManagerRegistry $doctrine, private VenueRepository $venueRepository, private TimeService $timeService)
     {
         $this->entityManager = $doctrine->getManager();
     }
@@ -127,12 +130,22 @@ class VenueController extends AbstractController
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
 
-    #[Route('/venues/{id}', name: 'venue_show', methods: ['GET'])]
-    public function show(int $id): Response
+    #[Route('/venues/{id}/{year}', name: 'venue_show', methods: ['GET'])]
+    public function show(int $id, string $year = null): Response
     {
+        $venue = $this->venueRepository->find($id);
+        $year ??= (new DateTimeImmutable())->format('Y');
+        $playDates = $venue->getPlayDates();
+        $years = array_unique($playDates->map(fn (PlayDate $playDate): string => $playDate->getDate()->format('Y'))->toArray());
+
         return $this->render('venue/show.html.twig', [
-            'venue' => $this->venueRepository->find($id),
+            'venue' => $venue,
             'active' => 'venue',
+            'playDates' => $venue->getPlayDates()->filter(
+                fn (PlayDate $playDate): bool => $year === $playDate->getDate()->format('Y')
+            ),
+            'activeYear' => $year,
+            'years' => $years,
         ]);
     }
 }

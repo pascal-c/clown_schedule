@@ -106,10 +106,14 @@
         </tbody>
     </table>
     
-    <h5>Spieltermine</h5>
-    <ul>
-    {% for playDate in venue.playDates %}
-        <li>
+    {{ include('venue/_year_navigation.html.twig', {venue: venue, playDates: playDates, activeYear: activeYear}) }}
+    
+    <h5>Spieltermine {{ venue.name }} {{ activeYear }}</h5>
+
+    <div class="container">
+        <div class="row">
+    {% for playDate in playDates %}
+            <div class="col-6 col-md-3 col-lg-2">
             {{ playDate.date|date("d.m.Y") }} 
             {% if currentClown.isAdmin %}
                 <a href="{{ path('play_date_edit', {id: playDate.id, venue_id: venue.id}) }}">
@@ -118,9 +122,10 @@
                     </svg>
                 </a>
             {% endif %}
-        </li>
+            </div>
     {% endfor %}
-    </ul>
+        </div>
+    </div>
     {% if currentClown.isAdmin %}
         <a class="pt-4" href="{{ path('play_date_new', {venue_id: venue.id}) }}">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
