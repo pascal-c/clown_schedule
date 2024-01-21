@@ -1,14 +1,21 @@
 {% if active != 'none' %}
-<nav class="navbar">
-    <ul class="nav nav-pills">
-    {% for key, element in navigationItems %}
-        <li class="nav-item">
-            <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">{{ element['label'] }}</a>
-        </li>
-     {% endfor %}
-    </ul>
-    <span class="navbar-text">
-        {{ currentClown.name}} <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}">Abmelden</a>
-    </span>
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Clowns Spielplan</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="nav nav-pills">
+        {% for key, element in navigationItems %}
+            <li class="nav-item">
+                <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">{{ element['label'] }}</a>
+            </li>
+        {% endfor %}
+        </ul>   
+        <span class="navbar-text ms-auto">
+            {{ currentClown.name}} <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}">Abmelden</a>
+        </span>
+    </div> 
 </nav>    
 {% endif %}
