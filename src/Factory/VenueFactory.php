@@ -22,6 +22,7 @@ class VenueFactory extends AbstractFactory
         int $kilometers = null,
         float $feePerKilometer = 0.35,
         bool $isSuper = false,
+        bool $archived = false,
     ): Venue {
         list($daytimeDefaultGenerated, $meetingTimeGenerated, $playTimeFromGenerated, $playTimeToGenerated) = $this->timeOptions()->sample();
         $venue = (new Venue())
@@ -35,6 +36,7 @@ class VenueFactory extends AbstractFactory
             ->setKilometers($kilometers)
             ->setFeePerKilometer($feePerKilometer)
             ->setIsSuper($isSuper)
+            ->setArchived($archived)
         ;
         foreach ($playingClowns as $clown) {
             $venue->addResponsibleClown($clown);

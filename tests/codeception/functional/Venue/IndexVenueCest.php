@@ -24,6 +24,12 @@ class IndexVenueCest extends AbstractCest
             daytimeDefault: TimeSlotPeriodInterface::ALL,
             playingClowns: [$this->clownFactory->create(name: 'Nele')],
         );
+        $this->venueFactory->create(
+            name: 'Paris',
+            daytimeDefault: TimeSlotPeriodInterface::AM,
+            playingClowns: [$this->clownFactory->create(name: 'Emilio')],
+            archived: true,
+        );
     }
 
     public function index(AdminTester $I): void
@@ -40,5 +46,15 @@ class IndexVenueCest extends AbstractCest
         $I->seeLink('Wichern');
         $I->see('Nele', Locator::contains('table tr', text: 'Wichern'));
         $I->see('ganztags', Locator::contains('table tr', text: 'Wichern'));
+
+        $I->amGoingTo('check the archived venue');
+        $I->dontSee('Paris');
+
+        $I->click('Archiv');
+        $I->seeLink('Paris');
+        $I->see('Emilio', Locator::contains('table tr', text: 'Paris'));
+        $I->see('vormittags', Locator::contains('table tr', text: 'Paris'));
+        $I->dontSee('Wichern');
+        $I->dontSee('DRK Leipzig');
     }
 }

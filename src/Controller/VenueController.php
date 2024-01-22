@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,11 +28,14 @@ class VenueController extends AbstractController
     }
 
     #[Route('/venues', name: 'venue_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $status = $request->query->get('status', default: 'active');
+
         return $this->render('venue/index.html.twig', [
-            'venues' => $this->venueRepository->all(),
+            'venues' => ('archived' === $status) ? $this->venueRepository->archived() : $this->venueRepository->active(),
             'active' => 'venue',
+            'status' => $status,
         ]);
     }
 
@@ -81,6 +85,7 @@ class VenueController extends AbstractController
             ->setMethod('DELETE')
             ->setAction($this->generateUrl('venue_delete', ['id' => $id]))
             ->getForm();
+        $archiveForm = $this->getArchiveForm($venue);
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -99,8 +104,57 @@ class VenueController extends AbstractController
             'venue' => $venue,
             'form' => $editForm,
             'delete_form' => $deleteForm,
+            'archive_form' => $archiveForm,
             'active' => 'venue',
         ]);
+    }
+
+    #[Route('/venues/archive/{id}', name: 'venue_archive', methods: ['DELETE'])]
+    public function archive(Request $request, int $id): Response
+    {
+        $this->adminOnly();
+
+        $venue = $this->venueRepository->find($id);
+
+        $archiveForm = $this->getArchiveForm($venue);
+        $archiveForm->handleRequest($request);
+
+        if ($archiveForm->isSubmitted() && $archiveForm->isValid()) {
+            $venue->setArchived(true);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Ok! Spielort '.$venue->getName().' wurde archiviert. Du kannst ihn jederzeit wiederherstellen!');
+
+            return $this->redirectToRoute('venue_index');
+        }
+
+        $this->addFlash('warning', 'Achtung! Spielort konnte nicht archiviert werden.');
+
+        return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
+    }
+
+    #[Route('/venues/restore/{id}', name: 'venue_restore', methods: ['POST'])]
+    public function restore(Request $request, int $id): Response
+    {
+        $this->adminOnly();
+
+        $venue = $this->venueRepository->find($id);
+
+        $archiveForm = $this->getArchiveForm($venue);
+        $archiveForm->handleRequest($request);
+
+        if ($archiveForm->isSubmitted() && $archiveForm->isValid()) {
+            $venue->setArchived(false);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Super! '.$venue->getName().' ist wieder da!');
+
+            return $this->redirectToRoute('venue_index');
+        }
+
+        $this->addFlash('warning', 'Achtung! Spielort konnte nicht wiederhergestellt werden.');
+
+        return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
 
     #[Route('/venues/{id}', name: 'venue_delete', methods: ['DELETE'])]
@@ -147,5 +201,30 @@ class VenueController extends AbstractController
             'activeYear' => $year,
             'years' => $years,
         ]);
+    }
+
+    private function getArchiveForm(Venue $venue): FormInterface
+    {
+        if ($venue->isArchived()) {
+            return $this->createFormBuilder($venue)
+                ->add(
+                    'restore',
+                    SubmitType::class,
+                    ['label' => 'Spielort wiederherstellen']
+                )
+                ->setMethod('POST')
+                ->setAction($this->generateUrl('venue_restore', ['id' => $venue->getId()]))
+                ->getForm();
+        }
+
+        return $this->createFormBuilder($venue)
+            ->add(
+                'archive',
+                SubmitType::class,
+                ['label' => 'Spielort archivieren', 'attr' => ['title' => 'archivierte Spielorte können wiederhergestellt werden']]
+            )
+            ->setMethod('DELETE')
+            ->setAction($this->generateUrl('venue_archive', ['id' => $venue->getId()]))
+            ->getForm();
     }
 }
