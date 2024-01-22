@@ -4,6 +4,6 @@
     <h4 class="pt-3">Spielort bearbeiten</h4>
 
     {{ form(form) }}
-    {{ venue.playDates.empty ? form(delete_form) : null }}
+    {{ venue.playDates.empty and venue.active ? form(delete_form) : form(archive_form) }}
 
 {% endblock %}

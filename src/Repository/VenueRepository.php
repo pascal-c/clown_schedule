@@ -16,10 +16,18 @@ class VenueRepository extends AbstractRepository
         return $this->doctrineRepository->find($id);
     }
 
-    public function all(): array
+    public function active(): array
     {
         return $this->doctrineRepository->findBy(
-            [],
+            ['archived' => false],
+            ['name' => 'ASC']
+        );
+    }
+
+    public function archived(): array
+    {
+        return $this->doctrineRepository->findBy(
+            ['archived' => true],
             ['name' => 'ASC']
         );
     }

@@ -90,6 +90,9 @@ class Venue
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $officialName = null;
 
+    #[ORM\Column]
+    private bool $archived = false;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -410,6 +413,23 @@ class Venue
     public function setOfficialName(?string $officialName): static
     {
         $this->officialName = $officialName;
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return !$this->archived;
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function setArchived(bool $archived): static
+    {
+        $this->archived = $archived;
 
         return $this;
     }
