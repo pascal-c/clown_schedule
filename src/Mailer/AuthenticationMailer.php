@@ -18,7 +18,7 @@ class AuthenticationMailer
     {
         $loginToken = $this->authService->getLoginToken($clown);
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
             ->subject('Dein Anmeldelink für den Spielplan')
             ->htmlTemplate('emails/authentification/login_token.html.twig')
@@ -34,9 +34,9 @@ class AuthenticationMailer
     {
         $loginToken = $this->authService->getLoginToken($clown);
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
-            ->subject('Dein Link zum Ändern Deines Passwortes für den Clowns Spielplan')
+            ->subject('Dein Link zum Ändern Deines Passwortes für den Clown Spielplan')
             ->htmlTemplate('emails/authentfication/change_password_link.html.twig')
             ->context([
                 'clown' => $clown,

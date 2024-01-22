@@ -22,7 +22,7 @@ class PlayDateGiveOffRequestMailer
             $this->clownRepository->allActive(),
         );
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
             ->to(...$receivers)
             ->subject($playDateChangeRequest->getRequestedBy()->getName().' möchte ein Spiel abgeben')
             ->htmlTemplate('emails/play_date_change_request/give-off_request.html.twig')
@@ -38,7 +38,7 @@ class PlayDateGiveOffRequestMailer
     {
         $receiver = $playDateChangeRequest->getRequestedBy();
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
             ->subject($playDateChangeRequest->getRequestedTo()->getName().' übernimmt Dein Spiel')
             ->htmlTemplate('emails/play_date_change_request/give-off_request_accept.html.twig')
@@ -58,7 +58,7 @@ class PlayDateGiveOffRequestMailer
         $receivers = $playDate->getPlayingClowns()->filter(fn (Clown $clown): bool => $clown !== $newPartner);
         foreach ($receivers as $receiver) {
             $email = (new TemplatedEmail())
-                ->from(new Address('no-reply@clowns-und-clowns.de', 'Clowns Spielplan'))
+                ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
                 ->to(new Address($receiver->getEmail(), $receiver->getName()))
                 ->subject('Endlich mal wieder ein Spiel mit '.$newPartner->getName().'!')
                 ->htmlTemplate('emails/play_date_change_request/change_request_inform_partner.html.twig')
