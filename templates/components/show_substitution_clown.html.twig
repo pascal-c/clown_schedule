@@ -1,7 +1,7 @@
 {% if showIt %}
     <div class="pt-2">
-        <strong class="{{ colorClass }}"><i>Springer:in</i></strong>
-        {{ substitution.substitutionClown ? substitution.substitutionClown.name : 'keener' }} 
+        <span class="{{ colorClass }}">Springer:</span>
+        {{ substitution.substitutionClown ? substitution.substitutionClown.name : '-' }} 
         {% if currentClown.isAdmin %}
             <a href="{{ path('substitution_edit', {date: substitution.date|date('Y-m-d'), daytime: substitution.daytime}) }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">

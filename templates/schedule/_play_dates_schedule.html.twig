@@ -4,7 +4,7 @@
     {% for playDate in day.entries('am', 'playDates') %}
         {{ component('show_play_date', {playDate: playDate, month: month}) }}
     {% else %}
-        <span class="text-muted">vormittags</span>
+        <span class="text-muted opacity-25">vormittags</span>
     {% endfor %}
     {% if day.entries('am', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
         {{ component('show_substitution_clown', { date: day.date, daytime: 'am', month: month }) }}
@@ -18,7 +18,7 @@
     {% for playDate in day.entries('pm', 'playDates') %}
         {{ component('show_play_date', {playDate: playDate, month: month}) }}
     {% else %}
-        <span class="text-muted">nachmittags</span>
+        <span class="text-muted opacity-25">nachmittags</span>
     {% endfor %}
     {% if day.entries('pm', 'playDates')|filter(playDate => not playDate.isSpecial) is not empty  %}
             {{ component('show_substitution_clown', { date: day.date, daytime: 'pm', month: month }) }}
