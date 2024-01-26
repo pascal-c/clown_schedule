@@ -81,7 +81,7 @@ class LoginController extends AbstractController
         return $this->redirectToRoute('login');
     }
 
-    #[Route('/change_password/{token}', name: 'change_password', methods: ['GET', 'PATCH'])]
+    #[Route('/change_password/{token}', name: 'change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, string $token): Response
     {
         $passwordForm = $this->createFormBuilder()
@@ -96,7 +96,7 @@ class LoginController extends AbstractController
             ->add('change_password', SubmitType::class, [
                 'label' => 'Passwort ändern',
                 ])
-            ->setMethod('PATCH')
+            ->setMethod('POST')
             ->getForm();
         $passwordForm->handleRequest($request);
 
