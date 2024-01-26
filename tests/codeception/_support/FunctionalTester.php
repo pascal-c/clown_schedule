@@ -3,6 +3,8 @@
 namespace App\Tests;
 
 use App\Factory\ClownFactory;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Mime\Email;
 
 /**
  * Inherited Methods.
@@ -48,5 +50,14 @@ class FunctionalTester extends \Codeception\Actor
         list($hour, $minute) = explode(':', $time);
         $I->selectOption($hourLocator, $hour);
         $I->selectOption($minuteLocator, $minute);
+    }
+
+    public function clickLinkInEmail(Email $email): void
+    {
+        $I = $this;
+        $crawler = new Crawler(quoted_printable_decode($email->getBody()->toString()));
+        $loginLink = $crawler->filter('a');
+        $url = $loginLink->attr('href');
+        $I->amOnPage($url);
     }
 }

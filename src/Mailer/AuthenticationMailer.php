@@ -37,7 +37,7 @@ class AuthenticationMailer
             ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
             ->subject('Dein Link zum Ändern Deines Passwortes für den Clown Spielplan')
-            ->htmlTemplate('emails/authentfication/change_password_link.html.twig')
+            ->htmlTemplate('emails/authentification/change_password_link.html.twig')
             ->context([
                 'clown' => $clown,
                 'login_token' => $loginToken,
