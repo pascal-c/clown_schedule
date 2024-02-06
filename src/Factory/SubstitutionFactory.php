@@ -12,7 +12,7 @@ use DateTimeImmutable;
 
 class SubstitutionFactory extends AbstractFactory
 {
-    public function create(DateTimeImmutable $date = null, string $daytime = null, Clown $clown = null): Substitution
+    public function create(?DateTimeImmutable $date = null, ?string $daytime = null, ?Clown $clown = null): Substitution
     {
         $date ??= new DateTimeImmutable();
         $daytime ??= (new Collection(TimeSlotInterface::DAYTIMES))->sample();

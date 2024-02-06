@@ -24,7 +24,7 @@ class ClownInvoiceController extends AbstractController
     }
 
     #[Route('/clowns/{clownId}/invoices/{monthId}', name: 'clown_invoice_show', methods: ['GET'])]
-    public function show(SessionInterface $session, int $clownId, string $monthId = null): Response
+    public function show(SessionInterface $session, int $clownId, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);
@@ -59,7 +59,7 @@ class ClownInvoiceController extends AbstractController
         ]);
     }
 
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         return parent::render($view, array_merge($parameters, ['active' => 'play_date']), $response);
     }

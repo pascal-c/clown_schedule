@@ -38,7 +38,7 @@ class ClownAvailabilityController extends AbstractController
     }
 
     #[Route('/clowns/availabilities/{monthId}', name: 'clown_availability_index', methods: ['GET'])]
-    public function index(SessionInterface $session, string $monthId = null): Response
+    public function index(SessionInterface $session, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clowns = $this->clownRepository->all();
@@ -52,7 +52,7 @@ class ClownAvailabilityController extends AbstractController
     }
 
     #[Route('/clowns/{clownId}/availabilities/{monthId}', name: 'clown_availability_show', methods: ['GET'])]
-    public function show(SessionInterface $session, int $clownId, string $monthId = null): Response
+    public function show(SessionInterface $session, int $clownId, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);

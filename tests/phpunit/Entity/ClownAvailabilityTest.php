@@ -53,7 +53,7 @@ final class ClownAvailabilityTest extends TestCase
         $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'all')));
     }
 
-    private function buildTimeSlot(string $availability, DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
+    private function buildTimeSlot(string $availability, ?DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
     {
         $timeSlot = new ClownAvailabilityTime();
         $timeSlot->setAvailability($availability);

@@ -187,7 +187,7 @@ final class SchedulerTest extends TestCase
         return [$this->buildPlayDate(), $this->buildPlayDate(), $this->buildPlayDate()];
     }
 
-    private function buildPlayDate(Clown $playingClown1 = null, Clown $playingClown2 = null): PlayDate
+    private function buildPlayDate(?Clown $playingClown1 = null, ?Clown $playingClown2 = null): PlayDate
     {
         static $counter = 0;
         ++$counter;
@@ -211,7 +211,7 @@ final class SchedulerTest extends TestCase
         ];
     }
 
-    private function buildClownAvailability(array $timeSlots = [], Clown $clown = null): ClownAvailability
+    private function buildClownAvailability(array $timeSlots = [], ?Clown $clown = null): ClownAvailability
     {
         $clownAvailability = new ClownAvailability();
         $clownAvailability->setCalculatedPlaysMonth(27);

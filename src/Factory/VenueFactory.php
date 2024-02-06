@@ -11,15 +11,15 @@ use DateTimeImmutable;
 class VenueFactory extends AbstractFactory
 {
     public function create(
-        string $name = null,
+        ?string $name = null,
         array $playingClowns = [],
-        string $daytimeDefault = null,
-        string $meetingTime = null,
-        string $playTimeFrom = null,
-        string $playTimeTo = null,
-        float $feeByPublicTransport = null,
-        float $feeByCar = null,
-        int $kilometers = null,
+        ?string $daytimeDefault = null,
+        ?string $meetingTime = null,
+        ?string $playTimeFrom = null,
+        ?string $playTimeTo = null,
+        ?float $feeByPublicTransport = null,
+        ?float $feeByCar = null,
+        ?int $kilometers = null,
         float $feePerKilometer = 0.35,
         bool $isSuper = false,
         bool $archived = false,

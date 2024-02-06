@@ -9,7 +9,7 @@ use App\Lib\Collection;
 
 class ClownFactory extends AbstractFactory
 {
-    public function create(string $name = null, string $email = null, string $password = 'clown', $isAdmin = false): Clown
+    public function create(?string $name = null, ?string $email = null, string $password = 'clown', $isAdmin = false): Clown
     {
         $clown = (new Clown())
             ->setName($this->generate('firstName', $name))
@@ -25,7 +25,7 @@ class ClownFactory extends AbstractFactory
         return $clown;
     }
 
-    public function createList(int $min, int $max = null): Collection
+    public function createList(int $min, ?int $max = null): Collection
     {
         $count = is_null($max) ? $min : rand($min, $max);
         $clowns = new Collection();

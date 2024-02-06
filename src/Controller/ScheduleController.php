@@ -47,7 +47,7 @@ class ScheduleController extends AbstractController
     }
 
     #[Route('/schedule/{monthId}', name: 'schedule', methods: ['GET'])]
-    public function schedule(SessionInterface $session, Request $request, string $monthId = null): Response
+    public function schedule(SessionInterface $session, Request $request, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $scheduleViewModel = $this->scheduleViewController->getSchedule($month);
@@ -68,7 +68,7 @@ class ScheduleController extends AbstractController
     }
 
     #[Route('/schedule/{monthId}', methods: ['POST'])]
-    public function calculate(Request $request, SessionInterface $session, string $monthId = null): Response
+    public function calculate(Request $request, SessionInterface $session, ?string $monthId = null): Response
     {
         $this->adminOnly();
 
@@ -92,7 +92,7 @@ class ScheduleController extends AbstractController
     }
 
     #[Route('/schedule/{monthId}', methods: ['PUT'])]
-    public function complete(SessionInterface $session, string $monthId = null): Response
+    public function complete(SessionInterface $session, ?string $monthId = null): Response
     {
         $this->adminOnly();
 
@@ -116,7 +116,7 @@ class ScheduleController extends AbstractController
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }
 
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         return parent::render($view, array_merge($parameters, ['active' => 'play_date']), $response);
     }

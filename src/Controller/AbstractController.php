@@ -32,7 +32,7 @@ abstract class AbstractController extends SymfonyAbstractController
         return $this->authService->getCurrentClown();
     }
 
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         return parent::render($view, array_merge($parameters, ['currentClown' => $this->getCurrentClown()]), $response);
     }

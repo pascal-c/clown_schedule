@@ -48,7 +48,7 @@ class StatisticsController extends AbstractController
     }
 
     #[Route('/statistics/{monthId}', name: 'statistics', methods: ['GET'])]
-    public function showPerMonth(SessionInterface $session, Request $request, string $monthId = null): Response
+    public function showPerMonth(SessionInterface $session, Request $request, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $playDates = $this->playDateRepository->regularByMonth($month);

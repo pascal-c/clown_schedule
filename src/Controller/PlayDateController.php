@@ -209,7 +209,7 @@ class PlayDateController extends AbstractController
         return $this->redirectToRoute('schedule');
     }
 
-    protected function render(string $view, array $parameters = [], Response $response = null): Response
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         return parent::render($view, array_merge($parameters, ['active' => 'play_date']), $response);
     }

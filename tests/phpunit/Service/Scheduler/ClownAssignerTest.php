@@ -157,7 +157,7 @@ final class ClownAssignerTest extends TestCase
 
     public function substitutionClownDataProvider(): array
     {
-        $buildResultSet = function (array $availableOnResults, int $expectedResultIndex = null, $isAllDay = false): array {
+        $buildResultSet = function (array $availableOnResults, ?int $expectedResultIndex = null, $isAllDay = false): array {
             $clownAvailabilities = [
                 $this->buildClownAvailability('no', targetPlays: 0, calculatedPlays: 4),
                 $this->buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 4),
@@ -300,8 +300,8 @@ final class ClownAssignerTest extends TestCase
     private function buildClownAvailability(
         string $availability = 'yes',
         int $targetPlays = 2,
-        int $calculatedPlays = null,
-        int $calculatedSubstitutions = null,
+        ?int $calculatedPlays = null,
+        ?int $calculatedSubstitutions = null,
         bool $availableAllDay = false
     ): ClownAvailability {
         static $counter = 0;

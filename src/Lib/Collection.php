@@ -37,7 +37,7 @@ class Collection implements Iterator
         return $this->list[array_rand($this->list)];
     }
 
-    public function samples(int $min, int $max = null): array
+    public function samples(int $min, ?int $max = null): array
     {
         $count = is_null($max) ? $min : rand($min, $max);
         $list = $this->list;

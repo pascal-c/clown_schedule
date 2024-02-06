@@ -10,7 +10,7 @@ use App\Value\ScheduleStatus;
 
 class ScheduleFactory extends AbstractFactory
 {
-    public function create(Month $month, ScheduleStatus $status = null)
+    public function create(Month $month, ?ScheduleStatus $status = null)
     {
         $status ??= ScheduleStatus::IN_PROGRESS;
 

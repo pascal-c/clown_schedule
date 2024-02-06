@@ -27,7 +27,7 @@ final class AvailabilityCheckerTest extends TestCase
         array $otherPlayDates,
         string $firstClownGender,
         bool $expectedResult,
-        Substitution $isSubstitutionClown = null
+        ?Substitution $isSubstitutionClown = null
     ): void {
         $playDate = $this->buildPlayDate('am', (new Clown())->setGender($firstClownGender));
         $playDateRepository = $this->createMock(PlayDateRepository::class);
@@ -72,7 +72,7 @@ final class AvailabilityCheckerTest extends TestCase
         ];
     }
 
-    private function buildPlayDate(string $daytime = 'am', Clown $clown = null): PlayDate
+    private function buildPlayDate(string $daytime = 'am', ?Clown $clown = null): PlayDate
     {
         $playDate = new PlayDate();
         $playDate->setDate(new DateTimeImmutable('2022-04-01'));

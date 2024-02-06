@@ -15,7 +15,7 @@ final class TypeExtension extends AbstractExtension
         return ['of_type' => new TwigTest('of_type', [$this, 'ofType'])];
     }
 
-    public function ofType(mixed $var, string $test, string $class = null): bool
+    public function ofType(mixed $var, string $test, ?string $class = null): bool
     {
         return match ($test) {
             'array' => \is_array($var),

@@ -185,7 +185,7 @@ class VenueController extends AbstractController
     }
 
     #[Route('/venues/{id}/{year}', name: 'venue_show', methods: ['GET'])]
-    public function show(int $id, string $year = null): Response
+    public function show(int $id, ?string $year = null): Response
     {
         $venue = $this->venueRepository->find($id);
         $year ??= (new DateTimeImmutable())->format('Y');

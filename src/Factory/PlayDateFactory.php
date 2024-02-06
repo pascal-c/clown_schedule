@@ -23,16 +23,16 @@ class PlayDateFactory extends AbstractFactory
     }
 
     public function create(
-        Month $month = null,
-        DateTimeImmutable $date = null,
-        string $daytime = null,
-        Venue $venue = null,
+        ?Month $month = null,
+        ?DateTimeImmutable $date = null,
+        ?string $daytime = null,
+        ?Venue $venue = null,
         array $playingClowns = [],
         $isSpecial = false,
         $title = null,
-        string $meetingTime = null,
-        string $playTimeFrom = null,
-        string $playTimeTo = null
+        ?string $meetingTime = null,
+        ?string $playTimeFrom = null,
+        ?string $playTimeTo = null
     ): PlayDate {
         $date ??= $month ? DateTimeImmutable::createFromMutable(
             $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin')
