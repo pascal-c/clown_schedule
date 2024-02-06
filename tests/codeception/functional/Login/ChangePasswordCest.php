@@ -22,7 +22,7 @@ class ChangePasswordCest extends AbstractCest
     {
         $I->amOnPage('/login');
         $I->fillField('login_form[email]', 'torte@example.org');
-        $I->click('Passwort vergessen');
+        $I->click('Passwort zurücksetzen');
         $I->seeCurrentUrlEquals('/login');
         $I->see('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "torte@example.org" gesendet. Schau mal in Dein Email-Postfach!');
         $I->seeEmailIsSent(1);
@@ -49,7 +49,7 @@ class ChangePasswordCest extends AbstractCest
     {
         $I->amOnPage('/login');
         $I->fillField('login_form[email]', 'kuchen@example.org');
-        $I->click('Passwort vergessen');
+        $I->click('Passwort zurücksetzen');
         $I->seeCurrentUrlEquals('/login');
         $I->see('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "kuchen@example.org" gesendet. Schau mal in Dein Email-Postfach!');
         $I->seeEmailIsSent(0);

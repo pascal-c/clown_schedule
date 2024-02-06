@@ -3,7 +3,16 @@
 {% block content %}
     <h3>Clown Spielplan</h3>
     <h4 class="pt-3">Anmeldung</h4>
+    
 
     {{ form(form) }}
+    <button class="btn btn-link collapse show password-forgot" type="button" data-bs-toggle="collapse" data-bs-target=".password-forgot" aria-expanded="false" aria-controls="collapseExample">
+       Passwort vergessen
+    </button>
+
+    <button class="btn btn-link collapse password-forgot" type="button" data-bs-toggle="collapse" data-bs-target=".password-forgot" aria-expanded="false" aria-controls="collapseExample">
+       Per Email und Passwort anmelden
+    </button>
+
 
 {% endblock %}

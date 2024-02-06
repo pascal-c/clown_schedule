@@ -22,7 +22,7 @@ class LoginByEmailCest extends AbstractCest
     {
         $I->amOnPage('/login');
         $I->fillField('login_form[email]', 'torte@example.org');
-        $I->click('per Email-Link anmelden (ohne Passwort)');
+        $I->click('Per Email-Link anmelden');
         $I->seeCurrentUrlEquals('/login');
         $I->see('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "torte@example.org" gesendet. Schau mal in Dein Email-Postfach!');
         $I->seeEmailIsSent(1);
@@ -36,7 +36,7 @@ class LoginByEmailCest extends AbstractCest
     {
         $I->amOnPage('/login');
         $I->fillField('login_form[email]', 'kuchen@example.org');
-        $I->click('per Email-Link anmelden (ohne Passwort)');
+        $I->click('Per Email-Link anmelden');
         $I->seeCurrentUrlEquals('/login');
         $I->see('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "kuchen@example.org" gesendet. Schau mal in Dein Email-Postfach!');
         $I->seeEmailIsSent(0);
