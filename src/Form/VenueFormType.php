@@ -44,9 +44,19 @@ class VenueFormType extends AbstractType
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Verantwortliche Clowns',
+                'help' => 'Bei der Spielplanerstellung wird versucht, immer einen der verantwortlichen Clowns als ersten Clown zuzuordnen',
                 'multiple' => true,
                 'expanded' => true,
                 ])
+            ->add('blockedClowns', EntityType::class, [
+                    'class' => Clown::class,
+                    'choice_label' => 'name',
+                    'required' => false,
+                    'label' => 'Gesperrte Clowns',
+                    'help' => 'Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet',
+                    'multiple' => true,
+                    'expanded' => true,
+                    ])
             ->add('daytimeDefault', ChoiceType::class, [
                 'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,

@@ -56,11 +56,15 @@ class Clown
     #[ORM\Column]
     private bool $isActive = true;
 
+    #[ORM\ManyToMany(targetEntity: Venue::class, mappedBy: 'blockedClowns')]
+    private Collection $blockedVenues;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
         $this->playDates = new ArrayCollection();
         $this->substitutionTimeSlots = new ArrayCollection();
+        $this->blockedVenues = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -257,6 +261,33 @@ class Clown
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Venue>
+     */
+    public function getBlockedVenues(): Collection
+    {
+        return $this->blockedVenues;
+    }
+
+    public function addBlockedVenue(Venue $blockedVenue): static
+    {
+        if (!$this->blockedVenues->contains($blockedVenue)) {
+            $this->blockedVenues->add($blockedVenue);
+            $blockedVenue->addBlockedClown($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlockedVenue(Venue $blockedVenue): static
+    {
+        if ($this->blockedVenues->removeElement($blockedVenue)) {
+            $blockedVenue->removeBlockedClown($this);
+        }
 
         return $this;
     }

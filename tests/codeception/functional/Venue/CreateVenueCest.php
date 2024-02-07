@@ -15,6 +15,8 @@ class CreateVenueCest extends AbstractCest
         parent::_before($I);
 
         $this->clownFactory->create(name: 'Erika');
+        $this->clownFactory->create(name: 'Elena');
+        $this->clownFactory->create(name: 'Timo');
     }
 
     public function create(AdminTester $I): void
@@ -35,7 +37,8 @@ class CreateVenueCest extends AbstractCest
         $I->fillField('Honorar PKW', '142,00');
         $I->fillField('Kilometerpauschale', '0,35');
         $I->fillField('Kilometer', '100');
-        $I->checkOption('Erika');
+        $I->checkMultipleOption('Verantwortliche Clowns', ['Erika', 'Elena']);
+        $I->checkMultipleOption('Gesperrte Clowns', ['Timo']);
         $I->selectOption('venue_form[daytimeDefault]', TimeSlotPeriodInterface::PM);
         $I->selectTimeOption('venue_form[meetingTime]', '09:30');
         $I->selectTimeOption('venue_form[playTimeFrom]', '10:00');
@@ -50,7 +53,8 @@ class CreateVenueCest extends AbstractCest
         $I->see('Anneliese', Locator::contains('table tr', text: 'Ansprechperson'));
         $I->see('01234567', Locator::contains('table tr', text: 'Telefon'));
         $I->see('anneliese@drk.de', Locator::contains('table tr', text: 'Email'));
-        $I->see('Erika', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
+        $I->see('Erika | Elena', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
+        $I->see('Timo', Locator::contains('table tr', text: 'Gesperrte Clowns'));
         $I->see('nachmittags', Locator::contains('table tr', text: 'Standard Tageszeit für Spieltermine'));
         $I->see('09:30', Locator::contains('table tr', text: 'Treffen'));
         $I->see('10:00 - 12:00', Locator::contains('table tr', text: 'Spielzeit'));
