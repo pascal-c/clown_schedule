@@ -20,19 +20,19 @@ class LoginFormType extends AbstractType
             ->add('password', PasswordType::class, [
                 'label' => false,
                 'required' => false,
-                'attr' => ['placeholder' => 'Passwort', 'autocomplete' => 'current-password', 'class' => 'collapse show password-forgot'],
+                'attr' => ['placeholder' => 'Passwort', 'autocomplete' => 'current-password'],
                 ])
             ->add('login', SubmitType::class, [
                 'label' => 'anmelden',
-                'attr' => ['title' => 'Mit Email und Passwort anmelden', 'class' => 'btn-primary collapse show password-forgot'],
+                'attr' => ['title' => 'Mit Email und Passwort anmelden'],
                 ])
             ->add('login_by_email', SubmitType::class, [
                 'label' => 'Per Email-Link anmelden',
-                'attr' => ['title' => 'Du bekommst eine Email, über Du Dich ohne Passwort anmelden kannst', 'class' => 'btn-primary collapse password-forgot'],
+                'attr' => ['title' => 'Du bekommst eine Email, über Du Dich ohne Passwort anmelden kannst'],
                 ])
             ->add('change_password', SubmitType::class, [
                 'label' => 'Passwort zurücksetzen',
-                'attr' => ['title' => 'Du bekommst eine Email zum Ändern Deines Passwortes', 'class' => 'btn-primary collapse password-forgot'],
+                'attr' => ['title' => 'Du bekommst eine Email zum Ändern Deines Passwortes'],
                 ])
         ;
     }
