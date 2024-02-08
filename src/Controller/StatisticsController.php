@@ -63,15 +63,17 @@ class StatisticsController extends AbstractController
         }
         foreach ($playDates as $playDate) {
             foreach ($playDate->getPlayingClowns() as $clown) {
-                if (!isset($plays[$clown->getId()])) {
-                    $plays[$clown->getId()] = 0;
+                if (isset($plays[$clown->getId()])) {
+                    ++$plays[$clown->getId()];
                 }
-                ++$plays[$clown->getId()];
             }
         }
         foreach ($substitutionTimeSlots as $substitutionTimeSlot) {
-            if (!is_null($substitutionTimeSlot->getSubstitutionClown())) {
-                ++$substitutions[$substitutionTimeSlot->getSubstitutionClown()->getId()];
+            $substitutionClownId = $substitutionTimeSlot->getSubstitutionClown()?->getId();
+            if (!is_null($substitutionClownId)) {
+                if (isset($substitutions[$substitutionClownId])) {
+                    ++$substitutions[$substitutionClownId];
+                }
             }
         }
 
