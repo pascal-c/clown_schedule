@@ -8,7 +8,7 @@
         - {{ playDate.isSpecial ? playDate.title : playDate.venue.name }}
     </h5>
 
-    {{ component('show_available_clowns', { date: playDate.date, daytime: playDate.daytime }) }}
+    {{ component('show_available_clowns', { date: playDate.date, daytime: playDate.daytime, playDate: playDate }) }}
     {{ form(form) }}
     <a href="{{ path('play_date_edit', {id: playDate.id}) }}">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">

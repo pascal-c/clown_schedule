@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Value;
 
+use App\Entity\Month;
+
 interface TimeSlotPeriodInterface extends TimeSlotInterface
 {
     public const ALL = 'all';
@@ -15,4 +17,6 @@ interface TimeSlotPeriodInterface extends TimeSlotInterface
     public function getTimeSlots(): array;
 
     public function equalsTimeSlotPeriod(TimeSlotPeriodInterface $other): bool;
+
+    public function getMonth(): Month;
 }

@@ -52,7 +52,6 @@ class PlayDateRepository extends AbstractRepository
     public function byMonthAndClown(Month $month, Clown $clown): array
     {
         return $this->queryByMonth($month)
-            ->leftJoin('pd.playingClowns', 'clown')
             ->andWhere('clown = :clown')
             ->setParameter('clown', $clown)
             ->getQuery()
@@ -64,6 +63,10 @@ class PlayDateRepository extends AbstractRepository
     private function queryByMonth(Month $month): QueryBuilder
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
+            ->leftJoin('pd.playingClowns', 'clown')
+            ->leftJoin('pd.venue', 'venue')
+            ->leftJoin('venue.blockedClowns', 'blockedClown')
+            ->leftJoin('venue.responsibleClowns', 'responsibleClown')
             ->where('pd.date >= :this')
             ->andWhere('pd.date < :next')
             ->setParameter('this', $month->dbFormat())
