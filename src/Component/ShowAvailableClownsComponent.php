@@ -4,6 +4,7 @@ namespace App\Component;
 
 use App\Entity\ClownAvailability;
 use App\Entity\Month;
+use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Value\TimeSlotPeriod;
@@ -22,7 +23,7 @@ final class ShowAvailableClownsComponent
     ) {
     }
 
-    public function mount(DateTimeImmutable $date, string $daytime)
+    public function mount(DateTimeImmutable $date, string $daytime, ?PlayDate $playDate = null)
     {
         $timeSlotPeriod = new TimeSlotPeriod($date, $daytime);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth(new Month($date));
@@ -33,8 +34,8 @@ final class ShowAvailableClownsComponent
         $this->entries = array_map(
             fn (ClownAvailability $availability) => [
                 'clown' => $availability->getClown(),
-                'type' => $this->getType($timeSlotPeriod, $availability),
-                'messages' => $this->getMessages($timeSlotPeriod, $availability),
+                'type' => $this->getType($timeSlotPeriod, $availability, $playDate),
+                'messages' => $this->getMessages($timeSlotPeriod, $availability, $playDate),
             ],
             $availableClownAvailabilities
         );
@@ -49,10 +50,11 @@ final class ShowAvailableClownsComponent
         );
     }
 
-    private function getType(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): string
+    private function getType(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability, ?PlayDate $playDate): string
     {
         if ($this->availabilityChecker->maxPlaysMonthReached($clownAvailability)
-            || $this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
+            || $this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)
+            || (!is_null($playDate) && $this->availabilityChecker->isBlocked($playDate->getVenue(), $clownAvailability->getClown()))) {
             return 'danger';
         } elseif ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
             return 'warning';
@@ -61,7 +63,7 @@ final class ShowAvailableClownsComponent
         return 'success';
     }
 
-    private function getMessages(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): array
+    private function getMessages(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability, ?PlayDate $playDate): array
     {
         $messages = [];
         if ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
@@ -72,6 +74,9 @@ final class ShowAvailableClownsComponent
         }
         if ($this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
             $messages[] = 'Maximale Anzahl täglicher Spiele erreicht!';
+        }
+        if (!is_null($playDate) && $this->availabilityChecker->isBlocked($playDate->getVenue(), $clownAvailability->getClown())) {
+            $messages[] = 'Clown ist für diesen Spielort gesperrt!';
         }
         if (empty($messages)) {
             $messages[] = 'Clown ist verfügbar!';

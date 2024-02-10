@@ -68,14 +68,14 @@ class VenueController extends AbstractController
         ]);
     }
 
-    #[Route('/venues/edit/{id}', name: 'venue_edit', methods: ['GET', 'PATCH'])]
+    #[Route('/venues/edit/{id}', name: 'venue_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, int $id): Response
     {
         $this->adminOnly();
 
         $venue = $this->venueRepository->find($id);
 
-        $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PATCH']);
+        $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PUT']);
         $deleteForm = $this->createFormBuilder($venue)
             ->add(
                 'delete',

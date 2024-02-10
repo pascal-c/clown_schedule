@@ -9,7 +9,7 @@
 
     <table class="table">
         <thead>
-            <tr><th>Name</th><th>Verantwortliche Clowns</th><th>Tageszeit</th></tr>
+            <tr><th>Name</th><th>Verantwortliche Clowns</th><th>Gesperrte Clowns</th><th>Tageszeit</th></tr>
         </thead>
         <tbody>
     {% for venue in venues %}
@@ -17,6 +17,11 @@
             <td><a href="{{ path('venue_show', {id: venue.id}) }}">{{ venue.name }}</<a></td>
             <td>
                 {% for clown in venue.responsibleClowns %}
+                    {{ clown.name }}{% if not loop.last %} | {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for clown in venue.blockedClowns %}
                     {{ clown.name }}{% if not loop.last %} | {% endif %}
                 {% endfor %}
             </td>

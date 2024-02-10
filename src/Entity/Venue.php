@@ -93,10 +93,15 @@ class Venue
     #[ORM\Column]
     private bool $archived = false;
 
+    #[ORM\JoinTable(name: 'venue_clown_blocked')]
+    #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'blockedVenues', )]
+    private Collection $blockedClowns;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
         $this->responsibleClowns = new ArrayCollection();
+        $this->blockedClowns = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -430,6 +435,30 @@ class Venue
     public function setArchived(bool $archived): static
     {
         $this->archived = $archived;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Clown>
+     */
+    public function getBlockedClowns(): Collection
+    {
+        return $this->blockedClowns;
+    }
+
+    public function addBlockedClown(Clown $blockedClown): static
+    {
+        if (!$this->blockedClowns->contains($blockedClown)) {
+            $this->blockedClowns->add($blockedClown);
+        }
+
+        return $this;
+    }
+
+    public function removeBlockedClown(Clown $blockedClown): static
+    {
+        $this->blockedClowns->removeElement($blockedClown);
 
         return $this;
     }

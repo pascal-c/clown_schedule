@@ -44,10 +44,16 @@
                     {{ venue.contactPhone }}
                 </td>
             </tr>
-            <tr>
+            <tr title="Bei der Spielplanerstellung wird versucht als ersten Clown einen verantwortlichen Clown zuzuordnen">
                 <th>Verantwortliche Clowns</th>
                 <td>
                     {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
+                </td>
+            </tr>
+            <tr title="Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet">
+                <th>Gesperrte Clowns</th>
+                <td>
+                    {{ venue.blockedClowns|map(clown => clown.name)|join(' | ') }}
                 </td>
             </tr>
             <tr>

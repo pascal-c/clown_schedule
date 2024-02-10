@@ -52,6 +52,22 @@ class FunctionalTester extends \Codeception\Actor
         $I->selectOption($minuteLocator, $minute);
     }
 
+    public function checkMultipleOption(string $fieldLabel, array $optionLabels): void
+    {
+        $I = $this;
+        foreach ($optionLabels as $label) {
+            $I->checkOption('.//fieldset[legend[contains(., "'.$fieldLabel.'")]]//div[@class="form-check" and contains(label, "'.$label.'")]/input');
+        }
+    }
+
+    public function uncheckMultipleOption(string $fieldLabel, array $optionLabels): void
+    {
+        $I = $this;
+        foreach ($optionLabels as $label) {
+            $I->uncheckOption('.//fieldset[legend[contains(., "'.$fieldLabel.'")]]//div[@class="form-check" and contains(label, "'.$label.'")]/input');
+        }
+    }
+
     public function clickLinkInEmail(Email $email): void
     {
         $I = $this;
