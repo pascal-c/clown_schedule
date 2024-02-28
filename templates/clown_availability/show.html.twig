@@ -7,15 +7,20 @@
     <h4 class="pt-3">Fehlzeiten {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
 
     <div class="container">
-        <div class="row pb-3">
-            <div class="col-sm-4">
-                Wunsch Anzahl Spiele pro Monat: <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
+        <div class="row">
+            <div class="col-sm-6">
+                Gewünschte Anzahl Spiele pro Monat: <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 Maximale Anzahl Spiele pro Monat: <strong>{{ clownAvailability.maxPlaysMonth }}</strong>
             </div>
-            <div class="col-sm-4">
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-6">
                 Maximale Anzahl Spiele pro Tag: <strong>{{ clownAvailability.maxPlaysDay }}</strong>
+            </div>
+            <div class="col-sm-6">
+                Gewünschte maximale Anzahl Spiele pro Woche: <strong>{{ clownAvailability.softMaxPlaysWeek }}</strong>
             </div>
         </div>
         {% if clownAvailability.additionalWishes is not empty %}

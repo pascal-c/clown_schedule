@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Value;
 
 use App\Entity\Month;
+use App\Entity\Week;
 use DateTimeImmutable;
 
 trait TimeSlotPeriodTrait
@@ -34,6 +35,11 @@ trait TimeSlotPeriodTrait
     public function getMonth(): Month
     {
         return new Month($this->date);
+    }
+
+    public function getWeek(): Week
+    {
+        return new Week($this->date);
     }
 
     public function equalsTimeSlotPeriod(TimeSlotPeriodInterface $other): bool

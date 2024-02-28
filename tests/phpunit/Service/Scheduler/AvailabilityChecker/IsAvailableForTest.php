@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service\Scheduler;
+namespace App\Tests\Service\Scheduler\AvailabilityChecker;
 
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-final class AvailabilityCheckerTest extends TestCase
+final class IsAvailableForTest extends TestCase
 {
     /**
      * @dataProvider dataProvider

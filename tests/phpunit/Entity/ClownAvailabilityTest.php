@@ -53,6 +53,15 @@ final class ClownAvailabilityTest extends TestCase
         $this->assertTrue($availability->isAvailableOn(new TimeSlotPeriod($date2, 'all')));
     }
 
+    public function testgetSoftMaxPlaysAndSubstitutionsWeek(): void
+    {
+        $availability = new ClownAvailability();
+        $this->assertNull($availability->getSoftMaxPlaysAndSubstitutionsWeek());
+
+        $availability->setSoftMaxPlaysWeek(3);
+        $this->assertSame(5, $availability->getSoftMaxPlaysAndSubstitutionsWeek());
+    }
+
     private function buildTimeSlot(string $availability, ?DateTimeInterface $date = null, ?string $daytime = 'am'): ClownAvailabilityTime
     {
         $timeSlot = new ClownAvailabilityTime();

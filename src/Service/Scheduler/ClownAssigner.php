@@ -51,10 +51,13 @@ class ClownAssigner
     {
         $availableClownAvailabilities = $this->getAvailabilitiesFor($playDate, $clownAvailabilities);
         if (empty($availableClownAvailabilities)) {
+            // dump('second clown for '.$playDate->getName(). ' ' . $playDate->getDate()->format('Y-m-d'). ': NOBODY');
             return;
         }
 
         $orderedClownAvailabilities = $this->orderAvailabilitesFor($playDate, $availableClownAvailabilities);
+
+        // dump('second clown for '.$playDate->getName(). ' ' . $playDate->getDate()->format('Y-m-d'). ': '. $orderedClownAvailabilities[0]->getClown()->getName());
         $this->assignClown($playDate, $orderedClownAvailabilities[0]);
     }
 
@@ -71,6 +74,14 @@ class ClownAssigner
         usort(
             $availableClownAvailabilities,
             function (ClownAvailability $availability1, ClownAvailability $availability2) use ($timeSlotPeriod) {
+                // when maxPlayWeek ist reached, the clown comes last
+                $a1MaxSubstitutionsWeekReached = $this->availabilityChecker->maxPlaysAndSubstitutionsWeekReached($timeSlotPeriod->getWeek(), $availability1);
+                $a2MaxPlaysWeekReached = $this->availabilityChecker->maxPlaysAndSubstitutionsWeekReached($timeSlotPeriod->getWeek(), $availability2);
+                if ($a1MaxSubstitutionsWeekReached !== $a2MaxPlaysWeekReached) {
+                    return $a1MaxSubstitutionsWeekReached ? 1 : -1;
+                }
+
+                // when availability is the same, take clown with more open substitutions first
                 $a1Availability = $availability1->getAvailabilityOn($timeSlotPeriod);
                 $a2Availability = $availability2->getAvailabilityOn($timeSlotPeriod);
                 if ($a1Availability == $a2Availability) {
@@ -80,6 +91,7 @@ class ClownAssigner
                         $availability1->getOpenSubstitutions();
                 }
 
+                // prefer clown with availability 'yes' before clown with availability 'maybe'
                 return 'yes' == $a1Availability ? -1 : 1;
             }
         );
@@ -123,6 +135,14 @@ class ClownAssigner
         usort(
             $clownAvailabilities,
             function (ClownAvailability $availability1, ClownAvailability $availability2) use ($playDate) {
+                // when maxPlayWeek ist reached, the clown comes last
+                $a1MaxPlaysWeekReached = $this->availabilityChecker->maxPlaysWeekReached($playDate->getWeek(), $availability1);
+                $a2MaxPlaysWeekReached = $this->availabilityChecker->maxPlaysWeekReached($playDate->getWeek(), $availability2);
+                if ($a1MaxPlaysWeekReached !== $a2MaxPlaysWeekReached) {
+                    return $a1MaxPlaysWeekReached ? 1 : -1;
+                }
+
+                // when availability is the same, take clown with more open plays first
                 $a1Availability = $availability1->getAvailabilityOn($playDate);
                 $a2Availability = $availability2->getAvailabilityOn($playDate);
                 if ($a1Availability == $a2Availability) {
@@ -132,6 +152,7 @@ class ClownAssigner
                         $availability1->getOpenTargetPlays();
                 }
 
+                // take available clown with 'yes' before 'maybe' clown
                 return 'yes' == $a1Availability ? -1 : 1;
             }
         );

@@ -10,12 +10,14 @@ use App\Entity\ClownAvailabilityTime;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Entity\Week;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateHistoryService;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
+use App\Value\TimeSlotPeriodInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
@@ -95,11 +97,11 @@ final class ClownAssignerTest extends TestCase
     {
         $buildResultSet = function (array $params): array {
             $clownAvailabilities = [
-                $this->buildClownAvailability('no', 2, 1),
-                $this->buildClownAvailability('maybe', 2, 1),
-                $this->buildClownAvailability('yes', 2, 1),
-                $this->buildClownAvailability('maybe', 4, 1),
-                $this->buildClownAvailability('yes', 3, 1),
+                $this->buildClownAvailability('no', targetPlays: 2, calculatedPlays: 1),
+                $this->buildClownAvailability('maybe', targetPlays: 2, calculatedPlays: 1),
+                $this->buildClownAvailability('yes', targetPlays: 2, calculatedPlays: 1),
+                $this->buildClownAvailability('maybe', targetPlays: 4, calculatedPlays: 1),
+                $this->buildClownAvailability('yes', targetPlays: 3, calculatedPlays: 1),
             ];
             $expectedResultIndex = $params['expectedResultIndex'];
 
@@ -107,22 +109,41 @@ final class ClownAssignerTest extends TestCase
                 $this->buildPlayDate($clownAvailabilities)->addPlayingClown(new Clown()),
                 $clownAvailabilities,
                 'availableForResults' => $params['availableForResults'],
+                'maxPlaysWeekReached' => $params['maxPlaysWeekReached'],
                 'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
             ];
         };
 
         return [
-            $buildResultSet([
+            $buildResultSet([ // clowns with availability 'yes' available
                 'availableForResults' => [false, true, true, true, true],
+                'maxPlaysWeekReached' => [false, false, false, false, false],
                 'expectedResultIndex' => 4,
             ]),
             $buildResultSet([ // only clowns with availability 'maybe' available
                 'availableForResults' => [false, true, false, true, false],
+                'maxPlaysWeekReached' => [false, false, false, false, false],
                 'expectedResultIndex' => 3,
             ]),
             $buildResultSet([ // no clown available at all
                 'availableForResults' => [false, false, false, false, false],
+                'maxPlaysWeekReached' => [false, false, false, false, false],
                 'expectedResultIndex' => null,
+            ]),
+            $buildResultSet([ // clowns with availability 'yes' available - but highest has maxPlaysWeekReached
+                'availableForResults' => [false, true, true, true, true],
+                'maxPlaysWeekReached' => [false, false, false, false, true],
+                'expectedResultIndex' => 2,
+            ]),
+            $buildResultSet([ // no clowns with availability 'yes' and not maxPlaysWeekReached available
+                'availableForResults' => [false, true, true, true, true],
+                'maxPlaysWeekReached' => [false, false, true, false, true],
+                'expectedResultIndex' => 3,
+            ]),
+            $buildResultSet([ // only clowns with maxPlaysWeekReached available
+                'availableForResults' => [false, false, false, true, true],
+                'maxPlaysWeekReached' => [false, false, false, true, true],
+                'expectedResultIndex' => 4,
             ]),
         ];
     }
@@ -130,13 +151,14 @@ final class ClownAssignerTest extends TestCase
     /**
      * @dataProvider secondClownDataProvider
      */
-    public function testassignSecondClown(
+    public function testAssignSecondClown(
         PlayDate $playDate,
         array $clownAvailabilities,
         array $availableForResults,
+        array $maxPlaysWeekReached,
         ?ClownAvailability $expectedClownAvailability
     ): void {
-        $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
+        $clownAssigner = $this->buildClownAssigner($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability, $maxPlaysWeekReached);
         $clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
@@ -157,7 +179,7 @@ final class ClownAssignerTest extends TestCase
 
     public function substitutionClownDataProvider(): array
     {
-        $buildResultSet = function (array $availableOnResults, ?int $expectedResultIndex = null, $isAllDay = false): array {
+        $buildResultSet = function (array $availableOnResults, ?int $expectedResultIndex = null, $isAllDay = false, array $maxSubstitutionsWeekReached = [false, false, false, false, false]): array {
             $clownAvailabilities = [
                 $this->buildClownAvailability('no', targetPlays: 0, calculatedPlays: 4),
                 $this->buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 4),
@@ -171,6 +193,7 @@ final class ClownAssignerTest extends TestCase
                 'availableOnResults' => $availableOnResults,
                 'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
                 'daytime' => $isAllDay ? TimeSlotPeriod::ALL : TimeSlotPeriod::AM,
+                'maxSubstitutionsWeekReached' => $maxSubstitutionsWeekReached,
             ];
         };
 
@@ -187,10 +210,20 @@ final class ClownAssignerTest extends TestCase
                 availableOnResults: [false, false, false, false, false],
                 expectedResultIndex: null,
             ),
-            $buildResultSet( // no clown available at all
+            $buildResultSet( // an all day event
                 availableOnResults: [false, true, true, true, true],
                 expectedResultIndex: 2,
                 isAllDay: true,
+            ),
+            $buildResultSet( // clowns with availability 'yes' available - but they have maxSubstitutionsWeekReached
+                availableOnResults: [false, true, true, true, true],
+                maxSubstitutionsWeekReached: [false, false, true, false, true],
+                expectedResultIndex: 3,
+            ),
+            $buildResultSet( // only clowns with maxPlaysWeekReached available
+                availableOnResults: [false, true, true, true, true],
+                maxSubstitutionsWeekReached: [false, true, true, true, true],
+                expectedResultIndex: 2,
             ),
         ];
     }
@@ -202,22 +235,32 @@ final class ClownAssignerTest extends TestCase
         array $clownAvailabilities,
         array $availableOnResults,
         ?ClownAvailability $expectedClownAvailability,
-        string $daytime = 'am',
+        string $daytime,
+        array $maxSubstitutionsWeekReached,
     ): void {
         $date = new DateTimeImmutable('2022-04-01');
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableOn')
-            ->withConsecutive(
-                ...array_map(
-                    fn ($availability) => [
-                        $this->equalTo(new TimeSlotPeriod($date, $daytime)),
-                        $this->identicalTo($availability),
-                    ],
-                    $clownAvailabilities
-                )
-            )
-            ->willReturnOnConsecutiveCalls(...$availableOnResults);
+            ->willReturnCallback(function (TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $availability) use ($date, $daytime, $clownAvailabilities, $availableOnResults): bool {
+                static $count = 0;
+                $this->assertEquals(new TimeSlotPeriod($date, $daytime), $timeSlotPeriod);
+                $this->assertSame($clownAvailabilities[$count], $availability);
+
+                return $availableOnResults[$count++];
+            });
+        $availabilityChecker
+            ->method('maxPlaysAndSubstitutionsWeekReached')
+            ->willReturnCallback(function (Week $week, ClownAvailability $availability) use ($date, $clownAvailabilities, $maxSubstitutionsWeekReached): bool {
+                $this->assertEquals(new Week($date), $week);
+                $this->assertContains($availability, $clownAvailabilities);
+
+                foreach ($clownAvailabilities as $key => $clownAvailability) {
+                    if ($availability === $clownAvailability) {
+                        return $maxSubstitutionsWeekReached[$key];
+                    }
+                }
+            });
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $substitutionRepository = $this->createMock(SubstitutionRepository::class);
@@ -254,7 +297,8 @@ final class ClownAssignerTest extends TestCase
         array $clownAvailabilities,
         PlayDate $playDate,
         array $availableForResults,
-        ?ClownAvailability $expectedClownAvailability
+        ?ClownAvailability $expectedClownAvailability,
+        array $maxPlaysWeekReached = [false, false, false, false, false],
     ): ClownAssigner {
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
@@ -269,6 +313,21 @@ final class ClownAssignerTest extends TestCase
                 )
             )
             ->willReturnOnConsecutiveCalls(...$availableForResults);
+
+        $availabilityChecker
+            ->method('maxPlaysWeekReached')
+            ->willReturnCallback(
+                function (Week $week, ClownAvailability $availability) use ($clownAvailabilities, $maxPlaysWeekReached): bool {
+                    $this->assertEquals(new Week(new DateTimeImmutable('2022-03-28')), $week);
+                    $this->assertContains($availability, $clownAvailabilities);
+
+                    foreach ($clownAvailabilities as $key => $clownAvailability) {
+                        if ($availability === $clownAvailability) {
+                            return $maxPlaysWeekReached[$key];
+                        }
+                    }
+                }
+            );
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $substitutionRepository = $this->createMock(SubstitutionRepository::class);

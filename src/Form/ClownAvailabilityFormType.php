@@ -14,23 +14,31 @@ class ClownAvailabilityFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('wished_plays_month', ChoiceType::class, [
+            ->add('wishedPlaysMonth', ChoiceType::class, [
                 'choices' => range(0, 20),
-                'label' => 'Wunsch Anzahl Spiele pro Monat',
+                'label' => 'Gewünschte Anzahl Spiele pro Monat',
                 'expanded' => false,
                 'multiple' => false,
             ])
-            ->add('max_plays_month', ChoiceType::class, [
+            ->add('maxPlaysMonth', ChoiceType::class, [
                 'choices' => range(0, 20),
                 'label' => 'Maximale Anzahl Spiele pro Monat',
                 'expanded' => false,
                 'multiple' => false,
             ])
-            ->add('max_plays_day', ChoiceType::class, [
+            ->add('maxPlaysDay', ChoiceType::class, [
                 'choices' => [1 => 1, 2 => 2],
                 'label' => 'Maximale Anzahl Spiele pro Tag',
                 'expanded' => false,
                 'multiple' => false,
+            ])
+            ->add('softMaxPlaysWeek', ChoiceType::class, [
+                'choices' => range(0, 7),
+                'label' => 'Gewünschte maximale Anzahl Spiele pro Woche',
+                'required' => false,
+                'expanded' => false,
+                'multiple' => false,
+                'help' => 'Achtung! Wenn Du diese Option nutzt, kann es passieren, dass Du weniger Spieltermine bekommst als gewünscht.',
             ])
             ->add('additionalWishes', TextareaType::class, [
                 'label' => 'Weitere Wünsche oder Anmerkungen',

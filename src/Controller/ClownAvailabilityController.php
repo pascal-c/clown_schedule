@@ -90,6 +90,7 @@ class ClownAvailabilityController extends AbstractController
             $clownAvailability->setWishedPlaysMonth($lastMonthAvailability->getWishedPlaysMonth());
             $clownAvailability->setMaxPlaysMonth($lastMonthAvailability->getMaxPlaysMonth());
             $clownAvailability->setMaxPlaysDay($lastMonthAvailability->getMaxPlaysDay());
+            $clownAvailability->setSoftMaxPlaysWeek($lastMonthAvailability->getSoftMaxPlaysWeek());
         }
         $form = $this->createForm(ClownAvailabilityFormType::class, $clownAvailability);
 
