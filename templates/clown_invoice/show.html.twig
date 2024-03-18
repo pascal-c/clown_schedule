@@ -45,7 +45,7 @@
                     </td>
                     <td>{{ playDate.venue.feeByPublicTransport|format_currency('EUR') }}</td>
                     <td>{{ playDate.venue.feeByCar|format_currency('EUR') }}</td>
-                    <td>{{ include('venue/_kilometer_fee.html.twig', {venue: playDate.venue, long: false}) }}</td>
+                    <td>{{ include('venue/_kilometer_fee.html.twig', {venue: playDate.venue}) }}</td>
                 {% endif %}
             </tr>
             {% endfor %}
