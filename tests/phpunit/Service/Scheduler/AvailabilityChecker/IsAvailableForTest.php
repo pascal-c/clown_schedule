@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service\Scheduler;
+namespace App\Tests\Service\Scheduler\AvailabilityChecker;
 
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
@@ -11,6 +11,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
@@ -18,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-final class AvailabilityCheckerTest extends TestCase
+final class IsAvailableForTest extends TestCase
 {
     /**
      * @dataProvider dataProvider
@@ -41,8 +42,9 @@ final class AvailabilityCheckerTest extends TestCase
         $substitutionRepository->expects($this->atMost(1))
             ->method('find')
             ->willReturn($isSubstitutionClown);
+        $configRepository = $this->createMock(ConfigRepository::class);
 
-        $availabilityChecker = new AvailabilityChecker($playDateRepository, $substitutionRepository);
+        $availabilityChecker = new AvailabilityChecker($playDateRepository, $substitutionRepository, $configRepository);
         $result = $availabilityChecker->isAvailableFor($playDate, $clownAvailability);
         $this->assertSame($expectedResult, $result);
     }

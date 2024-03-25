@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Value\TimeSlot;
@@ -57,6 +59,9 @@ class ClownAvailability
 
     #[ORM\Column(nullable: true)]
     private ?int $scheduledSubstitutions = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $softMaxPlaysWeek = null;
 
     public function __construct()
     {
@@ -364,5 +369,26 @@ class ClownAvailability
         }
 
         return $this;
+    }
+
+    public function getSoftMaxPlaysWeek(): ?int
+    {
+        return $this->softMaxPlaysWeek;
+    }
+
+    public function setSoftMaxPlaysWeek(?int $softMaxPlaysWeek): static
+    {
+        $this->softMaxPlaysWeek = $softMaxPlaysWeek;
+
+        return $this;
+    }
+
+    public function getSoftMaxPlaysAndSubstitutionsWeek(): ?int
+    {
+        if (is_null($this->softMaxPlaysWeek)) {
+            return null;
+        }
+
+        return $this->softMaxPlaysWeek + (int) ceil($this->softMaxPlaysWeek / 2);
     }
 }

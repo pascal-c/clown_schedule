@@ -5,7 +5,10 @@ namespace App\Service\Scheduler;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
+use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Entity\Week;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlot;
@@ -14,8 +17,11 @@ use DateTimeInterface;
 
 class AvailabilityChecker
 {
-    public function __construct(private PlayDateRepository $playDateRepository, private SubstitutionRepository $substitutionRepository)
-    {
+    public function __construct(
+        private PlayDateRepository $playDateRepository,
+        private SubstitutionRepository $substitutionRepository,
+        private ConfigRepository $configRepository,
+    ) {
     }
 
     public function isAvailableOn(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): bool
@@ -41,6 +47,47 @@ class AvailabilityChecker
     public function maxPlaysMonthReached(ClownAvailability $clownAvailability)
     {
         return $clownAvailability->getCalculatedPlaysMonth() >= $clownAvailability->getMaxPlaysMonth();
+    }
+
+    public function maxPlaysWeekReached(Week $week, ClownAvailability $clownAvailability): bool
+    {
+        $softMaxPlaysWeek = $clownAvailability->getSoftMaxPlaysWeek();
+        if (is_null($softMaxPlaysWeek) || !$this->configRepository->hasFeatureMaxPerWeek()) {
+            return false;
+        }
+
+        $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
+        $playDatesSameWeek = array_filter(
+            $playDates,
+            fn ($playDate) => $week == $playDate->getWeek()
+                && $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+        );
+
+        return count($playDatesSameWeek) >= $softMaxPlaysWeek;
+    }
+
+    public function maxPlaysAndSubstitutionsWeekReached(Week $week, ClownAvailability $clownAvailability): bool
+    {
+        $softMaxPlaysAndSubstitutionsWeek = $clownAvailability->getSoftMaxPlaysAndSubstitutionsWeek();
+        if (is_null($softMaxPlaysAndSubstitutionsWeek)  || !$this->configRepository->hasFeatureMaxPerWeek()) {
+            return false;
+        }
+
+        $substitutions = $this->substitutionRepository->byMonth($clownAvailability->getMonth());
+        $substitutionsSameWeek = array_filter(
+            $substitutions,
+            fn (Substitution $substitution) => $week == $substitution->getWeek()
+                && $substitution->getSubstitutionClown() === $clownAvailability->getClown()
+        );
+
+        $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
+        $playDatesSameWeek = array_filter(
+            $playDates,
+            fn ($playDate) => $week == $playDate->getWeek()
+                && $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+        );
+
+        return count($substitutionsSameWeek) + count($playDatesSameWeek) >= $softMaxPlaysAndSubstitutionsWeek;
     }
 
     public function maxPlaysDayReached(DateTimeInterface $date, ClownAvailability $clownAvailability): bool

@@ -44,7 +44,7 @@ class PlayDateRepository extends AbstractRepository
     {
         return $this->queryByMonth($month)
             ->getQuery()
-            ->enableResultCache(1)
+            ->enableResultCache(2)
             ->getResult()
         ;
     }
