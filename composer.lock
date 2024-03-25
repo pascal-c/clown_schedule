@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a76bdf667fb6bb0254eab9d01f899d45",
+    "content-hash": "f437f882a1d85c8deb47933909f953a8",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -5563,16 +5563,16 @@
         },
         {
             "name": "symfony/property-access",
-            "version": "v6.4.3",
+            "version": "v6.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-access.git",
-                "reference": "dd22c9247a16c712bfa128b3c90ebdd505102778"
+                "reference": "c0664db266024013e31446dd690b6bfcf218ad93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-access/zipball/dd22c9247a16c712bfa128b3c90ebdd505102778",
-                "reference": "dd22c9247a16c712bfa128b3c90ebdd505102778",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/c0664db266024013e31446dd690b6bfcf218ad93",
+                "reference": "c0664db266024013e31446dd690b6bfcf218ad93",
                 "shasum": ""
             },
             "require": {
@@ -5620,7 +5620,7 @@
                 "reflection"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-access/tree/v6.4.3"
+                "source": "https://github.com/symfony/property-access/tree/v6.4.4"
             },
             "funding": [
                 {
@@ -5636,7 +5636,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-23T14:51:35+00:00"
+            "time": "2024-02-16T13:31:43+00:00"
         },
         {
             "name": "symfony/property-info",
@@ -7066,16 +7066,16 @@
         },
         {
             "name": "symfony/ux-twig-component",
-            "version": "v2.14.0",
+            "version": "v2.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-twig-component.git",
-                "reference": "b5f593295bd68485cedc59144d285db18ccfb776"
+                "reference": "c789f33dd8800949293dd94bf8e7bf01c39559a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-twig-component/zipball/b5f593295bd68485cedc59144d285db18ccfb776",
-                "reference": "b5f593295bd68485cedc59144d285db18ccfb776",
+                "url": "https://api.github.com/repos/symfony/ux-twig-component/zipball/c789f33dd8800949293dd94bf8e7bf01c39559a2",
+                "reference": "c789f33dd8800949293dd94bf8e7bf01c39559a2",
                 "shasum": ""
             },
             "require": {
@@ -7084,7 +7084,7 @@
                 "symfony/deprecation-contracts": "^2.2|^3.0",
                 "symfony/event-dispatcher": "^5.4|^6.0|^7.0",
                 "symfony/property-access": "^5.4|^6.0|^7.0",
-                "twig/twig": "^2.14.7|^3.0.4"
+                "twig/twig": "~3.8.0"
             },
             "conflict": {
                 "symfony/config": "<5.4.0"
@@ -7130,7 +7130,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-twig-component/tree/v2.14.0"
+                "source": "https://github.com/symfony/ux-twig-component/tree/v2.16.0"
             },
             "funding": [
                 {
@@ -7146,7 +7146,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-30T15:40:36+00:00"
+            "time": "2024-02-29T16:20:59+00:00"
         },
         {
             "name": "symfony/validator",
