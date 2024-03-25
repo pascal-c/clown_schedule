@@ -20,7 +20,9 @@
                 Maximale Anzahl Spiele pro Tag: <strong>{{ clownAvailability.maxPlaysDay }}</strong>
             </div>
             <div class="col-sm-6">
-                Gewünschte maximale Anzahl Spiele pro Woche: <strong>{{ clownAvailability.softMaxPlaysWeek }}</strong>
+                {% if showMaxPerWeek %}
+                    Gewünschte maximale Anzahl Spiele pro Woche: <strong>{{ clownAvailability.softMaxPlaysWeek }}</strong>
+                {% endif %}    
             </div>
         </div>
         {% if clownAvailability.additionalWishes is not empty %}

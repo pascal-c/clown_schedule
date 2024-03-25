@@ -10,6 +10,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Week;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
@@ -23,18 +24,24 @@ final class MaxPlaysReachedTest extends TestCase
     private AvailabilityChecker $availabilityChecker;
     private PlayDateRepository|MockObject $playDateRepository;
     private SubstitutionRepository|MockObject $substitutionRepository;
+    private ConfigRepository|MockObject $configRepository;
 
     public function setUp(): void
     {
         $this->playDateRepository = $this->createMock(PlayDateRepository::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
-        $this->availabilityChecker = new AvailabilityChecker($this->playDateRepository, $this->substitutionRepository);
+        $this->configRepository = $this->createMock(ConfigRepository::class);
+        $this->availabilityChecker = new AvailabilityChecker(
+            $this->playDateRepository,
+            $this->substitutionRepository,
+            $this->configRepository,
+        );
     }
 
     /**
      * @dataProvider dataProvider
      */
-    public function testMaxPlaysWeekReached(?int $maxPlaysWeek, bool $expectedResult): void
+    public function testMaxPlaysWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $hasFeatureMaxPerWeek = true): void
     {
         $date = new DateTimeImmutable('2024-02-13'); // this is a tuesday
         $week = new Week($date);
@@ -55,6 +62,10 @@ final class MaxPlaysReachedTest extends TestCase
             ->method('byMonth')
             ->with($month)
             ->willReturn($otherPlayDates);
+        $this->configRepository
+            ->method('hasFeatureMaxPerWeek')
+            ->with()
+            ->willReturn($hasFeatureMaxPerWeek);
 
         $result = $this->availabilityChecker->maxPlaysWeekReached($week, $clownAvailability);
         $this->assertSame($expectedResult, $result);
@@ -63,7 +74,7 @@ final class MaxPlaysReachedTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testMaxPlaysAndSubstitutionsWeekReached(?int $maxPlaysWeek, bool $expectedResult): void
+    public function testMaxPlaysAndSubstitutionsWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $hasFeatureMaxPerWeek = true): void
     {
         $date = new DateTimeImmutable('2024-02-13'); // this is a tuesday
         $week = new Week($date);
@@ -97,6 +108,10 @@ final class MaxPlaysReachedTest extends TestCase
             ->method('byMonth')
             ->with($month)
             ->willReturn($otherSubstitutions);
+        $this->configRepository
+            ->method('hasFeatureMaxPerWeek')
+            ->with()
+            ->willReturn($hasFeatureMaxPerWeek);
 
         $result = $this->availabilityChecker->maxPlaysAndSubstitutionsWeekReached($week, $clownAvailability);
         $this->assertSame($expectedResult, $result);
@@ -119,6 +134,11 @@ final class MaxPlaysReachedTest extends TestCase
         yield 'when clown has 1 maxPlaysWeek' => [
             'maxPlaysWeek' => 1, // => maxPlaysAndSubstitutionsWeek == 2
             'expectedResult' => true,
+        ];
+        yield 'when feature maxPlaysWeek is disabled' => [
+            'maxPlaysWeek' => 1, // => maxPlaysAndSubstitutionsWeek == 2
+            'expectedResult' => false,
+            'hasFeatureMaxPerWeek' => false,
         ];
     }
 }

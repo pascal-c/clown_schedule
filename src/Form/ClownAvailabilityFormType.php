@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\ClownAvailability;
+use App\Repository\ConfigRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -11,6 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ClownAvailabilityFormType extends AbstractType
 {
+    public function __construct(private ConfigRepository $configRepository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,15 +36,18 @@ class ClownAvailabilityFormType extends AbstractType
                 'label' => 'Maximale Anzahl Spiele pro Tag',
                 'expanded' => false,
                 'multiple' => false,
-            ])
-            ->add('softMaxPlaysWeek', ChoiceType::class, [
+            ]);
+        if ($this->configRepository->hasFeatureMaxPerWeek()) {
+            $builder->add('softMaxPlaysWeek', ChoiceType::class, [
                 'choices' => range(0, 7),
                 'label' => 'Gewünschte maximale Anzahl Spiele pro Woche',
                 'required' => false,
                 'expanded' => false,
                 'multiple' => false,
                 'help' => 'Achtung! Wenn Du diese Option nutzt, kann es passieren, dass Du weniger Spieltermine bekommst als gewünscht.',
-            ])
+            ]);
+        }
+        $builder
             ->add('additionalWishes', TextareaType::class, [
                 'label' => 'Weitere Wünsche oder Anmerkungen',
                 'required' => false,

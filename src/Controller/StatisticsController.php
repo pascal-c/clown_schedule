@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
@@ -21,7 +22,8 @@ class StatisticsController extends AbstractController
         private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
         private SubstitutionRepository $substitutionRepository,
-        private ClownRepository $clownRepository
+        private ClownRepository $clownRepository,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -84,6 +86,7 @@ class StatisticsController extends AbstractController
             'currentPlayDatesCount' => count($playDates),
             'currentSubstitutions' => $substitutions,
             'active' => 'statistics',
+            'showMaxPerWeek' => $this->configRepository->hasFeatureMaxPerWeek(),
         ]);
     }
 }

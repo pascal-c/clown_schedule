@@ -8,6 +8,7 @@ use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Entity\Week;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlot;
@@ -16,8 +17,11 @@ use DateTimeInterface;
 
 class AvailabilityChecker
 {
-    public function __construct(private PlayDateRepository $playDateRepository, private SubstitutionRepository $substitutionRepository)
-    {
+    public function __construct(
+        private PlayDateRepository $playDateRepository,
+        private SubstitutionRepository $substitutionRepository,
+        private ConfigRepository $configRepository,
+    ) {
     }
 
     public function isAvailableOn(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): bool
@@ -48,7 +52,7 @@ class AvailabilityChecker
     public function maxPlaysWeekReached(Week $week, ClownAvailability $clownAvailability): bool
     {
         $softMaxPlaysWeek = $clownAvailability->getSoftMaxPlaysWeek();
-        if (is_null($softMaxPlaysWeek)) {
+        if (is_null($softMaxPlaysWeek) || !$this->configRepository->hasFeatureMaxPerWeek()) {
             return false;
         }
 
@@ -65,7 +69,7 @@ class AvailabilityChecker
     public function maxPlaysAndSubstitutionsWeekReached(Week $week, ClownAvailability $clownAvailability): bool
     {
         $softMaxPlaysAndSubstitutionsWeek = $clownAvailability->getSoftMaxPlaysAndSubstitutionsWeek();
-        if (is_null($softMaxPlaysAndSubstitutionsWeek)) {
+        if (is_null($softMaxPlaysAndSubstitutionsWeek)  || !$this->configRepository->hasFeatureMaxPerWeek()) {
             return false;
         }
 

@@ -11,6 +11,7 @@ use App\Entity\Month;
 use App\Form\ClownAvailabilityFormType;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\ViewController\ScheduleViewController;
@@ -32,7 +33,8 @@ class ClownAvailabilityController extends AbstractController
         private ClownRepository $clownRepository,
         private MonthRepository $monthRepository,
         private PlayDateRepository $playDateRepository,
-        private ScheduleViewController $scheduleViewController
+        private ScheduleViewController $scheduleViewController,
+        private ConfigRepository $configRepository,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -75,6 +77,7 @@ class ClownAvailabilityController extends AbstractController
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
+            'showMaxPerWeek' => $this->configRepository->hasFeatureMaxPerWeek(),
         ]);
     }
 

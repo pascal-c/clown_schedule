@@ -11,6 +11,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
@@ -41,8 +42,9 @@ final class IsAvailableForTest extends TestCase
         $substitutionRepository->expects($this->atMost(1))
             ->method('find')
             ->willReturn($isSubstitutionClown);
+        $configRepository = $this->createMock(ConfigRepository::class);
 
-        $availabilityChecker = new AvailabilityChecker($playDateRepository, $substitutionRepository);
+        $availabilityChecker = new AvailabilityChecker($playDateRepository, $substitutionRepository, $configRepository);
         $result = $availabilityChecker->isAvailableFor($playDate, $clownAvailability);
         $this->assertSame($expectedResult, $result);
     }
