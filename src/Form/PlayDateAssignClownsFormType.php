@@ -23,11 +23,11 @@ class PlayDateAssignClownsFormType extends AbstractType
                 'label' => 'Clowns',
                 'expanded' => true,
                 'multiple' => true,
-                ])
+            ])
             ->add('comment', TextareaType::class, [
                 'label' => 'Kommentar',
                 'required' => false,
-                ])
+            ])
             ->add('save', SubmitType::class, ['label' => 'Zuordnung speichern'])
         ;
     }

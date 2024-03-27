@@ -53,11 +53,11 @@ class PlayDateSwapRequestCreateFormType extends AbstractType
                 'multiple' => false,
                 'constraints' => new NotBlank(),
                 'help' => 'Es werden nur Termine angezeigt, an denen Du verfügbar bist und Clowns, die an dem Tauschtermin verfügbar sind.',
-                ])
+            ])
             ->add('comment', TextareaType::class, [
                 'label' => 'Hier könntest Du noch eine persönliche Nachricht an die angefragte Person hinterlassen',
                 'required' => false,
-                ])
+            ])
             ->add('save', SubmitType::class, ['label' => 'Tauschanfrage senden!'])
         ;
     }
