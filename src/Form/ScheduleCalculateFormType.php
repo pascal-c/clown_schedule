@@ -20,7 +20,7 @@ class ScheduleCalculateFormType extends AbstractType
                 ->add('calculate', SubmitType::class, [
                     'label' => 'Spielplan erstellen',
                     'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")'],
-            ]);
+                ]);
         } elseif (ScheduleStatus::IN_PROGRESS === $schedule->getStatus()) {
             $builder
                 ->add('calculate', SubmitType::class, [

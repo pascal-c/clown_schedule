@@ -16,7 +16,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
                 'label' => 'Hier kannst Du eine Nachricht an die anderen Clownis hinterlassen.',
                 'required' => false,
                 'attr' => ['placeholder' => 'optional'],
-                ])
+            ])
             ->add('accept', SubmitType::class, [
                 'label' => 'Abgabe-Anfrage senden',
             ])

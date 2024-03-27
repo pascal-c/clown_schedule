@@ -28,15 +28,15 @@ class ClownFormType extends AbstractType
                 'label' => 'Gender',
                 'expanded' => true,
                 'multiple' => false,
-                ])
+            ])
             ->add('isActive', CheckboxType::class, [
                 'label' => 'aktiv?',
                 'required' => false,
-                ])
+            ])
             ->add('isAdmin', CheckboxType::class, [
                 'label' => 'Admin?',
                 'required' => false,
-                ])
+            ])
             ->add('save', SubmitType::class, ['label' => 'Clown speichern'])
         ;
     }

@@ -23,7 +23,7 @@ class PlayDateFormType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Datum',
                 'input' => 'datetime_immutable',
-                ])
+            ])
             ->add('daytime', ChoiceType::class, [
                 'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,
@@ -33,17 +33,17 @@ class PlayDateFormType extends AbstractType
                 'label' => 'Tageszeit',
                 'expanded' => true,
                 'multiple' => false,
-                ])
+            ])
             ->add('venue', EntityType::class, [
                 'class' => Venue::class,
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Spielort',
-                ])
+            ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
                 'required' => false,
-                ])
+            ])
             ->add('save', SubmitType::class, ['label' => 'Spieltermin speichern'])
         ;
     }

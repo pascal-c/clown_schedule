@@ -16,7 +16,7 @@ class PlayDateGiveOffRequestAcceptFormType extends AbstractType
                 'label' => 'Hier kannst Du noch eine persönliche Nachricht an die anfragende Person hinterlassen.',
                 'required' => false,
                 'attr' => ['placeholder' => 'optional'],
-                ])
+            ])
             ->add('accept', SubmitType::class, [
                 'label' => 'Diesen Spieltermin verbindlich übernehmen',
                 'attr' => [

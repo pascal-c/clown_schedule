@@ -95,7 +95,7 @@ class LoginController extends AbstractController
             ])
             ->add('change_password', SubmitType::class, [
                 'label' => 'Passwort ändern',
-                ])
+            ])
             ->setMethod('POST')
             ->getForm();
         $passwordForm->handleRequest($request);

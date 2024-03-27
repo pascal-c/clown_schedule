@@ -16,7 +16,7 @@ class PlayDateSwapRequestAcceptFormType extends AbstractType
                 'label' => 'Hier wäre noch Platz für eine persönliche Nachricht an die anfragende Person:',
                 'required' => false,
                 'attr' => ['placeholder' => 'optional'],
-                ])
+            ])
             ->add('accept', SubmitType::class, [
                 'label' => 'Tauschanfrage jetzt verbindlich annehmen!',
                 'attr' => [

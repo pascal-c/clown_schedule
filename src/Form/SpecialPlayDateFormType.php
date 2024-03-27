@@ -25,7 +25,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Datum',
                 'input' => 'datetime_immutable',
-                ])
+            ])
             ->add('daytime', ChoiceType::class, [
                 'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,
@@ -35,14 +35,14 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Tageszeit',
                 'expanded' => true,
                 'multiple' => false,
-                ])
+            ])
             ->add('meetingTime', TimeType::class, [
                 'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Treffen',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                ])
+            ])
             ->add('playTimeFrom', TimeType::class, [
                 'input' => 'datetime',
                 'widget' => 'choice',
@@ -56,11 +56,11 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Spielzeit (bis)',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                ])
+            ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
                 'required' => false,
-                ])
+            ])
             ->add('isSpecial', HiddenType::class, ['attr' => ['value' => '1']])
             ->add('save', SubmitType::class, ['label' => 'Sondertermin speichern'])
         ;

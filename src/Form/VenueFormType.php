@@ -47,16 +47,16 @@ class VenueFormType extends AbstractType
                 'help' => 'Bei der Spielplanerstellung wird versucht, immer einen der verantwortlichen Clowns als ersten Clown zuzuordnen',
                 'multiple' => true,
                 'expanded' => true,
-                ])
+            ])
             ->add('blockedClowns', EntityType::class, [
-                    'class' => Clown::class,
-                    'choice_label' => 'name',
-                    'required' => false,
-                    'label' => 'Gesperrte Clowns',
-                    'help' => 'Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet',
-                    'multiple' => true,
-                    'expanded' => true,
-                    ])
+                'class' => Clown::class,
+                'choice_label' => 'name',
+                'required' => false,
+                'label' => 'Gesperrte Clowns',
+                'help' => 'Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet',
+                'multiple' => true,
+                'expanded' => true,
+            ])
             ->add('daytimeDefault', ChoiceType::class, [
                 'choices' => [
                     'vormittags' => TimeSlotPeriodInterface::AM,
@@ -66,13 +66,13 @@ class VenueFormType extends AbstractType
                 'label' => 'Standard Tageszeit für Spieltermine',
                 'expanded' => true,
                 'multiple' => false,
-                ])
+            ])
             ->add('meetingTime', TimeType::class, [
                 'input' => 'datetime',
                 'widget' => 'choice',
                 'label' => 'Treffen',
                 'minutes' => [0, 15, 30, 45],
-                ])
+            ])
             ->add('playTimeFrom', TimeType::class, [
                 'input' => 'datetime',
                 'widget' => 'choice',
@@ -88,15 +88,15 @@ class VenueFormType extends AbstractType
             ->add('comments', TextareaType::class, [
                 'label' => 'Bemerkungen',
                 'required' => false,
-                ])
+            ])
             ->add('url', UrlType::class, [
                 'label' => 'URL (für weitere Infos zur Einrichtung)',
                 'required' => false,
-                ])
+            ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spielort? (nur relevant für Statistik)',
                 'required' => false,
-                ])
+            ])
             ->add('save', SubmitType::class, ['label' => 'Spielort speichern'])
         ;
     }
