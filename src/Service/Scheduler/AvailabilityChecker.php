@@ -44,9 +44,22 @@ class AvailabilityChecker
         ;
     }
 
+    public function isAvailableForSubstitution(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability): bool
+    {
+        return
+            $this->isAvailableOn($timeSlotPeriod, $clownAvailability)
+            && !$this->maxSubstitutionsMonthReached($clownAvailability)
+        ;
+    }
+
     public function maxPlaysMonthReached(ClownAvailability $clownAvailability)
     {
         return $clownAvailability->getCalculatedPlaysMonth() >= $clownAvailability->getMaxPlaysMonth();
+    }
+
+    public function maxSubstitutionsMonthReached(ClownAvailability $clownAvailability)
+    {
+        return $clownAvailability->getCalculatedSubstitutions() >= $clownAvailability->getCalculatedPlaysMonth();
     }
 
     public function maxPlaysWeekReached(Week $week, ClownAvailability $clownAvailability): bool

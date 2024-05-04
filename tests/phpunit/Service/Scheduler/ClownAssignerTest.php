@@ -241,7 +241,7 @@ final class ClownAssignerTest extends TestCase
         $date = new DateTimeImmutable('2022-04-01');
         $availabilityChecker = $this->createMock(AvailabilityChecker::class);
         $availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
-            ->method('isAvailableOn')
+            ->method('isAvailableForSubstitution')
             ->willReturnCallback(function (TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $availability) use ($date, $daytime, $clownAvailabilities, $availableOnResults): bool {
                 static $count = 0;
                 $this->assertEquals(new TimeSlotPeriod($date, $daytime), $timeSlotPeriod);

@@ -65,7 +65,7 @@ class ClownAssigner
     {
         $availableClownAvailabilities = array_filter(
             $clownAvailabilities,
-            fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableOn($timeSlotPeriod, $availability)
+            fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableForSubstitution($timeSlotPeriod, $availability)
         );
         if (empty($availableClownAvailabilities)) {
             return;

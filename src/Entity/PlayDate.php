@@ -90,6 +90,13 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this->id;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function setDate(DateTimeImmutable $date): self
     {
         $this->date = $date;
