@@ -306,11 +306,9 @@ class ClownAvailability
 
     public function getOpenSubstitutions(): int
     {
-        if (is_null($this->getCalculatedPlaysMonth())) {
-            return 0;
-        }
+        $calculatedPlaysMonth = intval($this->getCalculatedPlaysMonth());
 
-        return intval($this->getCalculatedPlaysMonth() / 2) - $this->getCalculatedSubstitutions();
+        return intval($calculatedPlaysMonth / 2) - $this->getCalculatedSubstitutions();
     }
 
     public function getAdditionalWishes(): ?string
