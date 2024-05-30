@@ -8,6 +8,8 @@ parameters:
     app.feedback_url: '%env(FEEDBACK_URL)%'
     env(FEATURE_MAX_PER_WEEK): false
     app.feature_max_per_week: '%env(bool:FEATURE_MAX_PER_WEEK)%'
+    env(SPECIAL_PLAY_DATE_URL): ''
+    app.special_play_date_url: '%env(SPECIAL_PLAY_DATE_URL)%'
 
 services:
     # default configuration for services in *this* file

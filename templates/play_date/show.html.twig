@@ -52,6 +52,14 @@
                     {{ substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
                 </td>
             </tr>
+            {% if not specialPlayDateUrl is empty %}
+                <tr>
+                    <th>URL</th>
+                    <td>
+                        <a href="{{ specialPlayDateUrl }}">Weitere Infos</a>
+                    </td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 

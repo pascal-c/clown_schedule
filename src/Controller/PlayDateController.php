@@ -102,6 +102,7 @@ class PlayDateController extends AbstractController
                 fn (Substitution $substitution) => $substitution->getSubstitutionClown(),
                 $substitutionRepository->findByTimeSlotPeriod($playDate),
             ),
+            'specialPlayDateUrl' => $playDate->isSpecial() ? $this->getParameter('app.special_play_date_url') : '',
             'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() >= $this->timeService->today()->modify(PlayDateChangeRequestCloseInvalidService::CREATABLE_UNTIL_PERIOD),
         ]);
     }
