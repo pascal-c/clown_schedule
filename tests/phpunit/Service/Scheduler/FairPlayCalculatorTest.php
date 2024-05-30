@@ -16,22 +16,28 @@ final class FairPlayCalculatorTest extends TestCase
     public function targetPlaysDataProvider(): array
     {
         return [
-            [
+            [ // when sum of wishedPlays(36) is higher than totalPlays(31)
                 array_map(fn (array $args) => $this->buildClownAvailability(...$args), [[12, 8.8], [6, 10.0], [10, 8.0], [8, 4.2]]),
-                [10, 6, 9, 6],
+                [10, 6, 9, 6], // sum: 31
             ],
-            [
+            [ // when sum of wishedPlays(24) is lower than totalPlays(31)
                 array_map(fn (array $args) => $this->buildClownAvailability(...$args), [[4, 8.8], [6, 10.0], [10, 8.0], [4, 4.2]]),
-                [8, 9, 10, 4],
+                [8, 9, 10, 4], // sum: 31
+            ],
+            [ // when sum of wishedPlays(24) is lower than totalPlays(31) and sum of MaxPlaysMonth(29) is lower than totalPlays(31)
+                array_map(fn (array $args) => $this->buildClownAvailability(...$args), [[4, 8.8, 5], [6, 10.0, 7], [10, 8.0, 12], [4, 4.2, 5]]),
+                [5, 7, 12, 5], // sum: 29
             ],
         ];
     }
 
-    private function buildClownAvailability(int $wishedPlays, float $entitledPlays): ClownAvailability
+    private function buildClownAvailability(int $wishedPlays, float $entitledPlays, int $maxPlaysMonth = 10): ClownAvailability
     {
         $clownAvailability = new ClownAvailability();
-        $clownAvailability->setEntitledPlaysMonth($entitledPlays);
-        $clownAvailability->setWishedPlaysMonth($wishedPlays);
+        $clownAvailability
+            ->setEntitledPlaysMonth($entitledPlays)
+            ->setWishedPlaysMonth($wishedPlays)
+            ->setMaxPlaysMonth($maxPlaysMonth);
 
         return $clownAvailability;
     }

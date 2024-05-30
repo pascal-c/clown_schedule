@@ -37,6 +37,9 @@ class FairPlayCalculator
         } elseif ($diff < 0) {
             for ($i = 0; $i > $diff; --$i) {
                 $clownAvailability = $this->getMinDiff($clownAvailabilities);
+                if (is_null($clownAvailability)) { // maximum reached for every clown
+                    break;
+                }
                 $clownAvailability->incTargetPlays();
             }
         }
@@ -55,16 +58,24 @@ class FairPlayCalculator
         );
     }
 
-    private function getMinDiff(array $clownAvailabilities): ClownAvailability
+    private function getMinDiff(array $clownAvailabilities): ?ClownAvailability
     {
-        return array_reduce(
+        $availableClownAvailabilities = array_values(array_filter(
             $clownAvailabilities,
+            fn (ClownAvailability $availability) => $availability->getMaxPlaysMonth() > $availability->getTargetPlays()
+        ));
+        if (empty($availableClownAvailabilities)) {
+            return null;
+        }
+
+        return array_reduce(
+            $availableClownAvailabilities,
             fn (ClownAvailability $carry, ClownAvailability $availability) => $carry->getTargetPlays() - $carry->getEntitledPlaysMonth()
                     <
                 $availability->getTargetPlays() - $availability->getEntitledPlaysMonth()
                     ?
                 $carry : $availability,
-            $clownAvailabilities[0]
+            $availableClownAvailabilities[0]
         );
     }
 }
