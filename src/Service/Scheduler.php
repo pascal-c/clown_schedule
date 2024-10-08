@@ -52,6 +52,7 @@ class Scheduler
 
         $playDates = $this->orderByAvailabilities($playDates, $clownAvailabilities);
 
+        // $this->clownAssigner->x($month, $playDates, $clownAvailabilities);
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
         }

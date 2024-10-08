@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use RuntimeException;
 
 #[ORM\Entity]
 class ClownAvailability
@@ -233,6 +234,17 @@ class ClownAvailability
             $this->calculatedPlaysMonth = 1;
         } else {
             ++$this->calculatedPlaysMonth;
+        }
+
+        return $this;
+    }
+
+    public function decrCalculatedPlaysMonth(): self
+    {
+        if ($this->calculatedPlaysMonth < 1) {
+            throw new RuntimeException('calculated plays cannot be negative');
+        } else {
+            --$this->calculatedPlaysMonth;
         }
 
         return $this;

@@ -4,6 +4,7 @@ namespace App\Service\Scheduler;
 
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
+use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
@@ -21,6 +22,9 @@ class ClownAssigner
         private SubstitutionRepository $substitutionRepository,
         private EntityManagerInterface $entityManager,
         private PlayDateHistoryService $playDateHistoryService,
+        private BestPlayingClownCalculator $bestPlayingClownCalculator,
+        private ResultComparator $resultComparator,
+        private ResultApplier $resultApplier,
     ) {
     }
 
@@ -45,6 +49,28 @@ class ClownAssigner
         }
 
         $this->assignClown($playDate, $clownAvailability);
+    }
+
+    /**
+     * @param array<PlayDate>          $playDates
+     * @param array<ClownAvailability> $clownAvailabilities
+     *
+     * @return array<Result>
+     */
+    public function assignSecondClowns(Month $month, array $playDates, array $clownAvailabilities): void
+    {
+        $firstResult = $this->bestPlayingClownCalculator->onlyFirst($month, $playDates, $clownAvailabilities);
+        $results = ($this->bestPlayingClownCalculator)($month, $playDates, $clownAvailabilities, $firstResult);
+        $bestResult = array_reduce(
+            $results,
+            fn (Result $carry, Result $element): Result => $this->resultComparator->isWorseThan($carry, $element) ? $element : $carry,
+            $firstResult
+        );
+
+        ($this->resultApplier)($bestResult);
+        foreach ($playDates as $playDate) {
+            $this->playDateHistoryService->add($playDate, null, PlayDateChangeReason::CALCULATION);
+        }
     }
 
     public function assignSecondClown(PlayDate $playDate, array $clownAvailabilities): void

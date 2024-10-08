@@ -7,7 +7,6 @@ namespace App\Tests\Service\Scheduler\AvailabilityChecker;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\Month;
-use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Week;
 use App\Repository\ConfigRepository;
@@ -51,17 +50,12 @@ final class MaxPlaysReachedTest extends TestCase
             ->setMonth($month)
             ->setClown($clown)
             ->setSoftMaxPlaysWeek($maxPlaysWeek);
-        $otherPlayDates = [ // we have 2 Plays for this clown for this week
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-11'))->addPlayingClown($clown), // wrong week (this is Sunday before)
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-12'))->addPlayingClown(new Clown()), // wrong clown
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-12'))->addPlayingClown($clown), // correct!
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-18'))->addPlayingClown($clown), // correct!
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-19'))->addPlayingClown($clown), // wrong week (this is next Monday)
-        ];
+
+        // we have 2 Plays for this clown for this week
         $this->playDateRepository
-            ->method('byMonth')
-            ->with($month)
-            ->willReturn($otherPlayDates);
+            ->method('countByClownAvailabilityAndWeek')
+            ->with($clownAvailability, $week)
+            ->willReturn(2);
         $this->configRepository
             ->method('hasFeatureMaxPerWeek')
             ->with()
@@ -85,17 +79,11 @@ final class MaxPlaysReachedTest extends TestCase
             ->setClown($clown)
             ->setSoftMaxPlaysWeek($maxPlaysWeek);
 
-        $otherPlayDates = [ // we have 2 Plays for this clown for this week
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-11'))->addPlayingClown($clown), // wrong week (this is Sunday before)
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-12'))->addPlayingClown(new Clown()), // wrong clown
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-12'))->addPlayingClown($clown), // correct!
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-18'))->addPlayingClown($clown), // correct!
-            (new PlayDate())->setDate(new DateTimeImmutable('2024-02-19'))->addPlayingClown($clown), // wrong week (this is next Monday)
-        ];
+        // we have 2 Plays for this clown for this week
         $this->playDateRepository
-            ->method('byMonth')
-            ->with($month)
-            ->willReturn($otherPlayDates);
+            ->method('countByClownAvailabilityAndWeek')
+            ->with($clownAvailability, $week)
+            ->willReturn(2);
 
         $otherSubstitutions = [ // we have 1 substitution for this clown for this week
             (new Substitution())->setDate(new DateTimeImmutable('2024-02-11'))->setSubstitutionClown($clown), // wrong week (this is Sunday before)

@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Clown;
+use App\Entity\ClownAvailability;
 use App\Entity\Month;
 use App\Entity\PlayDate;
+use App\Entity\Week;
 use App\Service\TimeService;
 use Doctrine\ORM\QueryBuilder;
 
@@ -47,6 +49,15 @@ class PlayDateRepository extends AbstractRepository
             ->enableResultCache(2)
             ->getResult()
         ;
+    }
+
+    public function countByClownAvailabilityAndWeek(ClownAvailability $clownAvailability, Week $week): int
+    {
+        return count(array_filter(
+            $this->byMonth($clownAvailability->getMonth()),
+            fn ($playDate) => $week == $playDate->getWeek()
+                && $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
+        ));
     }
 
     public function byMonthAndClown(Month $month, Clown $clown): array

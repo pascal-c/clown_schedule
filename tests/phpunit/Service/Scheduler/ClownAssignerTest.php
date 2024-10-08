@@ -93,6 +93,10 @@ final class ClownAssignerTest extends TestCase
         }
     }
 
+    public function testAssignSecondClowns(): void
+    {
+    }
+
     public function secondClownDataProvider(): array
     {
         $buildResultSet = function (array $params): array {
