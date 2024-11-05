@@ -126,7 +126,7 @@ final class ClownAssignerTest extends TestCase
         }
     }
 
-    public function testAssignSecondClowns(): void
+    public function testAssignSecondClownsWithoutOnlyFirst(): void
     {
         $this->availabilityChecker->expects($this->never())->method($this->anything());
         $this->substitutionRepository->expects($this->never())->method($this->anything());
@@ -159,7 +159,40 @@ final class ClownAssignerTest extends TestCase
             ->method('add')
             ->with($this->anything(), null, PlayDateChangeReason::CALCULATION);
 
-        $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: false);
+        $rate = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: false);
+        $this->assertSame(41, $rate);
+    }
+
+    public function testAssignSecondClownsWithOnlyFirst(): void
+    {
+        $this->availabilityChecker->expects($this->never())->method($this->anything());
+        $this->substitutionRepository->expects($this->never())->method($this->anything());
+        $this->entityManager->expects($this->never())->method($this->anything());
+
+        $month = Month::build('2024-11');
+        $playDates = [new PlayDate(), new PlayDate()];
+        $clownAvailabilites = [];
+        $firstResult = Result::create($month)->setPoints(42);
+
+        $this->bestPlayingClownCalculator
+            ->expects($this->once())
+            ->method('onlyFirst')
+            ->with($month, $playDates, $clownAvailabilites)
+            ->willReturn($firstResult);
+        $this->bestPlayingClownCalculator
+            ->expects($this->never())
+            ->method('__invoke');
+        $this->resultApplier
+            ->expects($this->once())
+            ->method('applyResult')
+            ->with($this->identicalTo($firstResult));
+        $this->playDateHistoryService
+            ->expects($this->exactly(2))
+            ->method('add')
+            ->with($this->anything(), null, PlayDateChangeReason::CALCULATION);
+
+        $rate = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: true);
+        $this->assertSame(42, $rate);
     }
 
     public function substitutionClownDataProvider(): array

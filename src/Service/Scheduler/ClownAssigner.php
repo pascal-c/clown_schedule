@@ -60,16 +60,16 @@ class ClownAssigner
     {
         $firstResult = $this->bestPlayingClownCalculator->onlyFirst($month, $playDates, $clownAvailabilities);
         if ($takeFirst) {
-            return $firstResult->getPoints();
+            $bestResult = $firstResult;
+        } else {
+            $results = ($this->bestPlayingClownCalculator)($month, $playDates, $clownAvailabilities, $firstResult->getPoints(), count($playDates));
+
+            $bestResult = array_reduce(
+                $results,
+                fn (Result $carry, Result $element): Result => $element->getPoints() < $carry->getPoints() ? $element : $carry,
+                $firstResult,
+            );
         }
-
-        $results = ($this->bestPlayingClownCalculator)($month, $playDates, $clownAvailabilities, $firstResult->getPoints(), count($playDates));
-
-        $bestResult = array_reduce(
-            $results,
-            fn (Result $carry, Result $element): Result => $element->getPoints() < $carry->getPoints() ? $element : $carry,
-            $firstResult,
-        );
 
         $this->resultApplier->applyResult($bestResult);
         foreach ($playDates as $playDate) {
