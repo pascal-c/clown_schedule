@@ -13,6 +13,7 @@ use App\Service\Scheduler\BestPlayingClownCalculator;
 use App\Service\Scheduler\ClownAvailabilitySorter;
 use App\Service\Scheduler\Result;
 use App\Service\Scheduler\ResultApplier;
+use App\Service\Scheduler\ResultRater;
 use App\Service\Scheduler\ResultUnapplier;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,7 @@ final class BestPlayingClownCalculatorTest extends TestCase
     private ClownAvailabilitySorter|MockObject $clownAvailabilitySorter;
     private ResultApplier|MockObject $resultApplier;
     private ResultUnapplier|MockObject $resultUnapplier;
+    private ResultRater|MockObject $resultRater;
 
     private array $playDates;
     private PlayDate $playDate1;
@@ -39,12 +41,14 @@ final class BestPlayingClownCalculatorTest extends TestCase
         $this->clownAvailabilitySorter = $this->createMock(ClownAvailabilitySorter::class);
         $this->resultApplier = $this->createMock(ResultApplier::class);
         $this->resultUnapplier = $this->createMock(ResultUnapplier::class);
+        $this->resultRater = $this->createMock(ResultRater::class);
 
         $this->calculator = new BestPlayingClownCalculator(
             $this->availabilityChecker,
             $this->clownAvailabilitySorter,
             $this->resultApplier,
             $this->resultUnapplier,
+            $this->resultRater,
         );
 
         // data
@@ -66,21 +70,38 @@ final class BestPlayingClownCalculatorTest extends TestCase
 
     public function test(): void
     {
-        $this->resultApplier->expects($this->exactly(4))->method('__invoke'); // 1 time for the empty result and 3 times for the 3 result of first playDate
-        $this->resultUnapplier->expects($this->exactly(4))->method('__invoke');
+        $this->resultApplier->expects($this->exactly(3))->method('applyResult'); // 1 time for first playDate and 2 times for second playDate
+        $this->resultUnapplier->expects($this->exactly(3))->method('unapplyResult');
+        $this->resultApplier->expects($this->exactly(4))->method('applyAssignment'); // [fernando], [thorsten], [fernando, fernando], [thorsten, fernando]
+        $this->resultUnapplier->expects($this->exactly(4))->method('unapplyAssignment');
 
         $month = Month::build('2101-12');
-        $results = ($this->calculator)($month, $this->playDates, $this->clownAvailabilities);
+        $firstResultRate = 317;
 
-        $this->assertSame(6, count($results));
+        $this->resultRater
+            ->expects($this->exactly(7)) // 3 times for first playDate and 2x2 times for second playDate
+            ->method('currentPoints')
+            ->willReturnCallback(
+                function (Result $checkedResult, int $checkedPlayDatesCount) use ($month): int {
+                    $this->assertSame($month, $checkedResult->getMonth());
+                    $this->assertSame(2, $checkedPlayDatesCount);
+
+                    static $count = 0;
+                    ++$count;
+
+                    return (3 === $count) ? 317 : 316; // null for first play date is definetely worse, everything else not
+                }
+            );
+
+        $results = ($this->calculator)($month, $this->playDates, $this->clownAvailabilities, $firstResultRate, 2);
+
+        $this->assertSame(4, count($results));
 
         $expectedResults = [ // Thorsten is not available for playDate 2
-            Result::create($month)->add($this->playDate1, $this->fernando)->add($this->playDate2, $this->fernando),
-            Result::create($month)->add($this->playDate1, $this->fernando)->add($this->playDate2, null),
-            Result::create($month)->add($this->playDate1, $this->thorsten)->add($this->playDate2, $this->fernando),
-            Result::create($month)->add($this->playDate1, $this->thorsten)->add($this->playDate2, null),
-            Result::create($month)->add($this->playDate1, null)->add($this->playDate2, $this->fernando),
-            Result::create($month)->add($this->playDate1, null)->add($this->playDate2, null),
+            Result::create($month)->add($this->playDate1, $this->fernando)->add($this->playDate2, $this->fernando)->setPoints(316),
+            Result::create($month)->add($this->playDate1, $this->fernando)->add($this->playDate2, null)->setPoints(316),
+            Result::create($month)->add($this->playDate1, $this->thorsten)->add($this->playDate2, $this->fernando)->setPoints(316),
+            Result::create($month)->add($this->playDate1, $this->thorsten)->add($this->playDate2, null)->setPoints(316),
         ];
 
         $this->assertEquals($expectedResults, $results);
@@ -88,14 +109,23 @@ final class BestPlayingClownCalculatorTest extends TestCase
 
     public function testOnlyFirst(): void
     {
-        $this->resultApplier->expects($this->exactly(2))->method('__invoke'); // 2 playDates, so 2 applies
-        $this->resultUnapplier->expects($this->exactly(2))->method('__invoke');
+        $this->resultApplier->expects($this->never())->method('applyResult');
+        $this->resultApplier->expects($this->exactly(2))->method('applyAssignment'); // 2 playDates, so 2 applies
+        $this->resultUnapplier->expects($this->exactly(1))->method('unapplyResult'); // 1 time at the end
+        $this->resultUnapplier->expects($this->never())->method('unapplyAssignment');
+        $this->resultRater
+            ->expects($this->once())
+            ->method('currentPoints')
+            ->willReturn(22);
 
         $month = Month::build('2101-12');
         $result = $this->calculator->onlyFirst($month, $this->playDates, $this->clownAvailabilities);
 
-        $expectedResults = // Thorsten is not available for playDate 2
-            Result::create($month)->add($this->playDate1, $this->fernando)->add($this->playDate2, $this->fernando);
-        $this->assertEquals($expectedResults, $result);
+        $expectedResult = // Thorsten is not available for playDate 2
+            Result::create($month)
+                ->add($this->playDate1, $this->fernando)
+                ->add($this->playDate2, $this->fernando)
+                ->setPoints(22);
+        $this->assertEquals($expectedResult, $result);
     }
 }

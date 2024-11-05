@@ -79,9 +79,10 @@ class ClownAvailability
         return $this->clown;
     }
 
-    public function setClown(?Clown $clown): self
+    public function setClown(Clown $clown): self
     {
         $this->clown = $clown;
+        $clown->addClownAvailability($this);
 
         return $this;
     }

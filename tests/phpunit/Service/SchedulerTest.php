@@ -20,7 +20,9 @@ use App\Service\Scheduler;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
+use App\Service\Scheduler\PlayDateSorter;
 use App\Value\ScheduleStatus;
+use App\Value\TimeSlotPeriod;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +38,7 @@ final class SchedulerTest extends TestCase
     private SubstitutionRepository|MockObject $substitutionRepository;
     private ScheduleRepository|MockObject $scheduleRepository;
     private EntityManagerInterface|MockObject $entityManager;
+    private PlayDateSorter|MockObject $playDateSorter;
     private Scheduler $scheduler;
 
     public function setUp(): void
@@ -48,6 +51,7 @@ final class SchedulerTest extends TestCase
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->scheduleRepository = $this->createMock(ScheduleRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->playDateSorter = $this->createMock(PlayDateSorter::class);
 
         $this->scheduler = new Scheduler(
             $this->playDateRepository,
@@ -58,17 +62,20 @@ final class SchedulerTest extends TestCase
             $this->substitutionRepository,
             $this->scheduleRepository,
             $this->entityManager,
+            $this->playDateSorter,
         );
     }
 
     public function testCalculate(): void
     {
+        $month = Month::build('1978-12');
         $playDates = $this->getPlayDates();
         list($playDate1, $playDate2, $playDate3) = $playDates;
         $substitution = (new Substitution())->setSubstitutionClown(new Clown());
 
         $this->playDateRepository->expects($this->once())
             ->method('regularByMonth')
+            ->with($month)
             ->willReturn($playDates);
         $clownAvailabilities = $this->getClownAvailabilities();
         $this->clownAvailabilityRepository->expects($this->once())
@@ -76,19 +83,17 @@ final class SchedulerTest extends TestCase
             ->willReturn($clownAvailabilities);
         $this->clownAssigner->expects($this->exactly(3))
             ->method('assignFirstClown');
-        $this->clownAssigner->expects($this->exactly(3))
-            ->method('assignSecondClown')
-            ->withConsecutive(
-                [$playDate2, $clownAvailabilities],
-                [$playDate3, $clownAvailabilities],
-                [$playDate1, $clownAvailabilities],
-            );
         $this->clownAssigner->expects($this->once())
-            ->method('assignSubstitutionClown');
+            ->method('assignSecondClowns')
+            ->with($month, [$playDate2, $playDate3, $playDate1], $clownAvailabilities)
+            ->willReturn(42);
+        $this->clownAssigner->expects($this->once())
+            ->method('assignSubstitutionClown')
+            ->with(new TimeSlotPeriod(new DateTimeImmutable('2018-12'), 'pm'), $clownAvailabilities);
 
         $this->availabilityChecker->expects($this->any())
             ->method('isAvailableFor')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (PlayDate $playDate, ClownAvailability $availability) use ($playDate1, $playDate2, $clownAvailabilities) {
                     if ($playDate === $playDate1) {
                         return false;
@@ -98,7 +103,7 @@ final class SchedulerTest extends TestCase
                         return $availability === $clownAvailabilities[0];
                     }
                 }
-            ));
+            );
 
         $this->fairPlayCalculator->expects($this->once())
             ->method('calculateEntitledPlays')
@@ -109,11 +114,13 @@ final class SchedulerTest extends TestCase
         $this->substitutionRepository->expects($this->once())
             ->method('byMonth')
             ->willReturn([$substitution]);
+        $this->playDateSorter->expects($this->once())
+            ->method('sortByAvailabilities')
+            ->willReturn([$playDate2, $playDate3, $playDate1]);
 
-        $month = Month::build('1978-12');
-        $this->scheduler->calculate($month);
+        $points = $this->scheduler->calculate($month);
 
-        // remove existing clown assignments
+        // removes existing clown assignments
         foreach ($playDates as $playDate) {
             $this->assertEmpty($playDate->getPlayingClowns());
         }
@@ -122,6 +129,9 @@ final class SchedulerTest extends TestCase
             $this->assertNull($availability->getCalculatedSubstitutions());
         }
         $this->assertNull($substitution->getSubstitutionClown());
+
+        // returns rate
+        $this->assertSame(42, $points);
     }
 
     public function testCompleteWithAlreadyCompleted(): void
@@ -139,6 +149,7 @@ final class SchedulerTest extends TestCase
         $this->substitutionRepository->expects($this->never())->method($this->anything());
         $this->scheduleRepository->expects($this->once())->method('find')->with($month)->willReturn($schedule);
         $this->entityManager->expects($this->never())->method($this->anything());
+        $this->playDateSorter->expects($this->never())->method($this->anything());
 
         $result = $this->scheduler->complete($month);
         $this->assertNull($result);
@@ -171,6 +182,7 @@ final class SchedulerTest extends TestCase
         $this->substitutionRepository->expects($this->once())->method('byMonth')->willReturn([$substitution, $substitution2]);
         $this->scheduleRepository->expects($this->once())->method('find')->with($month)->willReturn($schedule);
         $this->entityManager->expects($this->never())->method($this->anything());
+        $this->playDateSorter->expects($this->never())->method($this->anything());
 
         $result = $this->scheduler->complete($month);
         $this->assertSame($schedule, $result);
@@ -217,7 +229,9 @@ final class SchedulerTest extends TestCase
         $clownAvailability->setCalculatedPlaysMonth(27);
         $clownAvailability->setCalculatedSubstitutions(28);
         $clownAvailability->setScheduledPlaysMonth(29);
-        $clownAvailability->setClown($clown);
+        if (!is_null($clown)) {
+            $clownAvailability->setClown($clown);
+        }
         foreach ($timeSlots as $availability => $number) {
             for ($i = 0; $i < $number; ++$i) {
                 $timeSlot = new ClownAvailabilityTime();

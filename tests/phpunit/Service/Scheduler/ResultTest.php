@@ -39,4 +39,21 @@ final class ResultTest extends TestCase
         $result = Result::create($month);
         $this->assertSame($month, $result->getMonth());
     }
+
+    public function testCount(): void
+    {
+        $result = Result::create(Month::build('now'))
+            ->add(new PlayDate(), null)
+            ->add(new PlayDate(), null)
+        ;
+        $this->assertSame(2, count($result));
+    }
+
+    public function testPoints(): void
+    {
+        $result = Result::create(Month::build('now'))
+            ->setPoints(317)
+        ;
+        $this->assertSame(317, $result->getPoints());
+    }
 }

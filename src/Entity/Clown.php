@@ -64,6 +64,7 @@ class Clown
         $this->venue_responsibilities = new ArrayCollection();
         $this->playDates = new ArrayCollection();
         $this->substitutionTimeSlots = new ArrayCollection();
+        $this->clownAvailabilities = new ArrayCollection();
         $this->blockedVenues = new ArrayCollection();
     }
 
@@ -151,6 +152,13 @@ class Clown
     public function getClownAvailabilities(): Collection
     {
         return $this->clownAvailabilities;
+    }
+
+    public function addClownAvailability(ClownAvailability $clownAvailability): self
+    {
+        $this->clownAvailabilities->add($clownAvailability);
+
+        return $this;
     }
 
     public function hasAvailabilityFor(Month $month): bool

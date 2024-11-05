@@ -13,7 +13,7 @@ class BestPlayingClownCalculator
         private ClownAvailabilitySorter $clownAvailabilitySorter,
         private ResultApplier $resultApplier,
         private ResultUnapplier $resultUnapplier,
-        private ResultComparator $resultComparator,
+        private ResultRater $resultRater,
     ) {
     }
 
@@ -25,18 +25,19 @@ class BestPlayingClownCalculator
     {
         $result = Result::create($month);
         foreach ($playDates as $playDate) {
-            ($this->resultApplier)($result);
-
             $availableClownAvailabilites = array_filter(
                 $clownAvailabilities,
                 fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate, $availability)
             );
             $clownAvailability = $this->clownAvailabilitySorter->sortForPlayDate($playDate, $availableClownAvailabilites)[0] ?? null;
 
-            ($this->resultUnapplier)($result);
-
+            $this->resultApplier->applyAssignment($playDate, $clownAvailability);
             $result = $result->add($playDate, $clownAvailability);
         }
+
+        $rate = $this->resultRater->currentPoints($result, count($playDates));
+        $result->setPoints($rate);
+        $this->resultUnapplier->unapplyResult($result);
 
         return $result;
     }
@@ -47,7 +48,7 @@ class BestPlayingClownCalculator
      *
      * @return array<Result>
      */
-    public function __invoke(Month $month, array $playDates, array $clownAvailabilities, Result $firstResult): array
+    public function __invoke(Month $month, array $playDates, array $clownAvailabilities, int $firstResultRate, int $playDatesCount): array
     {
         if (empty($playDates)) {
             return [Result::create($month)];
@@ -58,8 +59,9 @@ class BestPlayingClownCalculator
         return $this->addPlayDate(
             $playDate,
             $clownAvailabilities,
-            $this($month, $playDates, $clownAvailabilities),
-            $firstResult,
+            $this($month, $playDates, $clownAvailabilities, $firstResultRate, $playDatesCount),
+            $firstResultRate,
+            $playDatesCount,
         );
     }
 
@@ -69,31 +71,33 @@ class BestPlayingClownCalculator
      *
      * @return array<Result> $results
      */
-    private function addPlayDate(PlayDate $playDate, array $clownAvailabilities, array $results, Result $firstResult): array
+    private function addPlayDate(PlayDate $playDate, array $clownAvailabilities, array $results, int $firstResultRate, int $playDatesCount): array
     {
         $newResults = [];
-        // echo "\naddPlayDate {$playDate->getTitle()}\n"; static $counter = 0;
 
         foreach ($results as $result) {
-            ($this->resultApplier)($result);
+            $this->resultApplier->applyResult($result);
 
             foreach ($this->clownAvailabilitySorter->sortForPlayDate($playDate, $clownAvailabilities) as $clownAvailability) {
-                // $counter++;
-                // echo "\n  handle {$playDate->getName()} {$clownAvailability->getClown()->getName()} {$counter}\n";
-
                 if ($this->availabilityChecker->isAvailableFor($playDate, $clownAvailability)) {
                     $newResult = $result->add($playDate, $clownAvailability);
-                    if (!$this->resultComparator->isDefinitelyWorseThan($newResult, $firstResult)) {
-                        $newResults[] = $newResult;
+                    $this->resultApplier->applyAssignment($playDate, $clownAvailability);
+
+                    $newResultRate = $this->resultRater->currentPoints($newResult, $playDatesCount);
+                    if ($newResultRate < $firstResultRate) {
+                        $newResults[] = $newResult->setPoints($newResultRate);
                     }
+                    $this->resultUnapplier->unapplyAssignment($playDate, $clownAvailability);
                 }
             }
 
             $newResult = $result->add($playDate, null);
-            if (!$this->resultComparator->isDefinitelyWorseThan($newResult, $firstResult)) {
-                $newResults[] = $newResult;
+            $newResultRate = $this->resultRater->currentPoints($newResult, $playDatesCount);
+            if ($newResultRate < $firstResultRate) {
+                $newResults[] = $newResult->setPoints($newResultRate);
             }
-            ($this->resultUnapplier)($result);
+
+            $this->resultUnapplier->unapplyResult($result);
         }
 
         return $newResults;

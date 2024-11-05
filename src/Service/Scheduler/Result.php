@@ -5,8 +5,9 @@ namespace App\Service\Scheduler;
 use App\Entity\ClownAvailability;
 use App\Entity\Month;
 use App\Entity\PlayDate;
+use Countable;
 
-class Result
+class Result implements Countable
 {
     private Month $month;
 
@@ -16,7 +17,7 @@ class Result
     /** @var array<int, ?ClownAvailability> */
     private array $clownAvailabilities = [];
 
-    private int $points = 0;
+    private ?int $points = null;
 
     public static function create(Month $month): static
     {
@@ -28,17 +29,6 @@ class Result
         $this->month = $month;
         $this->playDates = $playDates;
         $this->clownAvailabilities = $clownAvailabilities;
-
-        /*foreach($playDates as $playDate) {
-            $clownAvailability = $this->clownAvailabilities[$playDate->getId()];
-            if (is_null($clownAvailability)) {
-                $this->points += self::POINTS_NOT_ASSIGNED;
-            } elseif($this->availabilityChecker->maxPlaysWeekExceeded($playDate->getWeek(), $clownAvailability)) {
-                $this->points += self::POINTS_CLOWN_MAX_PER_WEEK;
-            }elseif(ClownAvailabilityTime::AVAILABILITY_MAYBE === $this->$clownAvailability->getAvailabilityOn($playDate)) {
-                $this->points += self::POINTS_CLOWN_MAYBE;
-            }
-        }*/
     }
 
     public function getMonth(): Month
@@ -62,9 +52,26 @@ class Result
         return $this->playDates;
     }
 
+    public function count(): int
+    {
+        return count($this->playDates);
+    }
+
     public function getAssignedClownAvailability(PlayDate $playDate): ?ClownAvailability
     {
         return $this->clownAvailabilities[$playDate->getId()];
+    }
+
+    public function getPoints(): int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(int $points): static
+    {
+        $this->points = $points;
+
+        return $this;
     }
 
     public function __toString(): string

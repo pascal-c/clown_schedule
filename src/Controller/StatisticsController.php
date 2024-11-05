@@ -10,6 +10,7 @@ use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
+use App\Service\Scheduler\Rater;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -24,6 +25,7 @@ class StatisticsController extends AbstractController
         private SubstitutionRepository $substitutionRepository,
         private ClownRepository $clownRepository,
         private ConfigRepository $configRepository,
+        private Rater $rater,
     ) {
     }
 
@@ -87,6 +89,7 @@ class StatisticsController extends AbstractController
             'currentSubstitutions' => $substitutions,
             'active' => 'statistics',
             'showMaxPerWeek' => $this->configRepository->hasFeatureMaxPerWeek(),
+            'points' => $this->rater->pointsPerCategory($month),
         ]);
     }
 }

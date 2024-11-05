@@ -83,10 +83,10 @@ class ScheduleController extends AbstractController
             throw $this->createAccessDeniedException('Spielplan ist bereits abgeschlossen!');
         }
 
-        $this->scheduler->calculate($month);
+        $points = $this->scheduler->calculate($month);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Yes! Spielplan wurde erstellt. Bitte nochmal prüfen, ob alles so passt!');
+        $this->addFlash('success', "Yes! Spielplan wurde erstellt. Rating: {$points} Punkte. Bitte prüfen, ob alles so passt!");
 
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }
