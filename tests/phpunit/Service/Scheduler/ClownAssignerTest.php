@@ -108,7 +108,39 @@ final class ClownAssignerTest extends TestCase
         array $availableForResults,
         ?ClownAvailability $expectedClownAvailability
     ): void {
-        $this->assertionsOnDependencies($clownAvailabilities, $playDate, $availableForResults, $expectedClownAvailability);
+        $this->availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
+            ->method('isAvailableFor')
+            ->withConsecutive(
+                ...array_map(
+                    fn ($availability) => [
+                        $this->identicalTo($playDate),
+                        $this->identicalTo($availability),
+                    ],
+                    $clownAvailabilities
+                )
+            )
+            ->willReturnOnConsecutiveCalls(...$availableForResults);
+
+        $this->availabilityChecker
+            ->method('maxPlaysWeekReached')
+            ->willReturnCallback(
+                function (Week $week, ClownAvailability $availability) use ($clownAvailabilities): bool {
+                    $this->assertEquals(new Week(new DateTimeImmutable('2022-03-28')), $week);
+                    $this->assertContains($availability, $clownAvailabilities);
+
+                    return false;
+                }
+            );
+
+        $this->substitutionRepository->expects($this->never())->method($this->anything());
+        if (is_null($expectedClownAvailability)) {
+            $this->playDateHistoryService->expects($this->never())->method($this->anything());
+        } else {
+            $this->playDateHistoryService->expects($this->once())->method('add')->with($playDate, null, PlayDateChangeReason::CALCULATION);
+        }
+
+        $this->bestPlayingClownCalculator->expects($this->never())->method($this->anything());
+        $this->resultApplier->expects($this->never())->method($this->anything());
         $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
 
         if (is_null($expectedClownAvailability)) {
@@ -306,52 +338,6 @@ final class ClownAssignerTest extends TestCase
                 $this->assertNull($availability->getCalculatedSubstitutions());
             }
         }
-    }
-
-    private function assertionsOnDependencies(
-        array $clownAvailabilities,
-        PlayDate $playDate,
-        array $availableForResults,
-        ?ClownAvailability $expectedClownAvailability,
-        array $maxPlaysWeekReached = [false, false, false, false, false],
-    ): void {
-        $this->availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
-            ->method('isAvailableFor')
-            ->withConsecutive(
-                ...array_map(
-                    fn ($availability) => [
-                        $this->identicalTo($playDate),
-                        $this->identicalTo($availability),
-                    ],
-                    $clownAvailabilities
-                )
-            )
-            ->willReturnOnConsecutiveCalls(...$availableForResults);
-
-        $this->availabilityChecker
-            ->method('maxPlaysWeekReached')
-            ->willReturnCallback(
-                function (Week $week, ClownAvailability $availability) use ($clownAvailabilities, $maxPlaysWeekReached): bool {
-                    $this->assertEquals(new Week(new DateTimeImmutable('2022-03-28')), $week);
-                    $this->assertContains($availability, $clownAvailabilities);
-
-                    foreach ($clownAvailabilities as $key => $clownAvailability) {
-                        if ($availability === $clownAvailability) {
-                            return $maxPlaysWeekReached[$key];
-                        }
-                    }
-                }
-            );
-
-        $this->substitutionRepository->expects($this->never())->method($this->anything());
-        if (is_null($expectedClownAvailability)) {
-            $this->playDateHistoryService->expects($this->never())->method($this->anything());
-        } else {
-            $this->playDateHistoryService->expects($this->once())->method('add')->with($playDate, null, PlayDateChangeReason::CALCULATION);
-        }
-
-        $this->bestPlayingClownCalculator->expects($this->never())->method($this->anything());
-        $this->resultApplier->expects($this->never())->method($this->anything());
     }
 
     private function buildPlayDate(array $clownAvailabilites, Venue $venue = new Venue()): PlayDate
