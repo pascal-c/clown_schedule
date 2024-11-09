@@ -39,6 +39,7 @@ class PlayDateRepository extends AbstractRepository
         return $this->queryByMonth($month)
             ->andWhere('pd.isSpecial = 0')
             ->getQuery()
+            ->enableResultCache(2)
             ->getResult();
     }
 
