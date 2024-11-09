@@ -65,12 +65,6 @@ class BestPlayingClownCalculator
         );
     }
 
-    /**
-     * @param array<ClownAvailability> $clownAvailabilities
-     * @param array<Result>            $results
-     *
-     * @return array<Result> $results
-     */
     private function addPlayDate(PlayDate $playDate, array $clownAvailabilities, array $results, int $firstResultRate, int $playDatesCount): array
     {
         $newResults = [];
