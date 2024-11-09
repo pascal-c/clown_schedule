@@ -73,24 +73,4 @@ class Result implements Countable
 
         return $this;
     }
-
-    public function __toString(): string
-    {
-        $string = '';
-        foreach ($this->clownAvailabilities as $playDateId => $clownAvailability) {
-            $string .= $playDateId.' '.$clownAvailability?->getClown()?->getName()."\n";
-        }
-
-        return $string;
-    }
-
-    public function __debugInfo(): array
-    {
-        $entries = [];
-        foreach ($this->clownAvailabilities as $playDateId => $clownAvailability) {
-            $entries[] = $playDateId.' '.$clownAvailability?->getClown()?->getName();
-        }
-
-        return $entries;
-    }
 }
