@@ -56,7 +56,7 @@ final class MaxPlaysReachedTest extends TestCase
             ->method('countByClownAvailabilityAndWeek')
             ->with($clownAvailability, $week)
             ->willReturn(2);
-        $this->substitutionRepository->execpts($this->never())->method($this->anything());
+        $this->substitutionRepository->expects($this->never())->method($this->anything());
         $this->configRepository
             ->method('hasFeatureMaxPerWeek')
             ->with()
