@@ -27,7 +27,7 @@ final class ResultRaterTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function test(int $rate, $expectedResult, int $playDatesCount = 2, bool $ignoreTargetPlays = false): void
+    public function testCurrentPoints(int $rate, $expectedResult, int $playDatesCount = 2, bool $ignoreTargetPlays = false): void
     {
         $month = Month::build('2024-10');
         $result = Result::create($month)
