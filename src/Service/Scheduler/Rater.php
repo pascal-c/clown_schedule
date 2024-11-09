@@ -15,10 +15,10 @@ use App\Repository\PlayDateRepository;
  */
 class Rater
 {
-    public const POINTS_NOT_ASSIGNED       = 100;
-    public const POINTS_CLOWN_MAX_PER_WEEK = 10;
-    public const POINTS_CLOWN_MAYBE        = 1;
-    public const POINTS_TARGET_PLAYS_MISS  = 2; // [difference] * POINTS_TARGET_PLAYS_MISS
+    public const POINTS_PER_MISSING_CLOWN       = 100;
+    public const POINTS_PER_MAX_PER_WEEK_EXCEEDED = 10;
+    public const POINTS_PER_MAYBE_CLOWN        = 1;
+    public const POINTS_PER_TARGET_PLAYS_MISSED  = 2;
 
     public function __construct(
         private PlayDateRepository $playDateRepository,
@@ -43,8 +43,8 @@ class Rater
         ];
 
         foreach ($playDates as $playDate) {
-            $points['notAssigned'] += $this->pointsNotAssigned($playDate);
-            $points['maybeClown'] += $this->pointsMaybeClown($playDate);
+            $points['notAssigned'] += $this->pointsForMissingClowns($playDate);
+            $points['maybeClown'] += $this->pointsForMaybeClowns($playDate);
         }
 
         $allClownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
@@ -52,9 +52,9 @@ class Rater
 
         foreach ($allClownAvailabilities as $clownAvailability) {
             $playsPerWeek = $clownPlaysPerWeek[$clownAvailability->getClown()->getId()];
-            $points['targetPlays'] += $this->pointsTargetPlays($clownAvailability, $ignoreTargetPlays);
+            $points['targetPlays'] += $this->pointsForTargetPlaysMissed($clownAvailability, $ignoreTargetPlays);
             if ($this->configRepository->hasFeatureMaxPerWeek()) {
-                $points['maxPerWeek'] += $this->pointsMaxPerWeek($clownAvailability, $playsPerWeek);
+                $points['maxPerWeek'] += $this->pointsForMaxPerWeekExceeded($clownAvailability, $playsPerWeek);
             }
         }
 
@@ -63,36 +63,36 @@ class Rater
         return $points;
     }
 
-    private function pointsNotAssigned(PlayDate $playDate): int
+    private function pointsForMissingClowns(PlayDate $playDate): int
     {
-        return abs(2 - $playDate->getPlayingClowns()->count()) * static::POINTS_NOT_ASSIGNED;
+        return abs(2 - $playDate->getPlayingClowns()->count()) * static::POINTS_PER_MISSING_CLOWN;
     }
 
-    private function pointsMaybeClown(PlayDate $playDate): int
+    private function pointsForMaybeClowns(PlayDate $playDate): int
     {
         $points = 0;
         foreach ($playDate->getPlayingClowns() as $clown) {
             $availability = $clown->getAvailabilityFor($playDate->getMonth())->getAvailabilityOn($playDate);
             if ('maybe' === $availability) {
-                $points += static::POINTS_CLOWN_MAYBE;
+                $points += static::POINTS_PER_MAYBE_CLOWN;
             }
         }
 
         return $points;
     }
 
-    private function pointsTargetPlays(ClownAvailability $clownAvailability, $ignoreTargetPlays): int
+    private function pointsForTargetPlaysMissed(ClownAvailability $clownAvailability, $ignoreTargetPlays): int
     {
         $diff = $clownAvailability->getCalculatedPlaysMonth() - $clownAvailability->getTargetPlays();
 
         if ($ignoreTargetPlays) { // only rate clowns who have too much plays, ignore it when they have not enough (yet)
-            return max(0, $diff) * static::POINTS_TARGET_PLAYS_MISS;
+            return max(0, $diff) * static::POINTS_PER_TARGET_PLAYS_MISSED;
         }
 
-        return abs($diff) * static::POINTS_TARGET_PLAYS_MISS;
+        return abs($diff) * static::POINTS_PER_TARGET_PLAYS_MISSED;
     }
 
-    private function pointsMaxPerWeek(ClownAvailability $clownAvailability, array $playsPerWeek): int
+    private function pointsForMaxPerWeekExceeded(ClownAvailability $clownAvailability, array $playsPerWeek): int
     {
         if (!$clownAvailability->getSoftMaxPlaysWeek()) {
             return 0;
@@ -101,7 +101,7 @@ class Rater
         $points = 0;
 
         foreach ($playsPerWeek as $_weekId => $plays) {
-            $points += max(0, $plays - $clownAvailability->getSoftMaxPlaysWeek()) * static::POINTS_CLOWN_MAX_PER_WEEK;
+            $points += max(0, $plays - $clownAvailability->getSoftMaxPlaysWeek()) * static::POINTS_PER_MAX_PER_WEEK_EXCEEDED;
         }
 
         return $points;

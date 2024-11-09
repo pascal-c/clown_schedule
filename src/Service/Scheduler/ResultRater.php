@@ -13,6 +13,6 @@ class ResultRater
         $resultPlayDateCount = count($result);
 
         return $this->rater->totalPoints($result->getMonth(), ignoreTargetPlays: $resultPlayDateCount < $realPlayDateCount)
-            - ($realPlayDateCount - $resultPlayDateCount) * Rater::POINTS_NOT_ASSIGNED;
+            - ($realPlayDateCount - $resultPlayDateCount) * Rater::POINTS_PER_MISSING_CLOWN;
     }
 }

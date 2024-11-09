@@ -93,8 +93,8 @@ final class RaterTest extends TestCase
 
     public function dataProvider(): Generator
     {
-        // RATE_NOT_ASSIGNED = 300 (3 missing clowns)
-        // RATE_MAYBE        = 5   (clown2 has 5 play dates, but is only maybe available)
+        // POINTS_FOR_MISSING_CLOWNS = 300 (3 missing clowns)
+        // POINTS_FOR_MAYBE_CLOWNS   = 5   (clown2 has 5 play dates, but is only maybe available)
         // RATE_TARGET_PLAYS = 8   (clown 2 has 5 play dates and clown 3 has 1 play dates, but their target is 3, so 4*2 = 8)
         // RATE_TARGET_PLAYS = 4   (when ignored: only clown 2 has too much plays, so 2*2 = 4)
         // RATE_MAX_PER_WEEK = 10  (clown1 has 2 play dates in KW40, but their maxPlayWeek is 1)
