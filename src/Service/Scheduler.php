@@ -2,9 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\ClownAvailability;
 use App\Entity\Month;
-use App\Entity\PlayDate;
 use App\Entity\Schedule;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
@@ -13,6 +11,7 @@ use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
+use App\Service\Scheduler\PlayDateSorter;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriod;
 use App\Value\TimeSlotPeriodInterface;
@@ -29,15 +28,20 @@ class Scheduler
         private SubstitutionRepository $substitutionRepository,
         private ScheduleRepository $scheduleRepository,
         private EntityManagerInterface $entityManager,
+        private PlayDateSorter $playDateSorter,
     ) {
     }
 
-    public function calculate(Month $month): void
+    public function calculate(Month $month): int
     {
         $timeSlotPeriods = [];
-        $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
+        $playDates = $this->playDateRepository->regularByMonth($month);
         $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
+        $playDates = $this->playDateSorter->sortByAvailabilities(
+            $playDates,
+            $clownAvailabilities,
+        );
 
         foreach ($playDates as $playDate) {
             $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
@@ -50,14 +54,13 @@ class Scheduler
         $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
         $this->fairPlayCalculator->calculateTargetPlays($clownAvailabilities, count($playDates) * 2);
 
-        $playDates = $this->orderByAvailabilities($playDates, $clownAvailabilities);
+        $points = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilities, takeFirst: true);
 
-        foreach ($playDates as $playDate) {
-            $this->clownAssigner->assignSecondClown($playDate, $clownAvailabilities);
-        }
         foreach ($timeSlotPeriods as $timeSlot) {
             $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($timeSlot[0], $timeSlot[1]), $clownAvailabilities);
         }
+
+        return $points;
     }
 
     public function complete(Month $month): ?Schedule
@@ -117,23 +120,5 @@ class Scheduler
         foreach ($this->substitutionRepository->byMonth($month) as $timeSlot) {
             $timeSlot->setSubstitutionClown(null);
         }
-    }
-
-    private function orderByAvailabilities(array $playDates, array $clownAvailabilities): array
-    {
-        usort(
-            $playDates,
-            fn (PlayDate $playDate1, PlayDate $playDate2) => count(array_filter(
-                $clownAvailabilities,
-                fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate2, $availability)
-            ))
-                <=>
-                count(array_filter(
-                    $clownAvailabilities,
-                    fn (ClownAvailability $availability) => $this->availabilityChecker->isAvailableFor($playDate1, $availability)
-                ))
-        );
-
-        return $playDates;
     }
 }

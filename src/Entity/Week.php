@@ -14,4 +14,9 @@ class Week
     {
         $this->date = $date->modify('tomorrow')->modify('last monday');
     }
+
+    public function getId(): string
+    {
+        return $this->date->format('o-W');
+    }
 }
