@@ -106,7 +106,7 @@ final class ClownAssignerTest extends TestCase
         PlayDate $playDate,
         array $clownAvailabilities,
         array $availableForResults,
-        ?ClownAvailability $expectedClownAvailability
+        ?ClownAvailability $expectedClownAvailability,
     ): void {
         $this->availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableFor')
@@ -358,7 +358,7 @@ final class ClownAssignerTest extends TestCase
         int $targetPlays = 2,
         ?int $calculatedPlays = null,
         ?int $calculatedSubstitutions = null,
-        bool $availableAllDay = false
+        bool $availableAllDay = false,
     ): ClownAvailability {
         static $counter = 0;
         $clownAvailability = new ClownAvailability();

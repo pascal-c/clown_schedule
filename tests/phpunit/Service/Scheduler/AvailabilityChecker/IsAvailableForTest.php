@@ -175,7 +175,7 @@ final class IsAvailableForTest extends TestCase
     private function buildClownAvailability(
         string $availability,
         bool $maxPlaysReached = false,
-        string $gender = 'diverse'
+        string $gender = 'diverse',
     ): ClownAvailability {
         $clownAvailability = new ClownAvailability();
         $clownAvailability->setClown((new Clown())->setGender($gender));

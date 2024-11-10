@@ -32,7 +32,7 @@ class PlayDateFactory extends AbstractFactory
         $title = null,
         ?string $meetingTime = null,
         ?string $playTimeFrom = null,
-        ?string $playTimeTo = null
+        ?string $playTimeTo = null,
     ): PlayDate {
         $date ??= $month ? DateTimeImmutable::createFromMutable(
             $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin')

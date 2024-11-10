@@ -19,7 +19,7 @@ class ClownInvoiceController extends AbstractController
         private ClownRepository $clownRepository,
         private MonthRepository $monthRepository,
         private PlayDateRepository $playDateRepository,
-        private ScheduleViewController $scheduleViewController
+        private ScheduleViewController $scheduleViewController,
     ) {
     }
 

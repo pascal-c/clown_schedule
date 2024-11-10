@@ -22,7 +22,7 @@ class SubstitutionController extends AbstractController
 
     public function __construct(
         ManagerRegistry $doctrine,
-        private SubstitutionRepository $substitutionRepository
+        private SubstitutionRepository $substitutionRepository,
     ) {
         $this->entityManager = $doctrine->getManager();
     }

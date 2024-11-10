@@ -19,7 +19,7 @@ final class ShowAvailableClownsComponent
 
     public function __construct(
         private ClownAvailabilityRepository $clownAvailabilityRepository,
-        private AvailabilityChecker $availabilityChecker
+        private AvailabilityChecker $availabilityChecker,
     ) {
     }
 

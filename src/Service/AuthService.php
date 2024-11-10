@@ -17,7 +17,7 @@ class AuthService
         private ClownRepository $clownRepository,
         private RequestStack $requestStack,
         private TokenGeneratorInterface $tokenGenerator,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 

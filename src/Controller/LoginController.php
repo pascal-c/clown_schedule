@@ -21,7 +21,7 @@ class LoginController extends AbstractController
     public function __construct(
         private ClownRepository $clownRepository,
         protected AuthService $authService,
-        private AuthenticationMailer $mailer
+        private AuthenticationMailer $mailer,
     ) {
     }
 
