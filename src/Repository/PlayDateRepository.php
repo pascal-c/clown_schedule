@@ -26,12 +26,37 @@ class PlayDateRepository extends AbstractRepository
         return $this->doctrineRepository->find($id);
     }
 
-    public function all(): array
+    public function minYear(): string
     {
-        return $this->doctrineRepository->findBy(
-            [],
-            ['date' => 'ASC', 'daytime' => 'ASC']
-        );
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->select('substring(min(pd.date), 1, 4)')
+            ->getQuery()
+            ->getResult()[0][1] ?? $this->timeService->currentYear();
+    }
+
+    public function maxYear(): string
+    {
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->select('substring(max(pd.date), 1, 4)')
+            ->getQuery()
+            ->getResult()[0][1] ?? $this->timeService->currentYear();
+    }
+
+    public function byYear(string $year): array
+    {
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->leftJoin('pd.playingClowns', 'clown')
+            ->leftJoin('pd.venue', 'venue')
+            ->leftJoin('venue.blockedClowns', 'blockedClown')
+            ->leftJoin('venue.responsibleClowns', 'responsibleClown')
+            ->where('pd.date >= :start')
+            ->andWhere('pd.date <= :end')
+            ->setParameter('start', "{$year}-01-01")
+            ->setParameter('end', "{$year}-12-31")
+            ->orderBy('pd.date', 'ASC')
+            ->addOrderBy('pd.daytime', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function regularByMonth(Month $month): array

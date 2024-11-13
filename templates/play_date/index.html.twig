@@ -3,8 +3,10 @@
 {% block title %}Spieltermine{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Spieltermine</h4>
+    <h4 class="pt-3">Spieltermine {{ activeYear }}</h4>
 
+    {{ include('play_date/_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
+    
     <table class="table">
         <thead>
             <tr><th>Wann</th><th>Wo</th><th>Kommentar</th><th>Clowns</th><th>bearbeiten</th></tr>

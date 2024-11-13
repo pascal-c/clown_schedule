@@ -15,6 +15,7 @@ use DateTimeInterface;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
+#[ORM\Index(name: 'date_idx', columns: ['date'])]
 class PlayDate implements TimeSlotPeriodInterface
 {
     use TimeSlotPeriodTrait;

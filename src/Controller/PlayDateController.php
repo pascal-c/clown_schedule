@@ -42,11 +42,16 @@ class PlayDateController extends AbstractController
         $this->entityManager = $doctrine->getManager();
     }
 
-    #[Route('/play_dates', name: 'play_date_index', methods: ['GET'])]
-    public function index(): Response
+    #[Route('/play_dates/by_year/{year}', name: 'play_date_index', methods: ['GET'])]
+    public function index(?string $year = null): Response
     {
+        $year ??= $this->timeService->currentYear();
+        $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
+
         return $this->render('play_date/index.html.twig', [
-            'play_dates' => $this->playDateRepository->all(),
+            'play_dates' => $this->playDateRepository->byYear($year),
+            'activeYear' => $year,
+            'years'      => $years,
         ]);
     }
 
