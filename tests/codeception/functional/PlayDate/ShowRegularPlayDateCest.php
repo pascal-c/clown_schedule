@@ -35,7 +35,7 @@ class ShowRegularPlayDateCest extends AbstractCest
         $this->substitutionFactory->create(date: $date, daytime: $daytime, clown: $this->clownFactory->create(name: 'Maria'));
     }
 
-    public function tryToTest(FunctionalTester $I): void
+    public function show(FunctionalTester $I): void
     {
         $I->loginAsClown();
         $I->amOnPage('/play_dates/'.$this->playDateId);

@@ -8,7 +8,7 @@ use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
 
-class ShowSpecPlayDateCest extends AbstractCest
+class ShowSpecialPlayDateCest extends AbstractCest
 {
     private int $playDateId;
 

@@ -11,23 +11,29 @@ use App\Entity\Week;
 use App\Factory\ClownFactory;
 use App\Factory\PlayDateFactory;
 use App\Repository\PlayDateRepository;
+use App\Service\TimeService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use DateTimeImmutable;
+use PHPUnit\Framework\MockObject\MockObject;
 
 final class PlayDateRepositoryTest extends KernelTestCase
 {
     private PlayDateRepository $repository;
     private PlayDateFactory $playDateFactory;
     private ClownFactory $clownFactory;
+    private TimeService|MockObject $timeService;
 
     protected function setUp(): void
     {
         self::bootKernel();
 
         $container = static::getContainer();
+        $this->timeService = $this->createMock(TimeService::class);
+        $container->set(TimeService::class, $this->timeService);
+        $this->repository = $container->get(PlayDateRepository::class);
+
         $this->playDateFactory = $container->get(PlayDateFactory::class);
         $this->clownFactory = $container->get(ClownFactory::class);
-        $this->repository = $container->get(PlayDateRepository::class);
     }
 
     public function testCountByClownAvailabilityAndWeek(): void
@@ -50,6 +56,35 @@ final class PlayDateRepositoryTest extends KernelTestCase
 
         $result = $this->repository->countByClownAvailabilityAndWeek($clownAvailability, $week);
         $this->assertSame(2, $result);
+    }
+
+    public function testMinMaxYear(): void
+    {
+        // it returns the current year if there is no playDate
+        $this->timeService->method('currentYear')->willReturn('2001');
+        $this->assertSame('2001', $this->repository->minYear());
+        $this->assertSame('2001', $this->repository->maxYear());
+
+        // it returns the minimum/maximum otherwise
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-11'));
+        $this->playDateFactory->create(date: new DateTimeImmutable('2026-11-11'));
+        $this->playDateFactory->create(date: new DateTimeImmutable('1999-06-11'));
+
+        $this->assertSame('1999', $this->repository->minYear());
+        $this->assertSame('2026', $this->repository->maxYear());
+    }
+
+    public function testByYear(): void
+    {
+        $year = '1984';
+
+        $this->playDateFactory->create(date: new DateTimeImmutable('1983-12-31')); // wrong year
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('1984-01-01')); // correct!
+        $two = $this->playDateFactory->create(date: new DateTimeImmutable('1984-12-31')); // correct!
+        $this->playDateFactory->create(date: new DateTimeImmutable('1985-01-01')); // wrong year
+
+        $result = $this->repository->byYear($year);
+        $this->assertEquals([$one, $two], $result);
     }
 
     public function testByMonth(): void
