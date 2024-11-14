@@ -42,9 +42,6 @@ class Venue
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $playTimeTo = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $emails = ['', '', ''];
-
     #[ORM\Column]
     private bool $isSuper = false;
 
@@ -221,18 +218,6 @@ class Venue
     public function setPlayTimeTo(?DateTimeInterface $playTimeTo): self
     {
         $this->playTimeTo = $playTimeTo;
-
-        return $this;
-    }
-
-    public function getEmails(): array
-    {
-        return $this->emails;
-    }
-
-    public function setEmails(?array $emails): self
-    {
-        $this->emails = $emails;
 
         return $this;
     }
