@@ -69,13 +69,13 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\OrderBy(['requestedAt' => 'DESC'])]
     private Collection $playDateSwapRequests;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $meetingTime = null;
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $meetingTime = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $playTimeFrom = null;
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $playTimeFrom = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $playTimeTo = null;
 
     public function __construct()
@@ -279,36 +279,36 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this;
     }
 
-    public function getMeetingTime(): ?DateTimeInterface
+    public function getMeetingTime(): ?DateTimeImmutable
     {
         return $this->meetingTime ?? ($this->venue ? $this->venue->getMeetingTime() : null);
     }
 
-    public function setMeetingTime(?DateTimeInterface $meetingTime): static
+    public function setMeetingTime(?DateTimeImmutable $meetingTime): static
     {
         $this->meetingTime = $meetingTime;
 
         return $this;
     }
 
-    public function getPlayTimeFrom(): ?DateTimeInterface
+    public function getPlayTimeFrom(): ?DateTimeImmutable
     {
         return $this->playTimeFrom ?? ($this->venue ? $this->venue->getPlayTimeFrom() : null);
     }
 
-    public function setPlayTimeFrom(?DateTimeInterface $playTimeFrom): static
+    public function setPlayTimeFrom(?DateTimeImmutable $playTimeFrom): static
     {
         $this->playTimeFrom = $playTimeFrom;
 
         return $this;
     }
 
-    public function getPlayTimeTo(): ?DateTimeInterface
+    public function getPlayTimeTo(): ?DateTimeImmutable
     {
         return $this->playTimeTo ?? ($this->venue ? $this->venue->getPlayTimeTo() : null);
     }
 
-    public function setPlayTimeTo(?DateTimeInterface $playTimeTo): static
+    public function setPlayTimeTo(?DateTimeImmutable $playTimeTo): static
     {
         $this->playTimeTo = $playTimeTo;
 

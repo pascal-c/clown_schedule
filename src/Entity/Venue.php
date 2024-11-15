@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use DateTimeInterface;
 
 #[ORM\Entity]
 #[UniqueEntity('name')]
@@ -33,14 +33,14 @@ class Venue
     #[ORM\Column(length: 3, nullable: true)]
     private ?string $daytime_default = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $meetingTime = null;
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $meetingTime = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $playTimeFrom = null;
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $playTimeFrom = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $playTimeTo = null;
+    #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $playTimeTo = null;
 
     #[ORM\Column]
     private bool $isSuper = false;
@@ -186,36 +186,36 @@ class Venue
         return $this;
     }
 
-    public function getMeetingTime(): ?DateTimeInterface
+    public function getMeetingTime(): ?DateTimeImmutable
     {
         return $this->meetingTime;
     }
 
-    public function setMeetingTime(?DateTimeInterface $meetingTime): self
+    public function setMeetingTime(?DateTimeImmutable $meetingTime): self
     {
         $this->meetingTime = $meetingTime;
 
         return $this;
     }
 
-    public function getPlayTimeFrom(): ?DateTimeInterface
+    public function getPlayTimeFrom(): ?DateTimeImmutable
     {
         return $this->playTimeFrom;
     }
 
-    public function setPlayTimeFrom(?DateTimeInterface $playTimeFrom): self
+    public function setPlayTimeFrom(?DateTimeImmutable $playTimeFrom): self
     {
         $this->playTimeFrom = $playTimeFrom;
 
         return $this;
     }
 
-    public function getPlayTimeTo(): ?DateTimeInterface
+    public function getPlayTimeTo(): ?DateTimeImmutable
     {
         return $this->playTimeTo;
     }
 
-    public function setPlayTimeTo(?DateTimeInterface $playTimeTo): self
+    public function setPlayTimeTo(?DateTimeImmutable $playTimeTo): self
     {
         $this->playTimeTo = $playTimeTo;
 
