@@ -8,7 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^2.0",
-        "doctrine/dbal": "^3.8",
+        "doctrine/dbal": "^4.2",
         "doctrine/doctrine-bundle": "^2.11",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.1",
@@ -106,7 +106,7 @@
     "require-dev": {
         "codeception/codeception": "^5.0",
         "codeception/module-asserts": "^3.0",
-        "codeception/module-doctrine2": "^3.0",
+        "codeception/module-doctrine": "^3.1",
         "codeception/module-phpbrowser": "^3.0",
         "codeception/module-symfony": "^3.2",
         "dama/doctrine-test-bundle": "^8.0",
