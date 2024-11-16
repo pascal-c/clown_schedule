@@ -29,10 +29,10 @@ final class IsAvailableForTest extends TestCase
         array $otherPlayDates = [],
         string $firstClownGender = 'male',
         bool $expectedResult = true,
-        ?Substitution $isSubstitutionClown = null,
+        ?Substitution $substitution = null,
         ?Clown $blockedClown = null,
     ): void {
-        $playDate = $this->buildPlayDate('am', (new Clown())->setGender($firstClownGender), $blockedClown ?? new Clown());
+        $playDate = self::buildPlayDate('am', (new Clown())->setGender($firstClownGender), $blockedClown ?? new Clown());
         $playDateRepository = $this->createMock(PlayDateRepository::class);
         $playDateRepository
             ->method('byMonth')
@@ -41,7 +41,7 @@ final class IsAvailableForTest extends TestCase
         $substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $substitutionRepository->expects($this->atMost(1))
             ->method('find')
-            ->willReturn($isSubstitutionClown);
+            ->willReturn($substitution);
         $configRepository = $this->createMock(ConfigRepository::class);
 
         $availabilityChecker = new AvailabilityChecker($playDateRepository, $substitutionRepository, $configRepository);
@@ -49,46 +49,46 @@ final class IsAvailableForTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
 
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
-        $clownAvailability = $this->buildClownAvailability('yes');
-        $clownAvailabilityWithMaxPlaysDay2 = $this->buildClownAvailability('yes')
+        $clownAvailability = self::buildClownAvailability('yes');
+        $clownAvailabilityWithMaxPlaysDay2 = self::buildClownAvailability('yes')
             ->setClown($clownAvailability->getClown())
             ->setMaxPlaysDay(2);
 
-        $playDateOnSameTimeSlot = $this->buildPlayDate('am', $clownAvailability->getClown());
-        $playDateOnSameDay = $this->buildPlayDate('pm', $clownAvailability->getClown());
+        $playDateOnSameTimeSlot = self::buildPlayDate('am', $clownAvailability->getClown());
+        $playDateOnSameDay = self::buildPlayDate('pm', $clownAvailability->getClown());
 
-        $substitution = $this->buildSubstitution()->setSubstitutionClown($clownAvailability->getClown());
+        $substitution = self::buildSubstitution()->setSubstitutionClown($clownAvailability->getClown());
 
         return [
             [ // clown is available
-                'clownAvailability' => $this->buildClownAvailability('yes'),
+                'clownAvailability' => self::buildClownAvailability('yes'),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'male',
                 'expectedResult' => true,
             ],
             [ // clown is available
-                'clownAvailability' => $this->buildClownAvailability('maybe'),
+                'clownAvailability' => self::buildClownAvailability('maybe'),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'male',
                 'expectedResult' => true,
             ],
             [ // clown is not available
-                'clownAvailability' => $this->buildClownAvailability('no'),
+                'clownAvailability' => self::buildClownAvailability('no'),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'male',
                 'expectedResult' => false,
             ],
             [ // maxPlays reached
-                'clownAvailability' => $this->buildClownAvailability('yes', maxPlaysReached: true),
+                'clownAvailability' => self::buildClownAvailability('yes', maxPlaysReached: true),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'male',
                 'expectedResult' => false,
             ],
             [ // other play on same timeslot, but not for this clown
-                'clownAvailability' => $this->buildClownAvailability('yes'),
-                'otherPlayDates' => [$this->buildPlayDate()],
+                'clownAvailability' => self::buildClownAvailability('yes'),
+                'otherPlayDates' => [self::buildPlayDate()],
                 'firstClownGender' => 'male',
                 'expectedResult' => true,
             ],
@@ -118,19 +118,19 @@ final class IsAvailableForTest extends TestCase
                 'expectedResult' => true,
             ],
             [ // one male one not
-                'clownAvailability' => $this->buildClownAvailability('yes', gender: 'male'),
+                'clownAvailability' => self::buildClownAvailability('yes', gender: 'male'),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'diverse',
                 'expectedResult' => true,
             ],
             [ // two males
-                'clownAvailability' => $this->buildClownAvailability('yes', gender: 'male'),
+                'clownAvailability' => self::buildClownAvailability('yes', gender: 'male'),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'male',
                 'expectedResult' => false,
             ],
             [ // two males
-                'clownAvailability' => $this->buildClownAvailability('yes', gender: 'male'),
+                'clownAvailability' => self::buildClownAvailability('yes', gender: 'male'),
                 'otherPlayDates' => [],
                 'firstClownGender' => 'male',
                 'expectedResult' => false,
@@ -146,7 +146,7 @@ final class IsAvailableForTest extends TestCase
         ];
     }
 
-    private function buildPlayDate(string $daytime = 'am', ?Clown $clown = null, ?Clown $blockedClown = null): PlayDate
+    private static function buildPlayDate(string $daytime = 'am', ?Clown $clown = null, ?Clown $blockedClown = null): PlayDate
     {
         $venue = new Venue();
         if (!is_null($blockedClown)) {
@@ -165,14 +165,14 @@ final class IsAvailableForTest extends TestCase
         return $playDate;
     }
 
-    private function buildSubstitution(string $daytime = 'am'): Substitution
+    private static function buildSubstitution(string $daytime = 'am'): Substitution
     {
         return (new Substitution())
             ->setDate(new DateTimeImmutable('2022-04-01'))
             ->setDaytime($daytime);
     }
 
-    private function buildClownAvailability(
+    private static function buildClownAvailability(
         string $availability,
         bool $maxPlaysReached = false,
         string $gender = 'diverse',
@@ -183,12 +183,12 @@ final class IsAvailableForTest extends TestCase
         $clownAvailability->setMaxPlaysMonth(2);
         $clownAvailability->setCalculatedPlaysMonth($maxPlaysReached ? 2 : 1);
         $date = new DateTimeImmutable('2022-04-01');
-        $clownAvailability->addClownAvailabilityTime($this->buildAvailabilityTimeSlot($availability, $date, 'am'));
+        $clownAvailability->addClownAvailabilityTime(self::buildAvailabilityTimeSlot($availability, $date, 'am'));
 
         return $clownAvailability;
     }
 
-    private function buildAvailabilityTimeSlot(string $availability, DateTimeInterface $date, string $daytime): ClownAvailabilityTime
+    private static function buildAvailabilityTimeSlot(string $availability, DateTimeInterface $date, string $daytime): ClownAvailabilityTime
     {
         $timeSlot = new ClownAvailabilityTime();
         $timeSlot->setAvailability($availability);

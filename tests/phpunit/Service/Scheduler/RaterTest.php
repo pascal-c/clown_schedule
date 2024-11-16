@@ -54,10 +54,14 @@ final class RaterTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function test(
+    public function testTotalPoints(
         bool $hasFeatureMaxPerWeek,
         bool $ignoreTargetPlays,
         int $expectedTotalPoints,
+        int $expectedPointsNotAssigned,
+        int $expectedPointsMaybeClown,
+        int $expectedPointsTargetPlays,
+        int $expectedPointsMaxPerWeek,
     ): void {
         $this->playDateRepository->expects($this->once())->method('regularByMonth')->with($this->month)->willReturn($this->playDates);
         $this->clownAvailabilityRepository->expects($this->once())->method('byMonth')->with($this->month)->willReturn($this->clownAvailabilities);
@@ -91,7 +95,7 @@ final class RaterTest extends TestCase
         $this->assertSame($expectedTotalPoints, $points['total']);
     }
 
-    public function dataProvider(): Generator
+    public static function dataProvider(): Generator
     {
         // POINTS_FOR_MISSING_CLOWNS = 300 (3 missing clowns)
         // POINTS_FOR_MAYBE_CLOWNS   = 5   (clown2 has 5 play dates, but is only maybe available)

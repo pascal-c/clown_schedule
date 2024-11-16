@@ -57,10 +57,10 @@ final class ClownAssignerTest extends TestCase
         );
     }
 
-    public function firstClownDataProvider(): array
+    public static function firstClownDataProvider(): array
     {
         $buildResultSet = function (array $params): array {
-            $clownAvailabilities = array_map(fn ($x) => $this->buildClownAvailability(), range(0, 3));
+            $clownAvailabilities = array_map(fn ($x) => self::buildClownAvailability(), range(0, 3));
             $venue = new Venue();
             $venue->addPlayDate((new PlayDate())
                 ->addPlayingClown($clownAvailabilities[0]->getClown())
@@ -71,10 +71,10 @@ final class ClownAssignerTest extends TestCase
             $expectedResultIndex = $params['expectedResultIndex'];
 
             return [
-                $this->buildPlayDate($clownAvailabilities, $venue),
+                self::buildPlayDate($clownAvailabilities, $venue),
                 $clownAvailabilities,
                 'availableForResults' => $params['availableForResults'],
-                'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
+                'expectedClownAvailability' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
             ];
         };
 
@@ -108,17 +108,10 @@ final class ClownAssignerTest extends TestCase
         array $availableForResults,
         ?ClownAvailability $expectedClownAvailability,
     ): void {
+
         $this->availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableFor')
-            ->withConsecutive(
-                ...array_map(
-                    fn ($availability) => [
-                        $this->identicalTo($playDate),
-                        $this->identicalTo($availability),
-                    ],
-                    $clownAvailabilities
-                )
-            )
+            ->with($playDate, $this->isInstanceOf(ClownAvailability::class))
             ->willReturnOnConsecutiveCalls(...$availableForResults);
 
         $this->availabilityChecker
@@ -227,21 +220,21 @@ final class ClownAssignerTest extends TestCase
         $this->assertSame(42, $rate);
     }
 
-    public function substitutionClownDataProvider(): array
+    public static function substitutionClownDataProvider(): array
     {
         $buildResultSet = function (array $availableOnResults, ?int $expectedResultIndex = null, $isAllDay = false, array $maxSubstitutionsWeekReached = [false, false, false, false, false]): array {
             $clownAvailabilities = [
-                $this->buildClownAvailability('no', targetPlays: 0, calculatedPlays: 4),
-                $this->buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 4),
-                $this->buildClownAvailability('yes', targetPlays: 0, calculatedPlays: 4, availableAllDay: true),
-                $this->buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 8, availableAllDay: true),
-                $this->buildClownAvailability('yes', targetPlays: 0, calculatedPlays: 6, calculatedSubstitutions: 3),
+                self::buildClownAvailability('no', targetPlays: 0, calculatedPlays: 4),
+                self::buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 4),
+                self::buildClownAvailability('yes', targetPlays: 0, calculatedPlays: 4, availableAllDay: true),
+                self::buildClownAvailability('maybe', targetPlays: 0, calculatedPlays: 8, availableAllDay: true),
+                self::buildClownAvailability('yes', targetPlays: 0, calculatedPlays: 6, calculatedSubstitutions: 3),
             ];
 
             return [
                 $clownAvailabilities,
                 'availableOnResults' => $availableOnResults,
-                'expectedResult' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
+                'expectedClownAvailability' => $expectedResultIndex ? $clownAvailabilities[$expectedResultIndex] : null,
                 'daytime' => $isAllDay ? TimeSlotPeriod::ALL : TimeSlotPeriod::AM,
                 'maxSubstitutionsWeekReached' => $maxSubstitutionsWeekReached,
             ];
@@ -340,7 +333,7 @@ final class ClownAssignerTest extends TestCase
         }
     }
 
-    private function buildPlayDate(array $clownAvailabilites, Venue $venue = new Venue()): PlayDate
+    private static function buildPlayDate(array $clownAvailabilites, Venue $venue = new Venue()): PlayDate
     {
         $venue->addResponsibleClown($clownAvailabilites[0]->getClown());
         $venue->addResponsibleClown($clownAvailabilites[1]->getClown());
@@ -353,7 +346,7 @@ final class ClownAssignerTest extends TestCase
         return $playDate;
     }
 
-    private function buildClownAvailability(
+    private static function buildClownAvailability(
         string $availability = 'yes',
         int $targetPlays = 2,
         ?int $calculatedPlays = null,

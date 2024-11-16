@@ -80,10 +80,10 @@ final class PlayDateChangeServiceTest extends TestCase
 
         $this->playDateHistoryService->expects($this->exactly(2))
             ->method('add')
-            ->withConsecutive(
+            ->willReturnMap([
                 [$playDateToGiveOff, $requestedBy, PlayDateChangeReason::SWAP],
                 [$playDateWanted, $requestedBy, PlayDateChangeReason::SWAP],
-            );
+            ]);
 
         $this->playDateChangeService->accept($playDateChangeRequest, $requestedTo);
 

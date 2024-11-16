@@ -106,7 +106,7 @@ final class MaxPlaysReachedTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
 
-    public function dataProvider(): Generator
+    public static function dataProvider(): Generator
     {
         yield 'when clown has no max given' => [
             'maxPlaysWeek' => null, // => maxPlaysAndSubstitutionsWeek == null
