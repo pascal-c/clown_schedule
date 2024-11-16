@@ -370,9 +370,6 @@
             "webpack.config.js"
         ]
     },
-    "theofidry/psysh-bundle": {
-        "version": "4.5.0"
-    },
     "twig/extra-bundle": {
         "version": "v3.4.0"
     }
