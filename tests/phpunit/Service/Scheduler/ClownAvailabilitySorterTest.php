@@ -38,7 +38,7 @@ final class ClownAvailabilitySorterTest extends TestCase
         string $availability2,
         int $openTargetPlays1,
         int $openTargetPlays2,
-        string $expectedOrder,
+        string $expectedFirstClown,
     ): void {
         $date = new DateTimeImmutable('now');
         $week = new Week($date);
@@ -63,14 +63,14 @@ final class ClownAvailabilitySorterTest extends TestCase
                 }
             );
         $sortedClownAvailabilities = $this->sorter->sortForPlayDate($playDate, $clownAvailabilities);
-        if (self::CLOWN1_FIRST === $expectedOrder) {
+        if (self::CLOWN1_FIRST === $expectedFirstClown) {
             $this->assertSame([$clown1, $clown2], $sortedClownAvailabilities);
         } else {
             $this->assertSame([$clown2, $clown1], $sortedClownAvailabilities);
         }
     }
 
-    public function dataProvider(): Generator
+    public static function dataProvider(): Generator
     {
         yield 'when max plays week reached for clown1' => [
             'maxPlaysWeekReached1' => true,

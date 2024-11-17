@@ -31,7 +31,7 @@ final class DayViewControllerTest extends TestCase
         $this->assertEquals($expectedResult, $day->isWeekend());
     }
 
-    public function isWeekendProvider(): array
+    public static function isWeekendProvider(): array
     {
         return [
             [new DateTimeImmutable('2022-08-05'), false], // Friday
@@ -53,7 +53,7 @@ final class DayViewControllerTest extends TestCase
         $this->assertEquals($expectedResult, $day->isHoliday());
     }
 
-    public function isHolidayProvider(): array
+    public static function isHolidayProvider(): array
     {
         return [
             [new DateTimeImmutable('2022-01-01'), true], // new year

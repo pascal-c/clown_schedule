@@ -52,7 +52,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
     }
 
     /** @dataProvider closeInvalidDataProvider */
-    public function testCloseIfInvalidWithGiveOffRequest(bool $isWaiting, bool $isValid, string $giveOffDate, string $_wantedDate, bool $expectClose): void
+    public function testCloseIfInvalidWithGiveOffRequest(bool $isWaiting, bool $isValid, string $giveOffDate, string $wantedDate, bool $expectClose): void
     {
         $playDateChangeRequest = $this->createMock(PlayDateChangeRequest::class);
         $playDateChangeRequest->method('isWaiting')->willReturn($isWaiting);
@@ -72,7 +72,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $this->closeInvalidService->closeIfInvalid($playDateChangeRequest);
     }
 
-    public function closeInvalidDataProvider(): Generator
+    public static function closeInvalidDataProvider(): Generator
     {
         yield 'not waiting and valid' => [
             'isWaiting' => false,

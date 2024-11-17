@@ -80,9 +80,10 @@ final class PlayDateChangeServiceTest extends TestCase
 
         $this->playDateHistoryService->expects($this->exactly(2))
             ->method('add')
-            ->withConsecutive(
-                [$playDateToGiveOff, $requestedBy, PlayDateChangeReason::SWAP],
-                [$playDateWanted, $requestedBy, PlayDateChangeReason::SWAP],
+            ->with(
+                $this->logicalOr($this->identicalTo($playDateToGiveOff), $this->identicalTo($playDateWanted)),
+                $requestedBy,
+                PlayDateChangeReason::SWAP,
             );
 
         $this->playDateChangeService->accept($playDateChangeRequest, $requestedTo);

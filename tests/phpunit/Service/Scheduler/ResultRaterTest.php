@@ -27,7 +27,7 @@ final class ResultRaterTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testCurrentPoints(int $rate, $expectedResult, int $playDatesCount = 2, bool $ignoreTargetPlays = false): void
+    public function testCurrentPoints(int $totalPoints, $expectedPoints, int $playDatesCount = 2, bool $ignoreTargetPlays = false): void
     {
         $month = Month::build('2024-10');
         $result = Result::create($month)
@@ -38,12 +38,12 @@ final class ResultRaterTest extends TestCase
         $this->rater->expects($this->once())
             ->method('totalPoints')
             ->with($month, $ignoreTargetPlays)
-            ->willReturn($rate);
+            ->willReturn($totalPoints);
 
-        $this->assertSame($expectedResult, $this->resultComparator->currentPoints($result, $playDatesCount));
+        $this->assertSame($expectedPoints, $this->resultComparator->currentPoints($result, $playDatesCount));
     }
 
-    public function dataProvider(): Generator
+    public static function dataProvider(): Generator
     {
         yield 'result is complete' => [
             'totalPoints' => 310,
