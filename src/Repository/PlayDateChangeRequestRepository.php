@@ -21,6 +21,16 @@ class PlayDateChangeRequestRepository extends AbstractRepository
     /**
      * @return array<PlayDateChangeRequest>
      */
+    public function findAllRequestsWaiting(): array
+    {
+        return $this->doctrineRepository->findBy([
+            'status' => PlayDateChangeRequestStatus::WAITING->value,
+        ]);
+    }
+
+    /**
+     * @return array<PlayDateChangeRequest>
+     */
     public function findSentRequestsWaiting(Clown $requestedBy): array
     {
         return $this->doctrineRepository->findBy([
