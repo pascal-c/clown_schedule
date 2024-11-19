@@ -7,6 +7,7 @@ namespace App\Tests\Service;
 use App\Entity\PlayDate;
 use App\Entity\PlayDateChangeRequest;
 use App\Mailer\PlayDateSwapRequestMailer;
+use App\Repository\PlayDateChangeRequestRepository;
 use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeRequestStatus;
@@ -20,13 +21,19 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
     private PlayDateChangeRequestCloseInvalidService $closeInvalidService;
     private PlayDateSwapRequestMailer|MockObject $mailer;
     private TimeService|MockObject $timeService;
+    private PlayDateChangeRequestRepository|MockObject $playDateChangeRequestRepository;
 
     public function setUp(): void
     {
         $this->mailer = $this->createMock(PlayDateSwapRequestMailer::class);
         $this->timeService = $this->createMock(TimeService::class);
         $this->timeService->method('today')->willReturn(new DateTimeImmutable('2024-01-05'));
-        $this->closeInvalidService = new PlayDateChangeRequestCloseInvalidService($this->mailer, $this->timeService);
+        $this->playDateChangeRequestRepository = $this->createMock(PlayDateChangeRequestRepository::class);
+        $this->closeInvalidService = new PlayDateChangeRequestCloseInvalidService(
+            $this->mailer,
+            $this->timeService,
+            $this->playDateChangeRequestRepository,
+        );
     }
 
     /** @dataProvider closeInvalidDataProvider */
@@ -152,5 +159,31 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $playDateGiveOffRequest1->expects($this->never())->method('setStatus');
 
         $this->closeInvalidService->closeInvalidChangeRequests($playDate);
+    }
+
+    public function testCloseAllInvalidChangeRequests(): void
+    {
+        // valid!
+        $request1 = $this->createMock(PlayDateChangeRequest::class);
+        $request1->method('isGiveOff')->willReturn(true);
+        $request1->method('isWaiting')->willReturn(true);
+        $request1->method('isValid')->willReturn(true);
+        $request1->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
+
+        // invalid
+        $request2 = $this->createMock(PlayDateChangeRequest::class);
+        $request2->method('isGiveOff')->willReturn(true);
+        $request2->method('isWaiting')->willReturn(true);
+        $request2->method('isValid')->willReturn(false);
+        $request2->method('getPlayDateToGiveOff')->willReturn((new PlayDate())->setDate(new DateTimeImmutable('2024-08-05')));
+
+        $this->playDateChangeRequestRepository
+            ->expects($this->once())
+            ->method('findAllRequestsWaiting')
+            ->willReturn([$request1, $request2]);
+        $request2->expects($this->once())->method('setStatus')->with(PlayDateChangeRequestStatus::CLOSED);
+        $request1->expects($this->never())->method('setStatus');
+
+        $this->closeInvalidService->closeAllInvalidChangeRequests();
     }
 }

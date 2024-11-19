@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\PlayDate;
 use App\Entity\PlayDateChangeRequest;
 use App\Mailer\PlayDateSwapRequestMailer;
+use App\Repository\PlayDateChangeRequestRepository;
 use App\Value\PlayDateChangeRequestStatus;
 
 class PlayDateChangeRequestCloseInvalidService
@@ -14,11 +15,21 @@ class PlayDateChangeRequestCloseInvalidService
     public const ACCEPTABLE_UNTIL_PERIOD = '+3 days';
     public const CREATABLE_UNTIL_PERIOD = '+7 days';
 
-    public function __construct(private PlayDateSwapRequestMailer $mailer, private TimeService $timeService)
-    {
+    public function __construct(
+        private PlayDateSwapRequestMailer $mailer,
+        private TimeService $timeService,
+        private PlayDateChangeRequestRepository $playDateChangeRequestRepository,
+    ) {
     }
 
-    public function closeInvalidChangeRequests(PlayDate $playDate)
+    public function closeAllInvalidChangeRequests(): void
+    {
+        foreach ($this->playDateChangeRequestRepository->findAllRequestsWaiting() as $playDateChangeRequest) {
+            $this->closeIfInvalid($playDateChangeRequest);
+        }
+    }
+
+    public function closeInvalidChangeRequests(PlayDate $playDate): void
     {
         $playDateChangeRequests = array_merge($playDate->getPlayDateGiveOffRequests()->toArray(), $playDate->getPlayDateSwapRequests()->toArray());
         foreach ($playDateChangeRequests as $playDateChangeRequest) {
