@@ -6,6 +6,7 @@ use App\Repository\VacationRepository;
 use App\ViewController\DayViewController;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class DayViewControllerTest extends TestCase
 {
@@ -19,9 +20,7 @@ final class DayViewControllerTest extends TestCase
         $this->assertEquals('Mo.', $day->getDayShortName());
     }
 
-    /**
-     * @dataProvider isWeekendProvider
-     */
+    #[DataProvider('isWeekendProvider')]
     public function testisWeekend(DateTimeImmutable $date, bool $expectedResult): void
     {
         $vacationRepository = $this->createMock(VacationRepository::class);
@@ -41,9 +40,7 @@ final class DayViewControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider isHolidayProvider
-     */
+    #[DataProvider('isHolidayProvider')]
     public function testisHoliday(DateTimeImmutable $date, bool $expectedResult): void
     {
         $vacationRepository = $this->createMock(VacationRepository::class);

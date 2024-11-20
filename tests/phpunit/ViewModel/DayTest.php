@@ -6,6 +6,7 @@ use App\Entity\Daytime;
 use App\ViewModel\Day;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\Depends;
 
 final class DayTest extends TestCase
 {
@@ -26,17 +27,13 @@ final class DayTest extends TestCase
         return $day;
     }
 
-    /**
-     * @depends testgetDayNumber
-     */
+    #[Depends('testgetDayNumber')]
     public function testgetDayShortName(Day $day): void
     {
         $this->assertEquals('Fr.', $day->getDayShortName());
     }
 
-    /**
-     * @depends testgetDayNumber
-     */
+    #[Depends('testgetDayNumber')]
     public function testgetEntries(Day $day): void
     {
         $day->addEntry(Daytime::AM, 'key1', 'am key1 first');
@@ -48,25 +45,19 @@ final class DayTest extends TestCase
         $this->assertEquals([], $day->getEntries(Daytime::PM, 'key2'));
     }
 
-    /**
-     * @depends testgetDayNumber
-     */
+    #[Depends('testgetDayNumber')]
     public function testisWeekend(Day $day): void
     {
         $this->assertEquals(false, $day->isWeekend());
     }
 
-    /**
-     * @depends testgetDayNumber
-     */
+    #[Depends('testgetDayNumber')]
     public function testisHoliday(Day $day): void
     {
         $this->assertEquals(true, $day->isHoliday());
     }
 
-    /**
-     * @depends testgetDayNumber
-     */
+    #[Depends('testgetDayNumber')]
     public function testisVacation(Day $day): void
     {
         $this->assertEquals(false, $day->isVacation());

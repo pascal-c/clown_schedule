@@ -7,6 +7,7 @@ namespace App\Tests\Service\Scheduler;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
 use App\Service\Scheduler\FairPlayCalculator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
@@ -42,9 +43,7 @@ final class FairPlayCalculatorTest extends TestCase
         return $clownAvailability;
     }
 
-    /**
-     * @dataProvider targetPlaysDataProvider
-     */
+    #[DataProvider('targetPlaysDataProvider')]
     public function testcalculateTargetPlays(array $clownAvailabilities, array $expectedTargetPlays): void
     {
         $fairPlayCalculator = new FairPlayCalculator();

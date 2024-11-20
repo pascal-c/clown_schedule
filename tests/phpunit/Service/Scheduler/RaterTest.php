@@ -15,6 +15,7 @@ use App\Repository\PlayDateRepository;
 use App\Service\Scheduler\Rater;
 use DateTimeImmutable;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -51,9 +52,7 @@ final class RaterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testTotalPoints(
         bool $hasFeatureMaxPerWeek,
         bool $ignoreTargetPlays,
@@ -71,9 +70,7 @@ final class RaterTest extends TestCase
         $this->assertSame($expectedTotalPoints, $totalPoints);
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testPointsPerCategory(
         bool $hasFeatureMaxPerWeek,
         bool $ignoreTargetPlays,

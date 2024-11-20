@@ -10,6 +10,7 @@ use App\Service\Scheduler\Result;
 use App\Service\Scheduler\ResultRater;
 use App\Service\Scheduler\Rater;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -24,9 +25,7 @@ final class ResultRaterTest extends TestCase
         $this->resultComparator = new ResultRater($this->rater);
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCurrentPoints(int $totalPoints, $expectedPoints, int $playDatesCount = 2, bool $ignoreTargetPlays = false): void
     {
         $month = Month::build('2024-10');

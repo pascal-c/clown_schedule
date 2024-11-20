@@ -18,12 +18,11 @@ use App\Service\Scheduler\AvailabilityChecker;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use DateTimeInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class IsAvailableForTest extends TestCase
 {
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testIsAvailableFor(
         ClownAvailability $clownAvailability,
         array $otherPlayDates = [],

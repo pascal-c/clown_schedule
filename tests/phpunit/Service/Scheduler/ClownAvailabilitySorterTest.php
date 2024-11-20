@@ -11,6 +11,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAvailabilitySorter;
 use DateTimeImmutable;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -28,9 +29,7 @@ final class ClownAvailabilitySorterTest extends TestCase
         $this->sorter = new ClownAvailabilitySorter($this->availabilityChecker);
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testSortForPlayDate(
         bool $maxPlaysWeekReached1,
         bool $maxPlaysWeekReached2,

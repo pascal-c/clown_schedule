@@ -16,6 +16,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class MaxPlaysReachedTest extends TestCase
@@ -37,9 +38,7 @@ final class MaxPlaysReachedTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testMaxPlaysWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $hasFeatureMaxPerWeek = true): void
     {
         $date = new DateTimeImmutable('2024-02-13'); // this is a tuesday
@@ -66,9 +65,7 @@ final class MaxPlaysReachedTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testMaxPlaysAndSubstitutionsWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $hasFeatureMaxPerWeek = true): void
     {
         $date = new DateTimeImmutable('2024-02-13'); // this is a tuesday

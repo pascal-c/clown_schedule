@@ -15,6 +15,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
 {
@@ -36,7 +37,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         );
     }
 
-    /** @dataProvider closeInvalidDataProvider */
+    #[DataProvider('closeInvalidDataProvider')]
     public function testCloseIfInvalidWithSwapRequest(bool $isWaiting, bool $isValid, string $giveOffDate, string $wantedDate, bool $expectClose): void
     {
         $playDateChangeRequest = $this->createMock(PlayDateChangeRequest::class);
@@ -58,7 +59,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         $this->closeInvalidService->closeIfInvalid($playDateChangeRequest);
     }
 
-    /** @dataProvider closeInvalidDataProvider */
+    #[DataProvider('closeInvalidDataProvider')]
     public function testCloseIfInvalidWithGiveOffRequest(bool $isWaiting, bool $isValid, string $giveOffDate, string $wantedDate, bool $expectClose): void
     {
         $playDateChangeRequest = $this->createMock(PlayDateChangeRequest::class);

@@ -25,6 +25,7 @@ use App\Value\TimeSlotPeriodInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class ClownAssignerTest extends TestCase
@@ -99,9 +100,7 @@ final class ClownAssignerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider firstClownDataProvider
-     */
+    #[DataProvider('firstClownDataProvider')]
     public function testAssignFirstClown(
         PlayDate $playDate,
         array $clownAvailabilities,
@@ -271,9 +270,7 @@ final class ClownAssignerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider substitutionClownDataProvider
-     */
+    #[DataProvider('substitutionClownDataProvider')]
     public function testAssignSubstitutionClown(
         array $clownAvailabilities,
         array $availableOnResults,
