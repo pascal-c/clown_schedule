@@ -3,7 +3,6 @@
 namespace App\Tests\Functional\Venue;
 
 use App\Tests\Functional\AbstractCest;
-use App\Tests\FunctionalTester;
 use App\Tests\Step\Functional\AdminTester;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;

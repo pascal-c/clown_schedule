@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\PlayDate;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PlayDateFormType extends AbstractType
+class RegularPlayDateFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

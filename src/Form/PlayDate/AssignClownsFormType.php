@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\PlayDate;
 
 use App\Entity\Clown;
 use App\Entity\PlayDate;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PlayDateAssignClownsFormType extends AbstractType
+class AssignClownsFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

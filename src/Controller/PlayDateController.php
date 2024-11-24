@@ -7,10 +7,10 @@ namespace App\Controller;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
-use App\Form\PlayDateAssignClownsFormType;
-use App\Form\PlayDateFormType;
-use App\Form\SpecialPlayDateFormType;
-use App\Form\TrainingFormType;
+use App\Form\PlayDate\AssignClownsFormType;
+use App\Form\PlayDate\RegularPlayDateFormType;
+use App\Form\PlayDate\SpecialPlayDateFormType;
+use App\Form\PlayDate\TrainingFormType;
 use App\Repository\ClownRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
@@ -78,7 +78,7 @@ class PlayDateController extends AbstractController
         $type = PlayDateType::from($request->query->get('type', PlayDateType::REGULAR->value));
         $playDate->setType($type);
         $formType = match($type) {
-            PlayDateType::REGULAR => PlayDateFormType::class,
+            PlayDateType::REGULAR => RegularPlayDateFormType::class,
             PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
             PlayDateType::TRAINING => TrainingFormType::class,
         };
@@ -131,7 +131,7 @@ class PlayDateController extends AbstractController
         $playDate = $this->playDateRepository->find($id);
 
         $editFormType = match($playDate->getType()) {
-            PlayDateType::REGULAR => PlayDateFormType::class,
+            PlayDateType::REGULAR => RegularPlayDateFormType::class,
             PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
             PlayDateType::TRAINING => TrainingFormType::class,
         };
@@ -173,7 +173,7 @@ class PlayDateController extends AbstractController
 
         $playDate = $this->playDateRepository->find($id);
 
-        $form = $this->createForm(PlayDateAssignClownsFormType::class, $playDate, ['method' => 'PATCH']);
+        $form = $this->createForm(AssignClownsFormType::class, $playDate, ['method' => 'PATCH']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $schedule = $this->scheduleRepository->find($playDate->getMonth());
