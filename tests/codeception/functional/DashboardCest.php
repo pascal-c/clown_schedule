@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional;
 
 use App\Tests\FunctionalTester;
+use App\Value\PlayDateType;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
@@ -37,7 +38,7 @@ class DashboardCest extends AbstractCest
             date: new DateTimeImmutable('2025-01-01'),
             daytime: TimeSlotInterface::AM,
             playingClowns: [$currentClown],
-            isSpecial: true,
+            type: PlayDateType::SPECIAL,
             title: 'Spezialtermin',
         );
         $this->playDateFactory->create(

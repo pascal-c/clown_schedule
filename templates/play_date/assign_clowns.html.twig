@@ -5,7 +5,7 @@
     <h4 class="pt-3">Clowns zu Spieltermin einteilen</h4>
     <h5>
         Am {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }}
-        - {{ playDate.isSpecial ? playDate.title : playDate.venue.name }}
+        - {{ playDate.name }}
     </h5>
 
     {{ component('show_available_clowns', { date: playDate.date, daytime: playDate.daytime, playDate: playDate }) }}

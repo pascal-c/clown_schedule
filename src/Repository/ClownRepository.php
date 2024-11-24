@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Clown;
+use App\Value\PlayDateType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
@@ -46,7 +47,7 @@ class ClownRepository
         return $this->doctrineRepository->createQueryBuilder('cl')
             ->select('cl AS clown, count(pd.id) AS totalCount')
             ->leftJoin('cl.playDates', 'pd')
-            ->where('pd.isSpecial = 0')
+            ->where('pd.type = "'.PlayDateType::REGULAR->value.'"')
             ->groupBy('cl')
             ->orderBy('cl.isActive', 'DESC')
             ->addOrderBy('cl.name', 'ASC')

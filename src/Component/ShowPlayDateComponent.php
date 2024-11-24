@@ -37,6 +37,8 @@ final class ShowPlayDateComponent
     {
         if ($playDate->isSpecial()) {
             return 'text-secondary';
+        } elseif ($playDate->isTraining()) {
+            return 'text-secondary text-opacity-75';
         }
 
         if (null === $schedule || 2 === $playDate->getPlayingClowns()->count()) {

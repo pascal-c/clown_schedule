@@ -6,6 +6,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Value\PlayDateType;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
@@ -55,5 +56,20 @@ final class PlayDateTest extends TestCase
 
         $playDate->setPlayTimeTo(new DateTimeImmutable('15:12'));
         $this->assertEquals(new DateTimeImmutable('15:12'), $playDate->getPlayTimeTo());
+    }
+
+    public function testType(): void
+    {
+        $playDate = (new PlayDate());
+        $this->assertSame(PlayDateType::REGULAR, $playDate->getType());
+        $this->assertTrue($playDate->isRegular());
+
+        $playDate->setType(PlayDateType::TRAINING);
+        $this->assertSame(PlayDateType::TRAINING, $playDate->getType());
+        $this->assertTrue($playDate->isTraining());
+
+        $playDate->setType(PlayDateType::SPECIAL);
+        $this->assertSame(PlayDateType::SPECIAL, $playDate->getType());
+        $this->assertTrue($playDate->isSpecial());
     }
 }

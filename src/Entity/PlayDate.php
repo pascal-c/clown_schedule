@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use App\Value\TimeSlotPeriodTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,6 +17,7 @@ use DateTimeInterface;
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
 #[ORM\Index(name: 'date_idx', columns: ['date'])]
+#[ORM\Index(name: 'type_idx', columns: ['type'])]
 class PlayDate implements TimeSlotPeriodInterface
 {
     use TimeSlotPeriodTrait;
@@ -35,7 +37,7 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\ManyToOne(inversedBy: 'playDates')]
     #[ORM\JoinColumn(nullable: true)]
     #[Assert\When(
-        expression: '!this.isSpecial()',
+        expression: 'this.isRegular()',
         constraints: [
             new Assert\NotBlank(),
         ],
@@ -44,9 +46,6 @@ class PlayDate implements TimeSlotPeriodInterface
 
     #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'playDates')]
     private Collection $playingClowns;
-
-    #[ORM\Column]
-    private ?bool $isSpecial = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
@@ -77,6 +76,9 @@ class PlayDate implements TimeSlotPeriodInterface
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $playTimeTo = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $type = PlayDateType::REGULAR->value;
 
     public function __construct()
     {
@@ -148,16 +150,19 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this;
     }
 
-    public function isSpecial(): bool
+    public function isTraining(): bool
     {
-        return $this->isSpecial;
+        return PlayDateType::TRAINING === $this->getType();
     }
 
-    public function setIsSpecial(bool $isSpecial): self
+    public function isRegular(): bool
     {
-        $this->isSpecial = $isSpecial;
+        return PlayDateType::REGULAR === $this->getType();
+    }
 
-        return $this;
+    public function isSpecial(): bool
+    {
+        return PlayDateType::SPECIAL === $this->getType();
     }
 
     public function getTitle(): ?string
@@ -311,6 +316,18 @@ class PlayDate implements TimeSlotPeriodInterface
     public function setPlayTimeTo(?DateTimeImmutable $playTimeTo): static
     {
         $this->playTimeTo = $playTimeTo;
+
+        return $this;
+    }
+
+    public function getType(): PlayDateType
+    {
+        return PlayDateType::from($this->type);
+    }
+
+    public function setType(PlayDateType $type): static
+    {
+        $this->type = $type->value;
 
         return $this;
     }

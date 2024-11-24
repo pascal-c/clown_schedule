@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Value\PlayDateType;
 use DateTimeImmutable;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -28,7 +29,7 @@ class PlayDateFactory extends AbstractFactory
         ?string $daytime = null,
         ?Venue $venue = null,
         array $playingClowns = [],
-        $isSpecial = false,
+        $type = PlayDateType::REGULAR,
         $title = null,
         ?string $meetingTime = null,
         ?string $playTimeFrom = null,
@@ -42,7 +43,7 @@ class PlayDateFactory extends AbstractFactory
             ->setDate($date)
             ->setDaytime($daytime ?? $venue->getDaytimeDefault())
             ->setVenue($venue)
-            ->setIsSpecial($isSpecial)
+            ->setType($type)
             ->setTitle($title)
             ->setMeetingTime($meetingTime ? new DateTimeImmutable($meetingTime) : null)
             ->setPlayTimeFrom($playTimeFrom ? new DateTimeImmutable($playTimeFrom) : null)

@@ -18,7 +18,7 @@
             <td>
                 {{ play_date.date|date("d.m.Y") }}&nbsp;{{ play_date.daytime }}
             </td>
-            <td>{{ play_date.isSpecial ? play_date.title : play_date.venue.name }}</td>
+            <td>{{ play_date.name }}</td>
             <td>{{ play_date.comment }}</td>
             <td>
                 {% for clown in play_date.playingClowns %}{{ clown.name }} {% endfor %}

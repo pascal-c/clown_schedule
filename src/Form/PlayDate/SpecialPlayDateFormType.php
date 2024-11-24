@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\PlayDate;
 
 use App\Entity\PlayDate;
+use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -61,8 +63,15 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
                 'required' => false,
             ])
-            ->add('isSpecial', HiddenType::class, ['attr' => ['value' => '1']])
-            ->add('save', SubmitType::class, ['label' => 'Sondertermin speichern'])
+            ->add(
+                $builder
+                    ->create('type', HiddenType::class)
+                    ->addModelTransformer(new CallbackTransformer(
+                        fn (PlayDateType $type): string => $type->value,
+                        fn (string $type): PlayDateType => PlayDateType::from($type),
+                    ))
+            )
+            ->add('save', SubmitType::class, ['label' => 'Zusatztermin speichern'])
         ;
     }
 

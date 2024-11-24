@@ -4,6 +4,7 @@ namespace App\Tests\Functional\PlayDate;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
+use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
@@ -21,6 +22,7 @@ class ShowSpecialPlayDateCest extends AbstractCest
 
         $this->playDateId = $this->playDateFactory->create(
             title: 'Spezialtermin',
+            type: PlayDateType::SPECIAL,
             date: $date,
             daytime: $daytime,
             meetingTime: '14:45',
@@ -37,6 +39,7 @@ class ShowSpecialPlayDateCest extends AbstractCest
         $I->loginAsClown();
         $I->amOnPage('/play_dates/'.$this->playDateId);
 
+        $I->see('Zusatztermin', 'h4');
         $I->see('Spezialtermin', Locator::contains('table tr', text: 'Wo'));
         $I->see('15.01.2124 nachmittags', Locator::contains('table tr', text: 'Wann'));
         $I->see('14:45', Locator::contains('table tr', text: 'Treffen'));

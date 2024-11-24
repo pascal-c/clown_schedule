@@ -23,10 +23,10 @@ class CreatePlayDateForVenueCest extends AbstractCest
         $I->click('Wichern');
         $I->click('Spieltermin anlegen');
         $I->fillField('Datum', '1999-11-02');
-        $I->seeInField('play_date_form[daytime]', TimeSlotPeriodInterface::ALL);
+        $I->seeInField('regular_play_date_form[daytime]', TimeSlotPeriodInterface::ALL);
         $I->seeCheckboxIsChecked('ist ein Super-Spieltermin? (nur relevant für Statistik)');
         $I->click('Spieltermin speichern');
-        $I->see('Spieltermin wurde erfolgreich angelegt.', '.alert-success');
+        $I->see('Spieltermin (regulär) wurde erfolgreich angelegt.', '.alert-success');
         $I->dontSee('02.11.1999');
 
         $I->click('1999', '.nav-link');
