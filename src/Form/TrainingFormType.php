@@ -7,7 +7,6 @@ use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -17,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SpecialPlayDateFormType extends AbstractType
+class TrainingFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -58,12 +57,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Spielzeit (bis)',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-            ])
-            ->add('isSuper', CheckboxType::class, [
-                'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
-                'required' => false,
-            ])
-            ->add(
+            ])->add(
                 $builder
                     ->create('type', HiddenType::class)
                     ->addModelTransformer(new CallbackTransformer(
@@ -71,7 +65,7 @@ class SpecialPlayDateFormType extends AbstractType
                         fn (string $type): PlayDateType => PlayDateType::from($type),
                     ))
             )
-            ->add('save', SubmitType::class, ['label' => 'Zusatztermin speichern'])
+            ->add('save', SubmitType::class, ['label' => 'Trainingstermin speichern'])
         ;
     }
 

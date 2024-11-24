@@ -1,6 +1,6 @@
 <div class="pt-2 lh-sm">
     <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id}) }}">
-        <span class="{{ playDate.isSpecial ? 'text-secondary' : colorClass }}">
+        <span class="{{ colorClass }}">
             {{ playDate.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}
         </span>
     </a><br />

@@ -8,6 +8,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Week;
 use App\Service\TimeService;
+use App\Value\PlayDateType;
 use Doctrine\ORM\QueryBuilder;
 
 class PlayDateRepository extends AbstractRepository
@@ -62,7 +63,7 @@ class PlayDateRepository extends AbstractRepository
     public function regularByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
-            ->andWhere('pd.isSpecial = 0')
+            ->andWhere('pd.type = "'.PlayDateType::REGULAR->value.'"')
             ->getQuery()
             ->enableResultCache(2)
             ->getResult();

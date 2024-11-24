@@ -10,6 +10,7 @@ use App\Entity\Venue;
 use App\Form\PlayDateAssignClownsFormType;
 use App\Form\PlayDateFormType;
 use App\Form\SpecialPlayDateFormType;
+use App\Form\TrainingFormType;
 use App\Repository\ClownRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
@@ -19,6 +20,7 @@ use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\PlayDateHistoryService;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
+use App\Value\PlayDateType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -26,6 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PlayDateController extends AbstractController
 {
@@ -38,6 +41,7 @@ class PlayDateController extends AbstractController
         private PlayDateHistoryService $playDateHistoryService,
         private ClownRepository $clownRepository,
         private TimeService $timeService,
+        private TranslatorInterface $translator,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -71,8 +75,14 @@ class PlayDateController extends AbstractController
             $venue = null;
         }
 
-        $isSpecial = $request->query->get('isSpecial');
-        $form = $this->createForm($isSpecial ? SpecialPlayDateFormType::class : PlayDateFormType::class, $playDate);
+        $type = PlayDateType::from($request->query->get('type', PlayDateType::REGULAR->value));
+        $playDate->setType($type);
+        $formType = match($type) {
+            PlayDateType::REGULAR => PlayDateFormType::class,
+            PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
+            PlayDateType::TRAINING => TrainingFormType::class,
+        };
+        $form = $this->createForm($formType, $playDate);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,14 +91,15 @@ class PlayDateController extends AbstractController
             $this->entityManager->persist($playDate);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spieltermin wurde erfolgreich angelegt.');
+            $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
 
             return $this->redirectAfterSuccess($venue);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Spieltermin konnte nicht angelegt werden.');
+            $this->addFlash('warning', 'Termin konnte nicht angelegt werden.');
         }
 
         return $this->render('play_date/new.html.twig', [
+            'playDate' => $playDate,
             'form' => $form,
         ]);
     }
@@ -119,7 +130,12 @@ class PlayDateController extends AbstractController
 
         $playDate = $this->playDateRepository->find($id);
 
-        $editForm = $this->createForm($playDate->isSpecial() ? SpecialPlayDateFormType::class : PlayDateFormType::class, $playDate, ['method' => 'PATCH']);
+        $editFormType = match($playDate->getType()) {
+            PlayDateType::REGULAR => PlayDateFormType::class,
+            PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
+            PlayDateType::TRAINING => TrainingFormType::class,
+        };
+        $editForm = $this->createForm($editFormType, $playDate, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($playDate)
             ->add(
                 'delete',
@@ -136,14 +152,15 @@ class PlayDateController extends AbstractController
             $playDate->setIsSuper($editForm['isSuper']->isSubmitted());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spieltermin wurde aktualisiert. Sehr gut!');
+            $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde aktualisiert. Sehr gut!');
 
             return $this->redirectAfterSuccess($request->query->get('venue_id') ? $playDate->getVenue() : null);
         } elseif ($editForm->isSubmitted()) {
-            $this->addFlash('warning', 'Hach! Spieltermin konnte irgendwie nicht aktualisiert werden.');
+            $this->addFlash('warning', 'Hach! Termin konnte irgendwie nicht aktualisiert werden.');
         }
 
         return $this->render('play_date/edit.html.twig', [
+            'playDate' => $playDate,
             'form' => $editForm,
             'delete_form' => $deleteForm,
         ]);

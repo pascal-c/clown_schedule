@@ -5,6 +5,7 @@ namespace App\Tests\Functional\PlayDate;
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
 use App\Tests\Step\Functional\AdminTester;
+use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
@@ -32,7 +33,7 @@ class IndexPlayDateCest extends AbstractCest
         );
         $this->playDateFactory->create(
             title: 'Spezialtermin',
-            isSpecial: true,
+            type: PlayDateType::SPECIAL,
             date: new DateTimeImmutable('1985-01-15'),
             daytime: TimeSlotPeriodInterface::AM,
             playingClowns: [$this->clownFactory->create(name: 'Klara'), $this->clownFactory->create(name: 'Bruno')]

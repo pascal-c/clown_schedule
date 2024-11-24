@@ -29,7 +29,8 @@ class ClownInvoiceController extends AbstractController
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);
         $playDates = $this->playDateRepository->byMonthAndClown($month, $clown);
-        $regularPlayDates = array_filter($playDates, fn (PlayDate $playDate): bool => !$playDate->isSpecial());
+        $playDates = array_filter($playDates, fn (PlayDate $playDate): bool => !$playDate->isTraining());
+        $regularPlayDates = array_filter($playDates, fn (PlayDate $playDate): bool => $playDate->isRegular());
         $activeClowns = $this->clownRepository->allActive();
 
         return $this->render('clown_invoice/show.html.twig', [

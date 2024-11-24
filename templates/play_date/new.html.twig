@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Spieltermin anlegen</h4>
+    <h4 class="pt-3">{{ playDate.type.value|trans }} anlegen</h4>
 
     {{ form(form) }}
 {% endblock %}

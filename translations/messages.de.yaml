@@ -12,3 +12,7 @@ give-off: 'abgegeben'
 calculation: 'Spielplanberechnung'
 manual-change-for-schedule: 'Manuelle Änderung im Rahmen der Spielplanerstellung'
 manual-change: 'Manuelle Änderung nach Spielplanerstellung'
+
+regular: 'Spieltermin (regulär)'
+special: 'Zusatztermin'
+training: 'Trainingstermin'

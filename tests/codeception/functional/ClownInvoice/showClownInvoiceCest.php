@@ -4,6 +4,7 @@ namespace App\Tests\Functional\ClownInvoice;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
+use App\Value\PlayDateType;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
 
@@ -20,11 +21,13 @@ class showClownInvoiceCest extends AbstractCest
         // these playDates should be shown
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-22'), venue: $venue1, playingClowns: [$currentClown]);
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-31'), venue: $venue2, playingClowns: [$currentClown]);
-        $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-30'), title: 'Spezial', isSpecial: true, playingClowns: [$currentClown]);
+        $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-30'), title: 'Spezial', type: PlayDateType::SPECIAL, playingClowns: [$currentClown]);
 
         // these should not be shown
         $this->playDateFactory->create(date: new DateTimeImmutable('2000-01-01'), venue: $venue1, playingClowns: [$currentClown]); // wrong month
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-19'), venue: $venue1); // currentClown is not playingClown
+        $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-15'), title: 'Training', type: PlayDateType::TRAINING, playingClowns: [$currentClown]);
+
     }
 
     public function show(FunctionalTester $I): void
@@ -46,7 +49,7 @@ class showClownInvoiceCest extends AbstractCest
         $I->see('Spezial', '//table//tr[2]');
         $row = Locator::contains('table tbody tr', text: 'Spezial');
         $I->see('30.12.1999', $row);
-        $I->see('Sondertermin', $row);
+        $I->see('Zusatztermin', $row);
         $I->see('?', $row);
         $I->dontSeeLink('Spezial');
 
@@ -69,6 +72,7 @@ class showClownInvoiceCest extends AbstractCest
         // what we don't see
         $I->dontSee('01.01.2000');
         $I->dontSee('19.12.1999');
+        $I->dontSee('15.12.1999');
 
         $I->amGoingTo('test next month as well');
         $I->click('>>');
