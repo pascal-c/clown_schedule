@@ -17,6 +17,9 @@
                     {% else %}
                         {{ playDate.name }}
                     {% endif %}
+                    {% if currentClown.isAdmin %}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"}) }}
+                    {% endif %}
                 </td>
             </tr>
             <tr>

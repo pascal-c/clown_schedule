@@ -4,6 +4,7 @@ namespace App\Tests\Functional\PlayDate;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
+use App\Tests\Step\Functional\AdminTester;
 use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
@@ -32,9 +33,23 @@ class ShowTrainingCest extends AbstractCest
         )->getId();
     }
 
-    public function tryToTest(FunctionalTester $I): void
+    public function showAsClown(FunctionalTester $I): void
     {
         $I->loginAsClown();
+        $this->show($I);
+    }
+
+    public function showAsAdmin(AdminTester $I): void
+    {
+        $I->loginAsAdmin();
+        $this->show($I);
+
+        $I->amGoingTo('check that admin is able to edit the date');
+        $I->click('Termin bearbeiten');
+    }
+
+    private function show(FunctionalTester $I): void
+    {
         $I->amOnPage('/play_dates/'.$this->playDateId);
 
         $I->see('Trainingstermin', 'h4');
