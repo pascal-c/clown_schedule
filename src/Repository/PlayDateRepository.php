@@ -63,7 +63,7 @@ class PlayDateRepository extends AbstractRepository
     public function regularByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
-            ->andWhere('pd.type = "'.PlayDateType::REGULAR->value.'"')
+            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."'")
             ->getQuery()
             ->enableResultCache(2)
             ->getResult();

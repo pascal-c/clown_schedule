@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Repository;
 
-use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\Month;
 use App\Entity\Week;
@@ -12,6 +11,7 @@ use App\Factory\ClownFactory;
 use App\Factory\PlayDateFactory;
 use App\Repository\PlayDateRepository;
 use App\Service\TimeService;
+use App\Value\PlayDateType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use DateTimeImmutable;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -98,5 +98,19 @@ final class PlayDateRepositoryTest extends KernelTestCase
 
         $result = $this->repository->byMonth($month);
         $this->assertEqualsCanonicalizing([$one, $two], $result);
+    }
+
+    public function testRegularByMonth(): void
+    {
+        $month = Month::build('2024-02');
+
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-01-31')); // wrong month
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01')); // correct!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::SPECIAL); // wrong type!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-29'), type: PlayDateType::TRAINING); // wrong type!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-03-01')); // wrong month
+
+        $result = $this->repository->regularByMonth($month);
+        $this->assertSame([$one], $result);
     }
 }
