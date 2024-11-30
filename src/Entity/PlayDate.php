@@ -77,8 +77,8 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $playTimeTo = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $type = PlayDateType::REGULAR->value;
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $type = PlayDateType::REGULAR->value;
 
     public function __construct()
     {
@@ -330,5 +330,10 @@ class PlayDate implements TimeSlotPeriodInterface
         $this->type = $type->value;
 
         return $this;
+    }
+
+    public function getFee(): ?VenueFee
+    {
+        return $this->getVenue()?->getFeeFor($this->getDate());
     }
 }

@@ -23,8 +23,13 @@ class TimeService
         return $this->today()->format('Y');
     }
 
+    public function firstOfMonth(): DateTimeImmutable
+    {
+        return $this->today()->modify('first day of');
+    }
+
     public function NearlyEndOfMonth(): DateTimeImmutable
     {
-        return $this->today()->modify('first day of')->modify('+25 days');
+        return $this->firstOfMonth()->modify('+25 days');
     }
 }

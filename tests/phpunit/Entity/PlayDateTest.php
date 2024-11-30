@@ -6,6 +6,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Entity\VenueFee;
 use App\Value\PlayDateType;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
@@ -60,7 +61,7 @@ final class PlayDateTest extends TestCase
 
     public function testType(): void
     {
-        $playDate = (new PlayDate());
+        $playDate = new PlayDate();
         $this->assertSame(PlayDateType::REGULAR, $playDate->getType());
         $this->assertTrue($playDate->isRegular());
 
@@ -71,5 +72,19 @@ final class PlayDateTest extends TestCase
         $playDate->setType(PlayDateType::SPECIAL);
         $this->assertSame(PlayDateType::SPECIAL, $playDate->getType());
         $this->assertTrue($playDate->isSpecial());
+    }
+
+    public function testGetFee(): void
+    {
+        $date = new DateTimeImmutable('2024-11-06');
+        $playDate = (new PlayDate())->setDate($date);
+        $this->assertNull($playDate->getFee());
+
+        $venue = (new Venue())->addFee((new VenueFee())->setValidFrom($date->modify('+1 day')));
+        $playDate->setVenue($venue);
+        $this->assertNull($playDate->getFee());
+
+        $venue->addFee($fee = (new VenueFee())->setValidFrom($date->modify('-1 day')));
+        $this->assertSame($fee, $playDate->getFee());
     }
 }

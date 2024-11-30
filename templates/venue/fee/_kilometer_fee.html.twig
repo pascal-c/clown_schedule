@@ -1,0 +1,6 @@
+{% if fee.kilometers  %}
+    {{ fee.feePerKilometer|format_currency('EUR') }} x {{ fee.kilometers }} km (Hin- und Rück) = 
+    {{ fee.kilometersFee|format_currency('EUR') }} ({{ fee.kilometersFeeForAllClowns ? 'pro Clown' : 'für nur einen Clown' }})
+{% else %}
+    --
+{% endif %}

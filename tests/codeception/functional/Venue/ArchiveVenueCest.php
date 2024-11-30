@@ -32,12 +32,11 @@ class ArchiveVenueCest extends AbstractCest
         $I->click('bearbeiten');
         $I->see('Spielort archivieren', 'button');
 
-        // there seems to be a bug in an external test lib, because the following click creates an error, though it works!
-        /*$I->click('Spielort archivieren');
+        $I->click('Spielort archivieren');
         $I->see('Ok! Spielort Wichern wurde archiviert.');
-        $I->dontSee('Wichern');
+        $I->dontSee('Wichern', 'table');
         $I->click('Archiv');
-        $I->see('Wichern');*/
+        $I->see('Wichern', 'table');
     }
 
     public function archiveNotPossibleWithoutPlayDates(AdminTester $I): void

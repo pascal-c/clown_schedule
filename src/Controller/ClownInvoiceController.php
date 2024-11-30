@@ -41,19 +41,19 @@ class ClownInvoiceController extends AbstractController
             'month' => $month,
             'feeByPublicTransportSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getVenue()->getFeeByPublicTransport(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByPublicTransport(),
                     $regularPlayDates
                 )
             ),
             'feeByCarSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getVenue()->getFeeByCar(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByCar(),
                     $regularPlayDates
                 )
             ),
             'kilometersFeeSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getVenue()->getKilometersFee(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getKilometersFee(),
                     $regularPlayDates
                 )
             ),

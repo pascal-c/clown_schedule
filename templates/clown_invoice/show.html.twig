@@ -24,28 +24,27 @@
             {% for playDate in playDates %}
             <tr>
                 <td>{{ playDate.name }}</td>
-                {% if playDate.special %}
-                    <td>Zusatztermin</td>
-                    <td class="lh-sm">
-                        {{ playDate.date|date('d.m.Y') }}
-                        {% if playDate.comment != '' %}
-                            <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
-                        {% endif %}
-                    </td>
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
+                <td>
+                    {% if playDate.venue %}
+                        <a href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.venue.officialName }}</a>
+                    {% else %}
+                        {{ playDate.type.value|trans }}
+                    {% endif %}
+                </td>
+                <td class="lh-sm">
+                    {{ playDate.date|date('d.m.Y') }}
+                    {% if playDate.comment != '' %}
+                        <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
+                    {% endif %}
+                </td>
+                {% if playDate.fee %}
+                    <td>{{ playDate.fee.feeByPublicTransport|format_currency('EUR') }}</td>
+                    <td>{{ playDate.fee.feeByCar|format_currency('EUR') }}</td>
+                    <td>{{ include('venue/fee/_kilometer_fee.html.twig', {fee: playDate.fee}) }}</td>
                 {% else %}
-                    <td><a href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.venue.officialName }}</a></td>
-                    <td class="lh-sm">
-                        {{ playDate.date|date('d.m.Y') }}
-                        {% if playDate.comment != '' %}
-                            <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
-                        {% endif %}
-                    </td>
-                    <td>{{ playDate.venue.feeByPublicTransport|format_currency('EUR') }}</td>
-                    <td>{{ playDate.venue.feeByCar|format_currency('EUR') }}</td>
-                    <td>{{ include('venue/_kilometer_fee.html.twig', {venue: playDate.venue}) }}</td>
+                    <td>?</td>
+                    <td>?</td>
+                    <td>?</td>
                 {% endif %}
             </tr>
             {% endfor %}

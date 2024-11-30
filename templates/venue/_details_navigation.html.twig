@@ -1,0 +1,14 @@
+<nav class="navbar">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link {{ show == 'details' ? 'active' }}" {{ show == 'details' ? 'aria-current="page"' }} href="{{ path('venue_show', {id: venue.id}) }}">
+                Details
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ show == 'fees' ? 'active' }}" {{ show == 'fees' ? 'aria-current="page"' }} href="{{ path('venue_fee_index', {id: venue.id}) }}">
+                Honorare
+            </a>
+        </li>
+    </ul>
+</nav>
