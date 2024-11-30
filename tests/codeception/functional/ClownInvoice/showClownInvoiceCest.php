@@ -15,8 +15,10 @@ class showClownInvoiceCest extends AbstractCest
         parent::_before($I);
 
         $currentClown = $this->clownFactory->create(email: 'emil@besen.de', password: 'secret');
-        $venue1 = $this->venueFactory->create(name: 'Regulär 1', feeByPublicTransport: 110.0, feeByCar: 100.00, kilometers: 50, feePerKilometer: 0.3);
-        $venue2 = $this->venueFactory->create(name: 'Regulär 2', feeByPublicTransport: 120.0, feeByCar: 100.00, kilometers: 100, feePerKilometer: 0.3);
+        $venue1 = $this->venueFactory->create(name: 'Regulär 1');
+        $venue2 = $this->venueFactory->create(name: 'Regulär 2');
+        $this->venueFeeFactory->create(venue: $venue1, feeByPublicTransport: 110.0, feeByCar: 100.00, kilometers: 50, feePerKilometer: 0.3);
+        $this->venueFeeFactory->create(venue: $venue2, feeByPublicTransport: 120.0, feeByCar: 100.00, kilometers: 100, feePerKilometer: 0.3);
 
         // these playDates should be shown
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-22'), venue: $venue1, playingClowns: [$currentClown]);

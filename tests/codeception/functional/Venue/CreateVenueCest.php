@@ -33,10 +33,6 @@ class CreateVenueCest extends AbstractCest
         $I->fillField('Ansprechperson', 'Anneliese');
         $I->fillField('Telefon', '01234567');
         $I->fillField('Email', 'anneliese@drk.de');
-        $I->fillField('Honorar Öffis', '145,00');
-        $I->fillField('Honorar PKW', '142,00');
-        $I->fillField('Kilometerpauschale', '0,35');
-        $I->fillField('Kilometer', '100');
         $I->checkMultipleOption('Verantwortliche Clowns', ['Erika', 'Elena']);
         $I->checkMultipleOption('Gesperrte Clowns', ['Timo']);
         $I->selectOption('venue_form[daytimeDefault]', TimeSlotPeriodInterface::PM);
@@ -58,9 +54,6 @@ class CreateVenueCest extends AbstractCest
         $I->see('nachmittags', Locator::contains('table tr', text: 'Standard Tageszeit für Spieltermine'));
         $I->see('09:30', Locator::contains('table tr', text: 'Treffen'));
         $I->see('10:00 - 12:00', Locator::contains('table tr', text: 'Spielzeit'));
-        $I->see(html_entity_decode('145,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar Öffis'));
-        $I->see(html_entity_decode('142,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar PKW'));
-        $I->see(html_entity_decode('0,35&nbsp;€ x 100 km (Hin- und Rück) = 35,00&nbsp;€ (pro Clown) '), Locator::contains('table tr', text: 'Kilometergeld'));
         $I->see('Tolle Einrichtung!', Locator::contains('table tr', text: 'Bemerkungen'));
         $I->see('www.clowns-und-clowns.de', Locator::contains('table tr', text: 'Link mit weiteren Infos'));
     }

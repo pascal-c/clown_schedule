@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 class VenueController extends AbstractController
@@ -89,8 +90,6 @@ class VenueController extends AbstractController
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $venue->setKilometersFeeForAllClowns($editForm['kilometersFeeForAllClowns']->isSubmitted());
-            $venue->setIsSuper($editForm['isSuper']->isSubmitted());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
@@ -184,10 +183,9 @@ class VenueController extends AbstractController
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
 
-    #[Route('/venues/{id}/{year}', name: 'venue_show', methods: ['GET'])]
-    public function show(int $id, ?string $year = null): Response
+    #[Route('/venues/{id}', name: 'venue_show', methods: ['GET'])]
+    public function show(Venue $venue, #[MapQueryParameter] ?string $year = null): Response
     {
-        $venue = $this->venueRepository->find($id);
         $year ??= (new DateTimeImmutable())->format('Y');
         $playDates = $venue->getPlayDates();
         $years = array_unique($playDates->map(fn (PlayDate $playDate): string => $playDate->getDate()->format('Y'))->toArray());

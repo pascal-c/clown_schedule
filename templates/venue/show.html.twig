@@ -10,6 +10,8 @@
         {% endif %}
     </h4>
 
+    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'details'}) }}
+
     <table class="table">
         <tbody>
             <tr>
@@ -71,24 +73,6 @@
                 </td>
             </tr>
             <tr>
-                <th>Honorar Öffis</th>
-                <td>
-                    {{ venue.feeByPublicTransport|format_currency('EUR') }}
-                </td>
-            </tr>
-            <tr>
-                <th>Honorar PKW</th>
-                <td>
-                    {{ venue.feeByCar|format_currency('EUR') }}
-                </td>
-            </tr>
-            <tr>
-                <th>Kilometergeld</th>
-                <td>
-                    {{ include('venue/_kilometer_fee.html.twig', {venue: venue}) }}
-                </td>
-            </tr>
-            <tr>
                 <th>Bemerkungen</th>
                 <td>
                     {{ venue.comments|nl2br }}
@@ -126,13 +110,7 @@
     </div>
     {% if currentClown.isAdmin %}
         <div class="container pt-3">
-            <a href="{{ path('play_date_new', {venue_id: venue.id}) }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                </svg>
-                Spieltermin anlegen
-            </a>
+            {{ include('_shared/_create_link.html.twig', {url: path('play_date_new', {venue_id: venue.id}), label: "Spieltermin anlegen"}) }}
         </div>
     {% endif %}    
 {% endblock %}

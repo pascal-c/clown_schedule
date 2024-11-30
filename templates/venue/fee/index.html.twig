@@ -1,0 +1,40 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Spielorte{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">
+        {{ venue.name }}
+        {% if currentClown.isAdmin %}
+            {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit', {id: venue.id}), title: "bearbeiten"}) }}
+        {% endif %}
+    </h4>
+
+    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'fees'}) }}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Gültig ab</th>
+                <th scope="col">Honorar Öffis</th>
+                <th scope="col">Honorar PKW</th>
+                <th scope="col">Kilometergeld</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fee in venue.fees %}
+                <tr>
+                    <td>{{ fee.validFrom ? fee.validFrom|date('d.m.Y') : 'unbekannt' }}</td>
+                    <td>{{ fee.feeByPublicTransport|format_currency('EUR') }}</td>
+                    <td>{{ fee.feeByCar|format_currency('EUR') }}</td>
+                    <td>{{ include('venue/fee/_kilometer_fee.html.twig', {fee: fee}) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if currentClown.isAdmin %}
+        <div class="container pt-3">
+            {{ include('_shared/_create_link.html.twig', {url: path('venue_fee_new', {id: venue.id}), label: "Honorar anlegen"}) }}
+        </div>
+    {% endif %}    
+{% endblock %}

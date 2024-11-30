@@ -66,23 +66,8 @@ class Venue
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $contactEmail = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?float $feeByCar = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?float $feeByPublicTransport = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $kilometers = null;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comments = null;
-
-    #[ORM\Column]
-    private bool $kilometersFeeForAllClowns = true;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2)]
-    private float $feePerKilometer = 0.35;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $officialName = null;
@@ -94,11 +79,19 @@ class Venue
     #[ORM\ManyToMany(targetEntity: Clown::class, inversedBy: 'blockedVenues', )]
     private Collection $blockedClowns;
 
+    /**
+     * @var Collection<int, VenueFee>
+     */
+    #[ORM\OneToMany(targetEntity: VenueFee::class, mappedBy: 'venue', orphanRemoval: true)]
+    #[ORM\OrderBy(['validFrom' => 'DESC'])]
+    private Collection $fees;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
         $this->responsibleClowns = new ArrayCollection();
         $this->blockedClowns = new ArrayCollection();
+        $this->fees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -318,47 +311,6 @@ class Venue
         return $this;
     }
 
-    public function getFeeByCar(): ?float
-    {
-        return $this->feeByCar;
-    }
-
-    public function setFeeByCar(?float $feeByCar): self
-    {
-        $this->feeByCar = $feeByCar;
-
-        return $this;
-    }
-
-    public function getFeeByPublicTransport(): ?float
-    {
-        return $this->feeByPublicTransport;
-    }
-
-    public function setFeeByPublicTransport(?float $feeByPublicTransport): self
-    {
-        $this->feeByPublicTransport = $feeByPublicTransport;
-
-        return $this;
-    }
-
-    public function getKilometersFee(): ?float
-    {
-        return $this->getKilometers() ? $this->getKilometers() * $this->getFeePerKilometer() : null;
-    }
-
-    public function getKilometers(): ?int
-    {
-        return $this->kilometers;
-    }
-
-    public function setKilometers(?int $kilometers): self
-    {
-        $this->kilometers = $kilometers;
-
-        return $this;
-    }
-
     public function getComments(): ?string
     {
         return $this->comments;
@@ -367,30 +319,6 @@ class Venue
     public function setComments(?string $comments): self
     {
         $this->comments = $comments;
-
-        return $this;
-    }
-
-    public function isKilometersFeeForAllClowns(): bool
-    {
-        return $this->kilometersFeeForAllClowns;
-    }
-
-    public function setKilometersFeeForAllClowns(bool $kilometersFeeForAllClowns): self
-    {
-        $this->kilometersFeeForAllClowns = $kilometersFeeForAllClowns;
-
-        return $this;
-    }
-
-    public function getFeePerKilometer(): float
-    {
-        return $this->feePerKilometer;
-    }
-
-    public function setFeePerKilometer(float $feePerKilometer): self
-    {
-        $this->feePerKilometer = $feePerKilometer;
 
         return $this;
     }
@@ -444,6 +372,47 @@ class Venue
     public function removeBlockedClown(Clown $blockedClown): static
     {
         $this->blockedClowns->removeElement($blockedClown);
+
+        return $this;
+    }
+
+    public function getFeeFor(DateTimeImmutable $date): ?VenueFee
+    {
+        foreach ($this->getFees() as $fee) { // fees are sorted by date desc...
+            if ($date >= $fee->getValidFrom()) {
+                return $fee;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Collection<int, VenueFee>
+     */
+    public function getFees(): Collection
+    {
+        return $this->fees;
+    }
+
+    public function addFee(VenueFee $fee): static
+    {
+        if (!$this->fees->contains($fee)) {
+            $this->fees->add($fee);
+            $fee->setVenue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFee(VenueFee $fee): static
+    {
+        if ($this->fees->removeElement($fee)) {
+            // set the owning side to null (unless already changed)
+            if ($fee->getVenue() === $this) {
+                $fee->setVenue(null);
+            }
+        }
 
         return $this;
     }

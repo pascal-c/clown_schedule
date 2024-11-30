@@ -10,8 +10,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -34,11 +32,6 @@ class VenueFormType extends AbstractType
             ->add('contactPerson', TextType::class, ['label' => 'Ansprechperson', 'required' => false])
             ->add('contactPhone', TelType::class, ['label' => 'Telefon', 'required' => false])
             ->add('contactEmail', EmailType::class, ['label' => 'Email', 'required' => false])
-            ->add('feeByPublicTransport', MoneyType::class, ['label' => 'Honorar Öffis', 'required' => false])
-            ->add('feeByCar', MoneyType::class, ['label' => 'Honorar PKW', 'required' => false])
-            ->add('feePerKilometer', MoneyType::class, ['label' => 'Kilometerpauschale', 'required' => true])
-            ->add('kilometers', NumberType::class, ['label' => 'Kilometer', 'html5' => true, 'required' => false])
-            ->add('kilometersFeeForAllClowns', CheckboxType::class, ['label' => 'Kilometergeld für beide Clowns', 'required' => false])
             ->add('responsibleClowns', EntityType::class, [
                 'class' => Clown::class,
                 'choice_label' => 'name',

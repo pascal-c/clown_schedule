@@ -17,10 +17,6 @@ class VenueFactory extends AbstractFactory
         ?string $meetingTime = null,
         ?string $playTimeFrom = null,
         ?string $playTimeTo = null,
-        ?float $feeByPublicTransport = null,
-        ?float $feeByCar = null,
-        ?int $kilometers = null,
-        float $feePerKilometer = 0.35,
         bool $isSuper = false,
         bool $archived = false,
     ): Venue {
@@ -31,10 +27,6 @@ class VenueFactory extends AbstractFactory
             ->setMeetingTime(new DateTimeImmutable($meetingTime ?? $meetingTimeGenerated))
             ->setPlayTimeFrom(new DateTimeImmutable($playTimeFrom ?? $playTimeFromGenerated))
             ->setPlayTimeTo(new DateTimeImmutable($playTimeTo ?? $playTimeToGenerated))
-            ->setFeeByPublicTransport($feeByPublicTransport)
-            ->setFeeByCar($feeByCar)
-            ->setKilometers($kilometers)
-            ->setFeePerKilometer($feePerKilometer)
             ->setIsSuper($isSuper)
             ->setArchived($archived)
         ;

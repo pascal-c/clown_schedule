@@ -38,10 +38,10 @@ class PlayDateFactory extends AbstractFactory
         $date ??= $month ? DateTimeImmutable::createFromMutable(
             $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin')
         ) : new DateTimeImmutable();
-        $venue ??= $this->venueFactory->create();
+        $venue ??= $type->isRegular() ? $this->venueFactory->create() : null;
         $playDate = (new PlayDate())
             ->setDate($date)
-            ->setDaytime($daytime ?? $venue->getDaytimeDefault())
+            ->setDaytime($daytime ?? ($venue ? $venue->getDaytimeDefault() : 'am'))
             ->setVenue($venue)
             ->setType($type)
             ->setTitle($title)
