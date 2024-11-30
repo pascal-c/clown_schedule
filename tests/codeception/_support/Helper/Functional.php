@@ -7,8 +7,4 @@ namespace App\Tests\Helper;
 
 class Functional extends \Codeception\Module
 {
-    public function seeCurrentUrl(string $url)
-    {
-        return $this->getModule('WebDriver')->_getCurrentUri();
-    }
 }

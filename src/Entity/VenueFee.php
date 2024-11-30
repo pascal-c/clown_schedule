@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\VenueFeeRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
 
-#[ORM\Entity(repositoryClass: VenueFeeRepository::class)]
+#[ORM\Entity]
 #[ORM\Index(name: 'valid_from_idx', columns: ['valid_from'])]
 class VenueFee
 {
@@ -120,12 +120,12 @@ class VenueFee
         return $this;
     }
 
-    public function getValidFrom(): ?DateTimeInterface
+    public function getValidFrom(): ?DateTimeImmutable
     {
         return $this->validFrom;
     }
 
-    public function setValidFrom(?DateTimeInterface $validFrom): static
+    public function setValidFrom(?DateTimeImmutable $validFrom): static
     {
         $this->validFrom = $validFrom;
 
