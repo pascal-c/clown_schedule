@@ -25,9 +25,8 @@ class VenueFeeController extends AbstractController
     }
 
     #[Route('/venues/{id}/fees', name: 'venue_fee_index', methods: ['GET'])]
-    public function index(int $id): Response
+    public function index(Venue $venue): Response
     {
-        $venue = $this->venueRepository->find($id);
 
         return $this->render('venue/fee/index.html.twig', [
             'venue' => $venue,
