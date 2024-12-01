@@ -20,7 +20,7 @@ abstract class AbstractFactory
     protected function generate(string $type, mixed $value = null): mixed
     {
         if (is_null($value)) {
-            $value = $this->generator->format($type);
+            $value = $this->generator->unique()->format($type);
         }
 
         return $value;
