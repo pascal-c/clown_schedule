@@ -1,14 +1,22 @@
 <?php
 
-namespace App\Tests\Functional\Venue;
+namespace App\Tests\Functional\PlayDate;
 
 use App\Tests\Functional\AbstractCest;
+use App\Tests\FunctionalTester;
 use App\Tests\Step\Functional\AdminTester;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 
 class CreateTrainingCest extends AbstractCest
 {
+    public function _before(FunctionalTester $I): void
+    {
+        parent::_before($I);
+        $this->clownFactory->create(name: 'Thorsten', isActive: true);
+        $this->clownFactory->create(name: 'Fernando', isActive: false);
+    }
+
     public function create(AdminTester $I): void
     {
         $I->loginAsAdmin();
@@ -27,7 +35,9 @@ class CreateTrainingCest extends AbstractCest
         $I->amGoingTo('test, if the new training is being showed correctly in schedule');
         $I->amOnPage('/schedule/1999-12');
         $I->see('Training', Locator::contains('.row', text: '03. Dez'));
-        $I->click('Training');
+        $I->click('Training', Locator::contains('.row', text: '03. Dez'));
         $I->see('Trainingstermin', 'h4');
+        $I->see('Thorsten', Locator::contains('table tr', text: 'Spielende Clowns'));
+        $I->dontSee('Fernando', Locator::contains('table tr', text: 'Spielende Clowns'));
     }
 }
