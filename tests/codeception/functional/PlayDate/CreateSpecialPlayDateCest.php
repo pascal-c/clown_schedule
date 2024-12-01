@@ -1,14 +1,21 @@
 <?php
 
-namespace App\Tests\Functional\Venue;
+namespace App\Tests\Functional\PlayDate;
 
 use App\Tests\Functional\AbstractCest;
+use App\Tests\FunctionalTester;
 use App\Tests\Step\Functional\AdminTester;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 
 class CreateSpecialPlayDateCest extends AbstractCest
 {
+    public function _before(FunctionalTester $I): void
+    {
+        parent::_before($I);
+        $this->clownFactory->create(name: 'Thorsten');
+    }
+
     public function create(AdminTester $I): void
     {
         $I->loginAsAdmin();
@@ -27,5 +34,6 @@ class CreateSpecialPlayDateCest extends AbstractCest
         $I->amGoingTo('test, if the new special date is being showed correctly in schedule');
         $I->amOnPage('/schedule/1999-11');
         $I->see('Kindergeburtstag', Locator::contains('.row', text: '02. Nov'));
+        $I->dontSee('Thorsten', Locator::contains('.row', text: '02. Nov'));
     }
 }

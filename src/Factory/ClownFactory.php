@@ -9,14 +9,20 @@ use App\Lib\Collection;
 
 class ClownFactory extends AbstractFactory
 {
-    public function create(?string $name = null, ?string $email = null, string $password = 'clown', $isAdmin = false): Clown
-    {
+    public function create(
+        ?string $name = null,
+        ?string $email = null,
+        string $password = 'clown',
+        $isAdmin = false,
+        $isActive = true,
+    ): Clown {
         $clown = (new Clown())
             ->setName($this->generate('firstName', $name))
             ->setGender('diverse')
             ->setEmail($this->generate('safeEmail', $email))
             ->setPassword(password_hash($password, PASSWORD_DEFAULT))
             ->setIsAdmin($isAdmin)
+            ->setIsActive($isActive)
         ;
 
         $this->entityManager->persist($clown);
