@@ -4,6 +4,7 @@ namespace App\Tests\Functional\Venue;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
+use App\Tests\Helper\Functional;
 use App\Tests\Step\Functional\AdminTester;
 use Codeception\Util\Locator;
 
@@ -34,8 +35,10 @@ class IndexVenueFeeCest extends AbstractCest
         );
     }
 
-    public function index(AdminTester $I): void
+    public function indexWhenLastFeeIsFromCurrentMonth(AdminTester $I): void
     {
+        Functional::$now = '2022-04-15';
+
         $I->loginAsAdmin();
         $I->click('Spielorte');
         $I->click('Spargelheim');
@@ -47,9 +50,23 @@ class IndexVenueFeeCest extends AbstractCest
         $I->see(html_entity_decode('150,00&nbsp;€'), Locator::contains('table tbody tr:first-child', text: '14.04.2022'));
         $I->see(html_entity_decode('140,00&nbsp;€'), Locator::contains('table tbody tr:first-child', text: '14.04.2022'));
         $I->see(html_entity_decode('0,40&nbsp;€ x 300 km (Hin- und Rück) = 120,00&nbsp;€ (für nur einen Clown) '), Locator::contains('table tbody tr:first-child', text: '14.04.2022'));
+        $I->see('', 'table tbody tr:first-child a'); // shows an edit link
 
         $I->see(html_entity_decode('140,00&nbsp;€'), Locator::contains('table tbody tr:last-child', text: 'unbekannt'));
         $I->see(html_entity_decode('135,50&nbsp;€'), Locator::contains('table tbody tr:last-child', text: 'unbekannt'));
         $I->see(html_entity_decode('0,30&nbsp;€ x 200 km (Hin- und Rück) = 60,00&nbsp;€ (pro Clown) '), Locator::contains('table tbody tr:last-child', text: 'unbekannt'));
+        $I->dontSee('', 'table tbody tr:last-child a'); // does not show an edit link for second row
+    }
+
+    public function indexWhenLastFeeIsOld(AdminTester $I): void
+    {
+        Functional::$now = '2022-05-01';
+
+        $I->loginAsAdmin();
+        $I->click('Spielorte');
+        $I->click('Spargelheim');
+        $I->click('Honorare', '.nav-link');
+
+        $I->dontSee('', 'table tbody tr a'); // does not show any edit link
     }
 }

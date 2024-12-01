@@ -15,7 +15,7 @@ class TimeService
 
     public function today(): DateTimeImmutable
     {
-        return new DateTimeImmutable('today');
+        return $this->now()->modify('today');
     }
 
     public function currentYear(): string

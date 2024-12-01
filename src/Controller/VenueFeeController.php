@@ -27,10 +27,15 @@ class VenueFeeController extends AbstractController
     #[Route('/venues/{id}/fees', name: 'venue_fee_index', methods: ['GET'])]
     public function index(Venue $venue): Response
     {
+        $showEditLink = false;
+        if ($firstFee = $venue->getFees()->first()) {
+            $showEditLink = $this->timeService->firstOfMonth() <= $firstFee->getValidFrom();
+        }
 
         return $this->render('venue/fee/index.html.twig', [
             'venue' => $venue,
             'active' => 'venue',
+            'showEditLink' => $showEditLink,
         ]);
     }
 
@@ -67,6 +72,31 @@ class VenueFeeController extends AbstractController
             'form' => $form,
             'active' => 'venue',
             'venue' => $venue,
+        ]);
+    }
+
+    #[Route('/venues/fees/{id}/edit', name: 'venue_fee_edit', methods: ['GET', 'POST'])]
+    public function edit(VenueFee $venueFee, Request $request): Response
+    {
+        $this->adminOnly();
+
+        $form = $this->createForm(VenueFeeFormType::class, $venueFee);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Großartig! Honorar erfolgreich aktualisiert!');
+
+            return $this->redirectToRoute('venue_fee_index', ['id' => $venueFee->getVenue()->getId()]);
+        } elseif ($form->isSubmitted()) {
+            $this->addFlash('warning', 'Das können wir so nicht machen!');
+        }
+
+        return $this->render('venue/fee/edit.html.twig', [
+            'form' => $form,
+            'active' => 'venue',
+            'venue' => $venueFee->getVenue(),
         ]);
     }
 }
