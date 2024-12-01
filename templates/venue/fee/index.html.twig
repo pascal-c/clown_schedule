@@ -24,7 +24,12 @@
         <tbody>
             {% for fee in venue.fees %}
                 <tr>
-                    <td>{{ fee.validFrom ? fee.validFrom|date('d.m.Y') : 'unbekannt' }}</td>
+                    <td>
+                        {{ fee.validFrom ? fee.validFrom|date('d.m.Y') : 'unbekannt' }}
+                        {% if currentClown.isAdmin and loop.first and showEditLink %}
+                            {{ include('_shared/_edit_link.html.twig', {url: path('venue_fee_edit', {id: fee.id}), title: "bearbeiten"}) }}
+                        {% endif %}
+                    </td>
                     <td>{{ fee.feeByPublicTransport|format_currency('EUR') }}</td>
                     <td>{{ fee.feeByCar|format_currency('EUR') }}</td>
                     <td>{{ include('venue/fee/_kilometer_fee.html.twig', {fee: fee}) }}</td>

@@ -25,13 +25,15 @@ class VenueFeeFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $fee = $builder->getData();
         $builder
             ->add('validFrom', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Gültig ab',
                 'input' => 'datetime_immutable',
+                'disabled' => !is_null($fee->getId()),
                 'required' => true,
-                'constraints' => $this->validFromConstraints($builder->getData()->getVenue()),
+                'constraints' => $this->validFromConstraints($fee->getVenue()),
             ])
             ->add('feeByPublicTransport', MoneyType::class, ['label' => 'Honorar Öffis', 'required' => false])
             ->add('feeByCar', MoneyType::class, ['label' => 'Honorar PKW', 'required' => false])

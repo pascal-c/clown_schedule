@@ -14,4 +14,4 @@ modules:
         - Doctrine:
             depends: Symfony
             cleanup: true
-        - \App\Tests\Helper\Functional
+        - App\Tests\Helper\Functional
