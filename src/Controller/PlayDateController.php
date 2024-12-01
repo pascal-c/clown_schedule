@@ -126,7 +126,7 @@ class PlayDateController extends AbstractController
         ]);
     }
 
-    #[Route('/play_dates/edit/{id}', name: 'play_date_edit', methods: ['GET', 'PATCH'])]
+    #[Route('/play_dates/edit/{id}', name: 'play_date_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, int $id): Response
     {
         $this->adminOnly();
@@ -138,7 +138,7 @@ class PlayDateController extends AbstractController
             PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
             PlayDateType::TRAINING => TrainingFormType::class,
         };
-        $editForm = $this->createForm($editFormType, $playDate, ['method' => 'PATCH']);
+        $editForm = $this->createForm($editFormType, $playDate, ['method' => 'PUT']);
         $deleteForm = $this->createFormBuilder($playDate)
             ->add(
                 'delete',
@@ -151,8 +151,6 @@ class PlayDateController extends AbstractController
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $playDate = $editForm->getData();
-            $playDate->setIsSuper($editForm['isSuper']->isSubmitted());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde aktualisiert. Sehr gut!');
