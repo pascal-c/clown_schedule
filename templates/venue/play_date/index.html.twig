@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Spielorte{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">
+        {{ venue.name }}
+        {% if currentClown.isAdmin %}
+            {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit', {id: venue.id}), title: "bearbeiten"}) }}
+        {% endif %}
+    </h4>
+
+    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'play_dates'}) }}
+    
+    {{ include('venue/_year_navigation.html.twig', {venue: venue, years: years, activeYear: activeYear}) }}
+    
+    <h5>Spieltermine {{ venue.name }} {{ activeYear }}</h5>
+
+    <div class="container">
+        <div class="row">
+    {% for playDate in playDates %}
+            <div class="col-6 col-md-3 col-lg-2">
+            {{ playDate.date|date("d.m.Y") }} 
+            {% if currentClown.isAdmin %}
+                {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id, venue_id: venue.id}), title: "Termin bearbeiten"}) }}
+            {% endif %}
+            </div>
+    {% endfor %}
+        </div>
+    </div>
+    {% if currentClown.isAdmin %}
+        <div class="container pt-3">
+            {{ include('_shared/_create_link.html.twig', {url: path('play_date_new', {venue_id: venue.id}), label: "Spieltermin anlegen"}) }}
+        </div>
+    {% endif %}    
+{% endblock %}
