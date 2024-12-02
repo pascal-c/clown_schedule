@@ -227,7 +227,7 @@ class PlayDateController extends AbstractController
     private function redirectAfterSuccess(?Venue $venue)
     {
         if (isset($venue)) {
-            return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
+            return $this->redirectToRoute('venue_play_date_index', ['id' => $venue->getId()]);
         }
 
         return $this->redirectToRoute('schedule');

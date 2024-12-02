@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\PlayDate;
 use App\Entity\Venue;
 use App\Form\VenueFormType;
 use App\Repository\VenueRepository;
 use App\Service\TimeService;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 class VenueController extends AbstractController
@@ -184,20 +181,11 @@ class VenueController extends AbstractController
     }
 
     #[Route('/venues/{id}', name: 'venue_show', methods: ['GET'])]
-    public function show(Venue $venue, #[MapQueryParameter] ?string $year = null): Response
+    public function show(Venue $venue): Response
     {
-        $year ??= (new DateTimeImmutable())->format('Y');
-        $playDates = $venue->getPlayDates();
-        $years = array_unique($playDates->map(fn (PlayDate $playDate): string => $playDate->getDate()->format('Y'))->toArray());
-
         return $this->render('venue/show.html.twig', [
             'venue' => $venue,
             'active' => 'venue',
-            'playDates' => $venue->getPlayDates()->filter(
-                fn (PlayDate $playDate): bool => $year === $playDate->getDate()->format('Y')
-            ),
-            'activeYear' => $year,
-            'years' => $years,
         ]);
     }
 

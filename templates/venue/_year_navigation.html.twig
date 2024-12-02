@@ -3,7 +3,7 @@
         <a name="year-navigation" />
         {% for year in years %}
             <li class="nav-item">
-                <a class="nav-link {{ activeYear == year ? 'active' }}" {{ activeYear == year ? 'aria-current="page"' }} href="{{ path('venue_show', {id: venue.id, year: year}) }}#year-navigation">
+                <a class="nav-link {{ activeYear == year ? 'active' }}" {{ activeYear == year ? 'aria-current="page"' }} href="{{ path('venue_play_date_index', {id: venue.id, year: year}) }}#year-navigation">
                     {{ year }}
                 </a>
             </li>

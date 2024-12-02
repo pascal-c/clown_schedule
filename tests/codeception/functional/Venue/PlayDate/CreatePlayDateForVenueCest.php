@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Venue;
+namespace App\Tests\Functional\Venue\PlayDate;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
@@ -21,6 +21,7 @@ class CreatePlayDateForVenueCest extends AbstractCest
         $I->loginAsAdmin();
         $I->click('Spielorte', 'nav .nav-link');
         $I->click('Wichern');
+        $I->click('Spieltermine', '.nav-link');
         $I->click('Spieltermin anlegen');
         $I->fillField('Datum', '1999-11-02');
         $I->seeInField('regular_play_date_form[daytime]', TimeSlotPeriodInterface::ALL);

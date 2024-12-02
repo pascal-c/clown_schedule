@@ -10,5 +10,10 @@
                 Honorare
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ show == 'play_dates' ? 'active' }}" {{ show == 'play_dates' ? 'aria-current="page"' }} href="{{ path('venue_play_date_index', {id: venue.id}) }}">
+                Spieltermine
+            </a>
+        </li>
     </ul>
 </nav>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Venue;
+namespace App\Tests\Functional\Venue\Fee;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
