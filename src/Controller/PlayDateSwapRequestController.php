@@ -69,7 +69,7 @@ class PlayDateSwapRequestController extends AbstractController
             $this->mailer->sendSwapRequestMail($playDateChangeRequest, $formData['comment']);
 
             $this->addFlash('success', 'Tauschanfrage wurde erfolgreich gestellt. '.$requestedTo->getName().' hat eine Email bekommen. Hoffentlich klappt das!');
-            $this->addFlash('info', 'Übrigens: Du kannst für einen Spieltermin auch mehrere Tauschanfragen parallel stellen! Sobald eine der Tauschanfragen angenommen wird, werden die anderen automtisch geschlossen.');
+            $this->addFlash('info', 'Übrigens: Du kannst für einen Spieltermin auch mehrere Tauschanfragen parallel stellen! Sobald eine der Tauschanfragen angenommen wird, werden die anderen automatisch geschlossen.');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {

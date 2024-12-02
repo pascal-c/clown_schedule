@@ -72,7 +72,7 @@ class Rater
     {
         $points = 0;
         foreach ($playDate->getPlayingClowns() as $clown) {
-            $availability = $clown->getAvailabilityFor($playDate->getMonth())->getAvailabilityOn($playDate);
+            $availability = $clown->getAvailabilityFor($playDate->getMonth())?->getAvailabilityOn($playDate);
             if ('maybe' === $availability) {
                 $points += static::POINTS_PER_MAYBE_CLOWN;
             }
@@ -127,9 +127,11 @@ class Rater
 
         // add 1 for every playDate
         foreach ($playDates as $playDate) {
+            $weekId = $playDate->getWeek()->getId();
             foreach ($playDate->getPlayingClowns() as $clown) {
-                $weekId = $playDate->getWeek()->getId();
-                ++$clownPlaysPerWeek[$clown->getId()][$weekId];
+                if (array_key_exists($clown->getId(), $clownPlaysPerWeek)) {
+                    ++$clownPlaysPerWeek[$clown->getId()][$weekId];
+                }
             }
         }
 
