@@ -80,6 +80,9 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column(length: 255, nullable: false)]
     private string $type = PlayDateType::REGULAR->value;
 
+    #[ORM\ManyToOne(inversedBy: 'playDates')]
+    private ?Fee $fee = null;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -332,8 +335,15 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this;
     }
 
-    public function getFee(): ?VenueFee
+    public function getFee(): ?Fee
     {
-        return $this->getVenue()?->getFeeFor($this->getDate());
+        return $this->fee ?? $this->getVenue()?->getFeeFor($this->getDate());
+    }
+
+    public function setFee(?Fee $fee): static
+    {
+        $this->fee = $fee;
+
+        return $this;
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Venue;
-use App\Entity\VenueFee;
+use App\Entity\Fee;
 use App\Form\VenueFeeFormType;
 use App\Repository\VenueRepository;
 use App\Service\TimeService;
@@ -44,7 +44,7 @@ class VenueFeeController extends AbstractController
     {
         $this->adminOnly();
 
-        $newFee = new VenueFee();
+        $newFee = new Fee();
         if ($lastFee = $venue->getFees()->first()) {
             $newFee->setFeeByCar($lastFee->getFeeByCar());
             $newFee->setFeeByPublicTransport($lastFee->getFeeByPublicTransport());
@@ -76,7 +76,7 @@ class VenueFeeController extends AbstractController
     }
 
     #[Route('/venues/fees/{id}/edit', name: 'venue_fee_edit', methods: ['GET', 'POST'])]
-    public function edit(VenueFee $venueFee, Request $request): Response
+    public function edit(Fee $venueFee, Request $request): Response
     {
         $this->adminOnly();
 

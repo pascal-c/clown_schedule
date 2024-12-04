@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Venue;
-use App\Entity\VenueFee;
+use App\Entity\Fee;
 use DateTimeImmutable;
 
 class VenueFeeFactory extends AbstractFactory
@@ -18,8 +18,8 @@ class VenueFeeFactory extends AbstractFactory
         ?int $kilometers = null,
         float $feePerKilometer = 0.35,
         bool $kilometersFeeForAllClowns = true,
-    ): VenueFee {
-        $venueFee = (new VenueFee())
+    ): Fee {
+        $venueFee = (new Fee())
             ->setVenue($venue)
             ->setValidFrom($validFrom ? new DateTimeImmutable($validFrom) : null)
             ->setFeeByPublicTransport($feeByPublicTransport)

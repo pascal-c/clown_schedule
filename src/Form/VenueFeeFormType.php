@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Venue;
-use App\Entity\VenueFee;
+use App\Entity\Fee;
 use App\Service\TimeService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -47,7 +47,7 @@ class VenueFeeFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => VenueFee::class,
+            'data_class' => Fee::class,
         ]);
     }
 
