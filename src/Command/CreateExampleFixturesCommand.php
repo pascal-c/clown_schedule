@@ -8,7 +8,7 @@ use App\Factory\ClownFactory;
 use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
-use App\Factory\VenueFeeFactory;
+use App\Factory\FeeFactory;
 use App\Lib\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -32,7 +32,7 @@ class CreateExampleFixturesCommand extends Command
         private PlayDateFactory $playDateFactory,
         private PlayDateChangeRequestFactory $_,
         private VenueFactory $venueFactory,
-        private VenueFeeFactory $_venueFeeFactory,
+        private FeeFactory $_feeFactory,
     ) {
         parent::__construct();
     }

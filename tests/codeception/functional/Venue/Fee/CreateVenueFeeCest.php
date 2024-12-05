@@ -15,7 +15,7 @@ class CreateVenueFeeCest extends AbstractCest
         parent::_before($I);
 
         $venue = $this->venueFactory->create(name: 'Spargelheim');
-        $this->venueFeeFactory->create(
+        $this->feeFactory->create(
             venue: $venue,
             feeByPublicTransport: 145.50,
             feeByCar: 133.33,
@@ -54,7 +54,7 @@ class CreateVenueFeeCest extends AbstractCest
         $I->see('Großartig! Neues Honorar erfolgreich angelegt!');
         $I->see(html_entity_decode('150,00&nbsp;€'), Locator::contains('table tbody tr:first-child', text: '03.11.2024'));
         $I->see(html_entity_decode('142,00&nbsp;€'), Locator::contains('table tbody tr:first-child', text: '03.11.2024'));
-        $I->see(html_entity_decode('0,40&nbsp;€ x 300 km (Hin- und Rück) = 120,00&nbsp;€ (pro Clown) '), Locator::contains('table tr:first-child', text: '03.11.2024'));
+        $I->see(html_entity_decode('0,40&nbsp;€ x 300 km (Hin- und Rück) = 120,00&nbsp;€ (pro Clown)'), Locator::contains('table tr:first-child', text: '03.11.2024'));
     }
 
     public function createFailureNewValidDateOlderThanExisting(AdminTester $I): void

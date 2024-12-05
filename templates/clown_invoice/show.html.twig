@@ -40,7 +40,7 @@
                 {% if playDate.fee %}
                     <td>{{ playDate.fee.feeByPublicTransport|format_currency('EUR') }}</td>
                     <td>{{ playDate.fee.feeByCar|format_currency('EUR') }}</td>
-                    <td>{{ include('venue/fee/_kilometer_fee.html.twig', {fee: playDate.fee}) }}</td>
+                    <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}</td>
                 {% else %}
                     <td>?</td>
                     <td>?</td>

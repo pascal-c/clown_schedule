@@ -8,10 +8,10 @@ use App\Entity\Venue;
 use App\Entity\Fee;
 use DateTimeImmutable;
 
-class VenueFeeFactory extends AbstractFactory
+class FeeFactory extends AbstractFactory
 {
     public function create(
-        Venue $venue,
+        ?Venue $venue = null,
         ?string $validFrom = null,
         ?float $feeByPublicTransport = null,
         ?float $feeByCar = null,

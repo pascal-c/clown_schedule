@@ -90,4 +90,17 @@ final class PlayDateTest extends TestCase
         $playDate->setFee($playDateFee = new Fee());
         $this->assertSame($playDateFee, $playDate->getFee());
     }
+
+    public function testIsPaid(): void
+    {
+        $playDate = (new PlayDate());
+        $playDate->setType(PlayDateType::REGULAR);
+        $this->assertTrue($playDate->isPaid());
+
+        $playDate->setType(PlayDateType::SPECIAL);
+        $this->assertTrue($playDate->isPaid());
+
+        $playDate->setType(PlayDateType::TRAINING);
+        $this->assertFalse($playDate->isPaid());
+    }
 }

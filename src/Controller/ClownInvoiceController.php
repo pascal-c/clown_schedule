@@ -30,7 +30,6 @@ class ClownInvoiceController extends AbstractController
         $clown = $this->clownRepository->find($clownId);
         $playDates = $this->playDateRepository->byMonthAndClown($month, $clown);
         $playDates = array_filter($playDates, fn (PlayDate $playDate): bool => !$playDate->isTraining());
-        $regularPlayDates = array_filter($playDates, fn (PlayDate $playDate): bool => $playDate->isRegular());
         $activeClowns = $this->clownRepository->allActive();
 
         return $this->render('clown_invoice/show.html.twig', [
@@ -42,19 +41,19 @@ class ClownInvoiceController extends AbstractController
             'feeByPublicTransportSum' => array_sum(
                 array_map(
                     fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByPublicTransport(),
-                    $regularPlayDates
+                    $playDates
                 )
             ),
             'feeByCarSum' => array_sum(
                 array_map(
                     fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByCar(),
-                    $regularPlayDates
+                    $playDates
                 )
             ),
             'kilometersFeeSum' => array_sum(
                 array_map(
                     fn (PlayDate $playDate) => $playDate->getFee()?->getKilometersFee(),
-                    $regularPlayDates
+                    $playDates
                 )
             ),
         ]);

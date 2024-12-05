@@ -340,10 +340,20 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this->fee ?? $this->getVenue()?->getFeeFor($this->getDate());
     }
 
+    public function getPlayDateFee(): ?Fee
+    {
+        return $this->fee;
+    }
+
     public function setFee(?Fee $fee): static
     {
         $this->fee = $fee;
 
         return $this;
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->isRegular() || $this->isSpecial();
     }
 }
