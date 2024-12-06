@@ -9,7 +9,7 @@ use DateTimeInterface;
 
 #[ORM\Entity]
 #[ORM\Index(name: 'valid_from_idx', columns: ['valid_from'])]
-class VenueFee
+class Fee
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +17,7 @@ class VenueFee
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'fees')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Venue $venue = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]

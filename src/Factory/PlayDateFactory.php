@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use App\Entity\Fee;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
@@ -35,6 +36,7 @@ class PlayDateFactory extends AbstractFactory
         ?string $playTimeFrom = null,
         ?string $playTimeTo = null,
         bool $isSuper = false,
+        ?Fee $fee = null,
     ): PlayDate {
         $date ??= $month ? DateTimeImmutable::createFromMutable(
             $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin')
@@ -50,6 +52,7 @@ class PlayDateFactory extends AbstractFactory
             ->setPlayTimeFrom($playTimeFrom ? new DateTimeImmutable($playTimeFrom) : null)
             ->setPlayTimeTo($playTimeTo ? new DateTimeImmutable($playTimeTo) : null)
             ->setIsSuper($isSuper)
+            ->setFee($fee)
         ;
         foreach ($playingClowns as $playingClown) {
             $playDate->addPlayingClown($playingClown);

@@ -15,7 +15,7 @@ class EditVenueFeeCest extends AbstractCest
         parent::_before($I);
 
         $venue = $this->venueFactory->create(name: 'Spargelheim');
-        $this->venueFeeFactory->create(
+        $this->feeFactory->create(
             venue: $venue,
             feeByPublicTransport: 145.50,
             feeByCar: 133.33,

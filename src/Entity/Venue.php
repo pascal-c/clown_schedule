@@ -80,9 +80,9 @@ class Venue
     private Collection $blockedClowns;
 
     /**
-     * @var Collection<int, VenueFee>
+     * @var Collection<int, Fee>
      */
-    #[ORM\OneToMany(targetEntity: VenueFee::class, mappedBy: 'venue', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Fee::class, mappedBy: 'venue', orphanRemoval: true)]
     #[ORM\OrderBy(['validFrom' => 'DESC'])]
     private Collection $fees;
 
@@ -376,7 +376,7 @@ class Venue
         return $this;
     }
 
-    public function getFeeFor(DateTimeImmutable $date): ?VenueFee
+    public function getFeeFor(DateTimeImmutable $date): ?Fee
     {
         foreach ($this->getFees() as $fee) { // fees are sorted by date desc...
             if ($date >= $fee->getValidFrom()) {
@@ -388,14 +388,14 @@ class Venue
     }
 
     /**
-     * @return Collection<int, VenueFee>
+     * @return Collection<int, Fee>
      */
     public function getFees(): Collection
     {
         return $this->fees;
     }
 
-    public function addFee(VenueFee $fee): static
+    public function addFee(Fee $fee): static
     {
         if (!$this->fees->contains($fee)) {
             $this->fees->add($fee);
@@ -405,7 +405,7 @@ class Venue
         return $this;
     }
 
-    public function removeFee(VenueFee $fee): static
+    public function removeFee(Fee $fee): static
     {
         if ($this->fees->removeElement($fee)) {
             // set the owning side to null (unless already changed)

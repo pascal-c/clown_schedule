@@ -15,7 +15,7 @@ class IndexVenueFeeCest extends AbstractCest
         parent::_before($I);
 
         $venue = $this->venueFactory->create(name: 'Spargelheim');
-        $this->venueFeeFactory->create(
+        $this->feeFactory->create(
             venue: $venue,
             feeByPublicTransport: 140.00,
             feeByCar: 135.50,
@@ -24,7 +24,7 @@ class IndexVenueFeeCest extends AbstractCest
             kilometersFeeForAllClowns: true,
             validFrom: null,
         );
-        $this->venueFeeFactory->create(
+        $this->feeFactory->create(
             venue: $venue,
             feeByPublicTransport: 150.0,
             feeByCar: 140.0,

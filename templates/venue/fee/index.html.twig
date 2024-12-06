@@ -32,7 +32,7 @@
                     </td>
                     <td>{{ fee.feeByPublicTransport|format_currency('EUR') }}</td>
                     <td>{{ fee.feeByCar|format_currency('EUR') }}</td>
-                    <td>{{ include('venue/fee/_kilometer_fee.html.twig', {fee: fee}) }}</td>
+                    <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: fee}) }}</td>
                 </tr>
             {% endfor %}
         </tbody>

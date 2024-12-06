@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Venue;
-use App\Entity\VenueFee;
+use App\Entity\Fee;
 use DateTimeImmutable;
 
-class VenueFeeFactory extends AbstractFactory
+class FeeFactory extends AbstractFactory
 {
     public function create(
-        Venue $venue,
+        ?Venue $venue = null,
         ?string $validFrom = null,
         ?float $feeByPublicTransport = null,
         ?float $feeByCar = null,
         ?int $kilometers = null,
         float $feePerKilometer = 0.35,
         bool $kilometersFeeForAllClowns = true,
-    ): VenueFee {
-        $venueFee = (new VenueFee())
+    ): Fee {
+        $venueFee = (new Fee())
             ->setVenue($venue)
             ->setValidFrom($validFrom ? new DateTimeImmutable($validFrom) : null)
             ->setFeeByPublicTransport($feeByPublicTransport)

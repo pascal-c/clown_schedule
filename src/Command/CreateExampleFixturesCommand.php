@@ -8,7 +8,7 @@ use App\Factory\ClownFactory;
 use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
-use App\Factory\VenueFeeFactory;
+use App\Factory\FeeFactory;
 use App\Lib\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -32,7 +32,7 @@ class CreateExampleFixturesCommand extends Command
         private PlayDateFactory $playDateFactory,
         private PlayDateChangeRequestFactory $_,
         private VenueFactory $venueFactory,
-        private VenueFeeFactory $_venueFeeFactory,
+        private FeeFactory $_feeFactory,
     ) {
         parent::__construct();
     }
@@ -62,7 +62,7 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateHistory')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateChangeRequest')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDate')->execute();
-        $this->entityManager->createQuery('DELETE FROM App\Entity\VenueFee')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Fee')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Venue')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Substitution')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailabilityTime')->execute();

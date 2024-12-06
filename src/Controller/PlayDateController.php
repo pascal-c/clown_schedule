@@ -96,7 +96,7 @@ class PlayDateController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
 
-            return $this->redirectAfterSuccess($venue);
+            return $this->redirectAfterSuccess($playDate, $venue);
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Termin konnte nicht angelegt werden.');
         }
@@ -126,7 +126,7 @@ class PlayDateController extends AbstractController
         ]);
     }
 
-    #[Route('/play_dates/edit/{id}', name: 'play_date_edit', methods: ['GET', 'PUT'])]
+    #[Route('/play_dates/{id}/edit', name: 'play_date_edit', methods: ['GET', 'PUT'])]
     public function edit(Request $request, int $id): Response
     {
         $this->adminOnly();
@@ -155,7 +155,7 @@ class PlayDateController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde aktualisiert. Sehr gut!');
 
-            return $this->redirectAfterSuccess($request->query->get('venue_id') ? $playDate->getVenue() : null);
+            return $this->redirectAfterSuccess($playDate, $request->query->get('venue_id') ? $playDate->getVenue() : null);
         } elseif ($editForm->isSubmitted()) {
             $this->addFlash('warning', 'Hach! Termin konnte irgendwie nicht aktualisiert werden.');
         }
@@ -216,7 +216,11 @@ class PlayDateController extends AbstractController
 
             $this->addFlash('success', 'Spieltermin wurde gelöscht. Das ist gut!');
 
-            return $this->redirectAfterSuccess($request->query->get('venue_id') ? $playDate->getVenue() : null);
+            if ($request->query->get('venue_id')) {
+                return $this->redirectToRoute('venue_play_date_index', ['id' => $playDate->getVenue()->getId()]);
+            }
+
+            return $this->redirectToRoute('schedule');
         }
 
         $this->addFlash('warning', 'Achtung! Spieltermin konnte nicht gelöscht werden.');
@@ -224,13 +228,15 @@ class PlayDateController extends AbstractController
         return $this->redirectToRoute('play_date_edit', ['id' => $playDate->getId()]);
     }
 
-    private function redirectAfterSuccess(?Venue $venue)
+    private function redirectAfterSuccess(PlayDate $playDate, ?Venue $venue)
     {
-        if (isset($venue)) {
+        if ($playDate->isSpecial() && !$playDate->getPlayDateFee()) {
+            return $this->redirectToRoute('play_date_fee_edit', ['id' => $playDate->getId()]);
+        } elseif (isset($venue)) {
             return $this->redirectToRoute('venue_play_date_index', ['id' => $venue->getId()]);
         }
 
-        return $this->redirectToRoute('schedule');
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
 
     protected function render(string $view, array $parameters = [], ?Response $response = null): Response

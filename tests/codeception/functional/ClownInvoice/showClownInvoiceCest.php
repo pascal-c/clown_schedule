@@ -18,14 +18,22 @@ class showClownInvoiceCest extends AbstractCest
         $venue1 = $this->venueFactory->create(name: 'Regulär 1');
         $venue2 = $this->venueFactory->create(name: 'Regulär 2');
         $venue3 = $this->venueFactory->create(name: 'Regulär 3'); // without fees
-        $this->venueFeeFactory->create(venue: $venue1, feeByPublicTransport: 110.0, feeByCar: 100.00, kilometers: 50, feePerKilometer: 0.3);
-        $this->venueFeeFactory->create(venue: $venue1, validFrom: '2000-01', feeByPublicTransport: 112.0, feeByCar: 101.00, kilometers: 100, feePerKilometer: 0.35);
-        $this->venueFeeFactory->create(venue: $venue2, feeByPublicTransport: 120.0, feeByCar: 100.00, kilometers: 100, feePerKilometer: 0.3);
+        $this->feeFactory->create(venue: $venue1, feeByPublicTransport: 110.0, feeByCar: 100.00, kilometers: 50, feePerKilometer: 0.3);
+        $this->feeFactory->create(venue: $venue1, validFrom: '2000-01', feeByPublicTransport: 112.0, feeByCar: 101.00, kilometers: 100, feePerKilometer: 0.35);
+        $this->feeFactory->create(venue: $venue2, feeByPublicTransport: 120.0, feeByCar: 100.00, kilometers: 100, feePerKilometer: 0.3);
 
         // these playDates should be shown in december 1999
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-22'), venue: $venue1, playingClowns: [$currentClown]);
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-31'), venue: $venue2, playingClowns: [$currentClown]);
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-30'), title: 'Spezial', type: PlayDateType::SPECIAL, playingClowns: [$currentClown]);
+        $this->playDateFactory->create(
+            date: new DateTimeImmutable('1999-12-31'),
+            daytime: 'pm',
+            title: 'Bezahlter Zusatztermin',
+            type: PlayDateType::SPECIAL,
+            playingClowns: [$currentClown],
+            fee: $this->feeFactory->create(feeByPublicTransport: 10.0, feeByCar: 5.00, kilometers: 10, feePerKilometer: 0.3),
+        );
 
         // these playDates should be shown in january 2000
         $this->playDateFactory->create(date: new DateTimeImmutable('2000-01-01'), venue: $venue1, playingClowns: [$currentClown]);
@@ -40,6 +48,8 @@ class showClownInvoiceCest extends AbstractCest
     public function show(FunctionalTester $I): void
     {
         $I->login('emil@besen.de', 'secret');
+
+        // December 1999
         $I->amOnPage('/schedule/1999-12');
         $I->click('Rechnungsansicht');
 
@@ -68,19 +78,28 @@ class showClownInvoiceCest extends AbstractCest
         $I->see('100,00', $row);
         $I->see('30,00', $row);
 
+        // fourthRow
+        $I->see('Bezahlter Zusatztermin', '//table//tr[4]');
+        $row = Locator::contains('table tbody tr', text: 'Bezahlter Zusatztermin');
+        $I->see('31.12.1999', $row);
+        $I->see('10,00', $row);
+        $I->see('5,00', $row);
+        $I->see('3,00', $row);
+
         // sumRow
-        $I->see('Summe', '//table//tr[4]');
+        $I->see('Summe', '//table//tr[5]');
         $row = Locator::contains('table tbody tr', text: 'Summe');
         $I->see('Dez. 1999', $row);
-        $I->see('230,00', $row);
-        $I->see('200,00', $row);
-        $I->see('45,00', $row);
+        $I->see('240,00', $row);
+        $I->see('205,00', $row);
+        $I->see('48,00', $row);
 
         // what we don't see
         $I->dontSee('01.01.2000');
         $I->dontSee('19.12.1999');
         $I->dontSee('15.12.1999');
 
+        // January 2000
         $I->amGoingTo('test next month as well');
         $I->click('>>');
 

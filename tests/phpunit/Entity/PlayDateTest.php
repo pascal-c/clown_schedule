@@ -6,7 +6,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
-use App\Entity\VenueFee;
+use App\Entity\Fee;
 use App\Value\PlayDateType;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
@@ -80,11 +80,27 @@ final class PlayDateTest extends TestCase
         $playDate = (new PlayDate())->setDate($date);
         $this->assertNull($playDate->getFee());
 
-        $venue = (new Venue())->addFee((new VenueFee())->setValidFrom($date->modify('+1 day')));
+        $venue = (new Venue())->addFee((new Fee())->setValidFrom($date->modify('+1 day')));
         $playDate->setVenue($venue);
         $this->assertNull($playDate->getFee());
 
-        $venue->addFee($fee = (new VenueFee())->setValidFrom($date->modify('-1 day')));
-        $this->assertSame($fee, $playDate->getFee());
+        $venue->addFee($venueFee = (new Fee())->setValidFrom($date->modify('-1 day')));
+        $this->assertSame($venueFee, $playDate->getFee());
+
+        $playDate->setFee($playDateFee = new Fee());
+        $this->assertSame($playDateFee, $playDate->getFee());
+    }
+
+    public function testIsPaid(): void
+    {
+        $playDate = (new PlayDate());
+        $playDate->setType(PlayDateType::REGULAR);
+        $this->assertTrue($playDate->isPaid());
+
+        $playDate->setType(PlayDateType::SPECIAL);
+        $this->assertTrue($playDate->isPaid());
+
+        $playDate->setType(PlayDateType::TRAINING);
+        $this->assertFalse($playDate->isPaid());
     }
 }
