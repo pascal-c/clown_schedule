@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
@@ -39,17 +37,6 @@ class Fee
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $validFrom = null;
-
-    /**
-     * @var Collection<int, PlayDate>
-     */
-    #[ORM\OneToMany(targetEntity: PlayDate::class, mappedBy: 'fee')]
-    private Collection $playDates;
-
-    public function __construct()
-    {
-        $this->playDates = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -141,36 +128,6 @@ class Fee
     public function setValidFrom(?DateTimeImmutable $validFrom): static
     {
         $this->validFrom = $validFrom;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, PlayDate>
-     */
-    public function getPlayDates(): Collection
-    {
-        return $this->playDates;
-    }
-
-    public function addPlayDate(PlayDate $playDate): static
-    {
-        if (!$this->playDates->contains($playDate)) {
-            $this->playDates->add($playDate);
-            $playDate->setFee($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlayDate(PlayDate $playDate): static
-    {
-        if ($this->playDates->removeElement($playDate)) {
-            // set the owning side to null (unless already changed)
-            if ($playDate->getFee() === $this) {
-                $playDate->setFee(null);
-            }
-        }
 
         return $this;
     }
