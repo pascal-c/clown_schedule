@@ -7,6 +7,7 @@ use App\Tests\FunctionalTester;
 use App\Tests\Step\Functional\AdminTester;
 use App\Value\PlayDateType;
 use Codeception\Attribute\Before;
+use Codeception\Attribute\Depends;
 use Codeception\Util\Locator;
 
 class EditPlayDateFeeCest extends AbstractCest
@@ -45,6 +46,7 @@ class EditPlayDateFeeCest extends AbstractCest
     }
 
     #[Before('create')]
+    #[Depends('create')]
     public function edit(AdminTester $I): void
     {
         $I->click('bearbeiten', Locator::contains('table tr', text: 'Honorar'));
