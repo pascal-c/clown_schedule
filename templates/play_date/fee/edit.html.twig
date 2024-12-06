@@ -5,6 +5,6 @@
 
     {{ form(form) }}
     {% if not hasFee %}
-        <a href="{{ path('play_date_show', {id: playDate.id}) }}" alt="Jetzt erstmal kein Honorar anlegen">Überspringen</a>
+        <a href="{{ path('play_date_show', {id: playDate.id}) }}" title="Jetzt erstmal kein Honorar anlegen">Überspringen</a>
     {% endif %}
 {% endblock %}
