@@ -95,6 +95,9 @@ class PlayDateController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
+            if ($playDate->isTraining()) {
+                $this->addFlash('success', 'Alle aktiven Clowns habe ich schonmal eingetragen.');
+            }
 
             return $this->redirectAfterSuccess($playDate, $venue);
         } elseif ($form->isSubmitted()) {

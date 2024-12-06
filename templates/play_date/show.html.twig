@@ -47,6 +47,9 @@
                 <th>Spielende Clowns</th>
                 <td>
                     {{ playDate.playingClowns|map(clown => clown.name)|join(' | ') }}
+                    {% if currentClown.isAdmin %}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"}) }}
+                    {% endif %}
                 </td>
             </tr>
             <tr>
