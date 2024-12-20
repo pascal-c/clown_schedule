@@ -8,9 +8,9 @@
         {% endif %}
     </h4>
 
-    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'fees'}) }}
+    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'contacts'}) }}
 
-    <h5 class="pt-3">Honorar für {{ venue.name }} bearbeiten</h5>
+    <h5 class="pt-3">Neuen Kontakt für {{ venue.name }} anlegen</h5>
 
     {{ form(form) }}
 {% endblock %}
