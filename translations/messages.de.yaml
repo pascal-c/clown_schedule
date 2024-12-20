@@ -16,3 +16,8 @@ manual-change: 'Manuelle Änderung nach Spielplanerstellung'
 regular: 'Spieltermin (regulär)'
 special: 'Zusatztermin'
 training: 'Trainingstermin'
+
+First name: 'Vorname'
+Last name: 'Nachname'
+Function: 'Funktion'
+Phone: 'Telefon'
