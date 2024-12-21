@@ -22,7 +22,6 @@ class VenueContactFormType extends AbstractType
             ->add('phone', TextType::class, ['required' => false])
             ->add('save', SubmitType::class, ['label' => 'speichern'])
         ;
-        parent::buildForm($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
