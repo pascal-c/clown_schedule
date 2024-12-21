@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Spielortee{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">
+        {{ venue.name }}
+        {% if currentClown.isAdmin %}
+            {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit', {id: venue.id}), title: "bearbeiten"}) }}
+        {% endif %}
+    </h4>
+
+    {% block innercontent %}{% endblock %}
+{% endblock %}

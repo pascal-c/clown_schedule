@@ -57,15 +57,6 @@ class Venue
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $contactPerson = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $contactPhone = null;
-
-    #[ORM\Column(length: 100, nullable: true)]
-    private ?string $contactEmail = null;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comments = null;
 
@@ -86,12 +77,19 @@ class Venue
     #[ORM\OrderBy(['validFrom' => 'DESC'])]
     private Collection $fees;
 
+    /**
+     * @var Collection<int, Contact>
+     */
+    #[ORM\ManyToMany(targetEntity: Contact::class)]
+    private Collection $contacts;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
         $this->responsibleClowns = new ArrayCollection();
         $this->blockedClowns = new ArrayCollection();
         $this->fees = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -275,42 +273,6 @@ class Venue
         return $this;
     }
 
-    public function getContactPerson(): ?string
-    {
-        return $this->contactPerson;
-    }
-
-    public function setContactPerson(?string $contactPerson): self
-    {
-        $this->contactPerson = $contactPerson;
-
-        return $this;
-    }
-
-    public function getContactPhone(): ?string
-    {
-        return $this->contactPhone;
-    }
-
-    public function setContactPhone(?string $contactPhone): self
-    {
-        $this->contactPhone = $contactPhone;
-
-        return $this;
-    }
-
-    public function getContactEmail(): ?string
-    {
-        return $this->contactEmail;
-    }
-
-    public function setContactEmail(?string $contactEmail): self
-    {
-        $this->contactEmail = $contactEmail;
-
-        return $this;
-    }
-
     public function getComments(): ?string
     {
         return $this->comments;
@@ -413,6 +375,30 @@ class Venue
                 $fee->setVenue(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contact $contact): static
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contact $contact): static
+    {
+        $this->contacts->removeElement($contact);
 
         return $this;
     }

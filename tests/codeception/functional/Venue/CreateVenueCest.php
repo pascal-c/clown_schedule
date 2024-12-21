@@ -30,9 +30,6 @@ class CreateVenueCest extends AbstractCest
         $I->fillField('Straße und Hausnummer', 'Teststr. 34');
         $I->fillField('PLZ', '04277');
         $I->fillField('Ort', 'Leipzig');
-        $I->fillField('Ansprechperson', 'Anneliese');
-        $I->fillField('Telefon', '01234567');
-        $I->fillField('Email', 'anneliese@drk.de');
         $I->checkMultipleOption('Verantwortliche Clowns', ['Erika', 'Elena']);
         $I->checkMultipleOption('Gesperrte Clowns', ['Timo']);
         $I->selectOption('venue_form[daytimeDefault]', TimeSlotPeriodInterface::PM);
@@ -46,9 +43,6 @@ class CreateVenueCest extends AbstractCest
         $I->see('DRK Leipzig', 'h4');
         $I->see('Deutsches Rotes Kreuz Leipzig', Locator::contains('table tr', text: 'Offizieller Name'));
         $I->see('Teststr. 34, 04277 Leipzig', Locator::contains('table tr', text: 'Adresse'));
-        $I->see('Anneliese', Locator::contains('table tr', text: 'Ansprechperson'));
-        $I->see('01234567', Locator::contains('table tr', text: 'Telefon'));
-        $I->see('anneliese@drk.de', Locator::contains('table tr', text: 'Email'));
         $I->see('Erika | Elena', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
         $I->see('Timo', Locator::contains('table tr', text: 'Gesperrte Clowns'));
         $I->see('nachmittags', Locator::contains('table tr', text: 'Standard Tageszeit für Spieltermine'));

@@ -1,0 +1,36 @@
+{% extends "venue/base.html.twig" %}
+
+{% block innercontent %}
+    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'contacts'}) }}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Funktion</th>
+                <th scope="col">Email</th>
+                <th scope="col">Telefon</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contact in venue.contacts %}
+                <tr>
+                    <td>
+                        {{ contact.fullname }}
+                        {% if currentClown.isAdmin %}
+                            {{ include('_shared/_edit_link.html.twig', {url: path('venue_contact_edit', {id: venue.id, contact_id: contact.id}), title: "bearbeiten"}) }}
+                        {% endif %}
+                    </td>
+                    <td>{{ contact.function }}</td>
+                    <td><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></td>
+                    <td>{{ contact.phone }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if currentClown.isAdmin %}
+        <div class="container pt-3">
+            {{ include('_shared/_create_link.html.twig', {url: path('venue_contact_new', {id: venue.id}), label: "Kontakt anlegen"}) }}
+        </div>
+    {% endif %}    
+{% endblock %}

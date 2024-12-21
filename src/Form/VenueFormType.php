@@ -9,9 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
@@ -29,9 +27,6 @@ class VenueFormType extends AbstractType
             ->add('streetAndNumber', TextType::class, ['label' => 'Straße und Hausnummer', 'required' => false])
             ->add('postalCode', TextType::class, ['label' => 'PLZ', 'required' => false])
             ->add('city', TextType::class, ['label' => 'Ort', 'required' => false])
-            ->add('contactPerson', TextType::class, ['label' => 'Ansprechperson', 'required' => false])
-            ->add('contactPhone', TelType::class, ['label' => 'Telefon', 'required' => false])
-            ->add('contactEmail', EmailType::class, ['label' => 'Email', 'required' => false])
             ->add('responsibleClowns', EntityType::class, [
                 'class' => Clown::class,
                 'choice_label' => 'name',
