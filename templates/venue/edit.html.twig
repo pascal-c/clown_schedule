@@ -1,6 +1,8 @@
-{% extends "base.html.twig" %}
+{% extends "venue/base.html.twig" %}
 
-{% block content %}
+{% block innercontent %}
+    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'details'}) }}
+
     <h4 class="pt-3">Spielort bearbeiten</h4>
 
     {{ form(form) }}
