@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional;
 
 use App\Tests\FunctionalTester;
+use App\Tests\Helper\Functional;
 use App\Value\PlayDateType;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
@@ -46,10 +47,17 @@ class DashboardCest extends AbstractCest
             venue: $this->venueFactory->create(name: 'Anderes Heim'),
             playingClowns: [$this->clownFactory->create(name: 'Anderer Clown')],
         );
+        $this->playDateFactory->create(
+            date: new DateTimeImmutable('2024-12-14'),
+            daytime: TimeSlotInterface::AM,
+            playingClowns: [$currentClown],
+        );
     }
 
     public function showNextDates(FunctionalTester $I): void
     {
+        Functional::$now = '2024-12-15';
+
         $I->login(email: 'hugo@example.org', password: 'secret');
         $I->amOnPage('/');
 
@@ -70,6 +78,11 @@ class DashboardCest extends AbstractCest
 
         $I->amGoingTo('check that a play date not assigned to me is not shown');
         $I->dontSee('25.12.2025');
+        $I->dontSee('Anderes Heim');
+        $I->dontSee('Anderer Clown');
+
+        $I->amGoingTo('check that a play date in the past is not shown');
+        $I->dontSee('14.12.2024');
         $I->dontSee('Anderes Heim');
         $I->dontSee('Anderer Clown');
     }
