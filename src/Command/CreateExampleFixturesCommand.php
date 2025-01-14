@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\Month;
 use App\Factory\ClownAvailabilityFactory;
 use App\Factory\ClownFactory;
+use App\Factory\ContactFactory;
 use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
@@ -32,7 +33,8 @@ class CreateExampleFixturesCommand extends Command
         private PlayDateFactory $playDateFactory,
         private PlayDateChangeRequestFactory $_,
         private VenueFactory $venueFactory,
-        private FeeFactory $_feeFactory,
+        private FeeFactory $feeFactory,
+        private ContactFactory $contactFactory,
     ) {
         parent::__construct();
     }
@@ -63,6 +65,7 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateChangeRequest')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDate')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Fee')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Contact')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Venue')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Substitution')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailabilityTime')->execute();
@@ -77,6 +80,11 @@ class CreateExampleFixturesCommand extends Command
             fn () => $this->venueFactory->create(playingClowns: $clowns->samples(0, 4)),
             10,
         );
+        foreach ($venues as $venue) {
+            $this->feeFactory->create(venue: $venue);
+            $this->contactFactory->createList(1, 3, $venue);
+
+        }
 
         $month = Month::build('now');
         $maxCount = 6;

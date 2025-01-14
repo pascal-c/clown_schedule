@@ -6,6 +6,7 @@ namespace App\Factory;
 
 use App\Entity\Venue;
 use App\Entity\Fee;
+use App\Lib\Collection;
 use DateTimeImmutable;
 
 class FeeFactory extends AbstractFactory
@@ -17,21 +18,33 @@ class FeeFactory extends AbstractFactory
         ?float $feeByCar = null,
         ?int $kilometers = null,
         float $feePerKilometer = 0.35,
-        bool $kilometersFeeForAllClowns = true,
+        ?bool $kilometersFeeForAllClowns = null,
     ): Fee {
+        list($feeByPublicTransportGenerated, $feeByCarGenerated, $kilometersGenerated, $kilometersFeeForAllClownsGenerated) = $this->feeOptions()->sample();
         $venueFee = (new Fee())
             ->setVenue($venue)
             ->setValidFrom($validFrom ? new DateTimeImmutable($validFrom) : null)
-            ->setFeeByPublicTransport($feeByPublicTransport)
-            ->setFeeByCar($feeByCar)
-            ->setKilometers($kilometers)
+            ->setFeeByPublicTransport($feeByPublicTransport ?? $feeByPublicTransportGenerated)
+            ->setFeeByCar($feeByCar ?? $feeByCarGenerated)
+            ->setKilometers($kilometers ?? $kilometersGenerated)
             ->setFeePerKilometer($feePerKilometer)
-            ->setKilometersFeeForAllClowns($kilometersFeeForAllClowns)
+            ->setKilometersFeeForAllClowns($kilometersFeeForAllClowns ?? $kilometersFeeForAllClownsGenerated)
         ;
 
         $this->entityManager->persist($venueFee);
         $this->entityManager->flush();
 
         return $venueFee;
+    }
+
+    private function feeOptions(): Collection
+    {
+        return new Collection([
+            [120.0, 110.0, 50, true],
+            [150.0, 150.0, null, true],
+            [130.0, 120.0, 100, true],
+            [160.0, 140.0, 150, false],
+            [100.0, 100.0, null, true],
+        ]);
     }
 }

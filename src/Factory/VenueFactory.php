@@ -57,7 +57,7 @@ class VenueFactory extends AbstractFactory
             return $name;
         }
 
-        $prefix = (new Collection(['Klinik', 'Seniorenheim', 'Senior:innenparadies']))->sample();
+        $prefix = (new Collection(['Klinik', 'Kinderklinik', 'Altenzentrum', 'Senior:innenparadies', 'Pflegeheim']))->sample();
 
         return $prefix.' '.$this->generate('city', $name);
     }
