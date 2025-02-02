@@ -4,16 +4,15 @@ namespace App\Repository;
 
 use App\Entity\Clown;
 use App\Value\PlayDateType;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
-class ClownRepository
+class ClownRepository extends AbstractRepository
 {
     protected EntityRepository $doctrineRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    protected function getEntityName(): string
     {
-        $this->doctrineRepository = $entityManager->getRepository(Clown::class);
+        return Clown::class;
     }
 
     public function all(): array
