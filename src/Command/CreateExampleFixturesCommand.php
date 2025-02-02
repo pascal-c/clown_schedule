@@ -82,7 +82,7 @@ class CreateExampleFixturesCommand extends Command
         );
         foreach ($venues as $venue) {
             $this->feeFactory->create(venue: $venue);
-            $this->contactFactory->createList(1, 3, $venue);
+            $this->contactFactory->createList($venue, 1, 3);
 
         }
 

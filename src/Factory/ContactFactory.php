@@ -33,7 +33,7 @@ class ContactFactory extends AbstractFactory
         return $contact;
     }
 
-    public function createList(int $min, ?int $max = null, Venue $venue): Collection
+    public function createList(Venue $venue, int $min, ?int $max = null): Collection
     {
         $count = is_null($max) ? $min : rand($min, $max);
         $contacts = new Collection();
