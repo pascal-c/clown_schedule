@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Clown;
+use App\Entity\Token;
 use App\Repository\ClownRepository;
+use App\Repository\TokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,6 +20,9 @@ class AuthService
         private RequestStack $requestStack,
         private TokenGeneratorInterface $tokenGenerator,
         private EntityManagerInterface $entityManager,
+        private TokenRepository $tokenRepository,
+        private TimeService $timeService,
+        private TokenService $tokenService,
     ) {
     }
 
@@ -66,10 +71,14 @@ class AuthService
 
     public function getLoginToken(Clown $clown): string
     {
-        $session = $this->requestStack->getSession();
+        $this->tokenService->deleteExpired();
         $token = $this->tokenGenerator->generateToken();
-        $session->set('loginToken', $token);
-        $session->set('loginTokenClownId', $clown->getId());
+        $tokenEntity = (new Token())
+            ->setToken($token)
+            ->setClown($clown)
+            ->setExpiresAt($this->timeService->now()->modify('+1 hour'));
+        $this->entityManager->persist($tokenEntity);
+        $this->entityManager->flush();
 
         return $token;
     }
@@ -77,13 +86,15 @@ class AuthService
     public function loginByToken(string $token): bool
     {
         $session = $this->requestStack->getSession();
+        $tokenEntity = $this->tokenRepository->find($token);
 
-        if ($token === $session->get('loginToken')) {
+        if ($tokenEntity) {
             $session->set('isLoggedIn', true);
-            $session->set('currentClownId', $session->remove('loginTokenClownId'));
-            $this->currentClown = null;
+            $session->set('currentClownId', $tokenEntity->getClown()->getId());
+            $this->currentClown = $tokenEntity->getClown();
 
-            $session->remove('loginToken');
+            $this->entityManager->remove($tokenEntity);
+            $this->entityManager->flush();
 
             return true;
         }
