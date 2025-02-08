@@ -61,4 +61,26 @@ class InvitationCest extends AbstractCest
         $I->see('Herzlich Willkommen, Erika! Schön, dass Du da bist.');
         $I->seeCurrentUrlEquals('/dashboard');
     }
+
+    #[Before('acceptInvitation')]
+    public function sendInvitationEmailAgainFailure(AdminTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->click('Clowns', 'nav');
+        $I->click('Erika');
+        $I->dontSee('Einladungsemail senden');
+    }
+
+    #[Before('invite')]
+    public function sendInvitationEmailAgainSuccess(AdminTester $I)
+    {
+        $I->startFollowingRedirects();
+        $I->loginAsAdmin();
+        $I->stopFollowingRedirects();
+        $I->click('Clowns', 'nav');
+        $I->click('Erika');
+        $I->see('Einladungsemail senden');
+        $I->click('Einladungsemail senden');
+        $I->seeEmailIsSent(1);
+    }
 }

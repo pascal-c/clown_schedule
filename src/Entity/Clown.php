@@ -249,6 +249,11 @@ class Clown
         return $this;
     }
 
+    public function hasNoPassword(): bool
+    {
+        return is_null($this->password);
+    }
+
     public function isAdmin(): bool
     {
         return $this->isAdmin;

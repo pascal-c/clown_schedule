@@ -63,6 +63,16 @@ class ClownController extends AbstractController
         ]);
     }
 
+    #[Route('/clowns/{id}/send_invitation_email', name: 'clown_send_invitation_email', methods: ['POST'])]
+    public function sendInvitationEmail(Clown $clown): Response
+    {
+        $this->adminOnly();
+        $this->mailer->sendInvitationMail($clown, $this->getCurrentClown());
+        $this->addFlash('success', sprintf('Alles klar! Ich habe eine Einladungsemail an %s geschickt.', $clown->getName()));
+
+        return $this->redirectToRoute('clown_index');
+    }
+
     #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PATCH'])]
     public function edit(Request $request, int $id): Response
     {
@@ -78,6 +88,14 @@ class ClownController extends AbstractController
                 ['label' => 'Clown löschen', 'attr' => ['onclick' => 'return confirm("Clown endgültig löschen?")']]
             )
             ->setMethod('DELETE')
+            ->getForm();
+        $sendInvitationForm = $this->createFormBuilder($clown)
+            ->add(
+                'send_invitation_email',
+                SubmitType::class,
+                ['label' => 'Einladungsemail senden', 'attr' => ['onclick' => 'return confirm("Jetzt Email senden?")']]
+            )
+            ->setAction($this->generateUrl('clown_send_invitation_email', ['id' => $clown->getId()]))
             ->getForm();
 
         $form->handleRequest($request);
@@ -97,6 +115,7 @@ class ClownController extends AbstractController
         return $this->render('clown/edit.html.twig', [
             'form' => $form,
             'delete_form' => $deleteForm,
+            'send_invitation_form' => $clown->hasNoPassword() ? $sendInvitationForm : null,
             'active' => 'clown',
         ]);
     }
