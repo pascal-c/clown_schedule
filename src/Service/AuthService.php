@@ -69,14 +69,14 @@ class AuthService
         return $this->currentClown;
     }
 
-    public function getLoginToken(Clown $clown): string
+    public function getLoginToken(Clown $clown, string $expirationInterval = '+1 hour'): string
     {
         $this->tokenService->deleteExpired();
         $token = $this->tokenGenerator->generateToken();
         $tokenEntity = (new Token())
             ->setToken($token)
             ->setClown($clown)
-            ->setExpiresAt($this->timeService->now()->modify('+1 hour'));
+            ->setExpiresAt($this->timeService->now()->modify($expirationInterval));
         $this->entityManager->persist($tokenEntity);
         $this->entityManager->flush();
 

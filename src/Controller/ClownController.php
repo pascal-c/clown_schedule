@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Clown;
 use App\Form\ClownFormType;
+use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,7 +17,7 @@ class ClownController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, private ClownRepository $clownRepository)
+    public function __construct(ManagerRegistry $doctrine, private ClownRepository $clownRepository, private AuthenticationMailer $mailer)
     {
         $this->entityManager = $doctrine->getManager();
     }
@@ -46,6 +47,10 @@ class ClownController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich angelegt.');
+            if ($form['send_invitation_email']->getData()) {
+                $this->mailer->sendInvitationMail($clown, $this->getCurrentClown());
+                $this->addFlash('success', 'Ich habe auch eine Einladungsemail an den Clown geschickt.');
+            }
 
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {

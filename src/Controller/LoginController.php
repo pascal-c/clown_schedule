@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Form\AcceptInvitationFormType;
+use App\Form\ChangePasswordFormType;
 use App\Form\LoginFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use App\Service\AuthService;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Length;
 
 class LoginController extends AbstractController
 {
@@ -84,20 +82,7 @@ class LoginController extends AbstractController
     #[Route('/change_password/{token}', name: 'change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, string $token): Response
     {
-        $passwordForm = $this->createFormBuilder()
-            ->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'Die Passwörter stimmen nicht überein.',
-                'options' => ['label' => false, 'constraints' => [new Length(['min' => 8])]],
-                'required' => true,
-                'first_options' => ['attr' => ['placeholder' => 'Neues Passwort', 'autocomplete' => 'new-password']],
-                'second_options' => ['attr' => ['placeholder' => 'Neues Passwort Wiederholung', 'autocomplete' => 'new-password']],
-            ])
-            ->add('change_password', SubmitType::class, [
-                'label' => 'Passwort ändern',
-            ])
-            ->setMethod('POST')
-            ->getForm();
+        $passwordForm = $this->createForm(ChangePasswordFormType::class);
         $passwordForm->handleRequest($request);
 
         if (!$passwordForm->isSubmitted()) {
@@ -109,16 +94,48 @@ class LoginController extends AbstractController
             return $this->redirectToRoute('login');
         }
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
-            $this->authService->changePassword($passwordForm['password']->getData());
+            $this->authService->changePassword($passwordForm['password']['password']->getData());
             $this->addFlash(
                 'success',
                 sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName())
             );
+            $this->authService->logout();
 
             return $this->redirectToRoute('login');
         }
 
         return $this->render('login/change_password.html.twig', [
+            'active' => 'none',
+            'form' => $passwordForm,
+        ]);
+    }
+
+    #[Route('/accept-invitation/{token}', name: 'accept_invitation', methods: ['GET', 'POST'])]
+    public function acceptInvitation(Request $request, string $token): Response
+    {
+        $passwordForm = $this->createForm(AcceptInvitationFormType::class);
+        $passwordForm->handleRequest($request);
+
+        if (!$passwordForm->isSubmitted()) {
+            $this->authService->loginByToken($token);
+        }
+        if (!$this->authService->isLoggedIn()) {
+            $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Einladungslink war scheinbar nicht mehr gültig. Tut mir leid!');
+
+            return $this->redirectToRoute('login');
+        }
+        if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+            $this->authService->changePassword($passwordForm['password']['password']->getData());
+            $this->addFlash(
+                'success',
+                sprintf('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, %s!', $this->getCurrentClown()->getName())
+            );
+            $this->authService->logout();
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('login/accept_invitation.html.twig', [
             'active' => 'none',
             'form' => $passwordForm,
         ]);
