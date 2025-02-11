@@ -19,8 +19,8 @@ final class Version20241211114715 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE contact (id INT AUTO_INCREMENT NOT NULL, venue_id INT DEFAULT NULL, `function` VARCHAR(255) DEFAULT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, phone VARCHAR(255) DEFAULT NULL, birth_date DATE DEFAULT NULL, street_and_number VARCHAR(255) DEFAULT NULL, zip_code VARCHAR(10) DEFAULT NULL, city VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE venue_contact (venue_id INT NOT NULL, contact_id INT NOT NULL, INDEX IDX_FCAA11E640A73EBA (venue_id), INDEX IDX_FCAA11E6E7A1254A (contact_id), PRIMARY KEY(venue_id, contact_id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE contact (id INT AUTO_INCREMENT NOT NULL, venue_id INT DEFAULT NULL, `function` VARCHAR(255) DEFAULT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, phone VARCHAR(255) DEFAULT NULL, birth_date DATE DEFAULT NULL, street_and_number VARCHAR(255) DEFAULT NULL, zip_code VARCHAR(10) DEFAULT NULL, city VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE venue_contact (venue_id INT NOT NULL, contact_id INT NOT NULL, INDEX IDX_FCAA11E640A73EBA (venue_id), INDEX IDX_FCAA11E6E7A1254A (contact_id), PRIMARY KEY(venue_id, contact_id)) DEFAULT CHARACTER SET utf8mb4 ENGINE = InnoDB');
         $this->addSql('ALTER TABLE venue_contact ADD CONSTRAINT FK_FCAA11E640A73EBA FOREIGN KEY (venue_id) REFERENCES venue (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE venue_contact ADD CONSTRAINT FK_FCAA11E6E7A1254A FOREIGN KEY (contact_id) REFERENCES contact (id) ON DELETE CASCADE');
 
