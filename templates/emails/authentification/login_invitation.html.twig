@@ -1,0 +1,17 @@
+<p>
+    Hallo {{ recipient.name }},
+</p>
+
+<p>
+    {{ inviter.name }} lädt Dich ein, den Clown Spielplan zu nutzen.<br />
+    Hier der Link für Deinen Zugang:<br />
+    <a href="{{ url('accept_invitation', {token: login_token}) }}">{{ url('accept_invitation', {token: login_token}) }}</a>
+</p>
+
+<p>
+    Dieser Link ist sieben Tage gültig. Danach musst Du eine neue Einladung anfordern.
+</p>
+
+<p>
+    Viel Spaß damit! 
+</p>

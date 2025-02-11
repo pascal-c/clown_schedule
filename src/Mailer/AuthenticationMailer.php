@@ -14,6 +14,23 @@ class AuthenticationMailer
     {
     }
 
+    public function sendInvitationMail(Clown $recipient, Clown $inviter): void
+    {
+        $loginToken = $this->authService->getLoginToken($recipient, '+1 week');
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->to(new Address($recipient->getEmail(), $recipient->getName()))
+            ->subject('Einladung zur Spielplan App')
+            ->htmlTemplate('emails/authentification/login_invitation.html.twig')
+            ->context([
+                'recipient' => $recipient,
+                'inviter' => $inviter,
+                'login_token' => $loginToken,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
     public function sendLoginByTokenMail(Clown $clown): void
     {
         $loginToken = $this->authService->getLoginToken($clown);

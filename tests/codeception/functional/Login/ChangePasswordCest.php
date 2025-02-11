@@ -31,8 +31,8 @@ class ChangePasswordCest extends AbstractCest
         $I->clickLinkInEmail($email);
 
         $I->amGoingTo('set my new password');
-        $I->fillField('form[password][first]', 'secret123');
-        $I->fillField('form[password][second]', 'secret123');
+        $I->fillField('change_password_form[password][password][first]', 'secret123');
+        $I->fillField('change_password_form[password][password][second]', 'secret123');
         $I->click('Passwort ändern');
 
         $I->amGoingTo('login with my new password');

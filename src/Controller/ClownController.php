@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Clown;
 use App\Form\ClownFormType;
+use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,7 +17,7 @@ class ClownController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, private ClownRepository $clownRepository)
+    public function __construct(ManagerRegistry $doctrine, private ClownRepository $clownRepository, private AuthenticationMailer $mailer)
     {
         $this->entityManager = $doctrine->getManager();
     }
@@ -46,6 +47,10 @@ class ClownController extends AbstractController
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich angelegt.');
+            if ($form['send_invitation_email']->getData()) {
+                $this->mailer->sendInvitationMail($clown, $this->getCurrentClown());
+                $this->addFlash('success', 'Ich habe auch eine Einladungsemail an den Clown geschickt.');
+            }
 
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {
@@ -56,6 +61,16 @@ class ClownController extends AbstractController
             'form' => $form,
             'active' => 'clown',
         ]);
+    }
+
+    #[Route('/clowns/{id}/send_invitation_email', name: 'clown_send_invitation_email', methods: ['POST'])]
+    public function sendInvitationEmail(Clown $clown): Response
+    {
+        $this->adminOnly();
+        $this->mailer->sendInvitationMail($clown, $this->getCurrentClown());
+        $this->addFlash('success', sprintf('Alles klar! Ich habe eine Einladungsemail an %s geschickt.', $clown->getName()));
+
+        return $this->redirectToRoute('clown_index');
     }
 
     #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PATCH'])]
@@ -73,6 +88,14 @@ class ClownController extends AbstractController
                 ['label' => 'Clown löschen', 'attr' => ['onclick' => 'return confirm("Clown endgültig löschen?")']]
             )
             ->setMethod('DELETE')
+            ->getForm();
+        $sendInvitationForm = $this->createFormBuilder($clown)
+            ->add(
+                'send_invitation_email',
+                SubmitType::class,
+                ['label' => 'Einladungsemail senden', 'attr' => ['onclick' => 'return confirm("Jetzt Email senden?")']]
+            )
+            ->setAction($this->generateUrl('clown_send_invitation_email', ['id' => $clown->getId()]))
             ->getForm();
 
         $form->handleRequest($request);
@@ -92,6 +115,7 @@ class ClownController extends AbstractController
         return $this->render('clown/edit.html.twig', [
             'form' => $form,
             'delete_form' => $deleteForm,
+            'send_invitation_form' => $clown->hasNoPassword() ? $sendInvitationForm : null,
             'active' => 'clown',
         ]);
     }

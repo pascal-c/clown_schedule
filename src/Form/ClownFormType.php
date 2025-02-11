@@ -16,6 +16,8 @@ class ClownFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $clown = $builder->getData();
+        $submitLabel = $clown->getId() ? 'Clown aktualisieren' : 'Clown anlegen';
         $builder
             ->add('name', TextType::class)
             ->add('email', EmailType::class)
@@ -36,8 +38,16 @@ class ClownFormType extends AbstractType
             ->add('isAdmin', CheckboxType::class, [
                 'label' => 'Admin?',
                 'required' => false,
-            ])
-            ->add('save', SubmitType::class, ['label' => 'Clown speichern'])
+            ]);
+        if (!$clown->getId()) {
+            $builder->add('send_invitation_email', CheckboxType::class, [
+                'label' => 'Einladungsmail senden?',
+                'required' => false,
+                'mapped' => false,
+            ]);
+        }
+        $builder
+            ->add('save', SubmitType::class, ['label' => $submitLabel])
         ;
     }
 
