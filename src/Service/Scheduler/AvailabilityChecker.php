@@ -65,7 +65,7 @@ class AvailabilityChecker
     public function maxPlaysWeekReached(Week $week, ClownAvailability $clownAvailability): bool
     {
         $softMaxPlaysWeek = $clownAvailability->getSoftMaxPlaysWeek();
-        if (is_null($softMaxPlaysWeek) || !$this->configRepository->hasFeatureMaxPerWeek()) {
+        if (is_null($softMaxPlaysWeek) || !$this->configRepository->isFeatureMaxPerWeekActive()) {
             return false;
         }
 
@@ -75,7 +75,7 @@ class AvailabilityChecker
     public function maxPlaysAndSubstitutionsWeekReached(Week $week, ClownAvailability $clownAvailability): bool
     {
         $softMaxPlaysAndSubstitutionsWeek = $clownAvailability->getSoftMaxPlaysAndSubstitutionsWeek();
-        if (is_null($softMaxPlaysAndSubstitutionsWeek)  || !$this->configRepository->hasFeatureMaxPerWeek()) {
+        if (is_null($softMaxPlaysAndSubstitutionsWeek)  || !$this->configRepository->isFeatureMaxPerWeekActive()) {
             return false;
         }
 

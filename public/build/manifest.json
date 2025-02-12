@@ -1,6 +1,8 @@
 {
-  "build/app.css": "/build/app.a4d80a66.css",
+  "build/app.css": "/build/app.ebad9f6c.css",
   "build/app.js": "/build/app.8842530d.js",
   "build/runtime.js": "/build/runtime.8ab7f0c8.js",
-  "build/608.54c5d997.js": "/build/608.54c5d997.js"
+  "build/608.54c5d997.js": "/build/608.54c5d997.js",
+  "build/fonts/bootstrap-icons.woff?": "/build/fonts/bootstrap-icons.39795c0b.woff",
+  "build/fonts/bootstrap-icons.woff2?": "/build/fonts/bootstrap-icons.b7bcc075.woff2"
 }

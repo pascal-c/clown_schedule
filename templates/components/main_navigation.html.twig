@@ -12,9 +12,15 @@
                 <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">{{ element['label'] }}</a>
             </li>
         {% endfor %}
-        </ul>   
+        {% if currentClown.isAdmin %}
+            <li class="nav-item">
+                <a class="nav-link {{ active == 'config' ? 'active' }}" {{ active == 'config' ? 'aria-current="page"' }} href="{{ path('config') }}" title="Einstellungen"><i class="bi bi-gear"></i> Einstellungen</a>
+            </li>
+        {% endif %}
+        </ul>
+
         <span class="navbar-text ms-auto">
-            {{ currentClown.name}} <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}">Abmelden</a>
+            {{ currentClown.name}} <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}" title="Abmelden"><i class="bi bi-box-arrow-right"></i></a>
         </span>
     </div> 
 </nav>    

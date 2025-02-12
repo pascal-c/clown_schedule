@@ -77,7 +77,7 @@ class ClownAvailabilityController extends AbstractController
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
-            'showMaxPerWeek' => $this->configRepository->hasFeatureMaxPerWeek(),
+            'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
         ]);
     }
 
