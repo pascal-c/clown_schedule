@@ -88,7 +88,7 @@ class StatisticsController extends AbstractController
             'currentPlayDatesCount' => count($playDates),
             'currentSubstitutions' => $substitutions,
             'active' => 'statistics',
-            'showMaxPerWeek' => $this->configRepository->hasFeatureMaxPerWeek(),
+            'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
             'points' => $this->rater->pointsPerCategory($month),
         ]);
     }

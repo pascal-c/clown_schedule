@@ -54,7 +54,7 @@ final class RaterTest extends TestCase
 
     #[DataProvider('dataProvider')]
     public function testTotalPoints(
-        bool $hasFeatureMaxPerWeek,
+        bool $isFeatureMaxPerWeekActive,
         bool $ignoreTargetPlays,
         int $expectedTotalPoints,
         int $expectedPointsNotAssigned,
@@ -64,7 +64,7 @@ final class RaterTest extends TestCase
     ): void {
         $this->playDateRepository->expects($this->once())->method('regularByMonth')->with($this->month)->willReturn($this->playDates);
         $this->clownAvailabilityRepository->expects($this->once())->method('byMonth')->with($this->month)->willReturn($this->clownAvailabilities);
-        $this->configRepository->method('hasFeatureMaxPerWeek')->willReturn($hasFeatureMaxPerWeek);
+        $this->configRepository->method('isFeatureMaxPerWeekActive')->willReturn($isFeatureMaxPerWeekActive);
 
         $totalPoints = $this->rater->totalPoints($this->month, $ignoreTargetPlays);
         $this->assertSame($expectedTotalPoints, $totalPoints);
@@ -72,7 +72,7 @@ final class RaterTest extends TestCase
 
     #[DataProvider('dataProvider')]
     public function testPointsPerCategory(
-        bool $hasFeatureMaxPerWeek,
+        bool $isFeatureMaxPerWeekActive,
         bool $ignoreTargetPlays,
         int $expectedTotalPoints,
         int $expectedPointsNotAssigned,
@@ -82,7 +82,7 @@ final class RaterTest extends TestCase
     ): void {
         $this->playDateRepository->expects($this->once())->method('regularByMonth')->with($this->month)->willReturn($this->playDates);
         $this->clownAvailabilityRepository->expects($this->once())->method('byMonth')->with($this->month)->willReturn($this->clownAvailabilities);
-        $this->configRepository->method('hasFeatureMaxPerWeek')->willReturn($hasFeatureMaxPerWeek);
+        $this->configRepository->method('isFeatureMaxPerWeekActive')->willReturn($isFeatureMaxPerWeekActive);
 
         $points = $this->rater->pointsPerCategory($this->month, $ignoreTargetPlays);
         $this->assertSame($expectedPointsNotAssigned, $points['notAssigned']);
@@ -100,7 +100,7 @@ final class RaterTest extends TestCase
         // RATE_TARGET_PLAYS = 4   (when ignored: only clown 2 has too much plays, so 2*2 = 4)
         // RATE_MAX_PER_WEEK = 10  (clown1 has 2 play dates in KW40, but their maxPlayWeek is 1)
         yield 'has feature MaxPerWeek and do not ignore targetPlays' => [
-            'hasFeatureMaxPerWeek' => true,
+            'isFeatureMaxPerWeekActive' => true,
             'ignoreTargetPlays' => false,
             'expectedTotalPoints' => 323,
             'expectedPointsNotAssigned' => 300,
@@ -109,7 +109,7 @@ final class RaterTest extends TestCase
             'expectedPointsMaxPerWeek' => 10,
         ];
         yield 'has feature MaxPerWeek and ignore targetPlays' => [
-            'hasFeatureMaxPerWeek' => true,
+            'isFeatureMaxPerWeekActive' => true,
             'ignoreTargetPlays' => true,
             'expectedTotalPoints' => 319,
             'expectedPointsNotAssigned' => 300,
@@ -118,7 +118,7 @@ final class RaterTest extends TestCase
             'expectedPointsMaxPerWeek' => 10,
         ];
         yield 'has NOT feature MaxPerWeek and ignore targetPlays' => [
-            'hasFeatureMaxPerWeek' => false,
+            'isFeatureMaxPerWeekActive' => false,
             'ignoreTargetPlays' => true,
             'expectedTotalPoints' => 309,
             'expectedPointsNotAssigned' => 300,
@@ -127,7 +127,7 @@ final class RaterTest extends TestCase
             'expectedPointsMaxPerWeek' => 0,
         ];
         yield 'has NOT feature MaxPerWeek and do not ignore targetPlays' => [
-            'hasFeatureMaxPerWeek' => false,
+            'isFeatureMaxPerWeekActive' => false,
             'ignoreTargetPlays' => false,
             'expectedTotalPoints' => 313,
             'expectedPointsNotAssigned' => 300,

@@ -39,7 +39,7 @@ final class MaxPlaysReachedTest extends TestCase
     }
 
     #[DataProvider('dataProvider')]
-    public function testMaxPlaysWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $hasFeatureMaxPerWeek = true): void
+    public function testMaxPlaysWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $isFeatureMaxPerWeekActive = true): void
     {
         $date = new DateTimeImmutable('2024-02-13'); // this is a tuesday
         $week = new Week($date);
@@ -57,16 +57,16 @@ final class MaxPlaysReachedTest extends TestCase
             ->willReturn(2);
         $this->substitutionRepository->expects($this->never())->method($this->anything());
         $this->configRepository
-            ->method('hasFeatureMaxPerWeek')
+            ->method('isFeatureMaxPerWeekActive')
             ->with()
-            ->willReturn($hasFeatureMaxPerWeek);
+            ->willReturn($isFeatureMaxPerWeekActive);
 
         $result = $this->availabilityChecker->maxPlaysWeekReached($week, $clownAvailability);
         $this->assertSame($expectedResult, $result);
     }
 
     #[DataProvider('dataProvider')]
-    public function testMaxPlaysAndSubstitutionsWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $hasFeatureMaxPerWeek = true): void
+    public function testMaxPlaysAndSubstitutionsWeekReached(?int $maxPlaysWeek, bool $expectedResult, bool $isFeatureMaxPerWeekActive = true): void
     {
         $date = new DateTimeImmutable('2024-02-13'); // this is a tuesday
         $week = new Week($date);
@@ -95,9 +95,9 @@ final class MaxPlaysReachedTest extends TestCase
             ->with($month)
             ->willReturn($otherSubstitutions);
         $this->configRepository
-            ->method('hasFeatureMaxPerWeek')
+            ->method('isFeatureMaxPerWeekActive')
             ->with()
-            ->willReturn($hasFeatureMaxPerWeek);
+            ->willReturn($isFeatureMaxPerWeekActive);
 
         $result = $this->availabilityChecker->maxPlaysAndSubstitutionsWeekReached($week, $clownAvailability);
         $this->assertSame($expectedResult, $result);
@@ -124,7 +124,7 @@ final class MaxPlaysReachedTest extends TestCase
         yield 'when feature maxPlaysWeek is disabled' => [
             'maxPlaysWeek' => 1, // => maxPlaysAndSubstitutionsWeek == 2
             'expectedResult' => false,
-            'hasFeatureMaxPerWeek' => false,
+            'isFeatureMaxPerWeekActive' => false,
         ];
     }
 }

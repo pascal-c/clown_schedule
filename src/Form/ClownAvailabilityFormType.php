@@ -37,7 +37,7 @@ class ClownAvailabilityFormType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
             ]);
-        if ($this->configRepository->hasFeatureMaxPerWeek()) {
+        if ($this->configRepository->isFeatureMaxPerWeekActive()) {
             $builder->add('softMaxPlaysWeek', ChoiceType::class, [
                 'choices' => range(0, 7),
                 'label' => 'Gewünschte maximale Anzahl Spiele pro Woche',

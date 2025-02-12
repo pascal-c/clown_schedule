@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use App\Entity\Config;
 
-class ConfigRepository
+class ConfigRepository extends AbstractRepository
 {
-    public function __construct(private ContainerBagInterface $containerBag)
+    protected function getEntityName(): string
     {
+        return Config::class;
     }
 
-    public function hasFeatureMaxPerWeek(): bool
+    public function isFeatureMaxPerWeekActive(): bool
     {
-        return $this->containerBag->get('app.feature_max_per_week');
+        return $this->doctrineRepository->find(1)->isFeatureMaxPerWeekActive();
+    }
+
+    public function find(): Config
+    {
+        return $this->doctrineRepository->find(1);
     }
 }

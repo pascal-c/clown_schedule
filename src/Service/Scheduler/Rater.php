@@ -53,7 +53,7 @@ class Rater
         foreach ($allClownAvailabilities as $clownAvailability) {
             $points['targetPlays'] += $this->pointsForTargetPlaysMissed($clownAvailability, $ignoreTargetPlays);
             $playsPerWeek = $clownPlaysPerWeek[$clownAvailability->getClown()->getId()];
-            if ($this->configRepository->hasFeatureMaxPerWeek()) {
+            if ($this->configRepository->isFeatureMaxPerWeekActive()) {
                 $points['maxPerWeek'] += $this->pointsForMaxPerWeekExceeded($clownAvailability, $playsPerWeek);
             }
         }

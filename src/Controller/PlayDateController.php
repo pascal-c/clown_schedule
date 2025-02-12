@@ -12,6 +12,7 @@ use App\Form\PlayDate\RegularPlayDateFormType;
 use App\Form\PlayDate\SpecialPlayDateFormType;
 use App\Form\PlayDate\TrainingFormType;
 use App\Repository\ClownRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
@@ -111,7 +112,7 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(SubstitutionRepository $substitutionRepository, int $id): Response
+    public function show(SubstitutionRepository $substitutionRepository, ConfigRepository $configRepository, int $id): Response
     {
         $playDate = $this->playDateRepository->find($id);
         if (is_null($playDate)) {
@@ -124,7 +125,7 @@ class PlayDateController extends AbstractController
                 fn (Substitution $substitution) => $substitution->getSubstitutionClown(),
                 $substitutionRepository->findByTimeSlotPeriod($playDate),
             ),
-            'specialPlayDateUrl' => $playDate->isSpecial() ? $this->getParameter('app.special_play_date_url') : '',
+            'specialPlayDateUrl' => $playDate->isSpecial() ? $configRepository->find()->getSpecialPlayDateUrl() : '',
             'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() >= $this->timeService->today()->modify(PlayDateChangeRequestCloseInvalidService::CREATABLE_UNTIL_PERIOD),
         ]);
     }
