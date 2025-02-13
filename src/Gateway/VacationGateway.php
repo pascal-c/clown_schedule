@@ -18,15 +18,19 @@ class VacationGateway
     ) {
     }
 
-    public function findByYear(string $year): array
+    public function findByYear(?string $federalState, string $year): array
     {
+        if (is_null($federalState)) {
+            return [];
+        }
+
         return $this->vacationCache->get(
-            'vacations '.$year,
-            function (ItemInterface $item) use ($year): array {
+            'vacations '.$year.$federalState,
+            function (ItemInterface $item) use ($federalState, $year): array {
                 try {
                     $response = $this->httpClient->request(
                         'GET',
-                        'https://ferien-api.de/api/v1/holidays/SN/'.$year,
+                        'https://ferien-api.de/api/v1/holidays/'.$federalState.'/'.$year,
                         [
                             'timeout' => 2,
                             'max_duration' => 2,

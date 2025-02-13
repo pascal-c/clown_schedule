@@ -11,13 +11,14 @@ use DateTimeImmutable;
 
 class VacationRepository
 {
-    public function __construct(private VacationGateway $vacationGateway)
+    public function __construct(private VacationGateway $vacationGateway, private ConfigRepository $configRepository)
     {
     }
 
     public function byYear(Month $month): array
     {
-        $byYear = $this->vacationGateway->findByYear($month->getYear());
+        $federalState = $this->configRepository->find()->getFederalState();
+        $byYear = $this->vacationGateway->findByYear($federalState, $month->getYear());
 
         return array_map(
             fn (array $x) => new Vacation(

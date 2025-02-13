@@ -13,10 +13,12 @@ class ConfigCest extends AbstractCest
 
         $I->fillField('Zusatztermine Link', 'https://www.example.com');
         $I->checkOption('Feature “Max. Spielanzahl pro Woche”');
+        $I->selectOption('Bundesland', 'Sachsen');
         $I->click('speichern');
 
         $I->seeInField('Zusatztermine Link', 'https://www.example.com');
         $I->seeCheckboxIsChecked('Feature “Max. Spielanzahl pro Woche”');
+        $I->seeInField('Bundesland', 'Sachsen');
 
         $I->amGoingTo('make sure that the feature is really enabled');
         $I->click('Fehlzeiten');
