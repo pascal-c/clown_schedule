@@ -20,7 +20,6 @@ class Day
         private string $dayNumber,
         private ?string $dayHolidayName,
         private bool $isWeekend,
-        private bool $isHoliday,
         private ?Vacation $vacation,
     ) {
     }
@@ -59,7 +58,7 @@ class Day
 
     public function getDayName(): string
     {
-        return $this->isHoliday() ? $this->dayHolidayName : $this->dayLongName;
+        return $this->dayHolidayName ?? $this->dayLongName;
     }
 
     public function getDate(): DateTimeImmutable
@@ -84,7 +83,7 @@ class Day
 
     public function isHoliday(): bool
     {
-        return $this->isHoliday;
+        return !is_null($this->dayHolidayName);
     }
 
     public function isVacation(): bool
