@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\Month;
 use App\Entity\Vacation;
 use App\Gateway\VacationGateway;
 use DateTimeImmutable;
 
 class VacationRepository
 {
-    public function __construct(private VacationGateway $vacationGateway)
+    public function __construct(private VacationGateway $vacationGateway, private ConfigRepository $configRepository)
     {
     }
 
-    public function byYear(Month $month): array
+    public function byYear(string $year): array
     {
-        $byYear = $this->vacationGateway->findByYear($month->getYear());
+        $federalState = $this->configRepository->find()->getFederalState();
+        $byYear = $this->vacationGateway->findByYear($federalState, $year);
 
         return array_map(
             fn (array $x) => new Vacation(

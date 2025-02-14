@@ -2,30 +2,68 @@
 
 namespace App\Tests\ViewController;
 
+use App\Entity\Vacation;
+use App\Repository\HolidayRepository;
 use App\Repository\VacationRepository;
 use App\ViewController\DayViewController;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
 
 final class DayViewControllerTest extends TestCase
 {
+    private VacationRepository&MockObject $vacationRepository;
+    private HolidayRepository&MockObject $holidayRepository;
+    private DayViewController $viewController;
+
+    public function setUp(): void
+    {
+        $this->vacationRepository = $this->createMock(VacationRepository::class);
+        $this->holidayRepository = $this->createMock(HolidayRepository::class);
+        $this->viewController = new DayViewController($this->vacationRepository, $this->holidayRepository);
+    }
+
     public function testgetDayShortName(): void
     {
-        $vacationRepository = $this->createMock(VacationRepository::class);
-        $viewController = new DayViewController($vacationRepository);
         $date = new DateTimeImmutable('2022-08-08');
-        $day = $viewController->getDay($date);
+        $day = $this->viewController->getDay($date);
 
         $this->assertEquals('Mo.', $day->getDayShortName());
+    }
+
+    public function testgetDayLongName(): void
+    {
+        $date = new DateTimeImmutable('2022-08-08');
+        $day = $this->viewController->getDay($date);
+
+        $this->assertEquals('Montag', $day->getDayName());
+    }
+
+    public function testgetDayNumber(): void
+    {
+        $date = new DateTimeImmutable('2022-08-08');
+        $day = $this->viewController->getDay($date);
+
+        $this->assertEquals('08. Aug', $day->getDayNumber());
+    }
+
+    public function testHolidayName(): void
+    {
+        $date = new DateTimeImmutable('2023-05-18');
+        $this->holidayRepository
+            ->expects($this->once())
+            ->method('oneByDate')
+            ->willReturn('Himmelfahrt');
+        $day = $this->viewController->getDay($date);
+
+        $this->assertEquals('Himmelfahrt', $day->getDayName());
     }
 
     #[DataProvider('isWeekendProvider')]
     public function testisWeekend(DateTimeImmutable $date, bool $expectedResult): void
     {
-        $vacationRepository = $this->createMock(VacationRepository::class);
-        $viewController = new DayViewController($vacationRepository);
-        $day = $viewController->getDay($date);
+        $day = $this->viewController->getDay($date);
 
         $this->assertEquals($expectedResult, $day->isWeekend());
     }
@@ -40,34 +78,36 @@ final class DayViewControllerTest extends TestCase
         ];
     }
 
-    #[DataProvider('isHolidayProvider')]
-    public function testisHoliday(DateTimeImmutable $date, bool $expectedResult): void
+    public function testVacation(): void
     {
-        $vacationRepository = $this->createMock(VacationRepository::class);
-        $viewController = new DayViewController($vacationRepository);
-        $day = $viewController->getDay($date);
+        $date = new DateTimeImmutable('2022-08-08');
+        $this->vacationRepository
+            ->expects($this->once())
+            ->method('byYear')
+            ->with('2022')
+            ->willReturn([
+                new Vacation(new DateTimeImmutable('2022-08-01'), new DateTimeImmutable('2022-08-10'), 'Herbstferien'),
+            ]);
+        $day = $this->viewController->getDay($date);
 
-        $this->assertEquals($expectedResult, $day->isHoliday());
+        $this->assertTrue($day->isVacation());
+        $this->assertEquals('Herbstferien', $day->getVacationName());
     }
 
-    public static function isHolidayProvider(): array
+    public function testNoVacation(): void
     {
-        return [
-            [new DateTimeImmutable('2022-01-01'), true], // new year
-            [new DateTimeImmutable('2022-01-02'), false], // no holiday
-            [new DateTimeImmutable('1974-04-12'), true], // Easter Friday
-            [new DateTimeImmutable('1974-04-13'), false], // no holiday - Easter Saturday
-            [new DateTimeImmutable('1974-04-14'), true], // Easter Sunday
-            [new DateTimeImmutable('1974-04-15'), true], // Easter Monday
-            [new DateTimeImmutable('2023-05-18'), true], // trip to heaven
-            [new DateTimeImmutable('2023-05-29'), true], // Pentecost
-            [new DateTimeImmutable('2019-05-01'), true], // day of work!
-            [new DateTimeImmutable('2020-10-03'), true], // reunion day
-            [new DateTimeImmutable('2021-10-31'), true], // reformation day
-            [new DateTimeImmutable('2022-11-16'), true], // bed and bus day
-            [new DateTimeImmutable('2023-12-25'), true], // chrismas 1
-            [new DateTimeImmutable('2024-12-26'), true], // chrismas 2
-            [new DateTimeImmutable('2024-12-31'), false], // no holiday
-        ];
+        $date = new DateTimeImmutable('2022-08-08');
+        $this->vacationRepository
+            ->expects($this->once())
+            ->method('byYear')
+            ->with('2022')
+            ->willReturn([
+                new Vacation(new DateTimeImmutable('2022-08-01'), new DateTimeImmutable('2022-08-07'), 'Herbstferien'),
+                new Vacation(new DateTimeImmutable('2022-08-09'), new DateTimeImmutable('2022-08-31'), 'Winterferien'),
+            ]);
+        $day = $this->viewController->getDay($date);
+
+        $this->assertFalse($day->isVacation());
+        $this->assertNull($day->getVacationName());
     }
 }

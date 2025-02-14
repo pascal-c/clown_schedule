@@ -19,7 +19,6 @@ final class DayTest extends TestCase
             dayNumber: '6. Mai',
             dayHolidayName: 'Himmelfahrt',
             isWeekend: false,
-            isHoliday: true,
             vacation: null,
         );
         $this->assertEquals('6. Mai', $day->getDayNumber());

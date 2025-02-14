@@ -25,4 +25,10 @@ final class ConfigRepositoryTest extends KernelTestCase
         $result = $this->repository->find();
         $this->assertInstanceOf(Config::class, $result);
     }
+
+    public function testGetFederalState()
+    {
+        $result = $this->repository->getFederalState();
+        $this->assertNull($result);
+    }
 }

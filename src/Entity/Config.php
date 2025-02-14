@@ -18,6 +18,9 @@ class Config
     #[ORM\Column]
     private bool $featureMaxPerWeekActive = false;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $federalState = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -43,6 +46,18 @@ class Config
     public function setFeatureMaxPerWeekActive(bool $featureMaxPerWeekActive): static
     {
         $this->featureMaxPerWeekActive = $featureMaxPerWeekActive;
+
+        return $this;
+    }
+
+    public function getFederalState(): ?string
+    {
+        return $this->federalState;
+    }
+
+    public function setFederalState(?string $federalState): static
+    {
+        $this->federalState = $federalState;
 
         return $this;
     }

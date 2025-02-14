@@ -53,7 +53,6 @@ final class ScheduleTest extends TestCase
             dayNumber: '06. Mai',
             dayHolidayName: 'Himmelfahrt',
             isWeekend: false,
-            isHoliday: true,
             vacation: null,
         );
     }

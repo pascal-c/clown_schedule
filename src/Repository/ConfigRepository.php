@@ -15,11 +15,16 @@ class ConfigRepository extends AbstractRepository
 
     public function isFeatureMaxPerWeekActive(): bool
     {
-        return $this->doctrineRepository->find(1)->isFeatureMaxPerWeekActive();
+        return $this->find()->isFeatureMaxPerWeekActive();
     }
 
     public function find(): Config
     {
         return $this->doctrineRepository->find(1);
+    }
+
+    public function getFederalState(): ?string
+    {
+        return $this->find()->getFederalState();
     }
 }
