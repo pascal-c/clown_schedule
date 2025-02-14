@@ -51,7 +51,6 @@ class ConfigFormType extends AbstractType
                 'label' => 'Bundesland',
                 'help' => 'für die Anzeige von Ferien und Feiertagen im Kalender',
                 'required' => true,
-                'empty_data' => 'John Doe',
             ])
             ->add('save', SubmitType::class, ['label' => 'speichern'])
             ->setMethod('PUT');
