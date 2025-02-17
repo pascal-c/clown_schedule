@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Functional;
+namespace App\Tests\Functional\Dashboard;
 
+use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
 use App\Tests\Helper\Functional;
 use App\Value\PlayDateType;
@@ -12,7 +13,7 @@ use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
 
-class DashboardCest extends AbstractCest
+class ShowNextDatesInDashboardCest extends AbstractCest
 {
     public function _before(FunctionalTester $I): void
     {

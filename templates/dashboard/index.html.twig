@@ -11,19 +11,35 @@
     <ul>
         <li>
             <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">Fehlzeiten {{ nextMonth.label }}</a>
-            {% if nextMonthFilled %}
-                <span class="text-success">(schon eingetragen)</span>
+            {% if nextMonthSchedule %}
+                {% if nextMonthSchedule.completed %}
+                    Spielplan fertiggestellt ✅
+                {% else %}
+                    Spielplan wird gerade erstellt ⚒️
+                {% endif %} 
             {% else %}
-                <span class="text-warning">(noch nix eingetragen)</span>
+                {% if nextMonthFilled %}
+                    <span class="text-success">(schon eingetragen)</span>
+                {% else %}
+                    <span class="text-warning">(noch nix eingetragen)</span>
+                {% endif %}
             {% endif %}
         </li>
         <li>
             <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">Fehlzeiten {{ afterNextMonth.label }}</a>
-            {% if afterNextMonthFilled %}
-                <span class="text-success">(schon eingetragen)</span>
+            {% if afterNextMonthSchedule %}
+                {% if afterNextMonthSchedule.completed %}
+                    Spielplan fertiggestellt ✅
+                {% else %}
+                    Spielplan wird gerade erstellt ⚒️
+                {% endif %} 
             {% else %}
-                <span class="text-warning">(noch nix eingetragen)</span>
-            {% endif %}    
+                {% if afterNextMonthFilled %}
+                    <span class="text-success">(schon eingetragen)</span>
+                {% else %}
+                    <span class="text-warning">(noch nix eingetragen)</span>
+                {% endif %}
+            {% endif %}
         </li>
     </ul>
 
