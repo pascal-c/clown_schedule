@@ -10,6 +10,7 @@ use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
+use App\Factory\ScheduleFactory;
 use App\Lib\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -35,6 +36,7 @@ class CreateExampleFixturesCommand extends Command
         private VenueFactory $venueFactory,
         private FeeFactory $feeFactory,
         private ContactFactory $contactFactory,
+        private ScheduleFactory $_scheduleFactory,
     ) {
         parent::__construct();
     }
