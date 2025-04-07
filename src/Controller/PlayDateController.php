@@ -171,14 +171,14 @@ class PlayDateController extends AbstractController
         ]);
     }
 
-    #[Route('/play_dates/{id}/assign_clowns', name: 'play_date_assign_clowns', methods: ['GET', 'PATCH'])]
+    #[Route('/play_dates/{id}/assign_clowns', name: 'play_date_assign_clowns', methods: ['GET', 'PUT'])]
     public function assignClowns(Request $request, int $id): Response
     {
         $this->adminOnly();
 
         $playDate = $this->playDateRepository->find($id);
 
-        $form = $this->createForm(AssignClownsFormType::class, $playDate, ['method' => 'PATCH']);
+        $form = $this->createForm(AssignClownsFormType::class, $playDate, ['method' => 'PUT']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $schedule = $this->scheduleRepository->find($playDate->getMonth());
