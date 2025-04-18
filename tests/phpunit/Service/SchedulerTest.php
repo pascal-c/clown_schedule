@@ -12,6 +12,9 @@ use App\Entity\PlayDate;
 use App\Entity\Schedule;
 use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Gateway\RosterCalculator\RosterResult;
+use App\Gateway\RosterCalculator\RosterResultApplier;
+use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
@@ -30,15 +33,17 @@ use DateTimeImmutable;
 
 final class SchedulerTest extends TestCase
 {
-    private PlayDateRepository|MockObject $playDateRepository;
-    private ClownAvailabilityRepository|MockObject $clownAvailabilityRepository;
-    private ClownAssigner|MockObject $clownAssigner;
-    private AvailabilityChecker|MockObject $availabilityChecker;
-    private FairPlayCalculator|MockObject $fairPlayCalculator;
-    private SubstitutionRepository|MockObject $substitutionRepository;
-    private ScheduleRepository|MockObject $scheduleRepository;
-    private EntityManagerInterface|MockObject $entityManager;
-    private PlayDateSorter|MockObject $playDateSorter;
+    private PlayDateRepository&MockObject $playDateRepository;
+    private ClownAvailabilityRepository&MockObject $clownAvailabilityRepository;
+    private ClownAssigner&MockObject $clownAssigner;
+    private AvailabilityChecker&MockObject $availabilityChecker;
+    private FairPlayCalculator&MockObject $fairPlayCalculator;
+    private SubstitutionRepository&MockObject $substitutionRepository;
+    private ScheduleRepository&MockObject $scheduleRepository;
+    private EntityManagerInterface&MockObject $entityManager;
+    private PlayDateSorter&MockObject $playDateSorter;
+    private RosterCalculatorGateway&MockObject $rosterCalculatorGateway;
+    private RosterResultApplier&MockObject $rosterResultApplier;
     private Scheduler $scheduler;
 
     public function setUp(): void
@@ -52,6 +57,8 @@ final class SchedulerTest extends TestCase
         $this->scheduleRepository = $this->createMock(ScheduleRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->playDateSorter = $this->createMock(PlayDateSorter::class);
+        $this->rosterCalculatorGateway = $this->createMock(RosterCalculatorGateway::class);
+        $this->rosterResultApplier = $this->createMock(RosterResultApplier::class);
 
         $this->scheduler = new Scheduler(
             $this->playDateRepository,
@@ -63,6 +70,8 @@ final class SchedulerTest extends TestCase
             $this->scheduleRepository,
             $this->entityManager,
             $this->playDateSorter,
+            $this->rosterCalculatorGateway,
+            $this->rosterResultApplier,
         );
     }
 
@@ -86,7 +95,7 @@ final class SchedulerTest extends TestCase
         $this->clownAssigner->expects($this->once())
             ->method('assignSecondClowns')
             ->with($month, [$playDate2, $playDate3, $playDate1], $clownAvailabilities)
-            ->willReturn(42);
+            ->willReturn($rosterResult = new RosterResult());
         $this->clownAssigner->expects($this->once())
             ->method('assignSubstitutionClown')
             ->with(new TimeSlotPeriod(new DateTimeImmutable('2018-12'), 'pm'), $clownAvailabilities);
@@ -118,7 +127,7 @@ final class SchedulerTest extends TestCase
             ->method('sortByAvailabilities')
             ->willReturn([$playDate2, $playDate3, $playDate1]);
 
-        $points = $this->scheduler->calculate($month);
+        $result = $this->scheduler->calculate($month, calculateComplex: false);
 
         // removes existing clown assignments
         foreach ($playDates as $playDate) {
@@ -131,7 +140,7 @@ final class SchedulerTest extends TestCase
         $this->assertNull($substitution->getSubstitutionClown());
 
         // returns rate
-        $this->assertSame(42, $points);
+        $this->assertSame($rosterResult, $result);
     }
 
     public function testCompleteWithAlreadyCompleted(): void

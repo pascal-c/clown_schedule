@@ -75,6 +75,8 @@ class ScheduleController extends AbstractController
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month);
 
+
+
         if (null === $schedule) {
             $schedule ??= (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::IN_PROGRESS);
             $this->entityManager->persist($schedule);
@@ -83,10 +85,32 @@ class ScheduleController extends AbstractController
             throw $this->createAccessDeniedException('Spielplan ist bereits abgeschlossen!');
         }
 
-        $points = $this->scheduler->calculate($month);
-        $this->entityManager->flush();
+        $calculateForm = $this->createForm(ScheduleCalculateFormType::class, $schedule);
+        $calculateForm->handleRequest($request);
+        if (!$calculateForm->isSubmitted() || !$calculateForm->isValid()) {
+            $this->addFlash('danger', 'Ui! Das hat irgendwie überhaupt nicht geklappt! Tut mir sehr leid! Bitte versuche es einfach nochmal.');
 
-        $this->addFlash('success', "Yes! Spielplan wurde erstellt. Rating: {$points} Punkte. Bitte prüfen, ob alles so passt!");
+            return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
+        }
+
+        $start = microtime(true);
+        $result = $this->scheduler->calculate($month, 'calculate_complex' === $calculateForm->getClickedButton()->getName());
+        $seconds = number_format(microtime(true) - $start, 1, ',', '.');
+
+        if ($result->success) {
+            $this->entityManager->flush();
+            $message = new \Twig\Markup(
+                $this->renderView('flashes/schedule_calculated_successfully.html.twig', ['seconds' => $seconds, 'result' => $result]),
+                'UTF-8'
+            );
+            $this->addFlash('success', $message);
+        } else {
+            $message = new \Twig\Markup(
+                $this->renderView('flashes/schedule_calculated_failure.html.twig', ['seconds' => $seconds, 'result' => $result]),
+                'UTF-8'
+            );
+            $this->addFlash('danger', $message);
+        }
 
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }
