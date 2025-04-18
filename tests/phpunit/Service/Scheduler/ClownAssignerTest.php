@@ -12,6 +12,7 @@ use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Entity\Week;
+use App\Gateway\RosterCalculator\RosterResult;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateHistoryService;
 use App\Service\Scheduler\AvailabilityChecker;
@@ -183,8 +184,8 @@ final class ClownAssignerTest extends TestCase
             ->method('add')
             ->with($this->anything(), null, PlayDateChangeReason::CALCULATION);
 
-        $rate = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: false);
-        $this->assertSame(41, $rate);
+        $result = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: false);
+        $this->assertEquals(new RosterResult(rating: ['total' => 41], firstResultTotalPoints: 42, counter: 1), $result);
     }
 
     public function testAssignSecondClownsWithOnlyFirst(): void
@@ -215,8 +216,8 @@ final class ClownAssignerTest extends TestCase
             ->method('add')
             ->with($this->anything(), null, PlayDateChangeReason::CALCULATION);
 
-        $rate = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: true);
-        $this->assertSame(42, $rate);
+        $result = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilites, takeFirst: true);
+        $this->assertEquals(new RosterResult(rating: ['total' => 42], firstResultTotalPoints: 42, counter: 1), $result);
     }
 
     public static function substitutionClownDataProvider(): array

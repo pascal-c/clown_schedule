@@ -8,6 +8,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Gateway\RosterCalculator\RosterResult;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateHistoryService;
 use App\Value\PlayDateChangeReason;
@@ -56,7 +57,7 @@ class ClownAssigner
      *
      * @return array<Result>
      */
-    public function assignSecondClowns(Month $month, array $playDates, array $clownAvailabilities, bool $takeFirst): int
+    public function assignSecondClowns(Month $month, array $playDates, array $clownAvailabilities, bool $takeFirst): RosterResult
     {
         $firstResult = $this->bestPlayingClownCalculator->onlyFirst($month, $playDates, $clownAvailabilities);
         if ($takeFirst) {
@@ -76,7 +77,7 @@ class ClownAssigner
             $this->playDateHistoryService->add($playDate, null, PlayDateChangeReason::CALCULATION);
         }
 
-        return $bestResult->getPoints();
+        return new RosterResult(rating: ['total' => $bestResult->getPoints()], firstResultTotalPoints: $firstResult->getPoints(), counter: 1);
     }
 
     public function assignSubstitutionClown(TimeSlotPeriod $timeSlotPeriod, array $clownAvailabilities): void

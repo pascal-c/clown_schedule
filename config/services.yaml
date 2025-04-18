@@ -6,6 +6,8 @@
 parameters:
     env(FEEDBACK_URL): ''
     app.feedback_url: '%env(FEEDBACK_URL)%'
+    env(ROSTER_CALCULATOR_URL): ''
+    app.roster_calculator_url: '%env(ROSTER_CALCULATOR_URL)%'
 
 services:
     # default configuration for services in *this* file

@@ -1,0 +1,9 @@
+Yes! Spielplan wurde erstellt! Bitte prüfen, ob alles so passt!<br />
+Für die Clowns sind die Zuordnungen erst sichtbar, wenn der Spielplan abgeschlossen ist.<br />
+<span class="small">
+    Sekunden: {{ seconds }} |
+    Punkte: {{ result.rating.total }} |
+    Punkte erstes Ergebnis: {{ result.firstResultTotalPoints }} |
+    Zwischenergebnisse: {{ result.counter|format_number }} |
+    Alle Ergebnisse? {{ result.isTimedOut ? 'nein' : 'ja' }}
+</span><br />

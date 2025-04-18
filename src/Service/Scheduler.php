@@ -4,6 +4,9 @@ namespace App\Service;
 
 use App\Entity\Month;
 use App\Entity\Schedule;
+use App\Gateway\RosterCalculator\RosterResult;
+use App\Gateway\RosterCalculator\RosterResultApplier;
+use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
@@ -29,10 +32,12 @@ class Scheduler
         private ScheduleRepository $scheduleRepository,
         private EntityManagerInterface $entityManager,
         private PlayDateSorter $playDateSorter,
+        private RosterCalculatorGateway $rosterCalculatorGateway,
+        private RosterResultApplier $rosterResultApplier,
     ) {
     }
 
-    public function calculate(Month $month): int
+    public function calculate(Month $month, bool $calculateComplex): RosterResult
     {
         $timeSlotPeriods = [];
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
@@ -54,13 +59,18 @@ class Scheduler
         $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
         $this->fairPlayCalculator->calculateTargetPlays($clownAvailabilities, count($playDates) * 2);
 
-        $points = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilities, takeFirst: true);
+        if ($calculateComplex) {
+            $result = $this->rosterCalculatorGateway->calcuate($playDates, $clownAvailabilities);
+            $this->rosterResultApplier->apply($result, $month);
+        } else {
+            $result = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilities, takeFirst: true);
+        }
 
         foreach ($timeSlotPeriods as $timeSlot) {
             $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($timeSlot[0], $timeSlot[1]), $clownAvailabilities);
         }
 
-        return $points;
+        return $result;
     }
 
     public function complete(Month $month): ?Schedule
