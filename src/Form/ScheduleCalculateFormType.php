@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Schedule;
-use App\Value\ScheduleStatus;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,22 +12,15 @@ class ScheduleCalculateFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Schedule $schedule */
-        $schedule = $builder->getData();
-        if (null === $schedule) {
-            $builder
-                ->add('calculate', SubmitType::class, [
-                    'label' => 'Spielplan erstellen',
-                    'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")'],
-                ]);
-        } elseif (ScheduleStatus::IN_PROGRESS === $schedule->getStatus()) {
-            $builder
-                ->add('calculate', SubmitType::class, [
-                    'label' => 'Spielplan neu erstellen',
-                    'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden wieder entfernt!")'],
-                ])
-            ;
-        }
+        $builder
+            ->add('calculate_simple', SubmitType::class, [
+                'label' => 'Einfache Berechnung',
+                'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")'],
+            ])
+            ->add('calculate_complex', SubmitType::class, [
+                'label' => 'Komplexe Berechnung',
+                'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
