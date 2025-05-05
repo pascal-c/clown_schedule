@@ -18,7 +18,7 @@ class PlayDateSwapRequestMailer
     {
         $receiver = $playDateChangeRequest->getRequestedTo();
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
             ->subject('Tauschanfrage von '.$playDateChangeRequest->getRequestedBy()->getName().'')
             ->htmlTemplate('emails/play_date_change_request/swap_request.html.twig')
@@ -34,7 +34,7 @@ class PlayDateSwapRequestMailer
     {
         $receiver = $playDateChangeRequest->getRequestedBy();
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
             ->subject('Tauschanfrage von '.$playDateChangeRequest->getRequestedTo()->getName().' angenommen!')
             ->htmlTemplate('emails/play_date_change_request/swap_request_accept.html.twig')
@@ -50,7 +50,7 @@ class PlayDateSwapRequestMailer
     {
         $receiver = $playDateChangeRequest->getRequestedBy();
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
             ->subject('Tauschanfrage von '.$playDateChangeRequest->getRequestedTo()->getName().' leider abgelehnt')
             ->htmlTemplate('emails/play_date_change_request/swap_request_decline.html.twig')
@@ -66,7 +66,7 @@ class PlayDateSwapRequestMailer
     {
         $receiver = $playDateChangeRequest->getRequestedTo();
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
             ->subject($playDateChangeRequest->getRequestedBy()->getName().' hat seine Tauschanfrage zurückgenommen')
             ->htmlTemplate('emails/play_date_change_request/swap_request_cancel.html.twig')
@@ -85,7 +85,7 @@ class PlayDateSwapRequestMailer
     {
         $receiver = $playDateChangeRequest->getRequestedBy();
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
             ->subject('Die Tauschanfrage von '.$playDateChangeRequest->getRequestedBy()->getName().' hat sich erledigt')
             ->htmlTemplate('emails/play_date_change_request/swap_request_closed.html.twig')
@@ -109,7 +109,7 @@ class PlayDateSwapRequestMailer
         $receivers = $playDate->getPlayingClowns()->filter(fn (Clown $clown): bool => $clown !== $newPartner);
         foreach ($receivers as $receiver) {
             $email = (new TemplatedEmail())
-                ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+                ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
                 ->to(new Address($receiver->getEmail(), $receiver->getName()))
                 ->subject('Endlich mal wieder ein Spiel mit '.$newPartner->getName().'!')
                 ->htmlTemplate('emails/play_date_change_request/change_request_inform_partner.html.twig')

@@ -18,7 +18,7 @@ class ClownInfoMailer
     public function sendScheduleCompletedMail(Clown $clown, Schedule $schedule): void
     {
         $email = (new TemplatedEmail())
-            ->from(new Address('no-reply@clowns-und-clowns.de', 'Clown Spielplan'))
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
             ->subject('Spielplan für '.$schedule->getMonth()->getLabel().' ist fertig!')
             ->htmlTemplate('emails/clown_info/schedule_completed.html.twig')
