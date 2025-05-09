@@ -35,4 +35,6 @@ yarn-error.log
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
-/install.sh
+/bin/install.sh
+/bin/deploy.sh
+/bin/update.sh
