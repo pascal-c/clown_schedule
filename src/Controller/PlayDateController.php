@@ -87,18 +87,10 @@ class PlayDateController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($playDate->isTraining()) {
-                foreach ($this->clownRepository->allActive() as $clown) {
-                    $playDate->addPlayingClown($clown);
-                }
-            }
             $this->entityManager->persist($playDate);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
-            if ($playDate->isTraining()) {
-                $this->addFlash('success', 'Alle aktiven Clowns habe ich schonmal eingetragen.');
-            }
 
             return $this->redirectAfterSuccess($playDate, $venue);
         } elseif ($form->isSubmitted()) {
