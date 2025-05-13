@@ -30,11 +30,11 @@ class PlayDateViewController
             substitutionClowns: $substitutionClowns,
             specialPlayDateUrl: $specialPlayDateUrl,
             showChangeRequestLink: $this->getShowChangeRequestLink($playDate, $currentClown),
-            showRegisterForTrainingLink: $this->showRegisterForTrainingLink($playDate),
+            showRegisterForTrainingLink: $this->mayRegisterForTraining($playDate),
         );
     }
 
-    private function showRegisterForTrainingLink(PlayDate $playDate): bool
+    public function mayRegisterForTraining(PlayDate $playDate): bool
     {
         return $playDate->isTraining() && $playDate->getDate() >= $this->timeService->today();
     }

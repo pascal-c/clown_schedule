@@ -41,6 +41,7 @@ class PlayDateController extends AbstractController
         private TimeService $timeService,
         private TranslatorInterface $translator,
         private TrainingAssigner $trainingAssigner,
+        private PlayDateViewController $playDateViewController,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -102,40 +103,38 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(PlayDate $playDate, PlayDateViewController $playDateViewController): Response
+    public function show(PlayDate $playDate): Response
     {
-        if ($playDate->isTraining()) {
-            if ($playDate->getPlayingClowns()->contains($this->getCurrentClown())) {
-                $trainingForm = $this->createFormBuilder($playDate)
-                    ->add(
-                        'unregister',
-                        SubmitType::class,
-                        ['label' => 'Vom Training abmelden', 'attr' => ['class' => 'btn-danger']]
-                    )
-                    ->setAction($this->generateUrl('training_unregister', ['id' => $playDate->getId()]))
-                    ->getForm();
-            } else {
-                $trainingForm = $this->createFormBuilder($playDate)
-                    ->add(
-                        'register',
-                        SubmitType::class,
-                        ['label' => 'Zum Training anmelden'],
-                    )
-                    ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
-                    ->getForm();
-            }
+        if ($playDate->getPlayingClowns()->contains($this->getCurrentClown())) {
+            $trainingForm = $this->createFormBuilder($playDate)
+                ->add(
+                    'unregister',
+                    SubmitType::class,
+                    ['label' => 'Vom Training abmelden', 'attr' => ['class' => 'btn-danger']]
+                )
+                ->setAction($this->generateUrl('training_unregister', ['id' => $playDate->getId()]))
+                ->getForm();
+        } else {
+            $trainingForm = $this->createFormBuilder($playDate)
+                ->add(
+                    'register',
+                    SubmitType::class,
+                    ['label' => 'Zum Training anmelden'],
+                )
+                ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
+                ->getForm();
         }
 
         return $this->render('play_date/show.html.twig', [
-            'playDate' => $playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
-            'trainingForm' => $trainingForm ?? null,
+            'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
+            'trainingForm' => $trainingForm,
         ]);
     }
 
     #[Route('/play_dates/{id}/register', name: 'training_register', methods: ['POST'])]
     public function registerPlayingClown(PlayDate $playDate, Request $request): Response
     {
-        if (!$playDate->isTraining() || $playDate->getDate() < $this->timeService->today()) {
+        if (!$this->playDateViewController->mayRegisterForTraining($playDate)) {
             throw $this->createAccessDeniedException('Das ist nicht erlaubt.');
         }
 
@@ -160,7 +159,7 @@ class PlayDateController extends AbstractController
     #[Route('/play_dates/{id}/unregister', name: 'training_unregister', methods: ['POST'])]
     public function unregisterPlayingClown(PlayDate $playDate, Request $request): Response
     {
-        if (!$playDate->isTraining() || $playDate->getDate() < $this->timeService->today()) {
+        if (!$this->playDateViewController->mayRegisterForTraining($playDate)) {
             throw $this->createAccessDeniedException('Das ist nicht erlaubt.');
         }
 

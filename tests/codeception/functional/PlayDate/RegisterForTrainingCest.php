@@ -35,7 +35,7 @@ class RegisterForTrainingCest extends AbstractCest
 
     public function test(FunctionalTester $I): void
     {
-        Functional::$now = '2024-12-15';
+        Functional::$now = '2124-01-15';
 
         $I->amGoingTo('register myself for the training');
         $I->loginAsClown('Emilio');
