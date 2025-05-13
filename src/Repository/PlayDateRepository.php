@@ -69,6 +69,15 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
+    public function trainingByMonth(Month $month): array
+    {
+        return $this->queryByMonth($month)
+            ->andWhere("pd.type = '".PlayDateType::TRAINING->value."'")
+            ->getQuery()
+            ->enableResultCache(2)
+            ->getResult();
+    }
+
     public function byMonth(Month $month): array
     {
         return $this->queryByMonth($month)

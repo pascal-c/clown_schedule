@@ -24,6 +24,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
 use App\Service\Scheduler\PlayDateSorter;
+use App\Service\Scheduler\TrainingAssigner;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriod;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,6 +45,7 @@ final class SchedulerTest extends TestCase
     private PlayDateSorter&MockObject $playDateSorter;
     private RosterCalculatorGateway&MockObject $rosterCalculatorGateway;
     private RosterResultApplier&MockObject $rosterResultApplier;
+    private TrainingAssigner&MockObject $trainingAssigner;
     private Scheduler $scheduler;
 
     public function setUp(): void
@@ -59,6 +61,8 @@ final class SchedulerTest extends TestCase
         $this->playDateSorter = $this->createMock(PlayDateSorter::class);
         $this->rosterCalculatorGateway = $this->createMock(RosterCalculatorGateway::class);
         $this->rosterResultApplier = $this->createMock(RosterResultApplier::class);
+        $this->trainingAssigner = $this->createMock(TrainingAssigner::class);
+
 
         $this->scheduler = new Scheduler(
             $this->playDateRepository,
@@ -72,6 +76,7 @@ final class SchedulerTest extends TestCase
             $this->playDateSorter,
             $this->rosterCalculatorGateway,
             $this->rosterResultApplier,
+            $this->trainingAssigner,
         );
     }
 
@@ -86,6 +91,10 @@ final class SchedulerTest extends TestCase
             ->method('regularByMonth')
             ->with($month)
             ->willReturn($playDates);
+        $this->playDateRepository->expects($this->once())
+            ->method('trainingByMonth')
+            ->with($month)
+            ->willReturn(['trainings']);
         $clownAvailabilities = $this->getClownAvailabilities();
         $this->clownAvailabilityRepository->expects($this->once())
             ->method('byMonth')
@@ -99,7 +108,9 @@ final class SchedulerTest extends TestCase
         $this->clownAssigner->expects($this->once())
             ->method('assignSubstitutionClown')
             ->with(new TimeSlotPeriod(new DateTimeImmutable('2018-12'), 'pm'), $clownAvailabilities);
-
+        $this->trainingAssigner->expects($this->once())
+            ->method('assignAllAvailable')
+            ->with($clownAvailabilities, ['trainings']);
         $this->availabilityChecker->expects($this->any())
             ->method('isAvailableFor')
             ->willReturnCallback(
@@ -159,6 +170,7 @@ final class SchedulerTest extends TestCase
         $this->scheduleRepository->expects($this->once())->method('find')->with($month)->willReturn($schedule);
         $this->entityManager->expects($this->never())->method($this->anything());
         $this->playDateSorter->expects($this->never())->method($this->anything());
+        $this->trainingAssigner->expects($this->never())->method($this->anything());
 
         $result = $this->scheduler->complete($month);
         $this->assertNull($result);

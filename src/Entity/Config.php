@@ -26,9 +26,9 @@ class Config
         return $this->id;
     }
 
-    public function getSpecialPlayDateUrl(): ?string
+    public function getSpecialPlayDateUrl(): string
     {
-        return $this->specialPlayDateUrl;
+        return $this->specialPlayDateUrl ?? '';
     }
 
     public function setSpecialPlayDateUrl(?string $specialPlayDateUrl): static
