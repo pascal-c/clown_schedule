@@ -13,8 +13,6 @@ class CreateTrainingCest extends AbstractCest
     public function _before(FunctionalTester $I): void
     {
         parent::_before($I);
-        $this->clownFactory->create(name: 'Thorsten', isActive: true);
-        $this->clownFactory->create(name: 'Fernando', isActive: false);
     }
 
     public function create(AdminTester $I): void
@@ -37,7 +35,5 @@ class CreateTrainingCest extends AbstractCest
         $I->see('Training', Locator::contains('.row', text: '03. Dez'));
         $I->click('Training', Locator::contains('.row', text: '03. Dez'));
         $I->see('Trainingstermin', 'h4');
-        $I->see('Thorsten', Locator::contains('table tr', text: 'Spielende Clowns'));
-        $I->dontSee('Fernando', Locator::contains('table tr', text: 'Spielende Clowns'));
     }
 }

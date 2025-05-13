@@ -15,6 +15,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
 use App\Service\Scheduler\PlayDateSorter;
+use App\Service\Scheduler\TrainingAssigner;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriod;
 use App\Value\TimeSlotPeriodInterface;
@@ -34,6 +35,7 @@ class Scheduler
         private PlayDateSorter $playDateSorter,
         private RosterCalculatorGateway $rosterCalculatorGateway,
         private RosterResultApplier $rosterResultApplier,
+        private TrainingAssigner $trainingAssigner,
     ) {
     }
 
@@ -69,6 +71,8 @@ class Scheduler
         foreach ($timeSlotPeriods as $timeSlot) {
             $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($timeSlot[0], $timeSlot[1]), $clownAvailabilities);
         }
+
+        $this->trainingAssigner->assignAllAvailable($clownAvailabilities, $this->playDateRepository->trainingByMonth($month));
 
         return $result;
     }

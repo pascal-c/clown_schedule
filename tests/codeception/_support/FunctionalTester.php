@@ -35,10 +35,10 @@ class FunctionalTester extends \Codeception\Actor
         $I->click('anmelden');
     }
 
-    public function loginAsClown(): void
+    public function loginAsClown(?string $name = null): void
     {
         $I = $this;
-        $clown = $I->grabService(ClownFactory::class)->create(isAdmin: false, password: 'secret');
+        $clown = $I->grabService(ClownFactory::class)->create(isAdmin: false, password: 'secret', name: $name);
         $I->login($clown->getEmail(), 'secret');
     }
 

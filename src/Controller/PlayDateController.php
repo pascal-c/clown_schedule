@@ -5,29 +5,26 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDate;
-use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Form\PlayDate\AssignClownsFormType;
 use App\Form\PlayDate\RegularPlayDateFormType;
 use App\Form\PlayDate\SpecialPlayDateFormType;
 use App\Form\PlayDate\TrainingFormType;
 use App\Repository\ClownRepository;
-use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
-use App\Repository\SubstitutionRepository;
 use App\Repository\VenueRepository;
-use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\PlayDateHistoryService;
+use App\Service\Scheduler\TrainingAssigner;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
 use App\Value\PlayDateType;
+use App\ViewController\PlayDateViewController;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -43,6 +40,8 @@ class PlayDateController extends AbstractController
         private ClownRepository $clownRepository,
         private TimeService $timeService,
         private TranslatorInterface $translator,
+        private TrainingAssigner $trainingAssigner,
+        private PlayDateViewController $playDateViewController,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -87,18 +86,10 @@ class PlayDateController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($playDate->isTraining()) {
-                foreach ($this->clownRepository->allActive() as $clown) {
-                    $playDate->addPlayingClown($clown);
-                }
-            }
             $this->entityManager->persist($playDate);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
-            if ($playDate->isTraining()) {
-                $this->addFlash('success', 'Alle aktiven Clowns habe ich schonmal eingetragen.');
-            }
 
             return $this->redirectAfterSuccess($playDate, $venue);
         } elseif ($form->isSubmitted()) {
@@ -112,22 +103,82 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(SubstitutionRepository $substitutionRepository, ConfigRepository $configRepository, int $id): Response
+    public function show(PlayDate $playDate): Response
     {
-        $playDate = $this->playDateRepository->find($id);
-        if (is_null($playDate)) {
-            throw new NotFoundHttpException();
+        if ($playDate->getPlayingClowns()->contains($this->getCurrentClown())) {
+            $trainingForm = $this->createFormBuilder($playDate)
+                ->add(
+                    'unregister',
+                    SubmitType::class,
+                    ['label' => 'Vom Training abmelden', 'attr' => ['class' => 'btn-danger']]
+                )
+                ->setAction($this->generateUrl('training_unregister', ['id' => $playDate->getId()]))
+                ->getForm();
+        } else {
+            $trainingForm = $this->createFormBuilder($playDate)
+                ->add(
+                    'register',
+                    SubmitType::class,
+                    ['label' => 'Zum Training anmelden'],
+                )
+                ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
+                ->getForm();
         }
 
         return $this->render('play_date/show.html.twig', [
-            'playDate' => $playDate,
-            'substitutionClowns' => array_map(
-                fn (Substitution $substitution) => $substitution->getSubstitutionClown(),
-                $substitutionRepository->findByTimeSlotPeriod($playDate),
-            ),
-            'specialPlayDateUrl' => $playDate->isSpecial() ? $configRepository->find()->getSpecialPlayDateUrl() : '',
-            'showChangeRequestLink' => $playDate->getPlayingClowns()->contains($this->getCurrentClown()) && $playDate->getDate() >= $this->timeService->today()->modify(PlayDateChangeRequestCloseInvalidService::CREATABLE_UNTIL_PERIOD),
+            'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
+            'trainingForm' => $trainingForm,
         ]);
+    }
+
+    #[Route('/play_dates/{id}/register', name: 'training_register', methods: ['POST'])]
+    public function registerPlayingClown(PlayDate $playDate, Request $request): Response
+    {
+        if (!$this->playDateViewController->mayRegisterForTraining($playDate)) {
+            throw $this->createAccessDeniedException('Das ist nicht erlaubt.');
+        }
+
+        $trainingForm = $this->createFormBuilder($playDate)
+            ->add('register', SubmitType::class)
+            ->getForm();
+        $trainingForm->handleRequest($request);
+        if ($trainingForm->isSubmitted() && $trainingForm->isValid()) {
+            $this->trainingAssigner->assignOne($playDate, $this->getCurrentClown());
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Du bist jetzt für das Training angemeldet. Schön, dass Du dabei bist!');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        } else {
+            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        }
+
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+    }
+
+    #[Route('/play_dates/{id}/unregister', name: 'training_unregister', methods: ['POST'])]
+    public function unregisterPlayingClown(PlayDate $playDate, Request $request): Response
+    {
+        if (!$this->playDateViewController->mayRegisterForTraining($playDate)) {
+            throw $this->createAccessDeniedException('Das ist nicht erlaubt.');
+        }
+
+        $trainingForm = $this->createFormBuilder($playDate)
+            ->add('unregister', SubmitType::class)
+            ->getForm();
+        $trainingForm->handleRequest($request);
+        if ($trainingForm->isSubmitted() && $trainingForm->isValid()) {
+            $this->trainingAssigner->unassignOne($playDate, $this->getCurrentClown());
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Du bist jetzt für das Training abgemeldet. Schade, dass Du nicht dabei sein kannst!');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        } else {
+            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        }
+
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
 
     #[Route('/play_dates/{id}/edit', name: 'play_date_edit', methods: ['GET', 'PUT'])]

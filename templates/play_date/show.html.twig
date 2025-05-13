@@ -55,7 +55,7 @@
             <tr>
                 <th>Springer:in</th>
                 <td>
-                    {{ substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
+                    {{ playDate.substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
                 </td>
             </tr>
             {% if playDate.isPaid %}
@@ -89,20 +89,24 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if not specialPlayDateUrl is empty %}
+            {% if not playDate.specialPlayDateUrl is empty %}
                 <tr>
                     <th>URL</th>
                     <td>
-                        <a href="{{ specialPlayDateUrl }}">Weitere Infos</a>
+                        <a href="{{ playDate.specialPlayDateUrl }}">Weitere Infos</a>
                     </td>
                 </tr>
             {% endif %}
         </tbody>
     </table>
 
-    {% if showChangeRequestLink %}
+    {% if playDate.showChangeRequestLink %}
         <a href="{{ path('play_date_new_swap_request', {id: playDate.id}) }}">Diesen Spieltermin tauschen</a>&nbsp;
         <a href="{{ path('play_date_new_give-off_request', {id: playDate.id}) }}">Diesen Spieltermin abgeben</a>
+    {% endif %}
+
+    {% if playDate.showRegisterForTrainingLink %}
+        {{ form(trainingForm) }}
     {% endif %}
 
     {% if playDate.playDateGiveOffRequests is not empty or playDate.playDateSwapRequests is not empty%}
