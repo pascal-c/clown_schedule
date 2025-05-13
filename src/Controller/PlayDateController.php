@@ -19,7 +19,7 @@ use App\Service\Scheduler\TrainingAssigner;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
 use App\Value\PlayDateType;
-use App\ViewController\PlayDateShowViewController;
+use App\ViewController\PlayDateViewController;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -102,7 +102,7 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(PlayDate $playDate, PlayDateShowViewController $playDateShowViewController): Response
+    public function show(PlayDate $playDate, PlayDateViewController $playDateViewController): Response
     {
         if ($playDate->isTraining()) {
             if ($playDate->getPlayingClowns()->contains($this->getCurrentClown())) {
@@ -127,7 +127,7 @@ class PlayDateController extends AbstractController
         }
 
         return $this->render('play_date/show.html.twig', [
-            'playDate' => $playDateShowViewController->getPlayDateShowView($playDate, $this->getCurrentClown()),
+            'playDate' => $playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm ?? null,
         ]);
     }

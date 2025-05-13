@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\ViewModel;
 
-use App\Entity\PlayDate;
+use App\Entity\PlayDate as PlayDateEntity;
 use BadMethodCallException;
 
-class PlayDateShowView
+class PlayDate
 {
     public function __construct(
-        public readonly PlayDate $playDate,
+        public readonly PlayDateEntity $playDate,
         public readonly array $substitutionClowns,
         public readonly string $specialPlayDateUrl,
         public readonly bool $showChangeRequestLink,
@@ -33,6 +33,6 @@ class PlayDateShowView
             return $this->playDate->$hasName(...$arguments);
         }
 
-        throw new BadMethodCallException(sprintf('Method %s does not exist in PlayDateShowView', $name));
+        throw new BadMethodCallException(sprintf('Method %s does not exist in PlayDate ViewModel', $name));
     }
 }

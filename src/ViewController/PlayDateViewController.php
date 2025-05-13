@@ -9,15 +9,15 @@ use App\Repository\ConfigRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\TimeService;
-use App\ViewModel\PlayDateShowView;
+use App\ViewModel\PlayDate as PlayDateViewModel;
 
-class PlayDateShowViewController
+class PlayDateViewController
 {
     public function __construct(private SubstitutionRepository $substitutionRepository, private ConfigRepository $configRepository, private TimeService $timeService)
     {
     }
 
-    public function getPlayDateShowView(PlayDate $playDate, Clown $currentClown): PlayDateShowView
+    public function getPlayDateViewModel(PlayDate $playDate, Clown $currentClown): PlayDateViewModel
     {
         $substitutionClowns = array_map(
             fn (Substitution $substitution) => $substitution->getSubstitutionClown(),
@@ -25,7 +25,7 @@ class PlayDateShowViewController
         );
         $specialPlayDateUrl = $playDate->isSpecial() ? $this->configRepository->find()->getSpecialPlayDateUrl() : '';
 
-        return new PlayDateShowView(
+        return new PlayDateViewModel(
             playDate: $playDate,
             substitutionClowns: $substitutionClowns,
             specialPlayDateUrl: $specialPlayDateUrl,
