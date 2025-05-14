@@ -4,6 +4,7 @@ namespace App\Tests\Functional\Login;
 
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
+use App\Tests\Helper\Functional;
 use App\Tests\Step\Functional\AdminTester;
 use Codeception\Attribute\Before;
 
@@ -22,6 +23,8 @@ class InvitationCest extends AbstractCest
 
     protected function invite(AdminTester $I)
     {
+        Functional::$now = '2124-01-15';
+
         $I->loginAsAdmin();
         $I->stopFollowingRedirects();
         $I->click('Clowns', 'nav');
@@ -50,6 +53,8 @@ class InvitationCest extends AbstractCest
         $I->amGoingTo('set my new password');
         $I->fillField('accept_invitation_form[password][password][first]', 'abracadabra');
         $I->fillField('accept_invitation_form[password][password][second]', 'abracadabra');
+        $I->checkOption('accept_invitation_form[privacy_policy_accepted]');
+        $I->see('Ich akzeptiere diese fantastische Datenschutzerklärung.');
         $I->click('Passwort setzen');
 
         $I->amGoingTo('login with my new password');
@@ -82,5 +87,14 @@ class InvitationCest extends AbstractCest
         $I->see('Einladungsemail senden');
         $I->click('Einladungsemail senden');
         $I->seeEmailIsSent(1);
+    }
+
+    #[Before('acceptInvitation')]
+    public function showPrivacyPolicyAcceptedInDetails(AdminTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->click('Clowns', 'nav');
+        $I->click('Erika');
+        $I->see('Erika hat die Datenschutzerklärung am 15.01.2124 akzeptiert.');
     }
 }

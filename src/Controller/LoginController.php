@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Form\AcceptInvitationFormType;
-use App\Form\ChangePasswordFormType;
-use App\Form\LoginFormType;
+use App\Form\Authentication\AcceptInvitationFormType;
+use App\Form\Authentication\ChangePasswordFormType;
+use App\Form\Authentication\LoginFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use App\Service\AuthService;
+use App\Service\TimeService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +22,8 @@ class LoginController extends AbstractController
         private ClownRepository $clownRepository,
         protected AuthService $authService,
         private AuthenticationMailer $mailer,
+        private TimeService $timeService,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -126,9 +130,13 @@ class LoginController extends AbstractController
         }
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
             $this->authService->changePassword($passwordForm['password']['password']->getData());
+            $currentClown = $this->getCurrentClown();
+            $currentClown->setPrivacyPolicyAccepted($passwordForm['privacy_policy_accepted']->getData());
+            $currentClown->setPrivacyPolicyDateTime($this->timeService->now());
+            $this->entityManager->flush();
             $this->addFlash(
                 'success',
-                sprintf('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, %s!', $this->getCurrentClown()->getName())
+                sprintf('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, %s!', $currentClown->getName())
             );
             $this->authService->logout();
 
