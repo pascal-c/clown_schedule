@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Controller\LoginController;
+use App\Controller\PublicController;
 use App\Service\AuthService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,7 +26,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
             $controller = $controller[0];
         }
 
-        if (!$controller instanceof LoginController && !$this->authService->isLoggedIn()) {
+        if (!$controller instanceof LoginController && !$controller instanceof PublicController && !$this->authService->isLoggedIn()) {
             $this->authService->setLastUri($event->getRequest());
             $event->setController(fn () => new RedirectResponse('/login'));
 

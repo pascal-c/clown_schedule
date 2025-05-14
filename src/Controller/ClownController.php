@@ -74,11 +74,9 @@ class ClownController extends AbstractController
     }
 
     #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PATCH'])]
-    public function edit(Request $request, int $id): Response
+    public function edit(Clown $clown, Request $request): Response
     {
         $this->adminOnly();
-
-        $clown = $this->clownRepository->find($id);
 
         $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PATCH']);
         $deleteForm = $this->createFormBuilder($clown)
@@ -113,6 +111,7 @@ class ClownController extends AbstractController
         }
 
         return $this->render('clown/edit.html.twig', [
+            'clown' => $clown,
             'form' => $form,
             'delete_form' => $deleteForm,
             'send_invitation_form' => $clown->hasNoPassword() ? $sendInvitationForm : null,

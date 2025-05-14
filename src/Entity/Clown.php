@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use DateTimeImmutable;
 
 #[ORM\Entity]
 #[UniqueEntity('name')]
@@ -58,6 +59,12 @@ class Clown
 
     #[ORM\ManyToMany(targetEntity: Venue::class, mappedBy: 'blockedClowns')]
     private Collection $blockedVenues;
+
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $privacyPolicyAccepted = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $privacyPolicyDateTime = null;
 
     public function __construct()
     {
@@ -301,6 +308,30 @@ class Clown
         if ($this->blockedVenues->removeElement($blockedVenue)) {
             $blockedVenue->removeBlockedClown($this);
         }
+
+        return $this;
+    }
+
+    public function isPrivacyPolicyAccepted(): bool
+    {
+        return $this->privacyPolicyAccepted;
+    }
+
+    public function setPrivacyPolicyAccepted(bool $privacyPolicyAccepted): static
+    {
+        $this->privacyPolicyAccepted = $privacyPolicyAccepted;
+
+        return $this;
+    }
+
+    public function getPrivacyPolicyDateTime(): ?DateTimeImmutable
+    {
+        return $this->privacyPolicyDateTime;
+    }
+
+    public function setPrivacyPolicyDateTime(?DateTimeImmutable $privacyPolicyDateTime): static
+    {
+        $this->privacyPolicyDateTime = $privacyPolicyDateTime;
 
         return $this;
     }
