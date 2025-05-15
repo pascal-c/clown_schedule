@@ -4,11 +4,11 @@
 
 {% block content %}
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_index' }) }}
-    <h4 class="pt-3">Fehlzeiten {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    <h4 class="pt-3">Wünsche {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
 
     <table class="table">
         <thead>
-            <tr><th>Clown</th><th>Fehlzeiten eingetragen?</th><th>Wünsche / Anmerkungen</tr>
+            <tr><th>Clown</th><th>Wünsche eingetragen?</th><th>Wünsche / Anmerkungen</tr>
         </thead>
         <tbody>
 

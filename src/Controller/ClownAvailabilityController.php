@@ -141,7 +141,7 @@ class ClownAvailabilityController extends AbstractController
             }
             $this->entityManager->persist($clownAvailability);
             $this->entityManager->flush();
-            $this->addFlash('success', 'Fehlzeiten wurden gespeichert. Vielen Dank!');
+            $this->addFlash('success', 'Wünsche wurden gespeichert. Vielen Dank!');
 
             return $this->redirectToRoute('clown_availability_show', ['clownId' => $clown->getId()]);
         }
@@ -191,7 +191,7 @@ class ClownAvailabilityController extends AbstractController
                 $timeSlot->setAvailability($availabilities[$date][$timeSlot->getDaytime()]);
             }
             $this->entityManager->flush();
-            $this->addFlash('success', 'Fehlzeiten wurden geändert. Gut!');
+            $this->addFlash('success', 'Wünsche wurden geändert. Gut!');
 
             return $this->redirectToRoute('clown_availability_show', ['clownId' => $clown->getId()]);
         }

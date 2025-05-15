@@ -21,7 +21,7 @@ class ConfigCest extends AbstractCest
         $I->seeInField('Bundesland', 'Sachsen');
 
         $I->amGoingTo('make sure that the feature is really enabled');
-        $I->click('Fehlzeiten');
+        $I->click('Wünsche');
         $I->click('Nein');
         $I->see('Gewünschte maximale Anzahl Spiele pro Woche');
 

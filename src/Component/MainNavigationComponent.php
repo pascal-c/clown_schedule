@@ -24,7 +24,7 @@ class MainNavigationComponent
         $this->navigationItems = [
             'dashboard' => ['label' => 'Dashboard', 'url' => $this->urlHelper->generate('dashboard')],
             'clown' => ['label' => 'Clowns', 'url' => $this->urlHelper->generate('clown_index')],
-            'availability' => ['label' => 'Fehlzeiten', 'url' => $this->urlHelper->generate('clown_availability_index')],
+            'availability' => ['label' => 'Wünsche', 'url' => $this->urlHelper->generate('clown_availability_index')],
             'venue' => ['label' => 'Spielorte', 'url' => $this->urlHelper->generate('venue_index')],
             'play_date' => ['label' => 'Spielplan', 'url' => $this->urlHelper->generate('schedule')],
             'statistics' => ['label' => 'Statistiken', 'url' => $this->urlHelper->generate('statistics')],

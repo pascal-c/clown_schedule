@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Fehlzeiten{% endblock %}
+{% block title %}Wünsche{% endblock %}
 
 {% block content %}
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
-    <h4 class="pt-3">Fehlzeiten {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    <h4 class="pt-3">Wünsche {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
 
     <div class="container">
         <div class="row">
@@ -39,6 +39,6 @@
         {{ include('clown_availability/_show_availabilities_in_schedule.html.twig') }}
     </div>
     <div class="container pt-3">
-        <a href="{{ path('clown_availability_edit', {clownId: clown.id, monthId: month.key}) }}">Fehlzeiten bearbeiten</a>
+        <a href="{{ path('clown_availability_edit', {clownId: clown.id, monthId: month.key}) }}">Wünsche bearbeiten</a>
     </div>
 {% endblock %}

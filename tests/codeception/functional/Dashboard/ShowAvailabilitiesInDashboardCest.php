@@ -40,10 +40,10 @@ class ShowAvailabilitiesInDashboardCest extends AbstractCest
 
         $I->login(email: 'hugo@example.org', password: 'secret');
 
-        $I->see('Fehlzeiten Jan. 2025 (noch nix eingetragen)');
-        $I->see('Fehlzeiten Feb. 2025 (noch nix eingetragen)');
-        $I->see('Hey Hugo, Du musst DRINGEND noch Deine Fehlzeiten für Jan. 2025 eintragen', '.alert-danger');
-        $I->see('Hey Hugo, Du musst noch Deine Fehlzeiten für Feb. 2025 eintragen', '.alert-warning');
+        $I->see('Wünsche Jan. 2025 (noch nix eingetragen)');
+        $I->see('Wünsche Feb. 2025 (noch nix eingetragen)');
+        $I->see('Hey Hugo, Du musst DRINGEND noch Deine Wünsche für Jan. 2025 eintragen', '.alert-danger');
+        $I->see('Hey Hugo, Du musst noch Deine Wünsche für Feb. 2025 eintragen', '.alert-warning');
     }
 
     public function whenSchedulesAreNotStartedButAvailabilityAlreadyCreated(FunctionalTester $I): void
@@ -56,10 +56,10 @@ class ShowAvailabilitiesInDashboardCest extends AbstractCest
 
         $I->login(email: 'hugo@example.org', password: 'secret');
 
-        $I->see('Fehlzeiten Jan. 2025 (schon eingetragen)');
-        $I->see('Fehlzeiten Feb. 2025 (noch nix eingetragen)');
-        $I->dontSee('Hey Hugo, Du musst DRINGEND noch Deine Fehlzeiten für Jan. 2025 eintragen', '.alert-danger');
-        $I->see('Hey Hugo, Du musst noch Deine Fehlzeiten für Feb. 2025 eintragen', '.alert-warning');
+        $I->see('Wünsche Jan. 2025 (schon eingetragen)');
+        $I->see('Wünsche Feb. 2025 (noch nix eingetragen)');
+        $I->dontSee('Hey Hugo, Du musst DRINGEND noch Deine Wünsche für Jan. 2025 eintragen', '.alert-danger');
+        $I->see('Hey Hugo, Du musst noch Deine Wünsche für Feb. 2025 eintragen', '.alert-warning');
     }
 
     public function whenSchedulesAreAlreadyStarted(FunctionalTester $I): void
@@ -68,9 +68,9 @@ class ShowAvailabilitiesInDashboardCest extends AbstractCest
 
         $I->login(email: 'hugo@example.org', password: 'secret');
 
-        $I->see('Fehlzeiten Nov. 2024 Spielplan fertiggestellt');
-        $I->see('Fehlzeiten Dez. 2024 Spielplan wird gerade erstellt');
-        $I->dontSee('Hey Hugo, Du musst DRINGEND noch Deine Fehlzeiten');
-        $I->dontSee('Hey Hugo, Du musst noch Deine Fehlzeiten');
+        $I->see('Wünsche Nov. 2024 Spielplan fertiggestellt');
+        $I->see('Wünsche Dez. 2024 Spielplan wird gerade erstellt');
+        $I->dontSee('Hey Hugo, Du musst DRINGEND noch Deine Wünsche');
+        $I->dontSee('Hey Hugo, Du musst noch Deine Wünsche');
     }
 }

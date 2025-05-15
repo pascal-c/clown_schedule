@@ -47,7 +47,7 @@ class DashboardController extends AbstractController
             $this->addFlash(
                 'danger',
                 sprintf(
-                    'Hey %s, Du musst DRINGEND noch Deine Fehlzeiten für %s eintragen',
+                    'Hey %s, Du musst DRINGEND noch Deine Wünsche für %s eintragen',
                     $currentClown->getName(),
                     $nextMonth->getLabel()
                 )
@@ -57,7 +57,7 @@ class DashboardController extends AbstractController
             $this->addFlash(
                 'warning',
                 sprintf(
-                    'Hey %s, Du musst noch Deine Fehlzeiten für %s eintragen',
+                    'Hey %s, Du musst noch Deine Wünsche für %s eintragen',
                     $currentClown->getName(),
                     $afterNextMonth->getLabel()
                 )

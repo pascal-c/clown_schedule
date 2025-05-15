@@ -7,10 +7,10 @@
     
     {{ component('next_dates_per_clown', {currentClown: currentClown}) }}
 
-    <h4 class="pt-3">Fehlzeiten verwalten</h4>
+    <h4 class="pt-3">Wünsche verwalten</h4>
     <ul>
         <li>
-            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">Fehlzeiten {{ nextMonth.label }}</a>
+            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">Wünsche {{ nextMonth.label }}</a>
             {% if nextMonthSchedule %}
                 {% if nextMonthSchedule.completed %}
                     Spielplan fertiggestellt ✅
@@ -26,7 +26,7 @@
             {% endif %}
         </li>
         <li>
-            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">Fehlzeiten {{ afterNextMonth.label }}</a>
+            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">Wünsche {{ afterNextMonth.label }}</a>
             {% if afterNextMonthSchedule %}
                 {% if afterNextMonthSchedule.completed %}
                     Spielplan fertiggestellt ✅
