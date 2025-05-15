@@ -1,5 +1,5 @@
-    <nav class="navbar">
-    <ul class="nav nav-tabs">
+<nav class="navbar">
+    <ul class="nav nav-tabs pt-2">
         {% for key, element in navigationItems %}
             <li class="nav-item">
                 <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">
@@ -8,8 +8,4 @@
             </li>
         {% endfor %}
     </ul>
-
-    {% if urlKey == 'statistics' %}
-        <a href="{{ path('statistics_infinity') }}">Ewige Statistik</a>
-    {% endif %}
 </nav>

@@ -44,7 +44,7 @@ class IndexPlayDateCest extends AbstractCest
     {
         $I->loginAsAdmin();
         $I->amOnPage('/schedule');
-        $I->click('Tabellarische Übersicht aller Spieltermine');
+        $I->click('Tabellarische Jahresansicht', '.nav-link');
 
         $I->click('1984', '.nav-link');
         $I->see('Spieltermine 1984');

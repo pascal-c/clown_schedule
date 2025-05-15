@@ -1,13 +1,15 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Spieltermine{% endblock %}
+{% block title %}Spielplan{% endblock %}
 
 {% block content %}
-    {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     <h4 class="pt-3">
         Spielplan {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}
     </h4>
 
+    {{ component('schedule_navigation', { active: 'schedule' }) }}
+    {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
+    
     <button type="button" class="btn btn-link mb-3 collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
     <button type="button" class="btn btn-link mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
 
@@ -15,22 +17,6 @@
         {{ include('schedule/_play_dates_schedule.html.twig') }}
     </div>
     {% if currentClown.isAdmin %}
-        <div class="pt-3">
-            {% if not schedule.completed %}
-                <h5>Spielplan {{ schedule.inProgress ? 'neu' }} berechnen</h5>
-                <p>Die Spieltermine werden automatisch zugeordnet.<br />
-                    Einfache Berechnung: Geht ganz schnell. Findet nicht immer die beste Lösung.<br />
-                    Komplexe Berechnung (Experimentell): Berechnet viele Lösungen und wählt die beste für Euch aus. Das kann bis zu 90 Sekunden dauern.
-                </p>
-                {{ form(calculateForm) }}
-
-                <h5>Spielplanerstellung abschliessen</h5>
-                <p>Diese Aktion kann nicht rückgängig gemacht werden. Die Spieltermine können weiterhin bearbeitet werden.<br />
-                    Erst wenn der Spielplan abgeschlossen ist, werden die Zuordnungen für die Clowns sichtbar.
-                </p>
-                {{ form(completeForm) }}
-            {% endif %}
-        </div>
         <div class="pt-3">
             {{ include('_shared/_create_link.html.twig', {url: path('play_date_new'), label: "Spieltermin anlegen"}) }}
         </div>
@@ -48,13 +34,5 @@
                 label: "Trainingstermin anlegen"
             }) }}
         </div>
-
-
-        <div class="pt-3">
-            <a href="{{ path('play_date_index') }}">
-                Tabellarische Übersicht aller Spieltermine
-            </a>
-        </div>
-
     {% endif %}
 {% endblock %}
