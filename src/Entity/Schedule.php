@@ -54,4 +54,9 @@ class Schedule
     {
         return ScheduleStatus::COMPLETED === $this->getStatus();
     }
+
+    public function isInProgress(): bool
+    {
+        return ScheduleStatus::IN_PROGRESS === $this->getStatus();
+    }
 }

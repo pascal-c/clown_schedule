@@ -30,6 +30,9 @@
     </table>
     
     {% if currentClown.isAdmin %}
-        <a href="{{ path('clown_new') }}">Clown anlegen</a>
+        {{ include('_shared/_create_link.html.twig', {
+            url: path('clown_new'), 
+            label: "Clown anlegen"
+        }) }}
     {% endif %}    
 {% endblock %}

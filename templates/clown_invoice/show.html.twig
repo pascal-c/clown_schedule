@@ -3,12 +3,12 @@
 {% block title %}Rechnungsansicht{% endblock %}
 
 {% block content %}
+    <h4 class="pt-3">Rechnungsansicht {{ clown.name }} {{ month.label }}</h4>
+
+    {{ component('schedule_navigation', { active: 'clown_invoice' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_invoice_show', urlParams: {clownId: clown.id} }) }}
     {{ currentClown.isAdmin ? include('/clown_invoice/_clown_navigation.html.twig', {activeClowns: activeClowns, clown: clown}) }}
    
-
-    <h4 class="pt-3">Rechnungsansicht {{ clown.name }} {{ month.label }}</h4>
-
     <table class="table">
         <thead>
             <tr>
