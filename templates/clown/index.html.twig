@@ -7,7 +7,7 @@
 
     <table class="table">
         <thead>
-            <tr><th>Clown</th><th>Email</th><th>aktiv</th><th>Büro?</th><th>Wünsche</th></tr>
+            <tr><th>Clown</th><th>Email</th><th>aktiv</th><th>Büro?</th></tr>
         </thead>
         <tbody>
 
@@ -23,7 +23,6 @@
                     <td><a href="mailto:{{ clown.email }}">{{ clown.email }}</a></td>
                     <td>{{ clown.active ? 'Ja' : 'Nein' }}</td>
                     <td>{{ clown.admin ? 'Ja' : 'Nein' }}</td>
-                    <td><a href="{{ path('clown_availability_show', {clownId: clown.id}) }}">Wünsche</a></td>
                 </tr>    
             {% endfor %}    
         </tbody>

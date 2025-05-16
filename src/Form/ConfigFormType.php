@@ -18,16 +18,6 @@ class ConfigFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('specialPlayDateUrl', UrlType::class, [
-                'required' => false,
-                'label' => 'Zusatztermine Link',
-                'help' => 'Dieser Link wird in den Details aller Zusatztermine angezeigt',
-            ])
-            ->add('featureMaxPerWeekActive', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Feature “Max. Spielanzahl pro Woche”',
-                'help' => 'Wenn aktiviert, können Clowns zu ihren Verfügbarkeiten eine maximale Spielanzahl pro Woche angeben',
-            ])
             ->add('federalState', ChoiceType::class, [
                 'choices' => [
                     '-- kein Bundesland -- nur bundesweite Feiertage anzeigen' => null,
@@ -51,6 +41,21 @@ class ConfigFormType extends AbstractType
                 'label' => 'Bundesland',
                 'help' => 'für die Anzeige von Ferien und Feiertagen im Kalender',
                 'required' => true,
+            ])
+            ->add('specialPlayDateUrl', UrlType::class, [
+                'required' => false,
+                'label' => 'Zusatztermine Link',
+                'help' => 'Dieser Link wird in den Details aller Zusatztermine angezeigt',
+            ])
+            ->add('useCalculation', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Automatische Berechnung',
+                'help' => 'Wenn aktiviert, kann der Spielplan automatisch unter Berücksichtigung der Clownswünsche erstellt werden',
+            ])
+            ->add('featureMaxPerWeekActive', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Feature “Max. Spielanzahl pro Woche”',
+                'help' => 'Wenn aktiviert, können Clowns zu ihren Verfügbarkeiten eine maximale Spielanzahl pro Woche angeben',
             ])
             ->add('save', SubmitType::class, ['label' => 'speichern'])
             ->setMethod('PUT');
