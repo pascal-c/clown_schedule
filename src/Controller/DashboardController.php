@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Month;
 use App\Repository\ClownAvailabilityRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateChangeRequestRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\TimeService;
@@ -19,6 +20,7 @@ class DashboardController extends AbstractController
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private PlayDateChangeRequestRepository $playDateChangeRequestRepository,
         private ScheduleRepository $scheduleRepository,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -43,7 +45,7 @@ class DashboardController extends AbstractController
         $currentClown = $this->getCurrentClown();
         $nextMonthFilled = $this->clownAvailabilityRepository->find($nextMonth, $currentClown);
         $afterNextMonthFilled = $this->clownAvailabilityRepository->find($afterNextMonth, $currentClown);
-        if ($currentClown->isActive() && !$nextMonthSchedule && !$nextMonthFilled) {
+        if ($this->configRepository->useCalculation() && $currentClown->isActive() && !$nextMonthSchedule && !$nextMonthFilled) {
             $this->addFlash(
                 'danger',
                 sprintf(
@@ -53,7 +55,7 @@ class DashboardController extends AbstractController
                 )
             );
         }
-        if ($currentClown->isActive() && $today != $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
+        if ($this->configRepository->useCalculation() && $currentClown->isActive() && $today != $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
             $this->addFlash(
                 'warning',
                 sprintf(
@@ -75,6 +77,7 @@ class DashboardController extends AbstractController
             'active' => 'dashboard',
             'sentChangeRequests' => $this->playDateChangeRequestRepository->findSentRequestsWaiting($currentClown),
             'receivedChangeRequests' => $this->playDateChangeRequestRepository->findReceivedRequestsWaiting($currentClown),
+            'showAvailabilityOverview' => $this->configRepository->useCalculation(),
         ]);
     }
 }

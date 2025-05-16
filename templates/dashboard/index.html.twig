@@ -7,6 +7,7 @@
     
     {{ component('next_dates_per_clown', {currentClown: currentClown}) }}
 
+    {% if showAvailabilityOverview %}
     <h4 class="pt-3">Wünsche verwalten</h4>
     <ul>
         <li>
@@ -42,6 +43,7 @@
             {% endif %}
         </li>
     </ul>
+    {% endif %}
 
     {% if not feedbackUrl is empty %}
         <h4 class="pt-3">Feedback zu dieser App</h4>
