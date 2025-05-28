@@ -15,7 +15,7 @@ class FeeFactory extends AbstractFactory
         ?Venue $venue = null,
         ?string $validFrom = null,
         ?float $feeByPublicTransport = null,
-        ?float $feeByCar = null,
+        float|string|null $feeByCar = 'default',
         ?int $kilometers = null,
         float $feePerKilometer = 0.35,
         ?bool $kilometersFeeForAllClowns = null,
@@ -25,7 +25,7 @@ class FeeFactory extends AbstractFactory
             ->setVenue($venue)
             ->setValidFrom($validFrom ? new DateTimeImmutable($validFrom) : null)
             ->setFeeByPublicTransport($feeByPublicTransport ?? $feeByPublicTransportGenerated)
-            ->setFeeByCar($feeByCar ?? $feeByCarGenerated)
+            ->setFeeByCar('default' === $feeByCar ? $feeByCarGenerated : $feeByCar)
             ->setKilometers($kilometers ?? $kilometersGenerated)
             ->setFeePerKilometer($feePerKilometer)
             ->setKilometersFeeForAllClowns($kilometersFeeForAllClowns ?? $kilometersFeeForAllClownsGenerated)

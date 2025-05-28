@@ -11,6 +11,7 @@ use App\Form\PlayDate\RegularPlayDateFormType;
 use App\Form\PlayDate\SpecialPlayDateFormType;
 use App\Form\PlayDate\TrainingFormType;
 use App\Repository\ClownRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\VenueRepository;
@@ -42,6 +43,7 @@ class PlayDateController extends AbstractController
         private TranslatorInterface $translator,
         private TrainingAssigner $trainingAssigner,
         private PlayDateViewController $playDateViewController,
+        private ConfigRepository $configRepository,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -128,6 +130,7 @@ class PlayDateController extends AbstractController
         return $this->render('play_date/show.html.twig', [
             'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm,
+            'config' => $this->configRepository->find(),
         ]);
     }
 

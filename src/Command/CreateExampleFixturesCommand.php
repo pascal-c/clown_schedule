@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Entity\Month;
 use App\Factory\ClownAvailabilityFactory;
 use App\Factory\ClownFactory;
+use App\Factory\ConfigFactory;
 use App\Factory\ContactFactory;
 use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
@@ -37,6 +38,7 @@ class CreateExampleFixturesCommand extends Command
         private FeeFactory $feeFactory,
         private ContactFactory $contactFactory,
         private ScheduleFactory $_scheduleFactory,
+        private ConfigFactory $_configFactory,
     ) {
         parent::__construct();
     }

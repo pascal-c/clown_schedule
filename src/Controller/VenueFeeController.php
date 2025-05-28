@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Venue;
 use App\Entity\Fee;
 use App\Form\VenueFeeFormType;
+use App\Repository\ConfigRepository;
 use App\Repository\VenueRepository;
 use App\Service\TimeService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,8 +20,12 @@ class VenueFeeController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, private VenueRepository $venueRepository, private TimeService $timeService)
-    {
+    public function __construct(
+        ManagerRegistry $doctrine,
+        private VenueRepository $venueRepository,
+        private TimeService $timeService,
+        private ConfigRepository $configRepository,
+    ) {
         $this->entityManager = $doctrine->getManager();
     }
 
@@ -36,6 +41,7 @@ class VenueFeeController extends AbstractController
             'venue' => $venue,
             'active' => 'venue',
             'showEditLink' => $showEditLink,
+            'config' => $this->configRepository->find(),
         ]);
     }
 

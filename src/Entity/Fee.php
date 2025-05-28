@@ -57,7 +57,7 @@ class Fee
 
     public function getFeeByCar(): ?float
     {
-        return $this->feeByCar;
+        return $this->feeByCar ?? $this->feeByPublicTransport;
     }
 
     public function setFeeByCar(?float $feeByCar): static

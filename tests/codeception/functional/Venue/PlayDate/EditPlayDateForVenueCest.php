@@ -19,7 +19,7 @@ class EditPlayDateForVenueCest extends AbstractCest
         $this->playDateFactory->create(date: new DateTimeImmutable('2025-02-23'), venue: $venue, isSuper: true);
     }
 
-    public function createPlayDate(AdminTester $I): void
+    public function editPlayDate(AdminTester $I): void
     {
         $I->loginAsAdmin();
         $I->click('Spielorte', 'nav .nav-link');

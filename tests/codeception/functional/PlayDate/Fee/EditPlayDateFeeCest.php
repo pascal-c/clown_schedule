@@ -41,7 +41,7 @@ class EditPlayDateFeeCest extends AbstractCest
         $I->click('Honorar speichern');
 
         $I->see('Yes, Honorar gespeichert');
-        $I->see(html_entity_decode('150,00&nbsp;€ / 142,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar Öffis / PKW'));
+        $I->see(html_entity_decode('150,00&nbsp;€ / 142,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar'));
         $I->see(html_entity_decode('0,40&nbsp;€ x 300 km (Hin- und Rück) = 120,00&nbsp;€ (pro Clown)'), Locator::contains('table tr', text: 'Kilometergeld'));
     }
 
@@ -59,7 +59,7 @@ class EditPlayDateFeeCest extends AbstractCest
         $I->click('Honorar speichern');
 
         $I->see('Yes, Honorar gespeichert');
-        $I->see(html_entity_decode('160,00&nbsp;€ / 150,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar Öffis / PKW'));
+        $I->see(html_entity_decode('160,00&nbsp;€ / 150,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar'));
         $I->see(html_entity_decode('0,50&nbsp;€ x 200 km (Hin- und Rück) = 100,00&nbsp;€ (für nur einen Clown)'), Locator::contains('table tr', text: 'Kilometergeld'));
     }
 }
