@@ -41,15 +41,15 @@ class ClownInvoiceController extends AbstractController
             'activeClowns' => $activeClowns,
             'month' => $month,
             'config' => $this->configRepository->find(),
-            'feeByPublicTransportSum' => array_sum(
+            'feeStandardSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByPublicTransport(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeStandard(),
                     $playDates
                 )
             ),
-            'feeByCarSum' => array_sum(
+            'feeAlternativeSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByCar(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeAlternative(),
                     $playDates
                 )
             ),

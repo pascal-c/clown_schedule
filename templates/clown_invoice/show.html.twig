@@ -41,8 +41,8 @@
                     {% endif %}
                 </td>
                 {% if playDate.fee %}
-                    <td>{{ playDate.fee.feeByPublicTransport|format_currency('EUR') }}</td>
-                    {% if config.featureAlternativeFeeActive %}<td>{{ playDate.fee.feeByCar|format_currency('EUR') }}</td>{% endif %}
+                    <td>{{ playDate.fee.feeStandard|format_currency('EUR') }}</td>
+                    {% if config.featureAlternativeFeeActive %}<td>{{ playDate.fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
                     <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}</td>
                 {% else %}
                     <td>?</td>
@@ -56,8 +56,8 @@
                 <th>Summe</th>
                 <th>Achtung, dient nur der Orientierung!</th>
                 <th>{{ month.label }}</th>
-                <th>{{ feeByPublicTransportSum|format_currency('EUR') }}</th>
-                {% if config.featureAlternativeFeeActive %}<th>{{ feeByCarSum|format_currency('EUR') }}</th>{% endif %}
+                <th>{{ feeStandardSum|format_currency('EUR') }}</th>
+                {% if config.featureAlternativeFeeActive %}<th>{{ feeAlternativeSum|format_currency('EUR') }}</th>{% endif %}
                 <th>{{ kilometersFeeSum|format_currency('EUR') }}</th>
             </tr>
         </tbody>

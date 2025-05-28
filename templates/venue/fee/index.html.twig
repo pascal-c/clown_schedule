@@ -21,8 +21,8 @@
                             {{ include('_shared/_edit_link.html.twig', {url: path('venue_fee_edit', {id: fee.id}), title: "bearbeiten"}) }}
                         {% endif %}
                     </td>
-                    <td>{{ fee.feeByPublicTransport|format_currency('EUR') }}</td>
-                    {% if config.featureAlternativeFeeActive %}<td>{{ fee.feeByCar|format_currency('EUR') }}</td>{% endif %}
+                    <td>{{ fee.feeStandard|format_currency('EUR') }}</td>
+                    {% if config.featureAlternativeFeeActive %}<td>{{ fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
                     <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: fee}) }}</td>
                 </tr>
             {% endfor %}

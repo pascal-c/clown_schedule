@@ -21,10 +21,10 @@ class Fee
     private ?Venue $venue = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?float $feeByCar = null;
+    private ?float $feeAlternative = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
-    private ?float $feeByPublicTransport = null;
+    private ?float $feeStandard = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $kilometers = null;
@@ -55,26 +55,26 @@ class Fee
         return $this;
     }
 
-    public function getFeeByCar(): ?float
+    public function getFeeAlternative(): ?float
     {
-        return $this->feeByCar ?? $this->feeByPublicTransport;
+        return $this->feeAlternative ?? $this->feeStandard;
     }
 
-    public function setFeeByCar(?float $feeByCar): static
+    public function setFeeAlternative(?float $feeAlternative): static
     {
-        $this->feeByCar = $feeByCar;
+        $this->feeAlternative = $feeAlternative;
 
         return $this;
     }
 
-    public function getFeeByPublicTransport(): ?float
+    public function getFeeStandard(): ?float
     {
-        return $this->feeByPublicTransport;
+        return $this->feeStandard;
     }
 
-    public function setFeeByPublicTransport(?float $feeByPublicTransport): static
+    public function setFeeStandard(?float $feeStandard): static
     {
-        $this->feeByPublicTransport = $feeByPublicTransport;
+        $this->feeStandard = $feeStandard;
 
         return $this;
     }

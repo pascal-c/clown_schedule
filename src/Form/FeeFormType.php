@@ -24,10 +24,10 @@ class FeeFormType extends AbstractType
         $config = $this->configRepository->find();
 
         if ($config->isFeatureFeeActive()) {
-            $builder->add('feeByPublicTransport', MoneyType::class, ['label' => $config->getFeeLabel(), 'required' => false]);
+            $builder->add('feeStandard', MoneyType::class, ['label' => $config->getFeeLabel(), 'required' => false]);
         }
         if ($config->isFeatureAlternativeFeeActive()) {
-            $builder->add('feeByCar', MoneyType::class, ['label' => $config->getAlternativeFeeLabel(), 'required' => false]);
+            $builder->add('feeAlternative', MoneyType::class, ['label' => $config->getAlternativeFeeLabel(), 'required' => false]);
         }
 
         $builder

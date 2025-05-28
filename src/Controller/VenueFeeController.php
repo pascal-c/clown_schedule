@@ -52,8 +52,8 @@ class VenueFeeController extends AbstractController
 
         $newFee = new Fee();
         if ($lastFee = $venue->getFees()->first()) {
-            $newFee->setFeeByCar($lastFee->getFeeByCar());
-            $newFee->setFeeByPublicTransport($lastFee->getFeeByPublicTransport());
+            $newFee->setFeeAlternative($lastFee->getFeeAlternative());
+            $newFee->setFeeStandard($lastFee->getFeeStandard());
             $newFee->setKilometers($lastFee->getKilometers());
             $newFee->setFeePerKilometer($lastFee->getFeePerKilometer());
             $newFee->setKilometersFeeForAllClowns($lastFee->isKilometersFeeForAllClowns());

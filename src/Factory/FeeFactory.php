@@ -14,18 +14,18 @@ class FeeFactory extends AbstractFactory
     public function create(
         ?Venue $venue = null,
         ?string $validFrom = null,
-        ?float $feeByPublicTransport = null,
-        float|string|null $feeByCar = 'default',
+        ?float $feeStandard = null,
+        float|string|null $feeAlternative = 'default',
         ?int $kilometers = null,
         float $feePerKilometer = 0.35,
         ?bool $kilometersFeeForAllClowns = null,
     ): Fee {
-        list($feeByPublicTransportGenerated, $feeByCarGenerated, $kilometersGenerated, $kilometersFeeForAllClownsGenerated) = $this->feeOptions()->sample();
+        list($feeStandardGenerated, $feeAlternativeGenerated, $kilometersGenerated, $kilometersFeeForAllClownsGenerated) = $this->feeOptions()->sample();
         $venueFee = (new Fee())
             ->setVenue($venue)
             ->setValidFrom($validFrom ? new DateTimeImmutable($validFrom) : null)
-            ->setFeeByPublicTransport($feeByPublicTransport ?? $feeByPublicTransportGenerated)
-            ->setFeeByCar('default' === $feeByCar ? $feeByCarGenerated : $feeByCar)
+            ->setFeeStandard($feeStandard ?? $feeStandardGenerated)
+            ->setFeeAlternative('default' === $feeAlternative ? $feeAlternativeGenerated : $feeAlternative)
             ->setKilometers($kilometers ?? $kilometersGenerated)
             ->setFeePerKilometer($feePerKilometer)
             ->setKilometersFeeForAllClowns($kilometersFeeForAllClowns ?? $kilometersFeeForAllClownsGenerated)
