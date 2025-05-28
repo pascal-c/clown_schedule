@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Venue;
-use App\Service\TimeService;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\GreaterThan;
@@ -12,10 +11,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class VenueFeeFormType extends FeeFormType
 {
-    public function __construct(private TimeService $timeService)
-    {
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $fee = $builder->getData();

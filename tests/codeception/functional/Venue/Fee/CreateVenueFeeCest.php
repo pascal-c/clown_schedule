@@ -17,8 +17,8 @@ class CreateVenueFeeCest extends AbstractCest
         $venue = $this->venueFactory->create(name: 'Spargelheim');
         $this->feeFactory->create(
             venue: $venue,
-            feeByPublicTransport: 145.50,
-            feeByCar: 133.33,
+            feeStandard: 145.50,
+            feeAlternative: 133.33,
             kilometers: 200,
             feePerKilometer: 0.31,
             kilometersFeeForAllClowns: false,

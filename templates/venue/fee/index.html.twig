@@ -7,8 +7,8 @@
         <thead>
             <tr>
                 <th scope="col">Gültig ab</th>
-                <th scope="col">Honorar Öffis</th>
-                <th scope="col">Honorar PKW</th>
+                <th scope="col">{{ config.feeLabel }}</th>
+                {% if config.featureAlternativeFeeActive %}<th scope="col">{{ config.alternativeFeeLabel }}</th>{% endif %}
                 <th scope="col">Kilometergeld</th>
             </tr>
         </thead>
@@ -21,8 +21,8 @@
                             {{ include('_shared/_edit_link.html.twig', {url: path('venue_fee_edit', {id: fee.id}), title: "bearbeiten"}) }}
                         {% endif %}
                     </td>
-                    <td>{{ fee.feeByPublicTransport|format_currency('EUR') }}</td>
-                    <td>{{ fee.feeByCar|format_currency('EUR') }}</td>
+                    <td>{{ fee.feeStandard|format_currency('EUR') }}</td>
+                    {% if config.featureAlternativeFeeActive %}<td>{{ fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
                     <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: fee}) }}</td>
                 </tr>
             {% endfor %}

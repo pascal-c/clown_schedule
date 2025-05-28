@@ -24,6 +24,12 @@ class Config
     #[ORM\Column(options: ['default' => true])]
     private bool $useCalculation = true;
 
+    #[ORM\Column(length: 255, nullable: true, options: ['default' => 'Honorar'])]
+    private ?string $feeLabel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $alternativeFeeLabel = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +79,40 @@ class Config
     public function setUseCalculation(bool $useCalculation): static
     {
         $this->useCalculation = $useCalculation;
+
+        return $this;
+    }
+
+    public function isFeatureFeeActive(): bool
+    {
+        return null !== $this->feeLabel;
+    }
+
+    public function isFeatureAlternativeFeeActive(): bool
+    {
+        return null !== $this->alternativeFeeLabel;
+    }
+
+    public function getFeeLabel(): ?string
+    {
+        return $this->feeLabel;
+    }
+
+    public function setFeeLabel(?string $feeLabel): static
+    {
+        $this->feeLabel = $feeLabel;
+
+        return $this;
+    }
+
+    public function getAlternativeFeeLabel(): ?string
+    {
+        return $this->alternativeFeeLabel;
+    }
+
+    public function setAlternativeFeeLabel(?string $alternativeFeeLabel): static
+    {
+        $this->alternativeFeeLabel = $alternativeFeeLabel;
 
         return $this;
     }

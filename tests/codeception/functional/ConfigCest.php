@@ -14,10 +14,15 @@ class ConfigCest extends AbstractCest
         $I->fillField('Zusatztermine Link', 'https://www.example.com');
         $I->checkOption('Feature “Max. Spielanzahl pro Woche”');
         $I->selectOption('Bundesland', 'Sachsen');
+        $I->fillField('Bezeichnung für Standard-Honorar', 'Standard-Honorar');
+        $I->fillField('Bezeichnung für alternatives Honorar', '');
         $I->click('speichern');
 
+        $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
         $I->seeInField('Zusatztermine Link', 'https://www.example.com');
         $I->seeCheckboxIsChecked('Feature “Max. Spielanzahl pro Woche”');
+        $I->seeInField('Bezeichnung für Standard-Honorar', 'Standard-Honorar');
+        $I->seeInField('Bezeichnung für alternatives Honorar', '');
         $I->seeInField('Bundesland', 'Sachsen');
 
         $I->amGoingTo('make sure that the feature is really enabled');

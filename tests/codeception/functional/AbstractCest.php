@@ -6,6 +6,7 @@ namespace App\Tests\Functional;
 
 use App\Factory\ClownAvailabilityFactory;
 use App\Factory\ClownFactory;
+use App\Factory\ConfigFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\SubstitutionFactory;
 use App\Factory\VenueFactory;
@@ -22,6 +23,7 @@ abstract class AbstractCest
     protected PlayDateFactory $playDateFactory;
     protected SubstitutionFactory $substitutionFactory;
     protected ScheduleFactory $scheduleFactory;
+    protected ConfigFactory $configFactory;
 
     public function _before(FunctionalTester $I): void
     {
@@ -32,5 +34,10 @@ abstract class AbstractCest
         $this->playDateFactory = $I->grabService(PlayDateFactory::class);
         $this->substitutionFactory = $I->grabService(SubstitutionFactory::class);
         $this->scheduleFactory = $I->grabService(ScheduleFactory::class);
+        $this->configFactory = $I->grabService(ConfigFactory::class);
+        $this->configFactory->update(
+            feeLabel: 'Honorar Öffis',
+            alternativeFeeLabel: 'Honorar PKW',
+        );
     }
 }

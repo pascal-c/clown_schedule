@@ -60,10 +60,10 @@
             </tr>
             {% if playDate.isPaid %}
                 <tr>
-                    <th>Honorar Öffis / PKW</th>
+                    <th>Honorar</th>
                     <td>
                         {% if playDate.fee %}
-                            {{ playDate.fee.feeByPublicTransport|format_currency('EUR') }} / {{ playDate.fee.feeByCar|format_currency('EUR') }}
+                            {{ playDate.fee.feeStandard|format_currency('EUR') }} {{ config.featureAlternativeFeeActive ? "/ #{playDate.fee.feeAlternative|format_currency('EUR')}" }}
                             {% if currentClown.isAdmin and playDate.playDateFee %}
                                 {{ include('_shared/_edit_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "Honorar bearbeiten"}) }}
                             {% endif %}

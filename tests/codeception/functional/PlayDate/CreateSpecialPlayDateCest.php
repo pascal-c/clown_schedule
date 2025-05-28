@@ -60,7 +60,7 @@ class CreateSpecialPlayDateCest extends AbstractCest
         $I->see('02.11.1999 vormittags', Locator::contains('table tr', text: 'Wann'));
         $I->see('09:30', Locator::contains('table tr', text: 'Treffen'));
         $I->see('10:00 - 12:00', Locator::contains('table tr', text: 'Spielzeit'));
-        $I->see(html_entity_decode('150,00&nbsp;€ / 142,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar Öffis / PKW'));
+        $I->see(html_entity_decode('150,00&nbsp;€ / 142,00&nbsp;€'), Locator::contains('table tr', text: 'Honorar'));
         $I->see(html_entity_decode('0,40&nbsp;€ x 300 km (Hin- und Rück) = 120,00&nbsp;€ (für nur einen Clown)'), Locator::contains('table tr', text: 'Kilometergeld'));
     }
 }

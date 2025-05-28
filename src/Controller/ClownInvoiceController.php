@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\PlayDate;
 use App\Repository\ClownRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\ViewController\ScheduleViewController;
@@ -20,6 +21,7 @@ class ClownInvoiceController extends AbstractController
         private MonthRepository $monthRepository,
         private PlayDateRepository $playDateRepository,
         private ScheduleViewController $scheduleViewController,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -38,15 +40,16 @@ class ClownInvoiceController extends AbstractController
             'clown' => $clown,
             'activeClowns' => $activeClowns,
             'month' => $month,
-            'feeByPublicTransportSum' => array_sum(
+            'config' => $this->configRepository->find(),
+            'feeStandardSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByPublicTransport(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeStandard(),
                     $playDates
                 )
             ),
-            'feeByCarSum' => array_sum(
+            'feeAlternativeSum' => array_sum(
                 array_map(
-                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeByCar(),
+                    fn (PlayDate $playDate) => $playDate->getFee()?->getFeeAlternative(),
                     $playDates
                 )
             ),

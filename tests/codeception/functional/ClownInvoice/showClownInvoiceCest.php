@@ -18,9 +18,9 @@ class showClownInvoiceCest extends AbstractCest
         $venue1 = $this->venueFactory->create(name: 'Regulär 1');
         $venue2 = $this->venueFactory->create(name: 'Regulär 2');
         $venue3 = $this->venueFactory->create(name: 'Regulär 3'); // without fees
-        $this->feeFactory->create(venue: $venue1, feeByPublicTransport: 110.0, feeByCar: 100.00, kilometers: 50, feePerKilometer: 0.3);
-        $this->feeFactory->create(venue: $venue1, validFrom: '2000-01', feeByPublicTransport: 112.0, feeByCar: 101.00, kilometers: 100, feePerKilometer: 0.35);
-        $this->feeFactory->create(venue: $venue2, feeByPublicTransport: 120.0, feeByCar: 100.00, kilometers: 100, feePerKilometer: 0.3);
+        $this->feeFactory->create(venue: $venue1, feeStandard: 110.0, feeAlternative: 100.00, kilometers: 50, feePerKilometer: 0.3);
+        $this->feeFactory->create(venue: $venue1, validFrom: '2000-01', feeStandard: 112.0, feeAlternative: 101.00, kilometers: 100, feePerKilometer: 0.35);
+        $this->feeFactory->create(venue: $venue2, feeStandard: 120.0, feeAlternative: 100.00, kilometers: 100, feePerKilometer: 0.3);
 
         // these playDates should be shown in december 1999
         $this->playDateFactory->create(date: new DateTimeImmutable('1999-12-22'), venue: $venue1, playingClowns: [$currentClown]);
@@ -32,7 +32,7 @@ class showClownInvoiceCest extends AbstractCest
             title: 'Bezahlter Zusatztermin',
             type: PlayDateType::SPECIAL,
             playingClowns: [$currentClown],
-            fee: $this->feeFactory->create(feeByPublicTransport: 10.0, feeByCar: 5.00, kilometers: 10, feePerKilometer: 0.3),
+            fee: $this->feeFactory->create(feeStandard: 10.0, feeAlternative: 5.00, kilometers: 10, feePerKilometer: 0.3),
         );
 
         // these playDates should be shown in january 2000

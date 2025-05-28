@@ -17,8 +17,8 @@ class EditVenueFeeCest extends AbstractCest
         $venue = $this->venueFactory->create(name: 'Spargelheim');
         $this->feeFactory->create(
             venue: $venue,
-            feeByPublicTransport: 145.50,
-            feeByCar: 133.33,
+            feeStandard: 145.50,
+            feeAlternative: null,
             kilometers: 200,
             feePerKilometer: 0.31,
             kilometersFeeForAllClowns: false,
@@ -39,7 +39,7 @@ class EditVenueFeeCest extends AbstractCest
         $I->see('Honorar für Spargelheim bearbeiten', 'h5');
         $I->seeInField('Gültig ab', '2024-11-02');
         $I->seeInField('Honorar Öffis', '145,50');
-        $I->seeInField('Honorar PKW', '133,33');
+        $I->seeInField('Honorar PKW', '145,50'); // PKW fee is null, so it is shown as the same value as Öffis
         $I->seeInField('Kilometer', '200');
         $I->seeInField('Kilometerpauschale', '0,31');
         $I->dontSeeCheckboxIsChecked('Kilometergeld für beide Clowns');
