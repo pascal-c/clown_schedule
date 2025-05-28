@@ -56,9 +56,9 @@
                 <th>Summe</th>
                 <th>Achtung, dient nur der Orientierung!</th>
                 <th>{{ month.label }}</th>
-                <th>{{ feeByPublicTransportSum|format_currency('EUR') }}</td>
-                {% if config.featureAlternativeFeeActive %}<th>{{ feeByCarSum|format_currency('EUR') }}</td>{% endif %}
-                <th>{{ kilometersFeeSum|format_currency('EUR') }}</td>
+                <th>{{ feeByPublicTransportSum|format_currency('EUR') }}</th>
+                {% if config.featureAlternativeFeeActive %}<th>{{ feeByCarSum|format_currency('EUR') }}</th>{% endif %}
+                <th>{{ kilometersFeeSum|format_currency('EUR') }}</th>
             </tr>
         </tbody>
     </table>
