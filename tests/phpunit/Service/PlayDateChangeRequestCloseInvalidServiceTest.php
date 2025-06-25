@@ -20,9 +20,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
 {
     private PlayDateChangeRequestCloseInvalidService $closeInvalidService;
-    private PlayDateSwapRequestMailer|MockObject $mailer;
-    private TimeService|MockObject $timeService;
-    private PlayDateChangeRequestRepository|MockObject $playDateChangeRequestRepository;
+    private PlayDateSwapRequestMailer&MockObject $mailer;
+    private TimeService&MockObject $timeService;
+    private PlayDateChangeRequestRepository&MockObject $playDateChangeRequestRepository;
 
     public function setUp(): void
     {
@@ -38,6 +38,7 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
     }
 
     #[DataProvider('closeInvalidDataProvider')]
+    #[DataProvider('dataProviderWithWantedDateNotMet')]
     public function testCloseIfInvalidWithSwapRequest(bool $isWaiting, bool $isValid, string $giveOffDate, string $wantedDate, bool $expectClose): void
     {
         $playDateChangeRequest = $this->createMock(PlayDateChangeRequest::class);
@@ -99,29 +100,33 @@ final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
         yield 'waiting and valid and deadline met' => [
             'isWaiting' => true,
             'isValid' => true,
-            'giveOffDate' => '2024-01-08',
-            'wantedDate' => '2024-01-08',
+            'giveOffDate' => '2024-01-07',
+            'wantedDate' => '2024-01-07',
             'expectClose' => false,
         ];
         yield 'waiting and not valid and deadline met' => [
             'isWaiting' => true,
             'isValid' => false,
-            'giveOffDate' => '2024-01-08',
-            'wantedDate' => '2024-01-08',
+            'giveOffDate' => '2024-01-07',
+            'wantedDate' => '2024-01-07',
             'expectClose' => true,
         ];
         yield 'waiting and valid but deadline for giveOffDate not met' => [
             'isWaiting' => true,
-            'isValid' => false,
-            'giveOffDate' => '2024-01-07',
-            'wantedDate' => '2024-01-08',
+            'isValid' => true,
+            'giveOffDate' => '2024-01-06',
+            'wantedDate' => '2024-01-07',
             'expectClose' => true,
         ];
+    }
+
+    public static function dataProviderWithWantedDateNotMet(): Generator
+    {
         yield 'waiting and valid but deadline for wantedDate not met' => [
             'isWaiting' => true,
             'isValid' => true,
             'giveOffDate' => '2024-01-07',
-            'wantedDate' => '2024-01-08',
+            'wantedDate' => '2024-01-06',
             'expectClose' => true,
         ];
     }

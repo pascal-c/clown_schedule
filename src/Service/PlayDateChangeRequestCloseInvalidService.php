@@ -12,8 +12,8 @@ use App\Value\PlayDateChangeRequestStatus;
 
 class PlayDateChangeRequestCloseInvalidService
 {
-    public const ACCEPTABLE_UNTIL_PERIOD = '+3 days';
-    public const CREATABLE_UNTIL_PERIOD = '+7 days';
+    public const ACCEPTABLE_UNTIL_PERIOD = '+2 days';
+    public const CREATABLE_UNTIL_PERIOD = '+3 days';
 
     public function __construct(
         private PlayDateSwapRequestMailer $mailer,
