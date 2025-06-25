@@ -9,11 +9,12 @@
     {{ form_start(form) }}
         {{ form_rest(form) }}
         
+        <h4 class="pt-3">Verfügbarkeiten</h4>
         <div data-controller="availability">
             <button type="button" class="btn btn-link" data-action="click->availability#setAvailable">Alles auf "Ja" stellen</button>
             <button type="button" class="btn btn-link" data-action="click->availability#setUnavailable">Alles auf "Nein" stellen</button>
         </div>
-        
+
         <button type="button" class="btn btn-link mb-1 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
         <button type="button" class="btn btn-link mb-1 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
         

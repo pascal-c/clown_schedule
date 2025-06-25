@@ -33,8 +33,9 @@
             </div>
         {% endif %}
 
-        <button type="button" class="btn btn-link mb-3 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
-        <button type="button" class="btn btn-link mb-3 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
+        <h4 class="pt-3">Verfügbarkeiten</h4>
+        <button type="button" class="btn btn-link mb-1 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
+        <button type="button" class="btn btn-link mb-1 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
 
         {{ include('clown_availability/_show_availabilities_in_schedule.html.twig') }}
     </div>
