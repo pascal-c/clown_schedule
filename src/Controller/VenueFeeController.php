@@ -40,7 +40,7 @@ class VenueFeeController extends AbstractController
         return $this->render('venue/fee/index.html.twig', [
             'venue' => $venue,
             'active' => 'venue',
-            'showEditLink' => $showEditLink,
+            'showEditLink' => true, // $showEditLink,
             'config' => $this->configRepository->find(),
         ]);
     }

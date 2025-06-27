@@ -6,6 +6,7 @@ use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
 use App\Tests\Helper\Functional;
 use App\Tests\Step\Functional\AdminTester;
+use Codeception\Attribute\Skip;
 use Codeception\Util\Locator;
 
 class IndexVenueFeeCest extends AbstractCest
@@ -58,6 +59,7 @@ class IndexVenueFeeCest extends AbstractCest
         $I->dontSee('', 'table tbody tr:last-child a'); // does not show an edit link for second row
     }
 
+    #[Skip('We want to always allow editing of fees for the moment...')]
     public function indexWhenLastFeeIsOld(AdminTester $I): void
     {
         Functional::$now = '2022-05-01';
