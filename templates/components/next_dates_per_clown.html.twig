@@ -7,8 +7,8 @@
     <tbody>
         {% for key, date in dates %}
             {% if date is of_type('class', 'App\\Entity\\PlayDate') %}
-                <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
-                    <td class="lh-sm">
+                <tr {{ datesScheduled[key] ? '' : 'title="Termin noch unsicher!"' }}>
+                    <td class="lh-sm {{ datesScheduled[key] ? '' : 'text-muted' }}">
                         {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
                         {% if date.comment != '' %}
                             <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
@@ -24,8 +24,8 @@
                     </td>
                 </tr>
             {% else %}
-                <tr {{ datesScheduled[key] ? '' : 'class="text-muted" title="Termin noch unsicher!"' }}>
-                    <td>
+                <tr {{ datesScheduled[key] ? '' : 'title="Termin noch unsicher!"' }}>
+                    <td {{ datesScheduled[key] ? '' : 'class="text-muted"' }}>
                         {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
                     </td>
                     <td colspan='4'><i>Springer:in</i></td>

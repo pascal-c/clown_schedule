@@ -6,7 +6,6 @@ use App\Entity\Clown;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
-use App\Value\ScheduleStatus;
 use App\Value\TimeSlotInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
@@ -45,7 +44,7 @@ class NextDatesPerClownComponent
 
         foreach ($this->dates as $key => $date) {
             $schedule = $this->scheduleRepository->find($date->getMonth());
-            $this->datesScheduled[$key] = !is_null($schedule) && ScheduleStatus::COMPLETED === $schedule->getStatus();
+            $this->datesScheduled[$key] = is_null($schedule) || $schedule?->isCompleted();
         }
     }
 }
