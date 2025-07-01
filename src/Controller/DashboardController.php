@@ -78,6 +78,7 @@ class DashboardController extends AbstractController
             'sentChangeRequests' => $this->playDateChangeRequestRepository->findSentRequestsWaiting($currentClown),
             'receivedChangeRequests' => $this->playDateChangeRequestRepository->findReceivedRequestsWaiting($currentClown),
             'showAvailabilityOverview' => $this->configRepository->isFeatureCalculationActive(),
+            'showChangeRequestsOverview' => $this->configRepository->isFeaturePlayDateChangeRequestsActive() && $currentClown->isActive(),
         ]);
     }
 }

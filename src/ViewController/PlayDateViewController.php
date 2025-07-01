@@ -41,7 +41,7 @@ class PlayDateViewController
 
     private function getShowChangeRequestLink(PlayDate $playDate, Clown $currentClown): bool
     {
-        if ($playDate->isTraining() || !$playDate->getPlayingClowns()->contains($currentClown)) {
+        if (!$this->configRepository->isFeaturePlayDateChangeRequestsActive() || $playDate->isTraining() || !$playDate->getPlayingClowns()->contains($currentClown)) {
             return false;
         }
 

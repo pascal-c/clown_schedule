@@ -2,7 +2,9 @@
 
 namespace App\Tests;
 
+use App\Entity\Clown;
 use App\Factory\ClownFactory;
+use App\Service\AuthService;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Mime\Email;
 
@@ -25,6 +27,11 @@ use Symfony\Component\Mime\Email;
 class FunctionalTester extends \Codeception\Actor
 {
     use _generated\FunctionalTesterActions;
+
+    public function getCurrentUser(): ?Clown
+    {
+        return $this->grabService(AuthService::class)->getCurrentClown();
+    }
 
     public function login(string $email, string $password): void
     {

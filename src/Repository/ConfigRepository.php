@@ -13,6 +13,16 @@ class ConfigRepository extends AbstractRepository
         return Config::class;
     }
 
+    public function isFeatureCalculationActive(): bool
+    {
+        return $this->find()->useCalculation();
+    }
+
+    public function isFeaturePlayDateChangeRequestsActive(): bool
+    {
+        return $this->find()->isFeaturePlayDateChangeRequestsActive();
+    }
+
     public function isFeatureMaxPerWeekActive(): bool
     {
         return $this->find()->isFeatureMaxPerWeekActive();
@@ -26,10 +36,5 @@ class ConfigRepository extends AbstractRepository
     public function getFederalState(): ?string
     {
         return $this->find()->getFederalState();
-    }
-
-    public function isFeatureCalculationActive(): bool
-    {
-        return $this->find()->useCalculation();
     }
 }

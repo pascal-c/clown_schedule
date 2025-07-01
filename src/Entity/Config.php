@@ -30,6 +30,9 @@ class Config
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $alternativeFeeLabel = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $featurePlayDateChangeRequests = true;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -113,6 +116,18 @@ class Config
     public function setAlternativeFeeLabel(?string $alternativeFeeLabel): static
     {
         $this->alternativeFeeLabel = $alternativeFeeLabel;
+
+        return $this;
+    }
+
+    public function isFeaturePlayDateChangeRequestsActive(): bool
+    {
+        return $this->featurePlayDateChangeRequests;
+    }
+
+    public function setFeaturePlayDateChangeRequestsActive(bool $featurePlayDateChangeRequests): static
+    {
+        $this->featurePlayDateChangeRequests = $featurePlayDateChangeRequests;
 
         return $this;
     }
