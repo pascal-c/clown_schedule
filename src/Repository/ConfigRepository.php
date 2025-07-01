@@ -28,7 +28,7 @@ class ConfigRepository extends AbstractRepository
         return $this->find()->getFederalState();
     }
 
-    public function useCalculation(): bool
+    public function isFeatureCalculationActive(): bool
     {
         return $this->find()->useCalculation();
     }

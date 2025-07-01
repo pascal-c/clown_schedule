@@ -26,7 +26,7 @@ class ScheduleNavigationComponent
         $this->navigationItems = array_filter(
             [
                 'schedule' => ['label' => 'Spielplan', 'url' => $this->urlHelper->generate('schedule')],
-                'calculate' => ['label' => 'Spielplan erstellen', 'url' => $this->urlHelper->generate('calculate'), 'hide' => !$isAdmin || !$this->configRepository->useCalculation()],
+                'calculate' => ['label' => 'Spielplan erstellen', 'url' => $this->urlHelper->generate('calculate'), 'hide' => !$isAdmin || !$this->configRepository->isFeatureCalculationActive()],
                 'clown_invoice' => ['label' => 'Rechnungsansicht', 'url' => $this->urlHelper->generate('clown_invoice_show', ['clownId' => $this->currentClown->getId()])],
                 'play_dates_by_year' => ['label' => 'Tabellarische Jahresansicht', 'url' => $this->urlHelper->generate('play_date_index'), 'hide' => !$isAdmin],
                 // 'statistics' => ['label' => 'Statistiken', 'url' => $this->urlHelper->generate('statistics')],
