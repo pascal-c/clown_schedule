@@ -45,7 +45,7 @@ class DashboardController extends AbstractController
         $currentClown = $this->getCurrentClown();
         $nextMonthFilled = $this->clownAvailabilityRepository->find($nextMonth, $currentClown);
         $afterNextMonthFilled = $this->clownAvailabilityRepository->find($afterNextMonth, $currentClown);
-        if ($this->configRepository->useCalculation() && $currentClown->isActive() && !$nextMonthSchedule && !$nextMonthFilled) {
+        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && !$nextMonthSchedule && !$nextMonthFilled) {
             $this->addFlash(
                 'danger',
                 sprintf(
@@ -55,7 +55,7 @@ class DashboardController extends AbstractController
                 )
             );
         }
-        if ($this->configRepository->useCalculation() && $currentClown->isActive() && $today != $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
+        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && $today != $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
             $this->addFlash(
                 'warning',
                 sprintf(
@@ -77,7 +77,7 @@ class DashboardController extends AbstractController
             'active' => 'dashboard',
             'sentChangeRequests' => $this->playDateChangeRequestRepository->findSentRequestsWaiting($currentClown),
             'receivedChangeRequests' => $this->playDateChangeRequestRepository->findReceivedRequestsWaiting($currentClown),
-            'showAvailabilityOverview' => $this->configRepository->useCalculation(),
+            'showAvailabilityOverview' => $this->configRepository->isFeatureCalculationActive(),
         ]);
     }
 }

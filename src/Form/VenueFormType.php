@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Clown;
 use App\Entity\Venue;
+use App\Repository\ConfigRepository;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -19,6 +20,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class VenueFormType extends AbstractType
 {
+    public function __construct(private ConfigRepository $configRepository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -87,6 +92,10 @@ class VenueFormType extends AbstractType
             ])
             ->add('save', SubmitType::class, ['label' => 'Spielort speichern'])
         ;
+
+        if (!$this->configRepository->isFeatureCalculationActive()) {
+            $builder->remove('blockedClowns');
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

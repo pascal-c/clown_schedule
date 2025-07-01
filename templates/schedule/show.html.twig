@@ -10,10 +10,13 @@
     {{ component('schedule_navigation', { active: 'schedule' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     
-    <button type="button" class="btn btn-link mb-3 collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
-    <button type="button" class="btn btn-link mb-3 collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
+    {% if showAvailableClowns %}
+        <button type="button" class="btn btn-link collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
+        <button type="button" class="btn btn-link collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
+    {% endif %}
 
-    <div class="container pt-1">
+
+    <div class="container pt-3">
         {{ include('schedule/_play_dates_schedule.html.twig') }}
     </div>
     {% if currentClown.isAdmin %}

@@ -11,6 +11,7 @@ use App\Form\ScheduleCompleteFormType;
 use App\Mailer\ClownInfoMailer;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
@@ -42,6 +43,7 @@ class ScheduleController extends AbstractController
         private TimeService $timeService,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private SubstitutionRepository $substitutionRepository,
+        private ConfigRepository $configRepository,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -124,6 +126,7 @@ class ScheduleController extends AbstractController
         return $this->render('schedule/show.html.twig', [
             'schedule' => $scheduleViewModel,
             'month' => $month,
+            'showAvailableClowns' => $this->configRepository->isFeatureCalculationActive(),
         ]);
     }
 
