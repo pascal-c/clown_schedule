@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Venue;
 use App\Form\VenueFormType;
+use App\Repository\ConfigRepository;
 use App\Repository\VenueRepository;
 use App\Service\TimeService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,8 +21,12 @@ class VenueController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, private VenueRepository $venueRepository, private TimeService $timeService)
-    {
+    public function __construct(
+        ManagerRegistry $doctrine,
+        private VenueRepository $venueRepository,
+        private TimeService $timeService,
+        private ConfigRepository $configRepository,
+    ) {
         $this->entityManager = $doctrine->getManager();
     }
 
@@ -34,6 +39,7 @@ class VenueController extends AbstractController
             'venues' => ('archived' === $status) ? $this->venueRepository->archived() : $this->venueRepository->active(),
             'active' => 'venue',
             'status' => $status,
+            'showBlockedClowns' => $this->configRepository->isFeatureCalculationActive(),
         ]);
     }
 
@@ -186,6 +192,7 @@ class VenueController extends AbstractController
         return $this->render('venue/show.html.twig', [
             'venue' => $venue,
             'active' => 'venue',
+            'showBlockedClowns' => $this->configRepository->isFeatureCalculationActive(),
         ]);
     }
 

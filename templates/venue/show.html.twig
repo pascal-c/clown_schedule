@@ -21,12 +21,14 @@
                     {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
                 </td>
             </tr>
-            <tr title="Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet">
-                <th>Gesperrte Clowns</th>
-                <td>
-                    {{ venue.blockedClowns|map(clown => clown.name)|join(' | ') }}
-                </td>
-            </tr>
+            {% if showBlockedClowns %}
+                <tr title="Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet">
+                    <th>Gesperrte Clowns</th>
+                    <td>
+                        {{ venue.blockedClowns|map(clown => clown.name)|join(' | ') }}
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
                 <th>Standard Tageszeit für Spieltermine</th>
                 <td>
