@@ -66,10 +66,12 @@
                             {{ playDate.fee.feeStandard|format_currency('EUR') }} {{ config.featureAlternativeFeeActive ? "/ #{playDate.fee.feeAlternative|format_currency('EUR')}" }}
                             {% if currentClown.isAdmin and playDate.playDateFee %}
                                 {{ include('_shared/_edit_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "Honorar bearbeiten"}) }}
+                            {% else %}
+                                {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "individuelles Honorar anlegen", if: currentClown.isAdmin}) }}
                             {% endif %}
                         {% else %}    
                             ?
-                            {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen"}) }}
+                                {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen", if: currentClown.isAdmin}) }}
                         {% endif %}
                     </td>
                 </tr>
@@ -78,12 +80,8 @@
                     <td>
                     {% if playDate.fee %}
                             {{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}
-                            {% if currentClown.isAdmin and playDate.playDateFee %}
-                                {{ include('_shared/_edit_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "Honorar bearbeiten"}) }}
-                            {% endif %}
                         {% else %}    
                             ?
-                            {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen"}) }}
                         {% endif %}
                         
                     </td>

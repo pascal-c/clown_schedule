@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h5>Honorar für {{ playDate.name }} {{ hasFee ? 'bearbeiten' : 'anlegen' }}</h5>
+    <h5 class="pt-3">{{ playDate.venue ? 'Individuelles ' }}Honorar für {{ playDate.name }} am {{ playDate.date|date('d.m.Y')}} {{ playDate.hasIndividualFee ? 'bearbeiten' : 'anlegen' }}</h5>
 
     {{ form(form) }}
-    {% if not hasFee %}
+    {% if not playDate.hasFee %}
         <a href="{{ path('play_date_show', {id: playDate.id}) }}" title="Jetzt erstmal kein Honorar anlegen">Überspringen</a>
     {% endif %}
 {% endblock %}

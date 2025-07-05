@@ -33,6 +33,15 @@ class PlayDateFeeController extends AbstractController
 
         $fee = $playDate->getPlayDateFee() ?? new Fee();
         $playDate->setFee($fee);
+
+        if ($request->getMethod() && !$playDate->hasIndividualFee() && $playDate->hasVenueFee()) {
+            $lastFee = $playDate->getVenue()->getFeeFor($playDate->getDate());
+            $fee->setFeeAlternative($lastFee->getFeeAlternative());
+            $fee->setFeeStandard($lastFee->getFeeStandard());
+            $fee->setKilometers($lastFee->getKilometers());
+            $fee->setFeePerKilometer($lastFee->getFeePerKilometer());
+            $fee->setKilometersFeeForAllClowns($lastFee->isKilometersFeeForAllClowns());
+        }
         $form = $this->createForm(FeeFormType::class, $fee);
 
         $form->handleRequest($request);
@@ -51,7 +60,6 @@ class PlayDateFeeController extends AbstractController
             'form' => $form,
             'active' => 'schedule',
             'playDate' => $playDate,
-            'hasFee' => !is_null($playDate->getFee()?->getId()),
         ]);
     }
 }
