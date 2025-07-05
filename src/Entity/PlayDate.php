@@ -335,7 +335,7 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this;
     }
 
-    private function getVenueFee(): ?Fee
+    public function getVenueFee(): ?Fee
     {
         return $this->getVenue()?->getFeeFor($this->getDate());
     }

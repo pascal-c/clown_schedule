@@ -71,7 +71,7 @@
                             {% endif %}
                         {% else %}    
                             ?
-                                {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen", if: currentClown.isAdmin}) }}
+                            {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen", if: currentClown.isAdmin}) }}
                         {% endif %}
                     </td>
                 </tr>

@@ -131,4 +131,16 @@ class Fee
 
         return $this;
     }
+
+    public function copyFrom(Fee $fee): static
+    {
+        $this
+            ->setFeeAlternative($fee->getFeeAlternative())
+            ->setFeeStandard($fee->getFeeStandard())
+            ->setKilometers($fee->getKilometers())
+            ->setFeePerKilometer($fee->getFeePerKilometer())
+            ->setKilometersFeeForAllClowns($fee->isKilometersFeeForAllClowns());
+
+        return $this;
+    }
 }
