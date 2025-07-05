@@ -33,6 +33,11 @@ class PlayDateFeeController extends AbstractController
 
         $fee = $playDate->getPlayDateFee() ?? new Fee();
         $playDate->setFee($fee);
+
+        if ('GET' === $request->getMethod() && !$playDate->hasIndividualFee() && $playDate->hasVenueFee()) {
+            $fee->copyFrom($playDate->getVenueFee());
+
+        }
         $form = $this->createForm(FeeFormType::class, $fee);
 
         $form->handleRequest($request);
@@ -51,7 +56,6 @@ class PlayDateFeeController extends AbstractController
             'form' => $form,
             'active' => 'schedule',
             'playDate' => $playDate,
-            'hasFee' => !is_null($playDate->getFee()?->getId()),
         ]);
     }
 }

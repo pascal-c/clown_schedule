@@ -335,14 +335,34 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this;
     }
 
+    public function getVenueFee(): ?Fee
+    {
+        return $this->getVenue()?->getFeeFor($this->getDate());
+    }
+
+    public function hasVenueFee(): bool
+    {
+        return !is_null($this->getVenueFee()?->getId());
+    }
+
     public function getFee(): ?Fee
     {
-        return $this->fee ?? $this->getVenue()?->getFeeFor($this->getDate());
+        return $this->getPlayDateFee() ?? $this->getVenueFee();
+    }
+
+    public function hasFee(): bool
+    {
+        return $this->hasIndividualFee() || $this->hasVenueFee();
     }
 
     public function getPlayDateFee(): ?Fee
     {
         return $this->fee;
+    }
+
+    public function hasIndividualFee(): bool
+    {
+        return !is_null($this->getPlayDateFee()?->getId());
     }
 
     public function setFee(?Fee $fee): static

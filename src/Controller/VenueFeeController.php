@@ -52,13 +52,9 @@ class VenueFeeController extends AbstractController
 
         $newFee = new Fee();
         if ($lastFee = $venue->getFees()->first()) {
-            $newFee->setFeeAlternative($lastFee->getFeeAlternative());
-            $newFee->setFeeStandard($lastFee->getFeeStandard());
-            $newFee->setKilometers($lastFee->getKilometers());
-            $newFee->setFeePerKilometer($lastFee->getFeePerKilometer());
-            $newFee->setKilometersFeeForAllClowns($lastFee->isKilometersFeeForAllClowns());
+            $newFee->copyFrom($lastFee);
         }
-        $newFee = $newFee->setVenue($venue);
+        $newFee->setVenue($venue);
 
         $form = $this->createForm(VenueFeeFormType::class, $newFee);
 
