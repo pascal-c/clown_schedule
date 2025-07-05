@@ -9,8 +9,9 @@ use App\Value\PlayDateType;
 use Codeception\Attribute\Before;
 use Codeception\Attribute\Depends;
 use Codeception\Util\Locator;
+use DateTimeImmutable;
 
-class EditPlayDateFeeCest extends AbstractCest
+class RegularPlayDateFeeCest extends AbstractCest
 {
     private int $playDateId;
 
@@ -18,9 +19,19 @@ class EditPlayDateFeeCest extends AbstractCest
     {
         parent::_before($I);
 
+        $venue = $this->venueFactory->create(name: 'Paris');
+        $this->feeFactory->create(
+            feeAlternative: 12.42,
+            feeStandard: 13.14,
+            kilometers: 10,
+            feePerKilometer: 0.42,
+            kilometersFeeForAllClowns: false,
+            venue: $venue,
+        );
         $this->playDateId = $this->playDateFactory->create(
-            title: 'Zusatztermin',
-            type: PlayDateType::SPECIAL,
+            date: new DateTimeImmutable('2025-07-07'),
+            type: PlayDateType::REGULAR,
+            venue: $venue,
         )->getId();
     }
 
@@ -29,9 +40,16 @@ class EditPlayDateFeeCest extends AbstractCest
         $I->loginAsAdmin();
         $I->amOnPage('/play_dates/'.$this->playDateId);
 
-        $I->see('Zusatztermin', 'h4');
-        $I->see('?', Locator::contains('table tr', text: 'Honorar'));
-        $I->click('Honorar anlegen', Locator::contains('table tr', text: 'Honorar'));
+        $I->see('Spieltermin (regulär)', 'h4');
+        $I->see(html_entity_decode('13,14&nbsp;€ / 12,42&nbsp;€'), Locator::contains('table tr', text: 'Honorar'));
+        $I->click('individuelles Honorar anlegen', Locator::contains('table tr', text: 'Honorar'));
+
+        $I->see('Individuelles Honorar für Paris am 07.07.2025 anlegen', 'h5');
+        $I->seeInField('Honorar Öffis', '13,14');
+        $I->seeInField('Honorar PKW', '12,42');
+        $I->seeInField('Kilometerpauschale', '0,42');
+        $I->seeInField('Kilometer', '10');
+        $I->dontSeeCheckboxIsChecked('Kilometergeld für beide Clowns');
 
         $I->fillField('Honorar Öffis', '150,00');
         $I->fillField('Honorar PKW', '142,00');
@@ -50,6 +68,13 @@ class EditPlayDateFeeCest extends AbstractCest
     public function edit(AdminTester $I): void
     {
         $I->click('bearbeiten', Locator::contains('table tr', text: 'Honorar'));
+
+        $I->see('Individuelles Honorar für Paris am 07.07.2025 bearbeiten', 'h5');
+        $I->seeInField('Honorar Öffis', '150,00');
+        $I->seeInField('Honorar PKW', '142,00');
+        $I->seeInField('Kilometerpauschale', '0,40');
+        $I->seeInField('Kilometer', '300');
+        $I->seeCheckboxIsChecked('Kilometergeld für beide Clowns');
 
         $I->fillField('Honorar Öffis', '160,00');
         $I->fillField('Honorar PKW', '150,00');
