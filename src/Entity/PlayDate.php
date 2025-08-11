@@ -83,6 +83,9 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\ManyToOne(inversedBy: 'playDates')]
     private ?Fee $fee = null;
 
+    #[ORM\ManyToOne(inversedBy: 'playDates')]
+    private ?RecurringDate $recurringDate = null;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -375,5 +378,17 @@ class PlayDate implements TimeSlotPeriodInterface
     public function isPaid(): bool
     {
         return $this->isRegular() || $this->isSpecial();
+    }
+
+    public function getRecurringDate(): ?RecurringDate
+    {
+        return $this->recurringDate;
+    }
+
+    public function setRecurringDate(?RecurringDate $recurringDate): static
+    {
+        $this->recurringDate = $recurringDate;
+
+        return $this;
     }
 }

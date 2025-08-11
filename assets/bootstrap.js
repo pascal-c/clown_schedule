@@ -6,6 +6,7 @@ export const app = startStimulusApp(require.context(
     true,
     /\.[jt]sx?$/
 ));
+app.debug = true;
 
 // register any custom, 3rd party controllers here
 // app.register('some_controller_name', SomeImportedController);

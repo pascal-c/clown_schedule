@@ -86,6 +86,21 @@
                         
                     </td>
                 </tr>
+                <tr>
+                    <th>wiederkehrend</th>
+                    <td>
+                    {% if playDate.recurringDate %}
+                        {% if playDate.recurringDate.isWeekly %}
+                            {{ playDate.recurringDate.dayOfWeek|trans }}s {{ "every.week"|trans({'%weeks%': playDate.recurringDate.every}) }} 
+                        {% else %}
+                            jeden {{ playDate.recurringDate.every }}. {{ playDate.recurringDate.dayOfWeek|trans }} im Monat
+                        {% endif %}
+                    {% else %}    
+                        nein
+                    {% endif %}
+                        
+                    </td>
+                </tr>
             {% endif %}
             {% if not playDate.specialPlayDateUrl is empty %}
                 <tr>

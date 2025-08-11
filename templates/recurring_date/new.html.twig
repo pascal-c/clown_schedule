@@ -1,0 +1,48 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Wiederkehrenden Termin anlegen</h4>
+
+    {{ form_start(form) }}
+    <fieldset class="mb-3">
+        <legend class="col-form-label">Zeitraum</legend>
+        <div class="row align-items-center">
+            <div class="col-auto">{{ form_label(form.startDate)}}</div>
+            <div class="col-auto">{{ form_widget(form.startDate)}}</div>
+            <div class="col-auto">{{ form_label(form.endDate)}}</div>
+            <div class="col-auto">{{ form_widget(form.endDate) }}</div>
+        </div>
+    </fieldset>
+    <fieldset class="mb-3" data-controller="recurring-date-rhythm">
+        <legend class="col-form-label">Rhythmus</legend>
+        {{ form_widget(form.rhythm, {'attr': {'data-action': 'click->recurring-date-rhythm#setStuff'}}) }}
+        <div class="row align-items-center">
+            <div class="col-auto" id="rhythm_start_text">jeden</div>
+            <div class="col-auto">{{ form_widget(form.every)}}</div>
+            <div class="col-auto" id="rhythm_middle_text"></div>
+            <div class="col-auto">{{ form_widget(form.dayOfWeek) }}</div>
+            <div class="col-auto" id="rhythm_end_text">im Monat</div>
+        </div>
+    </fieldset>
+    {{ form_row(form.daytime) }}
+    <fieldset class="mb-3">
+        <legend class="col-form-label">Uhrzeit</legend>
+        <div class="row align-items-center">
+            <div class="col-auto">{{ form_label(form.meetingTime) }}</div>
+            <div class="col-auto">{{ form_widget(form.meetingTime) }}</div>
+            <div class="col-auto">{{ form_label(form.playTimeFrom) }}</div>
+            <div class="col-auto">{{ form_widget(form.playTimeFrom) }}</div>
+            <div class="col-auto">{{ form_label(form.playTimeTo) }}</div>
+            <div class="col-auto">{{ form_widget(form.playTimeTo) }}</div>
+        </div>
+    </fieldset>
+     <fieldset class="mb-3">
+        {{ form_label(form.venue) }}
+        <div class="row align-items-center">
+            <div class="col-auto">{{ form_widget(form.venue) }}</div>
+            <div class="col-auto">{{ form_widget(form.isSuper) }}</div>
+        </div>
+    </fieldset>
+
+    {{ form_rest(form)}}
+{% endblock %}
