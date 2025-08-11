@@ -2,10 +2,10 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     connect() {
-        this.setStuff();
+        this.setRhythmTexts();
     }
 
-    setStuff() {
+    setRhythmTexts() {
         var rhythm = document.querySelector('input[name="recurring_date_form[rhythm]"]:checked').value;
         if (rhythm === 'monthly') {
             document.getElementById('rhythm_start_text').innerHTML = 'jeden';

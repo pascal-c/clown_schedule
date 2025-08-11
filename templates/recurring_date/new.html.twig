@@ -15,7 +15,7 @@
     </fieldset>
     <fieldset class="mb-3" data-controller="recurring-date-rhythm">
         <legend class="col-form-label">Rhythmus</legend>
-        {{ form_widget(form.rhythm, {'attr': {'data-action': 'click->recurring-date-rhythm#setStuff'}}) }}
+        {{ form_widget(form.rhythm, {'attr': {'data-action': 'click->recurring-date-rhythm#setRhythmTexts'}}) }}
         <div class="row align-items-center">
             <div class="col-auto" id="rhythm_start_text">jeden</div>
             <div class="col-auto">{{ form_widget(form.every)}}</div>
