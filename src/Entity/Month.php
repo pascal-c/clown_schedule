@@ -23,6 +23,11 @@ class Month
         return new Month(new DateTimeImmutable($dateString));
     }
 
+    public function getDate(): DateTimeImmutable
+    {
+        return $this->date;
+    }
+
     public function days()
     {
         $interval = new DateInterval('P1D');

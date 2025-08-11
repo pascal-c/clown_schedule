@@ -83,6 +83,12 @@ class Venue
     #[ORM\ManyToMany(targetEntity: Contact::class)]
     private Collection $contacts;
 
+    /**
+     * @var Collection<int, RecurringDate>
+     */
+    #[ORM\OneToMany(targetEntity: RecurringDate::class, mappedBy: 'venue')]
+    private Collection $recurringDates;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -90,6 +96,7 @@ class Venue
         $this->blockedClowns = new ArrayCollection();
         $this->fees = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->recurringDates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -399,6 +406,36 @@ class Venue
     public function removeContact(Contact $contact): static
     {
         $this->contacts->removeElement($contact);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecurringDate>
+     */
+    public function getRecurringDates(): Collection
+    {
+        return $this->recurringDates;
+    }
+
+    public function addRecurringDate(RecurringDate $recurringDate): static
+    {
+        if (!$this->recurringDates->contains($recurringDate)) {
+            $this->recurringDates->add($recurringDate);
+            $recurringDate->setVenue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecurringDate(RecurringDate $recurringDate): static
+    {
+        if ($this->recurringDates->removeElement($recurringDate)) {
+            // set the owning side to null (unless already changed)
+            if ($recurringDate->getVenue() === $this) {
+                $recurringDate->setVenue(null);
+            }
+        }
 
         return $this;
     }

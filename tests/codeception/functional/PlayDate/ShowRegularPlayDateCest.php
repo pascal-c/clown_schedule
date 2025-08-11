@@ -47,5 +47,6 @@ class ShowRegularPlayDateCest extends AbstractCest
         $I->see('15:30 - 17:30', Locator::contains('table tr', text: 'Spielzeit'));
         $I->see('Hannah Hosianna | Uwe Popuwe', Locator::contains('table tr', text: 'Spielende Clowns'));
         $I->see('Maria Popia', Locator::contains('table tr', text: 'Springer'));
+        $I->see('nein', Locator::contains('table tr', text: 'wiederkehrend'));
     }
 }

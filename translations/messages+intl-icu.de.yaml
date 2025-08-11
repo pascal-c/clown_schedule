@@ -1,0 +1,5 @@
+every.week: >-
+    {weeks, plural,
+        =1    {jede Woche}
+        other {alle # Wochen}
+    }
