@@ -9,6 +9,7 @@ use App\Entity\RecurringDate;
 use App\Entity\Venue;
 use App\Service\RecurringDateService;
 use App\Service\TimeService;
+use App\Value\PlayDateType;
 use Codeception\Stub;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
@@ -104,6 +105,7 @@ final class RecurringDateServiceTest extends TestCase
         $this->assertEquals(new DateTimeImmutable('09:00'), $playDate->getPlayTimeFrom());
         $this->assertEquals(new DateTimeImmutable('11:00'), $playDate->getPlayTimeTo());
         $this->assertTrue($playDate->isSuper());
+        $this->assertSame(PlayDateType::REGULAR, $playDate->getType());
         $this->assertSame($this->recurringDate->getVenue(), $playDate->getVenue());
     }
 }
