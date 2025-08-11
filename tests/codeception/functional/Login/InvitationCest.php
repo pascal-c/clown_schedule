@@ -29,8 +29,8 @@ class InvitationCest extends AbstractCest
         $I->stopFollowingRedirects();
         $I->click('Clowns', 'nav');
         $I->click('Clown anlegen');
-        $I->fillField('Name', 'Erika');
-        $I->fillField('Email', 'erika@example.org');
+        $I->fillField('Name', 'Erica');
+        $I->fillField('Email', 'erica@example.org');
         $I->selectOption('clown_form[gender]', 'female');
         $I->checkOption('Einladungsmail senden?');
         $I->click('Clown anlegen');
@@ -58,12 +58,12 @@ class InvitationCest extends AbstractCest
         $I->click('Passwort setzen');
 
         $I->amGoingTo('login with my new password');
-        $I->see('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, Erika!');
-        $I->fillField('login_form[email]', 'erika@example.org');
+        $I->see('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, Erica!');
+        $I->fillField('login_form[email]', 'erica@example.org');
         $I->fillField('login_form[password]', 'abracadabra');
         $I->click('anmelden');
 
-        $I->see('Herzlich Willkommen, Erika! Schön, dass Du da bist.');
+        $I->see('Herzlich Willkommen, Erica! Schön, dass Du da bist.');
         $I->seeCurrentUrlEquals('/dashboard');
     }
 
@@ -72,7 +72,7 @@ class InvitationCest extends AbstractCest
     {
         $I->loginAsAdmin();
         $I->click('Clowns', 'nav');
-        $I->click('Erika');
+        $I->click('Erica');
         $I->dontSee('Einladungsemail senden');
     }
 
@@ -83,7 +83,7 @@ class InvitationCest extends AbstractCest
         $I->loginAsAdmin();
         $I->stopFollowingRedirects();
         $I->click('Clowns', 'nav');
-        $I->click('Erika');
+        $I->click('Erica');
         $I->see('Einladungsemail senden');
         $I->click('Einladungsemail senden');
         $I->seeEmailIsSent(1);
@@ -94,7 +94,7 @@ class InvitationCest extends AbstractCest
     {
         $I->loginAsAdmin();
         $I->click('Clowns', 'nav');
-        $I->click('Erika');
-        $I->see('Erika hat die Datenschutzerklärung am 15.01.2124 akzeptiert.');
+        $I->click('Erica');
+        $I->see('Erica hat die Datenschutzerklärung am 15.01.2124 akzeptiert.');
     }
 }

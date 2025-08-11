@@ -28,10 +28,10 @@ class ShowSpecialPlayDateCest extends AbstractCest
             meetingTime: '14:45',
             playTimeFrom: '15:30',
             playTimeTo: '17:30',
-            playingClowns: [$this->clownFactory->create(name: 'Hannah'), $this->clownFactory->create(name: 'Uwe')]
+            playingClowns: [$this->clownFactory->create(name: 'Antoinette'), $this->clownFactory->create(name: 'Pierre')]
         )->getId();
 
-        $this->substitutionFactory->create(date: $date, daytime: $daytime, clown: $this->clownFactory->create(name: 'Maria'));
+        $this->substitutionFactory->create(date: $date, daytime: $daytime, clown: $this->clownFactory->create(name: 'Marie Louise'));
     }
 
     public function tryToTest(FunctionalTester $I): void
@@ -44,7 +44,7 @@ class ShowSpecialPlayDateCest extends AbstractCest
         $I->see('15.01.2124 nachmittags', Locator::contains('table tr', text: 'Wann'));
         $I->see('14:45', Locator::contains('table tr', text: 'Treffen'));
         $I->see('15:30 - 17:30', Locator::contains('table tr', text: 'Spielzeit'));
-        $I->see('Hannah | Uwe', Locator::contains('table tr', text: 'Spielende Clowns'));
-        $I->see('Maria', Locator::contains('table tr', text: 'Springer'));
+        $I->see('Antoinette | Pierre', Locator::contains('table tr', text: 'Spielende Clowns'));
+        $I->see('Marie Louise', Locator::contains('table tr', text: 'Springer'));
     }
 }
