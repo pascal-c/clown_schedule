@@ -126,11 +126,21 @@ class PlayDateController extends AbstractController
                 ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
                 ->getForm();
         }
+        $deleteForm = $this->createFormBuilder($playDate)
+            ->add(
+                'delete',
+                SubmitType::class,
+                ['label' => 'Spieltermin löschen']
+            )
+            ->setMethod('DELETE')
+            ->setAction($this->generateUrl('play_date_delete', ['id' => $playDate->getId()]))
+            ->getForm();
 
         return $this->render('play_date/show.html.twig', [
             'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm,
             'config' => $this->configRepository->find(),
+            'delete_form' => $deleteForm,
         ]);
     }
 
@@ -197,15 +207,6 @@ class PlayDateController extends AbstractController
             PlayDateType::TRAINING => TrainingFormType::class,
         };
         $editForm = $this->createForm($editFormType, $playDate, ['method' => 'PUT']);
-        $deleteForm = $this->createFormBuilder($playDate)
-            ->add(
-                'delete',
-                SubmitType::class,
-                ['label' => 'Spieltermin löschen', 'attr' => ['onclick' => 'return confirm("Spieltermin endgültig löschen?")']]
-            )
-            ->setMethod('DELETE')
-            ->setAction($this->generateUrl('play_date_delete', ['id' => $id]))
-            ->getForm();
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -221,7 +222,6 @@ class PlayDateController extends AbstractController
         return $this->render('play_date/edit.html.twig', [
             'playDate' => $playDate,
             'form' => $editForm,
-            'delete_form' => $deleteForm,
         ]);
     }
 

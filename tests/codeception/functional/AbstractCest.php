@@ -11,6 +11,7 @@ use App\Factory\PlayDateFactory;
 use App\Factory\SubstitutionFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
+use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
 use App\Tests\FunctionalTester;
 
@@ -23,6 +24,7 @@ abstract class AbstractCest
     protected PlayDateFactory $playDateFactory;
     protected SubstitutionFactory $substitutionFactory;
     protected ScheduleFactory $scheduleFactory;
+    protected RecurringDateFactory $recurringDateFactory;
     protected ConfigFactory $configFactory;
 
     public function _before(FunctionalTester $I): void
@@ -34,6 +36,7 @@ abstract class AbstractCest
         $this->playDateFactory = $I->grabService(PlayDateFactory::class);
         $this->substitutionFactory = $I->grabService(SubstitutionFactory::class);
         $this->scheduleFactory = $I->grabService(ScheduleFactory::class);
+        $this->recurringDateFactory = $I->grabService(RecurringDateFactory::class);
         $this->configFactory = $I->grabService(ConfigFactory::class);
         $this->configFactory->update(
             feeLabel: 'Honorar Öffis',
