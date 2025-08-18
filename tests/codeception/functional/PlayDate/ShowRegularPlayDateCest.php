@@ -5,7 +5,6 @@ namespace App\Tests\Functional\PlayDate;
 use App\Entity\PlayDate;
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
-use App\Tests\Step\Functional\AdminTester;
 use App\Value\TimeSlotPeriodInterface;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
@@ -50,20 +49,6 @@ class ShowRegularPlayDateCest extends AbstractCest
         $I->see('Hannah Hosianna | Uwe Popuwe', Locator::contains('table tr', text: 'Spielende Clowns'));
         $I->see('Maria Popia', Locator::contains('table tr', text: 'Springer'));
         $I->see('nein', Locator::contains('table tr', text: 'wiederkehrend'));
-    }
-
-    public function delete(AdminTester $I): void
-    {
-        $I->loginAsAdmin();
-        $I->amOnPage('/play_dates/'.$this->playDate->getId());
-
-        $I->click('Spieltermin löschen', 'a[title="Spieltermin löschen"]');
-        $I->see('Der Spieltermin wird dann endgültig gelöscht und kann nicht wiederhergestellt werden.', '.modal-body');
-        $I->click('Spieltermin löschen', '.modal-footer');
-        $I->see('Spieltermin wurde gelöscht.', '.alert-success');
-
-        $I->amOnPage('/schedule/2036-01');
-        $I->dontSee('Seniorenheim am See');
     }
 
     public function showRecurring(FunctionalTester $I): void

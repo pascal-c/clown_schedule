@@ -14,6 +14,7 @@ use App\Factory\FeeFactory;
 use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
 use App\Tests\FunctionalTester;
+use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractCest
 {
@@ -26,6 +27,7 @@ abstract class AbstractCest
     protected ScheduleFactory $scheduleFactory;
     protected RecurringDateFactory $recurringDateFactory;
     protected ConfigFactory $configFactory;
+    protected EntityManagerInterface $entityManager;
 
     public function _before(FunctionalTester $I): void
     {
@@ -42,5 +44,10 @@ abstract class AbstractCest
             feeLabel: 'Honorar Öffis',
             alternativeFeeLabel: 'Honorar PKW',
         );
+
+        // Clear result cache befor each test
+        $this->entityManager = $I->grabService(EntityManagerInterface::class);
+        $resultCache = $this->entityManager->getConfiguration()->getResultCache();
+        $resultCache->clear();
     }
 }
