@@ -31,6 +31,7 @@ abstract class AbstractCest
 
     public function _before(FunctionalTester $I): void
     {
+        $this->entityManager = $I->grabService(EntityManagerInterface::class);
         $this->clownAvailabilityFactory = $I->grabService(ClownAvailabilityFactory::class);
         $this->clownFactory = $I->grabService(ClownFactory::class);
         $this->venueFactory = $I->grabService(VenueFactory::class);
@@ -46,7 +47,11 @@ abstract class AbstractCest
         );
 
         // Clear result cache befor each test
-        $this->entityManager = $I->grabService(EntityManagerInterface::class);
+        $this->clearResultCache();
+    }
+
+    protected function clearResultCache(): void
+    {
         $resultCache = $this->entityManager->getConfiguration()->getResultCache();
         $resultCache->clear();
     }

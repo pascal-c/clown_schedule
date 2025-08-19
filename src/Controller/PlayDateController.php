@@ -297,7 +297,7 @@ class PlayDateController extends AbstractController
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $deletedCount = $this->recurringDateService->deletePlayDatesSince($playDate->getRecurringDate(), $playDate->getDate());
 
-            $this->addFlash('success', 'Es wurden '.$deletedCount.' Spieltermine gelöscht. Das ist gut!');
+            $this->addFlash('success', 'Es wurden '.$deletedCount.' Spieltermine gelöscht. Gut gemacht!');
 
             if ($request->query->get('venue_id')) {
                 return $this->redirectToRoute('venue_play_date_index', ['id' => $playDate->getVenue()->getId()]);
