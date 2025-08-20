@@ -11,7 +11,7 @@
         <div class="row">
     {% for playDate in playDates %}
             <div class="col-6 col-md-4 col-lg-2">
-            <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id}) }}">{{ playDate.date|date("d.m.Y") }}</a>
+            <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id, venue_id: venue.id}) }}">{{ playDate.date|date("d.m.Y") }}</a>
             {% if currentClown.isAdmin %}
                 {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id, venue_id: venue.id}), title: "Termin bearbeiten"}) }}
             {% endif %}

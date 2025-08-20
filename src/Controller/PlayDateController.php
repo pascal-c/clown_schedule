@@ -107,7 +107,7 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(PlayDate $playDate): Response
+    public function show(PlayDate $playDate, Request $request): Response
     {
         if ($playDate->getPlayingClowns()->contains($this->getCurrentClown())) {
             $trainingForm = $this->createFormBuilder($playDate)
@@ -128,12 +128,13 @@ class PlayDateController extends AbstractController
                 ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
                 ->getForm();
         }
+        $deleteFromUrlParams = array_filter(['id' => $playDate->getId(), 'venue_id' => $request->query->get('venue_id')]);
         $deleteForm = $this->createDeleteForm(
-            $this->generateUrl('play_date_delete', ['id' => $playDate->getId()]),
+            $this->generateUrl('play_date_delete', $deleteFromUrlParams),
             'Diesen Spieltermin löschen',
         );
         $deleteRecurringForm = $this->createDeleteForm(
-            $this->generateUrl('play_date_delete_recurring', ['id' => $playDate->getId()]),
+            $this->generateUrl('play_date_delete_recurring', $deleteFromUrlParams),
             'Diesen Termin und alle künftigen Wiederholungen löschen',
         );
 
