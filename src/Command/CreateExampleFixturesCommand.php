@@ -11,6 +11,7 @@ use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
+use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
 use App\Lib\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,6 +40,7 @@ class CreateExampleFixturesCommand extends Command
         private ContactFactory $contactFactory,
         private ScheduleFactory $_scheduleFactory,
         private ConfigFactory $_configFactory,
+        private RecurringDateFactory $recurringDateFactory,
     ) {
         parent::__construct();
     }
@@ -75,6 +77,7 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailabilityTime')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailability')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Clown')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\RecurringDate')->execute();
 
         $clowns = $this->clownFactory->createList(8);
         $clowns->push($this->clownFactory->create(email: 'admin-clown@clowns-und-clowns.de', isAdmin: true));

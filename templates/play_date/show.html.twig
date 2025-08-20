@@ -19,6 +19,7 @@
                     {% endif %}
                     {% if currentClown.isAdmin %}
                         {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"}) }}
+                        {{ include('play_date/_delete_link.html.twig', {delete_form: delete_form, playDate: playDate, is_past: is_past}) }}
                     {% endif %}
                 </td>
             </tr>
@@ -112,6 +113,7 @@
             {% endif %}
         </tbody>
     </table>
+
 
     {% if playDate.showChangeRequestLink %}
         <a href="{{ path('play_date_new_swap_request', {id: playDate.id}) }}">Diesen Spieltermin tauschen</a>&nbsp;

@@ -385,6 +385,11 @@ class PlayDate implements TimeSlotPeriodInterface
         return $this->recurringDate;
     }
 
+    public function isRecurring(): bool
+    {
+        return !is_null($this->recurringDate);
+    }
+
     public function setRecurringDate(?RecurringDate $recurringDate): static
     {
         $this->recurringDate = $recurringDate;

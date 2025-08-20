@@ -7,11 +7,13 @@ use App\Entity\PlayDate;
 use App\Entity\RecurringDate;
 use App\Value\PlayDateType;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 
 class RecurringDateService
 {
     public function __construct(
         private TimeService $timeService,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -65,5 +67,26 @@ class RecurringDateService
         $playDate->setType(PlayDateType::REGULAR);
 
         return $playDate;
+    }
+
+    public function deletePlayDatesSince(RecurringDate $recurringDate, DateTimeImmutable $date): int
+    {
+        $result = $this->entityManager
+            ->createQuery('DELETE FROM App\Entity\PlayDate PD WHERE PD.recurringDate = :recurringDate AND PD.date >= :date')
+            ->setParameter('recurringDate', $recurringDate)
+            ->setParameter('date', $date)
+            ->execute();
+
+        $this->entityManager->refresh($recurringDate);
+        if ($recurringDate->getEndDate() >= $date) {
+            $recurringDate->setEndDate($date->modify('-1 day'));
+        }
+        if ($recurringDate->getPlayDates()->isEmpty()) {
+            $this->entityManager->remove($recurringDate);
+        }
+
+        $this->entityManager->flush();
+
+        return $result;
     }
 }

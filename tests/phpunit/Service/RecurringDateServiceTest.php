@@ -7,23 +7,29 @@ namespace App\Tests\Service;
 use App\Entity\PlayDate;
 use App\Entity\RecurringDate;
 use App\Entity\Venue;
+use App\Factory\PlayDateFactory;
+use App\Factory\RecurringDateFactory;
 use App\Service\RecurringDateService;
-use App\Service\TimeService;
 use App\Value\PlayDateType;
 use Codeception\Stub;
-use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\Container;
 
-final class RecurringDateServiceTest extends TestCase
+final class RecurringDateServiceTest extends KernelTestCase
 {
+    private Container $container;
     private RecurringDateService $recurringDateService;
-
     private RecurringDate $recurringDate;
 
     public function setUp(): void
     {
-        $this->recurringDateService = new RecurringDateService(new TimeService());
+        self::bootKernel();
+        $this->container = static::getContainer();
+
+        $this->recurringDateService = $this->container->get(RecurringDateService::class);
         $this->recurringDate = Stub::make(RecurringDate::class, [
             'playDates' => new ArrayCollection(),
             'startDate' => new DateTimeImmutable('2025-08-01'),
@@ -107,5 +113,34 @@ final class RecurringDateServiceTest extends TestCase
         $this->assertTrue($playDate->isSuper());
         $this->assertSame(PlayDateType::REGULAR, $playDate->getType());
         $this->assertSame($this->recurringDate->getVenue(), $playDate->getVenue());
+    }
+
+    public function testDeletePlayDatesSince(): void
+    {
+        $playDateFactory = $this->container->get(PlayDateFactory::class);
+        $recurringDateFactory = $this->container->get(RecurringDateFactory::class);
+        $entityManager = $this->container->get(EntityManagerInterface::class);
+
+        $playDateBefore = $playDateFactory->create(date: new DateTimeImmutable('2036-01-25'));
+        $playDateSame = $playDateFactory->create(date: new DateTimeImmutable('2036-01-26'));
+        $playDateAfter = $playDateFactory->create(date: new DateTimeImmutable('2036-01-27'));
+        $_otherPlayDate = $playDateFactory->create(date: new DateTimeImmutable('2036-01-27'));
+        $recurringDate = $recurringDateFactory->create(
+            endDate: new DateTimeImmutable('2036-01-31'),
+            playDates: [$playDateBefore, $playDateSame, $playDateAfter],
+        );
+
+        $deletedEntries = $this->recurringDateService->deletePlayDatesSince($recurringDate, new DateTimeImmutable('2036-01-26'));
+        $this->assertSame(2, $deletedEntries); // otherPlay date should not be deleted
+        $this->assertCount(1, $recurringDate->getPlayDates());
+        $this->assertSame($playDateBefore, $recurringDate->getPlayDates()->first());
+        $this->assertEquals(new DateTimeImmutable('2036-01-25'), $recurringDate->getEndDate());
+        $this->assertTrue($entityManager->contains($recurringDate));
+
+        // when all play dates are deleted, the recurring date should be removed
+        $deletedEntries = $this->recurringDateService->deletePlayDatesSince($recurringDate, new DateTimeImmutable('2036-01-25'));
+        $this->assertSame(1, $deletedEntries);
+        $this->assertCount(0, $recurringDate->getPlayDates());
+        $this->assertFalse($entityManager->contains($recurringDate));
     }
 }

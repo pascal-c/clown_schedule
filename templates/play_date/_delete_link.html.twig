@@ -1,0 +1,26 @@
+<!-- delete link triggers modal -->
+<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Spieltermin löschen"><i class="bi bi-trash"></i></a>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalLabel">Spieltermin löschen</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if is_past %}
+          <p>ACHTUNG! Der Spieltermin liegt in der Vergangenheit. Wirklich löschen?</p>
+        {% endif %}
+        <p>Der Spieltermin wird dann endgültig gelöscht und kann nicht wiederhergestellt werden.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mb-3" data-bs-dismiss="modal">Abbrechen</button>
+        {{ form(delete_form)}}
+        {% if playDate.isRecurring %}
+          {{ form(delete_recurring_form) }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

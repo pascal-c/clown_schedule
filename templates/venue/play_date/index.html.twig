@@ -2,56 +2,16 @@
 
 {% block innercontent %}
     {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'play_dates'}) }}
-    
     {{ include('venue/_year_navigation.html.twig', {venue: venue, years: years, activeYear: activeYear}) }}
     
-    {% if venue.recurringDates %}
-        <h5 class="pt-3">Wiederkehrende Termine</h5>
-        <div class="container">
-            {% for recurringDate in venue.recurringDates %}
-                <div class="row pb-2">
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <span class="fw-medium">von: </span>{{ recurringDate.startDate|date("d.m.Y") }}<br />
-                        <span class="fw-medium">bis: </span>{{ recurringDate.endDate|date("d.m.Y") }}
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        {% if recurringDate.isWeekly %}
-                            {{ recurringDate.dayOfWeek|trans }}s 
-                        {% else %}
-                            jeden {{ recurringDate.every }}. {{ recurringDate.dayOfWeek|trans }}
-                        {% endif %}
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        {% if recurringDate.isWeekly %}
-                            {{ "every.week"|trans({'%weeks%': recurringDate.every}) }} 
-                        {% else %}
-                            im Monat
-                        {% endif %}
-                    </div>
-                    
-                    <div class="col-6 col-md-4 col-lg-2">
-                        {{ recurringDate.daytime|trans }}
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                       <span class="fw-medium">Treffen: </span>{{ recurringDate.meetingTime|date(('H:i')) }}<br />
-                        <span class="fw-medium">Spielzeit: </span>{{ recurringDate.playTimeFrom|date(('H:i')) }}-{{ recurringDate.playTimeTo|date(('H:i')) }}
-                         
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        {{ 'regular'|trans }}<br />
-                        {{ recurringDate.isSuper ? 'ist ein Super-Termin!' }}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    {{ component('venue/recurring_date_index', {venue: venue, year: activeYear}) }}
 
     <h5 class="pt-3">Spieltermine</h5>
     <div class="container">
         <div class="row">
     {% for playDate in playDates %}
             <div class="col-6 col-md-4 col-lg-2">
-            <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id}) }}">{{ playDate.date|date("d.m.Y") }}</a>
+            <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id, venue_id: venue.id}) }}">{{ playDate.date|date("d.m.Y") }}</a>
             {% if currentClown.isAdmin %}
                 {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id, venue_id: venue.id}), title: "Termin bearbeiten"}) }}
             {% endif %}

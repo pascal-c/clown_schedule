@@ -11,8 +11,10 @@ use App\Factory\PlayDateFactory;
 use App\Factory\SubstitutionFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
+use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
 use App\Tests\FunctionalTester;
+use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractCest
 {
@@ -23,10 +25,13 @@ abstract class AbstractCest
     protected PlayDateFactory $playDateFactory;
     protected SubstitutionFactory $substitutionFactory;
     protected ScheduleFactory $scheduleFactory;
+    protected RecurringDateFactory $recurringDateFactory;
     protected ConfigFactory $configFactory;
+    protected EntityManagerInterface $entityManager;
 
     public function _before(FunctionalTester $I): void
     {
+        $this->entityManager = $I->grabService(EntityManagerInterface::class);
         $this->clownAvailabilityFactory = $I->grabService(ClownAvailabilityFactory::class);
         $this->clownFactory = $I->grabService(ClownFactory::class);
         $this->venueFactory = $I->grabService(VenueFactory::class);
@@ -34,10 +39,20 @@ abstract class AbstractCest
         $this->playDateFactory = $I->grabService(PlayDateFactory::class);
         $this->substitutionFactory = $I->grabService(SubstitutionFactory::class);
         $this->scheduleFactory = $I->grabService(ScheduleFactory::class);
+        $this->recurringDateFactory = $I->grabService(RecurringDateFactory::class);
         $this->configFactory = $I->grabService(ConfigFactory::class);
         $this->configFactory->update(
             feeLabel: 'Honorar Öffis',
             alternativeFeeLabel: 'Honorar PKW',
         );
+
+        // Clear result cache befor each test
+        $this->clearResultCache();
+    }
+
+    protected function clearResultCache(): void
+    {
+        $resultCache = $this->entityManager->getConfiguration()->getResultCache();
+        $resultCache->clear();
     }
 }

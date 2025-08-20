@@ -57,6 +57,11 @@ class CreateRecurringDateCest extends AbstractCest
         $I->click('Wiederkehrenden Termin anlegen');
         $I->see('Wiederkehrender Termin wurde erfolgreich gespeichert. Es wurden 3 Spieltermine angelegt: 14.01.2025, 11.02.2025, 11.03.2025', '.alert-success');
 
+        // There is no recurring date in 2024
+        $I->dontSee('Wiederkehrende Termine', 'h5');
+
+        // The recurring date was created for 2025
+        $I->click('2025', '.nav-link');
         $I->see('Wiederkehrende Termine', 'h5');
         $I->see('von: 01.01.2025');
         $I->see('bis: 31.03.2025');
@@ -84,6 +89,11 @@ class CreateRecurringDateCest extends AbstractCest
         $I->click('Wiederkehrenden Termin anlegen');
         $I->see('Wiederkehrender Termin wurde erfolgreich gespeichert. Es wurden 7 Spieltermine angelegt', '.alert-success');
 
+        // There is no recurring date in 2024
+        $I->dontSee('Wiederkehrende Termine', 'h5');
+
+        // The recurring date was created for 2025
+        $I->click('2025', '.nav-link');
         $I->see('Wiederkehrende Termine', 'h5');
         $I->see('von: 01.01.2025');
         $I->see('bis: 31.03.2025');

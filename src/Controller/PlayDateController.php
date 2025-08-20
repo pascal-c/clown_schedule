@@ -16,6 +16,7 @@ use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\VenueRepository;
 use App\Service\PlayDateHistoryService;
+use App\Service\RecurringDateService;
 use App\Service\Scheduler\TrainingAssigner;
 use App\Service\TimeService;
 use App\Value\PlayDateChangeReason;
@@ -44,6 +45,7 @@ class PlayDateController extends AbstractController
         private TrainingAssigner $trainingAssigner,
         private PlayDateViewController $playDateViewController,
         private ConfigRepository $configRepository,
+        private RecurringDateService $recurringDateService,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -105,7 +107,7 @@ class PlayDateController extends AbstractController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_show', methods: ['GET'])]
-    public function show(PlayDate $playDate): Response
+    public function show(PlayDate $playDate, Request $request): Response
     {
         if ($playDate->getPlayingClowns()->contains($this->getCurrentClown())) {
             $trainingForm = $this->createFormBuilder($playDate)
@@ -126,11 +128,23 @@ class PlayDateController extends AbstractController
                 ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
                 ->getForm();
         }
+        $deleteFromUrlParams = array_filter(['id' => $playDate->getId(), 'venue_id' => $request->query->get('venue_id')]);
+        $deleteForm = $this->createDeleteForm(
+            $this->generateUrl('play_date_delete', $deleteFromUrlParams),
+            'Diesen Spieltermin löschen',
+        );
+        $deleteRecurringForm = $this->createDeleteForm(
+            $this->generateUrl('play_date_delete_recurring', $deleteFromUrlParams),
+            'Diesen Termin und alle künftigen Wiederholungen löschen',
+        );
 
         return $this->render('play_date/show.html.twig', [
             'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm,
             'config' => $this->configRepository->find(),
+            'delete_form' => $deleteForm,
+            'delete_recurring_form' => $deleteRecurringForm,
+            'is_past' => $this->timeService->today() > $playDate->getDate(),
         ]);
     }
 
@@ -197,15 +211,6 @@ class PlayDateController extends AbstractController
             PlayDateType::TRAINING => TrainingFormType::class,
         };
         $editForm = $this->createForm($editFormType, $playDate, ['method' => 'PUT']);
-        $deleteForm = $this->createFormBuilder($playDate)
-            ->add(
-                'delete',
-                SubmitType::class,
-                ['label' => 'Spieltermin löschen', 'attr' => ['onclick' => 'return confirm("Spieltermin endgültig löschen?")']]
-            )
-            ->setMethod('DELETE')
-            ->setAction($this->generateUrl('play_date_delete', ['id' => $id]))
-            ->getForm();
 
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -221,7 +226,6 @@ class PlayDateController extends AbstractController
         return $this->render('play_date/edit.html.twig', [
             'playDate' => $playDate,
             'form' => $editForm,
-            'delete_form' => $deleteForm,
         ]);
     }
 
@@ -262,11 +266,7 @@ class PlayDateController extends AbstractController
 
         $playDate = $this->playDateRepository->find($id);
 
-        $deleteForm = $this->createFormBuilder($playDate)
-            ->add('delete', SubmitType::class, ['label' => 'Spieltermin löschen'])
-            ->setMethod('DELETE')
-            ->getForm();
-        $deleteForm->handleRequest($request);
+        $deleteForm = $this->createDeleteForm()->handleRequest($request);
 
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $this->entityManager->remove($playDate);
@@ -283,7 +283,33 @@ class PlayDateController extends AbstractController
 
         $this->addFlash('warning', 'Achtung! Spieltermin konnte nicht gelöscht werden.');
 
-        return $this->redirectToRoute('play_date_edit', ['id' => $playDate->getId()]);
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+    }
+
+    #[Route('/play_dates/{id}/recurring', name: 'play_date_delete_recurring', methods: ['DELETE'])]
+    public function deleteRecurring(Request $request, int $id): Response
+    {
+        $this->adminOnly();
+
+        $playDate = $this->playDateRepository->find($id);
+
+        $deleteForm = $this->createDeleteForm()->handleRequest($request);
+
+        if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+            $deletedCount = $this->recurringDateService->deletePlayDatesSince($playDate->getRecurringDate(), $playDate->getDate());
+
+            $this->addFlash('success', 'Es wurden '.$deletedCount.' Spieltermine gelöscht. Gut gemacht!');
+
+            if ($request->query->get('venue_id')) {
+                return $this->redirectToRoute('venue_play_date_index', ['id' => $playDate->getVenue()->getId()]);
+            }
+
+            return $this->redirectToRoute('schedule');
+        }
+
+        $this->addFlash('warning', 'Achtung! Spieltermine konnten nicht gelöscht werden.');
+
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
 
     private function redirectAfterSuccess(PlayDate $playDate, ?Venue $venue)
