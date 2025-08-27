@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\Public;
 
+use App\Controller\AbstractController;
 use App\Form\Authentication\AcceptInvitationFormType;
 use App\Form\Authentication\ChangePasswordFormType;
 use App\Form\Authentication\LoginFormType;

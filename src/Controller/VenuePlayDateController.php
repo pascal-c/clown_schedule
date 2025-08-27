@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
-class VenuePlayDateController extends AbstractController
+class VenuePlayDateController extends AbstractProtectedController
 {
     public function __construct(private TimeService $timeService)
     {

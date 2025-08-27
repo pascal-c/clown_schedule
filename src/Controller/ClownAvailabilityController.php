@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use DateTimeImmutable;
 
-class ClownAvailabilityController extends AbstractController
+class ClownAvailabilityController extends AbstractProtectedController
 {
     private EntityManagerInterface $entityManager;
 

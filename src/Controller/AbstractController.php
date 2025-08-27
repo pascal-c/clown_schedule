@@ -7,8 +7,6 @@ namespace App\Controller;
 use App\Entity\Clown;
 use App\Service\AuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -22,13 +20,6 @@ abstract class AbstractController extends SymfonyAbstractController
         $this->authService = $authService;
     }
 
-    protected function adminOnly(): void
-    {
-        if (!$this->getCurrentClown()->isAdmin()) {
-            throw $this->createAccessDeniedException('Das darfst Du nicht.');
-        }
-    }
-
     protected function getCurrentClown(): ?Clown
     {
         return $this->authService->getCurrentClown();
@@ -37,18 +28,5 @@ abstract class AbstractController extends SymfonyAbstractController
     protected function render(string $view, array $parameters = [], ?Response $response = null): Response
     {
         return parent::render($view, array_merge($parameters, ['currentClown' => $this->getCurrentClown()]), $response);
-    }
-
-    protected function createDeleteForm(string $url = '', string $label = ''): FormInterface
-    {
-        return $this->createFormBuilder()
-            ->add(
-                'delete',
-                SubmitType::class,
-                ['label' => $label]
-            )
-            ->setMethod('DELETE')
-            ->setAction($url)
-            ->getForm();
     }
 }

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ClownInvoiceController extends AbstractController
+class ClownInvoiceController extends AbstractProtectedController
 {
     public function __construct(
         private ClownRepository $clownRepository,

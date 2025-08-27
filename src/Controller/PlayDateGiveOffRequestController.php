@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PlayDateGiveOffRequestController extends AbstractController
+class PlayDateGiveOffRequestController extends AbstractProtectedController
 {
     public function __construct(
         private ClownRepository $clownRepository,

@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StatisticsController extends AbstractController
+class StatisticsController extends AbstractProtectedController
 {
     public function __construct(
         private ClownAvailabilityRepository $clownAvailabilityRepository,

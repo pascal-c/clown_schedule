@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ConfigController extends AbstractController
+class ConfigController extends AbstractProtectedController
 {
     public function __construct(private ConfigRepository $configRepository, private EntityManagerInterface $entityManager)
     {
