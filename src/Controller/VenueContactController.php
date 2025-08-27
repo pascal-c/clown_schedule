@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class VenueContactController extends AbstractController
+class VenueContactController extends AbstractProtectedController
 {
     private EntityManagerInterface $entityManager;
 

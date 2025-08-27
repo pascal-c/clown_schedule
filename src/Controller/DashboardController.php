@@ -13,7 +13,7 @@ use App\Service\TimeService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DashboardController extends AbstractController
+class DashboardController extends AbstractProtectedController
 {
     public function __construct(
         private TimeService $timeService,

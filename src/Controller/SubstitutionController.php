@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use DateTimeImmutable;
 
-class SubstitutionController extends AbstractController
+class SubstitutionController extends AbstractProtectedController
 {
     private EntityManagerInterface $entityManager;
 

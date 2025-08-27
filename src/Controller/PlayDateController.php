@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PlayDateController extends AbstractController
+class PlayDateController extends AbstractProtectedController
 {
     private EntityManagerInterface $entityManager;
 

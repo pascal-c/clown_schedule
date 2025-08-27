@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ClownController extends AbstractController
+class ClownController extends AbstractProtectedController
 {
     private EntityManagerInterface $entityManager;
 
