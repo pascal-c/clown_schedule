@@ -6,6 +6,7 @@ use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Schedule;
+use App\Repository\ConfigRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\AuthService;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -17,15 +18,20 @@ final class ShowPlayDateComponent
     public ?Clown $currentClown;
     public string $colorClass = '';
     public bool $showClowns = true;
+    public string $specialPlayDateUrl = '';
 
-    public function __construct(private AuthService $authService, private ScheduleRepository $scheduleRepository)
-    {
+    public function __construct(
+        private AuthService $authService,
+        private ScheduleRepository $scheduleRepository,
+        private ConfigRepository $configRepository,
+    ) {
     }
 
     public function mount(PlayDate $playDate, Month $month): void
     {
         $this->currentClown = $this->authService->getCurrentClown();
         $this->playDate = $playDate;
+        $this->specialPlayDateUrl = $playDate->isSpecial() ? $this->configRepository->find()->getSpecialPlayDateUrl() : '';
 
         $schedule = $this->scheduleRepository->find($month);
         $this->colorClass = $this->getColorClass($playDate, $schedule);

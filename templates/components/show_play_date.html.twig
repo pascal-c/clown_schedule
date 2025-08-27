@@ -17,4 +17,7 @@
     {% if playDate.comment != '' %}
         <br /><span class="mt-0 pt-0 fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
     {% endif %}
+    {% if specialPlayDateUrl %}
+        <br /><a href="{{ specialPlayDateUrl }}" target="_blank" rel="noopener">Weitere Infos</a>
+    {% endif %}
 </div>
