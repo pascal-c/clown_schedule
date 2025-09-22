@@ -16,6 +16,7 @@ use App\Gateway\RosterCalculator\RosterResult;
 use App\Gateway\RosterCalculator\RosterResultApplier;
 use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
@@ -31,6 +32,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
+use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SchedulerTest extends TestCase
 {
@@ -46,6 +49,7 @@ final class SchedulerTest extends TestCase
     private RosterCalculatorGateway&MockObject $rosterCalculatorGateway;
     private RosterResultApplier&MockObject $rosterResultApplier;
     private TrainingAssigner&MockObject $trainingAssigner;
+    private ConfigRepository&MockObject $configRepository;
     private Scheduler $scheduler;
 
     public function setUp(): void
@@ -62,7 +66,7 @@ final class SchedulerTest extends TestCase
         $this->rosterCalculatorGateway = $this->createMock(RosterCalculatorGateway::class);
         $this->rosterResultApplier = $this->createMock(RosterResultApplier::class);
         $this->trainingAssigner = $this->createMock(TrainingAssigner::class);
-
+        $this->configRepository = $this->createMock(ConfigRepository::class);
 
         $this->scheduler = new Scheduler(
             $this->playDateRepository,
@@ -77,10 +81,22 @@ final class SchedulerTest extends TestCase
             $this->rosterCalculatorGateway,
             $this->rosterResultApplier,
             $this->trainingAssigner,
+            $this->configRepository,
         );
     }
 
-    public function testCalculate(): void
+    public static function calculateProvider(): Generator
+    {
+        yield 'when feature assignResponsibleClownAsFirstClown is active' => [
+            'isFeatureAssignResponsibleClownAsFirstClownActive' => true,
+        ];
+        yield 'when feature assignResponsibleClownAsFirstClown is not active' => [
+            'isFeatureAssignResponsibleClownAsFirstClownActive' => false,
+        ];
+    }
+
+    #[DataProvider('calculateProvider')]
+    public function testCalculate(bool $isFeatureAssignResponsibleClownAsFirstClownActive): void
     {
         $month = Month::build('1978-12');
         $playDates = $this->getPlayDates();
@@ -99,7 +115,10 @@ final class SchedulerTest extends TestCase
         $this->clownAvailabilityRepository->expects($this->once())
             ->method('byMonth')
             ->willReturn($clownAvailabilities);
-        $this->clownAssigner->expects($this->exactly(3))
+        $this->configRepository->expects($this->exactly(3))
+            ->method('isFeatureAssignResponsibleClownAsFirstClownActive')
+            ->willReturn($isFeatureAssignResponsibleClownAsFirstClownActive);
+        $this->clownAssigner->expects($isFeatureAssignResponsibleClownAsFirstClownActive ? $this->exactly(3) : $this->never())
             ->method('assignFirstClown');
         $this->clownAssigner->expects($this->once())
             ->method('assignSecondClowns')

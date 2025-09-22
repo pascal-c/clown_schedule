@@ -32,6 +32,12 @@ class ConfigCalculationFormType extends AbstractType
                     'label' => 'Feature “Max. Spielanzahl pro Woche”',
                     'help' => 'Clowns können sich eine maximale Spielanzahl pro Woche wünschen. Dies wird bei der Berechnung berücksichtigt.',
                 ]);
+            $builder
+                ->add('featureAssignResponsibleClownAsFirstClownActive', CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'Verantwortlichen Clown als 1. Clown zuordnen',
+                    'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte',
+                ]);
         }
 
         $builder

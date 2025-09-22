@@ -19,12 +19,14 @@ class ConfigCalculationCest extends AbstractCest
         $I->click('Berechnung', '.nav');
 
         $I->see('Feature “Max. Spielanzahl pro Woche”');
+        $I->see('Verantwortlichen Clown als 1. Clown zuordnen');
         $I->uncheckOption('Automatische Berechnung');
         $I->click('speichern');
 
         // all calculation features are hidden when calculation itself is deactivated
         $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
         $I->dontSee('Feature “Max. Spielanzahl pro Woche”');
+        $I->dontSee('Verantwortlichen Clown als 1. Clown zuordnen');
 
         $I->click('Dashboard');
         $I->dontSee('Wünsche verwalten');

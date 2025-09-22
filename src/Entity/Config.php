@@ -33,6 +33,9 @@ class Config
     #[ORM\Column(options: ['default' => true])]
     private ?bool $featurePlayDateChangeRequests = true;
 
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $featureAssignResponsibleClownAsFirstClown = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -128,6 +131,18 @@ class Config
     public function setFeaturePlayDateChangeRequestsActive(bool $featurePlayDateChangeRequests): static
     {
         $this->featurePlayDateChangeRequests = $featurePlayDateChangeRequests;
+
+        return $this;
+    }
+
+    public function isFeatureAssignResponsibleClownAsFirstClownActive(): ?bool
+    {
+        return $this->featureAssignResponsibleClownAsFirstClown;
+    }
+
+    public function setFeatureAssignResponsibleClownAsFirstClownActive(bool $featureAssignResponsibleClownAsFirstClown): static
+    {
+        $this->featureAssignResponsibleClownAsFirstClown = $featureAssignResponsibleClownAsFirstClown;
 
         return $this;
     }
