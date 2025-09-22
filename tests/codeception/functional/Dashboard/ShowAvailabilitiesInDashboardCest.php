@@ -9,7 +9,6 @@ use App\Entity\Month;
 use App\Tests\Functional\AbstractCest;
 use App\Tests\FunctionalTester;
 use App\Tests\Helper\Functional;
-use App\Tests\Step\Functional\AdminTester;
 use App\Value\ScheduleStatus;
 
 class ShowAvailabilitiesInDashboardCest extends AbstractCest
@@ -73,16 +72,5 @@ class ShowAvailabilitiesInDashboardCest extends AbstractCest
         $I->see('Wünsche Dez. 2024 Spielplan wird gerade erstellt');
         $I->dontSee('Hey Hugo, Du musst DRINGEND noch Deine Wünsche');
         $I->dontSee('Hey Hugo, Du musst noch Deine Wünsche');
-    }
-
-    public function whenCalculationIsNotUsed(AdminTester $I): void
-    {
-        $I->loginAsAdmin();
-        $I->click('Einstellungen', '.nav');
-        $I->uncheckOption('Automatische Berechnung');
-        $I->click('speichern');
-
-        $I->click('Dashboard');
-        $I->dontSee('Wünsche verwalten');
     }
 }

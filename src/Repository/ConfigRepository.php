@@ -37,4 +37,9 @@ class ConfigRepository extends AbstractRepository
     {
         return $this->find()->getFederalState();
     }
+
+    public function isFeatureAssignResponsibleClownAsFirstClownActive(): bool
+    {
+        return $this->find()->isFeatureAssignResponsibleClownAsFirstClownActive();
+    }
 }

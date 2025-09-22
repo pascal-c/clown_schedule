@@ -8,6 +8,7 @@ use App\Gateway\RosterCalculator\RosterResult;
 use App\Gateway\RosterCalculator\RosterResultApplier;
 use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
@@ -36,6 +37,7 @@ class Scheduler
         private RosterCalculatorGateway $rosterCalculatorGateway,
         private RosterResultApplier $rosterResultApplier,
         private TrainingAssigner $trainingAssigner,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -51,7 +53,10 @@ class Scheduler
         );
 
         foreach ($playDates as $playDate) {
-            $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
+            if ($this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive()) {
+                $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
+            }
+
             if (!in_array([$playDate->getDate(), $playDate->getDaytime()], $timeSlotPeriods)
                 && !in_array([$playDate->getDate(), TimeSlotPeriodInterface::ALL], $timeSlotPeriods)) {
                 $timeSlotPeriods[] = [$playDate->getDate(), $playDate->getDaytime()];

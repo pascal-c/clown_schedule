@@ -1,7 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Einstellungen bearbeiten</h4>
+    <h4 class="pt-3">Einstellungen</h4>
+
+    {{ include('config/_section_navigation.html.twig') }}
 
     {{ form(form) }}
 {% endblock %}
