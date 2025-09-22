@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ConfigFormType extends AbstractType
+class ConfigGeneralFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -48,20 +48,10 @@ class ConfigFormType extends AbstractType
                 'label' => 'Zusatztermine Link',
                 'help' => 'Dieser Link wird in den Details aller Zusatztermine angezeigt',
             ])
-            ->add('useCalculation', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Automatische Berechnung',
-                'help' => 'Wenn aktiviert, kann der Spielplan automatisch unter Berücksichtigung der Clownswünsche erstellt werden',
-            ])
             ->add('featurePlayDateChangeRequestsActive', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Feature "Spieltermine tauschen"',
                 'help' => 'Clowns können untereinander Spieltermine tauschen oder abgeben.',
-            ])
-            ->add('featureMaxPerWeekActive', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Feature “Max. Spielanzahl pro Woche”',
-                'help' => 'Clowns können sich eine maximale Spielanzahl pro Woche wünschen. Dies wird bei der Berechnung berücksichtigt.',
             ])
             ->add('feeLabel', TextType::class, [
                 'required' => true,

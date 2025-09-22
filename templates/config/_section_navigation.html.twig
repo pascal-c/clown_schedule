@@ -1,0 +1,14 @@
+<nav class="navbar">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link {{ section == 'general' ? 'active' }}" {{ section == 'general' ? 'aria-current="page"' }} href="{{ path('config', {section: 'general'}) }}">
+                Allgemein
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ section == 'calculation' ? 'active' }}" {{ section == 'calculation' ? 'aria-current="page"' }} href="{{ path('config', {section: 'calculation'}) }}">
+                Berechnung
+            </a>
+        </li>
+    </ul>
+</nav>
