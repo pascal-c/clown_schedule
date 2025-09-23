@@ -13,13 +13,8 @@ class ScheduleCalculateFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('calculate_simple', SubmitType::class, [
-                'label' => 'Einfache Berechnung',
-                'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")'],
-            ])
             ->add('calculate_complex', SubmitType::class, [
-                'label' => 'Komplexe Berechnung',
-                'attr' => ['onclick' => 'return confirm("Achtung! Alle vorhandenen Zuordnungen werden entfernt!")'],
+                'label' => 'Spielplan jetzt berechnen',
             ]);
     }
 

@@ -7,6 +7,13 @@
         Spielplan {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}
     </h4>
 
+    {% if currentClown.isAdmin and not schedule.completed %}
+        {{ include ('schedule/_calculate.html.twig', {form: calculateForm}) }}
+    {% endif %}
+    {% if currentClown.isAdmin and schedule.inProgress %}
+        {{ include ('schedule/_complete.html.twig', {form: completeForm}) }}
+    {% endif %}
+
     {{ component('schedule_navigation', { active: 'schedule' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     

@@ -48,26 +48,7 @@ class ScheduleController extends AbstractProtectedController
         $this->entityManager = $doctrine->getManager();
     }
 
-    #[Route('/schedule/calculate/{monthId}', name: 'calculate', methods: ['GET'])]
-    public function calculateForm(SessionInterface $session, ?string $monthId = null): Response
-    {
-        $month = $this->monthRepository->find($session, $monthId);
-        $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::NOT_STARTED);
-
-        $calculateForm = $this->createForm(ScheduleCalculateFormType::class, $schedule);
-        $completeForm = $this->createForm(ScheduleCompleteFormType::class, $schedule, [
-            'action' => $this->generateUrl('schedule'),
-        ]);
-
-        return $this->render('schedule/calculate.html.twig', [
-            'schedule' => $schedule,
-            'month' => $month,
-            'calculateForm' => $calculateForm,
-            'completeForm' => $completeForm,
-        ]);
-    }
-
-    #[Route('/schedule/calculate/{monthId}', methods: ['POST'])]
+    #[Route('/schedule/{monthId}', methods: ['POST'])]
     public function calculate(Request $request, SessionInterface $session, ?string $monthId = null): Response
     {
         $this->adminOnly();
@@ -92,7 +73,7 @@ class ScheduleController extends AbstractProtectedController
         }
 
         $start = microtime(true);
-        $result = $this->scheduler->calculate($month, 'calculate_complex' === $calculateForm->getClickedButton()->getName());
+        $result = $this->scheduler->calculate($month);
         $seconds = number_format(microtime(true) - $start, 1, ',', '.');
 
         if ($result->success) {
@@ -117,16 +98,22 @@ class ScheduleController extends AbstractProtectedController
     public function show(SessionInterface $session, Request $request, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
+        $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::NOT_STARTED);
         $scheduleViewModel = $this->scheduleViewController->getSchedule($month);
 
         foreach ($this->playDateRepository->byMonth($month) as $playDate) {
             $scheduleViewModel->add($playDate, 'playDates', $playDate);
         }
 
+        $calculateForm = $this->createForm(ScheduleCalculateFormType::class, $schedule);
+        $completeForm = $this->createForm(ScheduleCompleteFormType::class, $schedule);
+
         return $this->render('schedule/show.html.twig', [
             'schedule' => $scheduleViewModel,
             'month' => $month,
             'showAvailableClowns' => $this->configRepository->isFeatureCalculationActive(),
+            'calculateForm' => $calculateForm,
+            'completeForm' => $completeForm,
         ]);
     }
 

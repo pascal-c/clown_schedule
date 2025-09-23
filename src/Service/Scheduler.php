@@ -41,7 +41,7 @@ class Scheduler
     ) {
     }
 
-    public function calculate(Month $month, bool $calculateComplex): RosterResult
+    public function calculate(Month $month, bool $calculateComplex = true): RosterResult
     {
         $timeSlotPeriods = [];
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
