@@ -1,0 +1,23 @@
+<!-- link triggers modal -->
+<div>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#completeModal" title="Spielplanerstellung abschließen"><i class="bi bi-check"></i> Spielplanerstellung abschließen</a>
+</div>
+
+<div class="modal fade" id="completeModal" tabindex="-1" aria-labelledby="completeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="completeModalLabel">Spielplanerstellung abschließen</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Mit Abschluss der Spielplanerstellung werden die Clowns per Email über den neuen Spielplan informiert. Bis dahin sind die Zuordnungen für die Clowns unsichtbar.</p>
+        <p>Achtung: Diese Aktion kann nicht rückgängig gemacht werden. </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mb-3" data-bs-dismiss="modal">Abbrechen</button>
+        {{ form(form, {attr: {"data-controller": "form"}}) }}
+      </div>
+    </div>
+  </div>
+</div>

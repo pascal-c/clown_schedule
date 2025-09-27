@@ -41,12 +41,14 @@ class Scheduler
     ) {
     }
 
-    public function calculate(Month $month, bool $calculateComplex): RosterResult
+    public function calculate(Month $month, bool $keepExistingAssignments): RosterResult
     {
         $timeSlotPeriods = [];
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $playDates = $this->playDateRepository->regularByMonth($month);
-        $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
+        if (!$keepExistingAssignments) {
+            $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
+        }
         $playDates = $this->playDateSorter->sortByAvailabilities(
             $playDates,
             $clownAvailabilities,
@@ -65,13 +67,8 @@ class Scheduler
 
         $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
         $this->fairPlayCalculator->calculateTargetPlays($clownAvailabilities, count($playDates) * 2);
-
-        if ($calculateComplex) {
-            $result = $this->rosterCalculatorGateway->calcuate($playDates, $clownAvailabilities);
-            $this->rosterResultApplier->apply($result, $month);
-        } else {
-            $result = $this->clownAssigner->assignSecondClowns($month, $playDates, $clownAvailabilities, takeFirst: true);
-        }
+        $result = $this->rosterCalculatorGateway->calcuate($playDates, $clownAvailabilities);
+        $this->rosterResultApplier->apply($result, $month);
 
         foreach ($timeSlotPeriods as $timeSlot) {
             $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($timeSlot[0], $timeSlot[1]), $clownAvailabilities);

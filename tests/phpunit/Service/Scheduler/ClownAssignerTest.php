@@ -31,12 +31,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class ClownAssignerTest extends TestCase
 {
-    private AvailabilityChecker|MockObject $availabilityChecker;
-    private SubstitutionRepository|MockObject $substitutionRepository;
-    private EntityManagerInterface|MockObject $entityManager;
-    private PlayDateHistoryService|MockObject $playDateHistoryService;
-    private BestPlayingClownCalculator|MockObject $bestPlayingClownCalculator;
-    private ResultApplier|MockObject $resultApplier;
+    private AvailabilityChecker&MockObject $availabilityChecker;
+    private SubstitutionRepository&MockObject $substitutionRepository;
+    private EntityManagerInterface&MockObject $entityManager;
+    private PlayDateHistoryService&MockObject $playDateHistoryService;
+    private BestPlayingClownCalculator&MockObject $bestPlayingClownCalculator;
+    private ResultApplier&MockObject $resultApplier;
 
     private ClownAssigner $clownAssigner;
 
@@ -141,14 +141,23 @@ final class ClownAssignerTest extends TestCase
         } else {
             $this->assertSame($expectedClownAvailability->getClown(), $playDate->getPlayingClowns()->first());
         }
+    }
 
-        foreach ($clownAvailabilities as $availability) {
-            if ($availability === $expectedClownAvailability) {
-                $this->assertSame(1, $availability->getCalculatedPlaysMonth());
-            } else {
-                $this->assertNull($availability->getCalculatedPlaysMonth());
-            }
-        }
+    public function testAssignFirstClownWhenAlreadyAssigned(): void
+    {
+        $clownAvailabilities = array_map(fn ($_) => self::buildClownAvailability(), range(0, 3));
+        $assignedClown = $clownAvailabilities[3]->getClown();
+        $playDate = self::buildPlayDate($clownAvailabilities);
+        $playDate->addPlayingClown($assignedClown);
+
+        $this->availabilityChecker
+            ->expects($this->never())
+            ->method($this->anything());
+        $this->playDateHistoryService->expects($this->never())->method($this->anything());
+
+        $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
+        $this->assertSame(1, $playDate->getPlayingClowns()->count());
+        $this->assertSame($assignedClown, $playDate->getPlayingClowns()->first());
     }
 
     public function testAssignSecondClownsWithoutOnlyFirst(): void
@@ -303,10 +312,11 @@ final class ClownAssignerTest extends TestCase
             });
 
         $substitution = new Substitution();
+        $substitution2 = new Substitution();
         if (!is_null($expectedClownAvailability)) {
-            $this->substitutionRepository->expects($this->atMost(2))
+            $this->substitutionRepository->expects($this->exactly('all' === $daytime ? 2 : 1))
                 ->method('find')
-                ->willReturn($substitution);
+                ->willReturnOnConsecutiveCalls($substitution, $substitution2);
         }
         $this->playDateHistoryService->expects($this->never())->method($this->anything());
         $this->bestPlayingClownCalculator->expects($this->never())->method($this->anything());
@@ -318,6 +328,11 @@ final class ClownAssignerTest extends TestCase
             $this->assertNull($substitution->getSubstitutionClown());
         } else {
             $this->assertSame($expectedClownAvailability->getClown(), $substitution->getSubstitutionClown());
+            if ('all' === $daytime) {
+                $this->assertSame($expectedClownAvailability->getClown(), $substitution2->getSubstitutionClown());
+            } else {
+                $this->assertNull($substitution2->getSubstitutionClown());
+            }
         }
 
         foreach ($clownAvailabilities as $key => $availability) {
@@ -325,6 +340,42 @@ final class ClownAssignerTest extends TestCase
                 $this->assertSame(1, $availability->getCalculatedSubstitutions());
             } elseif (4 == $key) {
                 $this->assertSame(3, $availability->getCalculatedSubstitutions());
+            } else {
+                $this->assertNull($availability->getCalculatedSubstitutions());
+            }
+        }
+    }
+
+    public function testAssignSubstitutionClownWhenSubstitutionIsAlreadySet(): void
+    {
+        $date = new DateTimeImmutable('2022-04-01');
+        $clownAvailabilities = [
+            self::buildClownAvailability(calculatedSubstitutions: 2),
+            self::buildClownAvailability(),
+            self::buildClownAvailability(),
+        ];
+        $alreadyAssignedClown = $clownAvailabilities[0]->getClown();
+        $this->availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
+            ->method('isAvailableForSubstitution')
+            ->willReturn(true);
+        $this->availabilityChecker
+            ->method('maxPlaysAndSubstitutionsWeekReached')
+            ->willReturn(false);
+
+        $substitution = new Substitution();
+        $substitution->setSubstitutionClown($alreadyAssignedClown);
+        $this->substitutionRepository->expects($this->exactly(1))
+            ->method('find')
+            ->willReturn($substitution);
+
+        $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($date, 'am'), $clownAvailabilities);
+
+        $this->assertSame($alreadyAssignedClown, $substitution->getSubstitutionClown());
+
+        // make sure calculatedSubstitutions is not increased
+        foreach ($clownAvailabilities as $key => $availability) {
+            if (0 == $key) {
+                $this->assertSame(2, $availability->getCalculatedSubstitutions());
             } else {
                 $this->assertNull($availability->getCalculatedSubstitutions());
             }

@@ -18,11 +18,7 @@ class ScheduleCompleteFormType extends AbstractType
         if (ScheduleStatus::COMPLETED !== $schedule?->getStatus()) {
             $builder
                 ->add('complete', SubmitType::class, [
-                    'label' => 'Spielplanerstellung abschließen',
-                    'attr' => [
-                        'onclick' => 'return confirm("Wirklich abschließen?")',
-                        'title' => 'Nach dem Abschließen ist der Spieplan für alle zu sehen.',
-                    ],
+                    'label' => 'Spielplanerstellung jetzt abschließen',
                 ])
                 ->setMethod('PUT')
             ;
