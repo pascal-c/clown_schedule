@@ -73,7 +73,7 @@ class ScheduleController extends AbstractProtectedController
         }
 
         $start = microtime(true);
-        $result = $this->scheduler->calculate($month);
+        $result = $this->scheduler->calculate($month, $calculateForm['keep_existing_assignments']->getData());
         $seconds = number_format(microtime(true) - $start, 1, ',', '.');
 
         if ($result->success) {

@@ -30,6 +30,10 @@ class ClownAssigner
 
     public function assignFirstClown(PlayDate $playDate, array $clownAvailabilities): void
     {
+        if (!$playDate->getPlayingClowns()->isEmpty()) {
+            return;
+        }
+
         $availableClownAvailabilities = $this->getAvailabilitiesFor($playDate, $clownAvailabilities);
 
         $availableResponsibleClownAvailabilities = array_filter(
@@ -117,21 +121,27 @@ class ClownAssigner
 
         $clownAvailability = $availableClownAvailabilities[0];
         foreach ($timeSlotPeriod->getTimeSlots() as $timeSlot) {
-            $this->upsertSubstitution($timeSlot->getDate(), $timeSlot->getDaytime(), $clownAvailability->getClown());
+            $upserted = $this->upsertSubstitution($timeSlot->getDate(), $timeSlot->getDaytime(), $clownAvailability->getClown());
         }
-
-        $clownAvailability->incCalculatedSubstitutions();
+        if ($upserted) {
+            $clownAvailability->incCalculatedSubstitutions();
+        }
     }
 
-    private function upsertSubstitution(DateTimeImmutable $date, string $daytime, Clown $clown): void
+    private function upsertSubstitution(DateTimeImmutable $date, string $daytime, Clown $clown): bool
     {
         $substitution = $this->substitutionRepository->find($date, $daytime);
         if (is_null($substitution)) {
             $substitution = (new Substitution())->setDate($date)->setDaytime($daytime);
             $this->entityManager->persist($substitution);
         }
+        if ($substitution->getSubstitutionClown()) {
+            return false;
+        }
 
         $substitution->setSubstitutionClown($clown);
+
+        return true;
     }
 
     private function assignClown(PlayDate $playDate, ClownAvailability $clownAvailability): void
