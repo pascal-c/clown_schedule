@@ -4,11 +4,9 @@ namespace App\Service\Scheduler;
 
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
-use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
-use App\Gateway\RosterCalculator\RosterResult;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateHistoryService;
 use App\Value\PlayDateChangeReason;
@@ -23,8 +21,6 @@ class ClownAssigner
         private SubstitutionRepository $substitutionRepository,
         private EntityManagerInterface $entityManager,
         private PlayDateHistoryService $playDateHistoryService,
-        private BestPlayingClownCalculator $bestPlayingClownCalculator,
-        private ResultApplier $resultApplier,
     ) {
     }
 
@@ -53,35 +49,6 @@ class ClownAssigner
         }
 
         $this->assignClown($playDate, $clownAvailability);
-    }
-
-    /**
-     * @param array<PlayDate>          $playDates
-     * @param array<ClownAvailability> $clownAvailabilities
-     *
-     * @return array<Result>
-     */
-    public function assignSecondClowns(Month $month, array $playDates, array $clownAvailabilities, bool $takeFirst): RosterResult
-    {
-        $firstResult = $this->bestPlayingClownCalculator->onlyFirst($month, $playDates, $clownAvailabilities);
-        if ($takeFirst) {
-            $bestResult = $firstResult;
-        } else {
-            $results = ($this->bestPlayingClownCalculator)($month, $playDates, $clownAvailabilities, $firstResult->getPoints(), count($playDates));
-
-            $bestResult = array_reduce(
-                $results,
-                fn (Result $carry, Result $element): Result => $element->getPoints() < $carry->getPoints() ? $element : $carry,
-                $firstResult,
-            );
-        }
-
-        $this->resultApplier->applyResult($bestResult);
-        foreach ($playDates as $playDate) {
-            $this->playDateHistoryService->add($playDate, null, PlayDateChangeReason::CALCULATION);
-        }
-
-        return new RosterResult(rating: ['total' => $bestResult->getPoints()], firstResultTotalPoints: $firstResult->getPoints(), counter: 1);
     }
 
     public function assignSubstitutionClown(TimeSlotPeriod $timeSlotPeriod, array $clownAvailabilities): void
@@ -147,7 +114,6 @@ class ClownAssigner
     private function assignClown(PlayDate $playDate, ClownAvailability $clownAvailability): void
     {
         $playDate->addPlayingClown($clownAvailability->getClown());
-        $clownAvailability->incCalculatedPlaysMonth();
         $this->playDateHistoryService->add($playDate, null, PlayDateChangeReason::CALCULATION);
     }
 

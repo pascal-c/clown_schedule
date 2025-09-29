@@ -22,9 +22,9 @@ use PHPUnit\Framework\TestCase;
 final class RaterTest extends TestCase
 {
     private Rater $rater;
-    private ClownAvailabilityRepository|MockObject $clownAvailabilityRepository;
-    private PlayDateRepository|MockObject $playDateRepository;
-    private ConfigRepository|MockObject $configRepository;
+    private ClownAvailabilityRepository&MockObject $clownAvailabilityRepository;
+    private PlayDateRepository&MockObject $playDateRepository;
+    private ConfigRepository&MockObject $configRepository;
     private Month $month;
     private array $playDates;
     private array $clownAvailabilities;
@@ -172,7 +172,7 @@ final class RaterTest extends TestCase
         ;
         foreach ($clownAvailabilities as $clownAvailability) {
             $playDate->addPlayingClown($clownAvailability->getClown());
-            $clownAvailability->incCalculatedPlaysMonth();
+            $clownAvailability->setCalculatedPlaysMonth($clownAvailability->getCalculatedPlaysMonth() + 1);
         }
 
         return $playDate;

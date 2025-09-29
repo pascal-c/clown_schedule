@@ -120,8 +120,6 @@ final class SchedulerTest extends TestCase
             ->willReturn($isFeatureAssignResponsibleClownAsFirstClownActive);
         $this->clownAssigner->expects($isFeatureAssignResponsibleClownAsFirstClownActive ? $this->exactly(3) : $this->never())
             ->method('assignFirstClown');
-        $this->clownAssigner->expects($this->never())
-            ->method('assignSecondClowns');
         $this->rosterCalculatorGateway->expects($this->once())
             ->method('calcuate')
             ->with([$playDate2, $playDate3, $playDate1], $clownAvailabilities)
