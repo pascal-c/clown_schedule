@@ -120,10 +120,15 @@ final class SchedulerTest extends TestCase
             ->willReturn($isFeatureAssignResponsibleClownAsFirstClownActive);
         $this->clownAssigner->expects($isFeatureAssignResponsibleClownAsFirstClownActive ? $this->exactly(3) : $this->never())
             ->method('assignFirstClown');
-        $this->clownAssigner->expects($this->once())
-            ->method('assignSecondClowns')
-            ->with($month, [$playDate2, $playDate3, $playDate1], $clownAvailabilities)
+        $this->clownAssigner->expects($this->never())
+            ->method('assignSecondClowns');
+        $this->rosterCalculatorGateway->expects($this->once())
+            ->method('calcuate')
+            ->with([$playDate2, $playDate3, $playDate1], $clownAvailabilities)
             ->willReturn($rosterResult = new RosterResult());
+        $this->rosterResultApplier->expects($this->once())
+            ->method('apply')
+            ->with($rosterResult, $month);
         $this->clownAssigner->expects($this->once())
             ->method('assignSubstitutionClown')
             ->with(new TimeSlotPeriod(new DateTimeImmutable('2018-12'), 'pm'), $clownAvailabilities);
@@ -157,7 +162,7 @@ final class SchedulerTest extends TestCase
             ->method('sortByAvailabilities')
             ->willReturn([$playDate2, $playDate3, $playDate1]);
 
-        $result = $this->scheduler->calculate($month, calculateComplex: false);
+        $result = $this->scheduler->calculate($month, keepExistingAssignments: false);
 
         // removes existing clown assignments
         foreach ($playDates as $playDate) {

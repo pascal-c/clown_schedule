@@ -7,10 +7,17 @@
         Spielplan {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}
     </h4>
 
+    {% if featureCalculationActive and currentClown.isAdmin and not schedule.completed %}
+        {{ include ('schedule/_calculate.html.twig', {form: calculateForm}) }}
+    {% endif %}
+    {% if featureCalculationActive and currentClown.isAdmin and schedule.inProgress %}
+        {{ include ('schedule/_complete.html.twig', {form: completeForm}) }}
+    {% endif %}
+
     {{ component('schedule_navigation', { active: 'schedule' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     
-    {% if showAvailableClowns %}
+    {% if featureCalculationActive %}
         <button type="button" class="btn btn-link collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
         <button type="button" class="btn btn-link collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
     {% endif %}
