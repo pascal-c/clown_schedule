@@ -111,7 +111,7 @@ class ScheduleController extends AbstractProtectedController
         return $this->render('schedule/show.html.twig', [
             'schedule' => $scheduleViewModel,
             'month' => $month,
-            'showAvailableClowns' => $this->configRepository->isFeatureCalculationActive(),
+            'featureCalculationActive' => $this->configRepository->isFeatureCalculationActive(),
             'calculateForm' => $calculateForm,
             'completeForm' => $completeForm,
         ]);

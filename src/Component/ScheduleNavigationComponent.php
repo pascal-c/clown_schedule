@@ -3,7 +3,6 @@
 namespace App\Component;
 
 use App\Entity\Clown;
-use App\Repository\ConfigRepository;
 use App\Service\AuthService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -15,7 +14,7 @@ class ScheduleNavigationComponent
     public string $active = 'schedule';
     public ?Clown $currentClown;
 
-    public function __construct(private UrlGeneratorInterface $urlHelper, private AuthService $authService, private ConfigRepository $configRepository)
+    public function __construct(private UrlGeneratorInterface $urlHelper, private AuthService $authService)
     {
     }
 

@@ -11,9 +11,11 @@ class ConfigCalculationCest extends AbstractCest
     {
         $I->loginAsAdmin();
 
-        // calculation is activated by default
-        $I->click('Dashboard');
+        // calculation features are activated by default
+        $I->click('Dashboard', '.nav');
         $I->see('Wünsche verwalten');
+        $I->click('Spielplan', '.nav');
+        $I->seeLink('Spielplan berechnen');
 
         $I->click('Einstellungen');
         $I->click('Berechnung', '.nav');
@@ -28,8 +30,11 @@ class ConfigCalculationCest extends AbstractCest
         $I->dontSee('Feature “Max. Spielanzahl pro Woche”');
         $I->dontSee('Verantwortlichen Clown als 1. Clown zuordnen');
 
+        // make sure calculation features are really deactivated
         $I->click('Dashboard');
         $I->dontSee('Wünsche verwalten');
+        $I->click('Spielplan', '.nav');
+        $I->dontSee('Spielplan berechnen');
     }
 
     public function featureMaxPlaysPerWeek(AdminTester $I): void
