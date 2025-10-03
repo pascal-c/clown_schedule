@@ -31,32 +31,16 @@ class RosterCalculatorGateway
      */
     public function calcuate(array $playDates, array $clownAvailabilities): RosterResult
     {
-        $venues = [];
-        foreach ($playDates as $playDate) {
-            $venue = $playDate->getVenue();
-            if ($venue && !in_array($venue, $venues, true)) {
-                $venues[] = $venue;
-            }
-        }
+
         $options = [
             'timeout' => 90,
             'max_duration' => 90,
-            'json' => [
-                'locations' => array_map(
-                    fn (Venue $venue): array => [
-                        'id' => strval($venue->getId()),
-                        'blockedPeopleIds' => $venue->getBlockedClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
-                    ],
-                    $venues
-                ),
-                'shifts' => array_map(fn (PlayDate $playDate): array => $this->serializePlayDate($playDate), $playDates),
-                'people' => array_map(fn (ClownAvailability $clownAvailability): array => $this->serializeClownAvailability($clownAvailability), $clownAvailabilities),
-            ],
+            'json' => $this->serialize($playDates, $clownAvailabilities),
         ];
 
         $response = $this->httpClient->request(
             'POST',
-            $this->params->get('app.roster_calculator_url'),
+            $this->params->get('app.roster_calculator_url').'/roster',
             $options,
         );
 
@@ -79,6 +63,56 @@ class RosterCalculatorGateway
         }
 
         return $rosterResult;
+    }
+
+    /**
+     * @param array<PlayDate>          $playDates
+     * @param array<ClownAvailability> $clownAvailabilities
+     *
+     * @return RosterResult the calculated roster
+     */
+    public function rating(array $playDates, array $clownAvailabilities): ?array
+    {
+        $options = [
+            'timeout' => 10,
+            'max_duration' => 10,
+            'json' => $this->serialize($playDates, $clownAvailabilities),
+        ];
+
+        $response = $this->httpClient->request(
+            'POST',
+            $this->params->get('app.roster_calculator_url').'/rating',
+            $options,
+        );
+
+        if (201 === $response->getStatusCode()) {
+            return $response->toArray();
+        } else {
+            return null;
+        }
+    }
+
+    private function serialize(array $playDates, array $clownAvailabilities): array
+    {
+        $venues = [];
+        foreach ($playDates as $playDate) {
+            $venue = $playDate->getVenue();
+            if ($venue && !in_array($venue, $venues, true)) {
+                $venues[] = $venue;
+            }
+        }
+
+        return [
+            'locations' => array_map(
+                fn (Venue $venue): array => [
+                    'id' => strval($venue->getId()),
+                    'blockedPeopleIds' => $venue->getBlockedClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
+                ],
+                $venues
+            ),
+            'shifts' => array_map(fn (PlayDate $playDate): array => $this->serializePlayDate($playDate), $playDates),
+            'people' => array_map(fn (ClownAvailability $clownAvailability): array => $this->serializeClownAvailability($clownAvailability), $clownAvailabilities),
+        ];
     }
 
     private function serializeClownAvailability(ClownAvailability $clownAvailability): array
@@ -106,7 +140,7 @@ class RosterCalculatorGateway
         ];
     }
 
-    public function serializePlayDate(PlayDate $playDate): array
+    private function serializePlayDate(PlayDate $playDate): array
     {
         return [
             'id' => strval($playDate->getId()),

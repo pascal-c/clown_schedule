@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
 use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
+use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
-use App\Service\Scheduler\Rater;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -22,10 +23,11 @@ class StatisticsController extends AbstractProtectedController
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private PlayDateRepository $playDateRepository,
         private MonthRepository $monthRepository,
+        private ScheduleRepository $scheduleRepository,
         private SubstitutionRepository $substitutionRepository,
         private ClownRepository $clownRepository,
         private ConfigRepository $configRepository,
-        private Rater $rater,
+        private RosterCalculatorGateway $rosterCalculatorGateway,
     ) {
     }
 
@@ -55,6 +57,7 @@ class StatisticsController extends AbstractProtectedController
     public function showPerMonth(SessionInterface $session, Request $request, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
+        $schedule = $this->scheduleRepository->find($month);
         $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
@@ -89,7 +92,8 @@ class StatisticsController extends AbstractProtectedController
             'currentSubstitutions' => $substitutions,
             'active' => 'statistics',
             'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
-            'points' => $this->rater->pointsPerCategory($month),
+            'calculatedRating' => $schedule->getCalculatedRating(),
+            'currentRating' => $this->rosterCalculatorGateway->rating($playDates, $clownAvailabilities),
         ]);
     }
 }
