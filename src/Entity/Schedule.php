@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Gateway\RosterCalculator\RosterResult;
 use App\Value\ScheduleStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -20,6 +21,9 @@ class Schedule
 
     #[ORM\Column(length: 100)]
     private ?string $status = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $rosterResult = null;
 
     public function getId(): ?int
     {
@@ -58,5 +62,26 @@ class Schedule
     public function isInProgress(): bool
     {
         return ScheduleStatus::IN_PROGRESS === $this->getStatus();
+    }
+
+    public function getRosterResult(): ?RosterResult
+    {
+        if (null === $this->rosterResult) {
+            return null;
+        }
+
+        return RosterResult::fromArray($this->rosterResult);
+    }
+
+    public function setRosterResult(RosterResult $rosterResult): static
+    {
+        $this->rosterResult = $rosterResult->toArray();
+
+        return $this;
+    }
+
+    public function getCalculatedRating(): ?array
+    {
+        return $this->rosterResult['rating'] ?? null;
     }
 }
