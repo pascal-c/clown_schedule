@@ -61,4 +61,30 @@ class ConfigCalculationCest extends AbstractCest
         $I->click('speichern');
         $I->dontSeeCheckboxIsChecked('Feature “Max. Spielanzahl pro Woche”');
     }
+
+    public function ratingPoints(AdminTester $I): void
+    {
+        $I->loginAsAdmin();
+        $I->click('Einstellungen');
+        $I->click('Berechnung', '.nav');
+
+        $I->seeInField('Punkte pro fehlender Zuordnung', '100');
+        $I->seeInField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '1');
+        $I->seeInField('Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt', '2');
+        $I->seeInField('Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird', '10');
+
+        $I->fillField('Punkte pro fehlender Zuordnung', '101');
+        $I->fillField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '3');
+        $I->fillField('Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt', '4');
+        $I->fillField('Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird', '11');
+
+        $I->click('speichern');
+
+        $I->seeInField('Punkte pro fehlender Zuordnung', '101');
+        $I->seeInField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '3');
+        $I->seeInField('Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt', '4');
+        $I->seeInField('Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird', '11');
+
+        $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
+    }
 }

@@ -12,6 +12,7 @@ use App\Entity\Venue;
 use App\Gateway\RosterCalculator\RosterResult;
 use App\Repository\ConfigRepository;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class RosterCalculatorGateway
@@ -85,15 +86,19 @@ class RosterCalculatorGateway
             $options,
         );
 
-        if (201 === $response->getStatusCode()) {
-            return $response->toArray();
-        } else {
-            return null;
+        try {
+            if (201 === $response->getStatusCode()) {
+                return $response->toArray();
+            }
+        } catch (TransportExceptionInterface $_exception) {
         }
+
+        return null;
     }
 
     private function serialize(array $playDates, array $clownAvailabilities): array
     {
+        $config = $this->configRepository->find();
         $venues = [];
         foreach ($playDates as $playDate) {
             $venue = $playDate->getVenue();
@@ -112,6 +117,12 @@ class RosterCalculatorGateway
             ),
             'shifts' => array_map(fn (PlayDate $playDate): array => $this->serializePlayDate($playDate), $playDates),
             'people' => array_map(fn (ClownAvailability $clownAvailability): array => $this->serializeClownAvailability($clownAvailability), $clownAvailabilities),
+            'ratingPointWeightings' => [
+                'pointsPerMissingPerson' => $config->getPointsPerMissingPerson(),
+                'pointsPerMaybePerson' => $config->getPointsPerMaybePerson(),
+                'pointsPerTargetShiftsMissed' => $config->getPointsPerTargetShifts(),
+                'pointsPerMaxPerWeekExceeded' => $config->getPointsPerMaxPerWeek(),
+            ],
         ];
     }
 

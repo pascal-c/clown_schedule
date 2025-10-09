@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Config;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,12 +32,27 @@ class ConfigCalculationFormType extends AbstractType
                     'required' => false,
                     'label' => 'Feature “Max. Spielanzahl pro Woche”',
                     'help' => 'Clowns können sich eine maximale Spielanzahl pro Woche wünschen. Dies wird bei der Berechnung berücksichtigt.',
-                ]);
-            $builder
+                ])
                 ->add('featureAssignResponsibleClownAsFirstClownActive', CheckboxType::class, [
                     'required' => false,
                     'label' => 'Verantwortlichen Clown als 1. Clown zuordnen',
                     'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte',
+                ])
+                ->add('pointsPerMissingPerson', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro fehlender Zuordnung',
+                ])
+                ->add('pointsPerMaybePerson', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss',
+                ])
+                ->add('pointsPerTargetShifts', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt',
+                ])
+                ->add('pointsPerMaxPerWeek', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird',
                 ]);
         }
 
