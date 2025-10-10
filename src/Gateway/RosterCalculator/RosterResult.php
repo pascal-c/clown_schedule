@@ -18,4 +18,34 @@ class RosterResult
         public readonly bool $isTimedOut = false,
     ) {
     }
+
+    public static function fromArray(array $data): RosterResult
+    {
+        return new RosterResult(
+            success: $data['success'] ?? false,
+            statusCode: $data['statusCode'] ?? 500,
+            errorMessage: $data['errorMessage'] ?? '',
+            assignments: $data['assignments'] ?? [],
+            personalResults: $data['personalResults'] ?? [],
+            rating: $data['rating'] ?? ['total' => -1],
+            firstResultTotalPoints: $data['firstResultTotalPoints'] ?? 0,
+            counter: $data['counter'] ?? 0,
+            isTimedOut: $data['isTimedOut'] ?? false,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'success' => $this->success,
+            'statusCode' => $this->statusCode,
+            'errorMessage' => $this->errorMessage,
+            'assignments' => $this->assignments,
+            'personalResults' => $this->personalResults,
+            'rating' => $this->rating,
+            'firstResultTotalPoints' => $this->firstResultTotalPoints,
+            'counter' => $this->counter,
+            'isTimedOut' => $this->isTimedOut,
+        ];
+    }
 }

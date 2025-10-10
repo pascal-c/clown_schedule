@@ -6,29 +6,12 @@
     {{ component('month_navigation', { active: month.key, urlKey: 'statistics' }) }}
     <h4 class="pt-3">Statistiken für {{ month.label }}</h4>
 
-    <div>Spieltermine (aktuell): {{ currentPlayDatesCount }}</div>
-    <div>Rating (gesamt): {{ points.total }}</div>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                Clown fehlt: {{ points.notAssigned }}
-            </div>
-            <div class="col-sm-6">
-                Clown kann nur wenns sein muss: {{ points.maybeClown }}
-            </div>
-        </div>
-        <div class="row pb-3">
-            <div class="col-sm-6">
-                Ziel verfehlt: {{ points.targetPlays }}
-            </div>
-            <div class="col-sm-6">
-                {% if showMaxPerWeek %}
-                    max Anzahl pro Woche überschritten: {{ points.maxPerWeek }}
-                {% endif %}    
-            </div>
-        </div>
-    </div>
     
+    <div>Spieltermine (aktuell): {{ currentPlayDatesCount }}</div>
+           
+    {{ include('statistics/_rating.html.twig', {rating: calculatedRating, name: 'berechnet', id: 'calculatedRating'}) }}
+    {{ include('statistics/_rating.html.twig', {rating: currentRating, name: 'aktuell', id: 'currentRating'}) }}
+
     <table class="table">
         <thead>
             <tr>

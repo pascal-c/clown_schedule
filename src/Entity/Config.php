@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 class Config
@@ -35,6 +36,22 @@ class Config
 
     #[ORM\Column(options: ['default' => true])]
     private ?bool $featureAssignResponsibleClownAsFirstClown = null;
+
+    #[ORM\Column(options: ['default' => 100])]
+    #[Assert\Range(min: 0, max: 1000)]
+    private ?int $pointsPerMissingPerson = null;
+
+    #[ORM\Column(options: ['default' => 1])]
+    #[Assert\Range(min: 0, max: 1000)]
+    private ?int $pointsPerMaybePerson = null;
+
+    #[ORM\Column(options: ['default' => 2])]
+    #[Assert\Range(min: 0, max: 1000)]
+    private ?int $pointsPerTargetShifts = null;
+
+    #[ORM\Column(options: ['default' => 10])]
+    #[Assert\Range(min: 0, max: 1000)]
+    private ?int $pointsPerMaxPerWeek = null;
 
     public function getId(): ?int
     {
@@ -143,6 +160,54 @@ class Config
     public function setFeatureAssignResponsibleClownAsFirstClownActive(bool $featureAssignResponsibleClownAsFirstClown): static
     {
         $this->featureAssignResponsibleClownAsFirstClown = $featureAssignResponsibleClownAsFirstClown;
+
+        return $this;
+    }
+
+    public function getPointsPerMissingPerson(): ?int
+    {
+        return $this->pointsPerMissingPerson;
+    }
+
+    public function setPointsPerMissingPerson(int $pointsPerMissingPerson): static
+    {
+        $this->pointsPerMissingPerson = $pointsPerMissingPerson;
+
+        return $this;
+    }
+
+    public function getPointsPerMaybePerson(): ?int
+    {
+        return $this->pointsPerMaybePerson;
+    }
+
+    public function setPointsPerMaybePerson(int $pointsPerMaybePerson): static
+    {
+        $this->pointsPerMaybePerson = $pointsPerMaybePerson;
+
+        return $this;
+    }
+
+    public function getPointsPerTargetShifts(): ?int
+    {
+        return $this->pointsPerTargetShifts;
+    }
+
+    public function setPointsPerTargetShifts(int $pointsPerTargetShifts): static
+    {
+        $this->pointsPerTargetShifts = $pointsPerTargetShifts;
+
+        return $this;
+    }
+
+    public function getPointsPerMaxPerWeek(): ?int
+    {
+        return $this->pointsPerMaxPerWeek;
+    }
+
+    public function setPointsPerMaxPerWeek(int $pointsPerMaxPerWeek): static
+    {
+        $this->pointsPerMaxPerWeek = $pointsPerMaxPerWeek;
 
         return $this;
     }
