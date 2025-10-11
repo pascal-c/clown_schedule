@@ -136,7 +136,7 @@ class RosterCalculatorGateway
                 'maxShiftsPerMonth' => $clownAvailability->getMaxPlaysMonth(),
                 'maxShiftsPerDay' => $clownAvailability->getMaxPlaysDay(),
                 'maxShiftsPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive() ? $clownAvailability->getSoftMaxPlaysWeek() : null,
-                'targetShifts' => $clownAvailability->getTargetPlays(),
+                'targetShifts' => $clownAvailability->getTargetPlays() ?? 0,
             ],
             'availabilities' => $clownAvailability->getClownAvailabilityTimes()->map(fn (ClownAvailabilityTime $timeSlot): array => $this->serializeTimeSlot($timeSlot))->toArray(),
         ];
