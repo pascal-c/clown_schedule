@@ -14,6 +14,7 @@ use App\Entity\Week;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateHistoryService;
 use App\Service\Scheduler\AvailabilityChecker;
+use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
@@ -27,6 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 final class ClownAssignerTest extends TestCase
 {
     private AvailabilityChecker&MockObject $availabilityChecker;
+    private MaxPlaysReachedChecker&MockObject $maxPlaysReachedChecker;
     private SubstitutionRepository&MockObject $substitutionRepository;
     private EntityManagerInterface&MockObject $entityManager;
     private PlayDateHistoryService&MockObject $playDateHistoryService;
@@ -36,12 +38,14 @@ final class ClownAssignerTest extends TestCase
     public function setUp(): void
     {
         $this->availabilityChecker = $this->createMock(AvailabilityChecker::class);
+        $this->maxPlaysReachedChecker = $this->createMock(MaxPlaysReachedChecker::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->playDateHistoryService = $this->createMock(PlayDateHistoryService::class);
 
         $this->clownAssigner = new ClownAssigner(
             $this->availabilityChecker,
+            $this->maxPlaysReachedChecker,
             $this->substitutionRepository,
             $this->entityManager,
             $this->playDateHistoryService,
@@ -103,7 +107,7 @@ final class ClownAssignerTest extends TestCase
             ->with($playDate, $this->isInstanceOf(ClownAvailability::class))
             ->willReturnOnConsecutiveCalls(...$availableForResults);
 
-        $this->availabilityChecker
+        $this->maxPlaysReachedChecker
             ->method('maxPlaysWeekReached')
             ->willReturnCallback(
                 function (Week $week, ClownAvailability $availability) use ($clownAvailabilities): bool {
@@ -216,7 +220,7 @@ final class ClownAssignerTest extends TestCase
 
                 return $availableOnResults[$count++];
             });
-        $this->availabilityChecker
+        $this->maxPlaysReachedChecker
             ->method('maxPlaysAndSubstitutionsWeekReached')
             ->willReturnCallback(function (Week $week, ClownAvailability $availability) use ($date, $clownAvailabilities, $maxSubstitutionsWeekReached): bool {
                 $this->assertEquals(new Week($date), $week);
@@ -274,7 +278,7 @@ final class ClownAssignerTest extends TestCase
         $this->availabilityChecker->expects($this->exactly(count($clownAvailabilities)))
             ->method('isAvailableForSubstitution')
             ->willReturn(true);
-        $this->availabilityChecker
+        $this->maxPlaysReachedChecker
             ->method('maxPlaysAndSubstitutionsWeekReached')
             ->willReturn(false);
 
