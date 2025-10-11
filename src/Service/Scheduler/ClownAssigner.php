@@ -9,6 +9,7 @@ use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateHistoryService;
+use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +19,7 @@ class ClownAssigner
 {
     public function __construct(
         private AvailabilityChecker $availabilityChecker,
+        private MaxPlaysReachedChecker $maxPlaysReachedChecker,
         private SubstitutionRepository $substitutionRepository,
         private EntityManagerInterface $entityManager,
         private PlayDateHistoryService $playDateHistoryService,
@@ -65,8 +67,8 @@ class ClownAssigner
             $availableClownAvailabilities,
             function (ClownAvailability $availability1, ClownAvailability $availability2) use ($timeSlotPeriod) {
                 // when maxPlayWeek ist reached, the clown comes last
-                $a1MaxSubstitutionsWeekReached = $this->availabilityChecker->maxPlaysAndSubstitutionsWeekReached($timeSlotPeriod->getWeek(), $availability1);
-                $a2MaxPlaysWeekReached = $this->availabilityChecker->maxPlaysAndSubstitutionsWeekReached($timeSlotPeriod->getWeek(), $availability2);
+                $a1MaxSubstitutionsWeekReached = $this->maxPlaysReachedChecker->maxPlaysAndSubstitutionsWeekReached($timeSlotPeriod->getWeek(), $availability1);
+                $a2MaxPlaysWeekReached = $this->maxPlaysReachedChecker->maxPlaysAndSubstitutionsWeekReached($timeSlotPeriod->getWeek(), $availability2);
                 if ($a1MaxSubstitutionsWeekReached !== $a2MaxPlaysWeekReached) {
                     return $a1MaxSubstitutionsWeekReached ? 1 : -1;
                 }

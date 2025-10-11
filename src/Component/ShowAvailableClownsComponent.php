@@ -7,6 +7,7 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Repository\ClownAvailabilityRepository;
 use App\Service\Scheduler\AvailabilityChecker;
+use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Value\TimeSlotPeriod;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -20,6 +21,7 @@ final class ShowAvailableClownsComponent
     public function __construct(
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private AvailabilityChecker $availabilityChecker,
+        private MaxPlaysReachedChecker $maxPlaysReachedChecker,
     ) {
     }
 
@@ -52,8 +54,8 @@ final class ShowAvailableClownsComponent
 
     private function getType(TimeSlotPeriodInterface $timeSlotPeriod, ClownAvailability $clownAvailability, ?PlayDate $playDate): string
     {
-        if ($this->availabilityChecker->maxPlaysMonthReached($clownAvailability)
-            || $this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)
+        if ($this->maxPlaysReachedChecker->maxPlaysMonthReached($clownAvailability)
+            || $this->maxPlaysReachedChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)
             || (!is_null($playDate) && $this->availabilityChecker->isBlocked($playDate->getVenue(), $clownAvailability->getClown()))) {
             return 'danger';
         } elseif ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
@@ -69,10 +71,10 @@ final class ShowAvailableClownsComponent
         if ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
             $messages[] = 'Clown kann nur wenn\'s sein muss.';
         }
-        if ($this->availabilityChecker->maxPlaysMonthReached($clownAvailability)) {
+        if ($this->maxPlaysReachedChecker->maxPlaysMonthReached($clownAvailability)) {
             $messages[] = 'Maximale Anzahl monatlicher Spiele erreicht!';
         }
-        if ($this->availabilityChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
+        if ($this->maxPlaysReachedChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
             $messages[] = 'Maximale Anzahl täglicher Spiele erreicht!';
         }
         if (!is_null($playDate) && $this->availabilityChecker->isBlocked($playDate->getVenue(), $clownAvailability->getClown())) {

@@ -5,22 +5,19 @@ namespace App\Service\Scheduler;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
-use App\Entity\Substitution;
 use App\Entity\Venue;
-use App\Entity\Week;
-use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
+use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Value\TimeSlot;
 use App\Value\TimeSlotPeriodInterface;
-use DateTimeInterface;
 
 class AvailabilityChecker
 {
     public function __construct(
         private PlayDateRepository $playDateRepository,
         private SubstitutionRepository $substitutionRepository,
-        private ConfigRepository $configRepository,
+        private MaxPlaysReachedChecker $maxPlaysReachedChecker,
     ) {
     }
 
@@ -38,8 +35,8 @@ class AvailabilityChecker
         return
             $this->isAvailableOn($playDate, $clownAvailability)
             && !$this->isBlocked($playDate->getVenue(), $clownAvailability->getClown())
-            && !$this->maxPlaysMonthReached($clownAvailability)
-            && !$this->maxPlaysDayReached($playDate->getDate(), $clownAvailability)
+            && !$this->maxPlaysReachedChecker->maxPlaysMonthReached($clownAvailability)
+            && !$this->maxPlaysReachedChecker->maxPlaysDayReached($playDate->getDate(), $clownAvailability)
             && !$this->onlyMen($playDate, $clownAvailability)
         ;
     }
@@ -48,59 +45,9 @@ class AvailabilityChecker
     {
         return
             $this->isAvailableOn($timeSlotPeriod, $clownAvailability)
-            && !$this->maxSubstitutionsMonthReached($clownAvailability)
+            && !$this->maxPlaysReachedChecker->maxSubstitutionsMonthReached($clownAvailability)
+            && !$this->maxPlaysReachedChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)
         ;
-    }
-
-    public function maxPlaysMonthReached(ClownAvailability $clownAvailability)
-    {
-        return $clownAvailability->getCalculatedPlaysMonth() >= $clownAvailability->getMaxPlaysMonth();
-    }
-
-    public function maxSubstitutionsMonthReached(ClownAvailability $clownAvailability)
-    {
-        return $clownAvailability->getCalculatedSubstitutions() >= $clownAvailability->getCalculatedPlaysMonth();
-    }
-
-    public function maxPlaysWeekReached(Week $week, ClownAvailability $clownAvailability): bool
-    {
-        $softMaxPlaysWeek = $clownAvailability->getSoftMaxPlaysWeek();
-        if (is_null($softMaxPlaysWeek) || !$this->configRepository->isFeatureMaxPerWeekActive()) {
-            return false;
-        }
-
-        return $this->playDateRepository->countByClownAvailabilityAndWeek($clownAvailability, $week) >= $softMaxPlaysWeek;
-    }
-
-    public function maxPlaysAndSubstitutionsWeekReached(Week $week, ClownAvailability $clownAvailability): bool
-    {
-        $softMaxPlaysAndSubstitutionsWeek = $clownAvailability->getSoftMaxPlaysAndSubstitutionsWeek();
-        if (is_null($softMaxPlaysAndSubstitutionsWeek)  || !$this->configRepository->isFeatureMaxPerWeekActive()) {
-            return false;
-        }
-
-        $substitutions = $this->substitutionRepository->byMonth($clownAvailability->getMonth());
-        $substitutionsSameWeek = array_filter(
-            $substitutions,
-            fn (Substitution $substitution) => $week == $substitution->getWeek()
-                && $substitution->getSubstitutionClown() === $clownAvailability->getClown()
-        );
-
-        $countPlayDatesSameWeek = $this->playDateRepository->countByClownAvailabilityAndWeek($clownAvailability, $week);
-
-        return count($substitutionsSameWeek) + $countPlayDatesSameWeek >= $softMaxPlaysAndSubstitutionsWeek;
-    }
-
-    public function maxPlaysDayReached(DateTimeInterface $date, ClownAvailability $clownAvailability): bool
-    {
-        $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
-        $playDatesSameDay = array_filter(
-            $playDates,
-            fn ($playDate) => $date == $playDate->getDate()
-                && $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
-        );
-
-        return count($playDatesSameDay) >= $clownAvailability->getMaxPlaysDay();
     }
 
     private function onlyMen(PlayDate $playDate, ClownAvailability $clownAvailability): bool
