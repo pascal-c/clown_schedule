@@ -55,7 +55,7 @@ class DashboardController extends AbstractProtectedController
                 )
             );
         }
-        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && $today != $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
+        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && $today > $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
             $this->addFlash(
                 'warning',
                 sprintf(
