@@ -66,6 +66,12 @@ class Clown
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $privacyPolicyDateTime = null;
 
+    /**
+     * @var Collection<int, ClownVenuePreference>
+     */
+    #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'clown', orphanRemoval: true)]
+    private Collection $clownVenuePreferences;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -73,6 +79,7 @@ class Clown
         $this->substitutionTimeSlots = new ArrayCollection();
         $this->clownAvailabilities = new ArrayCollection();
         $this->blockedVenues = new ArrayCollection();
+        $this->clownVenuePreferences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -332,6 +339,36 @@ class Clown
     public function setPrivacyPolicyDateTime(?DateTimeImmutable $privacyPolicyDateTime): static
     {
         $this->privacyPolicyDateTime = $privacyPolicyDateTime;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClownVenuePreference>
+     */
+    public function getClownVenuePreferences(): Collection
+    {
+        return $this->clownVenuePreferences;
+    }
+
+    public function addClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
+    {
+        if (!$this->clownVenuePreferences->contains($clownVenuePreference)) {
+            $this->clownVenuePreferences->add($clownVenuePreference);
+            $clownVenuePreference->setClown($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
+    {
+        if ($this->clownVenuePreferences->removeElement($clownVenuePreference)) {
+            // set the owning side to null (unless already changed)
+            if ($clownVenuePreference->getClown() === $this) {
+                $clownVenuePreference->setClown(null);
+            }
+        }
 
         return $this;
     }
