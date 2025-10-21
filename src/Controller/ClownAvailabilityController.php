@@ -46,7 +46,6 @@ class ClownAvailabilityController extends AbstractProtectedController
         $clowns = $this->clownRepository->all();
 
         return $this->render('clown_availability/index.html.twig', [
-            'active' => 'availability',
             'clowns' => $clowns,
             'month' => $month,
             'schedule' => $this->scheduleViewController->getSchedule($month),
@@ -72,7 +71,6 @@ class ClownAvailabilityController extends AbstractProtectedController
         }
 
         return $this->render('clown_availability/show.html.twig', [
-            'active' => 'availability',
             'clownAvailability' => $clownAvailability,
             'clown' => $clown,
             'month' => $month,
@@ -106,7 +104,6 @@ class ClownAvailabilityController extends AbstractProtectedController
         }
 
         return $this->render('clown_availability/form.html.twig', [
-            'active' => 'availability',
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
@@ -168,7 +165,6 @@ class ClownAvailabilityController extends AbstractProtectedController
         }
 
         return $this->render('clown_availability/form.html.twig', [
-            'active' => 'availability',
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
@@ -199,5 +195,10 @@ class ClownAvailabilityController extends AbstractProtectedController
         $this->addFlash('warning', 'Speichern fehlgeschlagen! Bitte nochmal versuchen!');
 
         return $this->redirectToRoute('clown_availability_edit', ['clownId' => $clown->getId(), 'monthId' => $month->getKey()]);
+    }
+
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
+    {
+        return parent::render($view, array_merge($parameters, ['active' => 'clown_constraints']), $response);
     }
 }
