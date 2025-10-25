@@ -89,6 +89,12 @@ class Venue
     #[ORM\OneToMany(targetEntity: RecurringDate::class, mappedBy: 'venue')]
     private Collection $recurringDates;
 
+    /**
+     * @var Collection<int, ClownVenuePreference>
+     */
+    #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'venue', orphanRemoval: true)]
+    private Collection $clownVenuePreferences;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -97,6 +103,7 @@ class Venue
         $this->fees = new ArrayCollection();
         $this->contacts = new ArrayCollection();
         $this->recurringDates = new ArrayCollection();
+        $this->clownVenuePreferences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -434,6 +441,36 @@ class Venue
             // set the owning side to null (unless already changed)
             if ($recurringDate->getVenue() === $this) {
                 $recurringDate->setVenue(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClownVenuePreference>
+     */
+    public function getClownVenuePreferences(): Collection
+    {
+        return $this->clownVenuePreferences;
+    }
+
+    public function addClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
+    {
+        if (!$this->clownVenuePreferences->contains($clownVenuePreference)) {
+            $this->clownVenuePreferences->add($clownVenuePreference);
+            $clownVenuePreference->setVenue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
+    {
+        if ($this->clownVenuePreferences->removeElement($clownVenuePreference)) {
+            // set the owning side to null (unless already changed)
+            if ($clownVenuePreference->getVenue() === $this) {
+                $clownVenuePreference->setVenue(null);
             }
         }
 
