@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ClownVenuePreferenceRepository;
+use App\Value\Preference;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClownVenuePreferenceRepository::class)]
+#[ORM\Entity]
+#[ORM\UniqueConstraint(name: 'clown_venue_index', fields: ['clown', 'venue'])]
 class ClownVenuePreference
 {
     #[ORM\Id]
@@ -53,14 +54,14 @@ class ClownVenuePreference
         return $this;
     }
 
-    public function getPreference(): ?string
+    public function getPreference(): Preference
     {
-        return $this->preference;
+        return Preference::from($this->preference);
     }
 
-    public function setPreference(string $preference): static
+    public function setPreference(Preference $preference): static
     {
-        $this->preference = $preference;
+        $this->preference = $preference->value;
 
         return $this;
     }

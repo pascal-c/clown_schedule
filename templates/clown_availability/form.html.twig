@@ -4,8 +4,8 @@
 
 {% block content %}
     {{ component('clown_constraints_navigation', { active: 'wishes'}) }}
-    {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
     <h4 class="pt-3">Wünsche {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
 
     {{ form_start(form) }}
         {{ form_rest(form) }}

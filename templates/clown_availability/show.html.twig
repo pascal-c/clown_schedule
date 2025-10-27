@@ -4,9 +4,10 @@
 
 {% block content %}
     {{ component('clown_constraints_navigation', { active: 'wishes'}) }}
-    {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
     <h4 class="pt-3">Wünsche {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    <a href="{{ path('clown_availability_index') }}" class="btn btn-light mb-3">alle anzeigen</a>
 
+    {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
     <div class="container">
         <div class="row">
             <div class="col-sm-6">

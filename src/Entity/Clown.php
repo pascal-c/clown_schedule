@@ -69,7 +69,7 @@ class Clown
     /**
      * @var Collection<int, ClownVenuePreference>
      */
-    #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'clown', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'clown', orphanRemoval: true, cascade: ['persist'])]
     private Collection $clownVenuePreferences;
 
     public function __construct()
@@ -349,6 +349,17 @@ class Clown
     public function getClownVenuePreferences(): Collection
     {
         return $this->clownVenuePreferences;
+    }
+
+    public function getClownVenuePreferenceFor(Venue $venue): ?ClownVenuePreference
+    {
+        foreach ($this->clownVenuePreferences as $clownVenuePreference) {
+            if ($clownVenuePreference->getVenue() === $venue) {
+                return $clownVenuePreference;
+            }
+        }
+
+        return  null;
     }
 
     public function addClownVenuePreference(ClownVenuePreference $clownVenuePreference): static

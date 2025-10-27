@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Service\SessionService;
@@ -17,11 +19,31 @@ class ClownConstraintsController extends AbstractProtectedController
     {
         $activeKey = $this->sessionService->getClownConstraintsNavigationKey();
         $route = match ($activeKey) {
-            'wishes' => 'clown_availability_index',
+            'wishes' => 'wishes_index',
             'venue_preferences' => 'clown_venue_preferences_index',
-            default => 'clown_availability_index',
+            default => 'wishes_index',
         };
 
-        return $this->redirectToRoute($route);
+        return $this->redirectToRoute($route, ['clownId' => $this->getCurrentClown()->getId()]);
+    }
+
+    #[Route('/clown-constraints/venue-preferences', name: 'clown_venue_preferences_index', methods: ['GET'])]
+    public function clownVenuePreferences(): Response
+    {
+        $clownId = $this->sessionService->getActiveClownId() ?? ($this->getCurrentClown()->isAdmin() ? null : $this->getCurrentClown()->getId());
+
+        return $this->redirectToRoute('clown_venue_preferences_show', ['clownId' => $clownId]);
+    }
+
+    #[Route('/clown-constraints/wishes', name: 'wishes_index', methods: ['GET'])]
+    public function wishes(): Response
+    {
+        $clownId = $this->sessionService->getActiveClownId() ?? ($this->getCurrentClown()->isAdmin() ? null : $this->getCurrentClown()->getId());
+
+        if ($clownId) {
+            return $this->redirectToRoute('clown_availability_show', ['clownId' => $clownId]);
+        }
+
+        return $this->redirectToRoute('clown_availability_index');
     }
 }

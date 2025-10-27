@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\Preference;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -465,15 +466,19 @@ class Venue
         return $this;
     }
 
-    public function removeClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
+    public function getAveragePreference(): Preference
     {
-        if ($this->clownVenuePreferences->removeElement($clownVenuePreference)) {
-            // set the owning side to null (unless already changed)
-            if ($clownVenuePreference->getVenue() === $this) {
-                $clownVenuePreference->setVenue(null);
-            }
+        if ($this->clownVenuePreferences->isEmpty()) {
+            return Preference::OK;
         }
 
-        return $this;
+        $preferencesInPoints = $this->clownVenuePreferences->map(
+            fn (ClownVenuePreference $preference): int => $preference->getPreference()->int()
+        );
+        $totalPoints = array_sum($preferencesInPoints->toArray());
+
+        $averagePoints = intval(round($totalPoints / $preferencesInPoints->count()));
+
+        return Preference::fromInt($averagePoints);
     }
 }
