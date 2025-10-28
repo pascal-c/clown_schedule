@@ -53,6 +53,26 @@ class ConfigCalculationFormType extends AbstractType
                 ->add('pointsPerMaxPerWeek', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird',
+                ])
+                ->add('pointsPerPreferenceWorst', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spielortpräferenz "wenn\'s gar nicht anders geht"',
+                ])
+                ->add('pointsPerPreferenceWorse', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spielortpräferenz "na gut"',
+                ])
+                ->add('pointsPerPreferenceOk', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spielortpräferenz "ok"',
+                ])
+                ->add('pointsPerPreferenceBetter', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spielortpräferenz "sehr gerne"',
+                ])
+                ->add('pointsPerPreferenceBest', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro Spielortpräferenz "au ja, unbedingt!"',
                 ]);
         }
 
