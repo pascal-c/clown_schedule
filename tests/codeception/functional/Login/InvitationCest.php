@@ -23,7 +23,7 @@ class InvitationCest extends AbstractCest
 
     protected function invite(AdminTester $I)
     {
-        Functional::$now = '2124-01-15';
+        Functional::$now = '2024-01-15';
 
         $I->loginAsAdmin();
         $I->stopFollowingRedirects();
@@ -95,6 +95,6 @@ class InvitationCest extends AbstractCest
         $I->loginAsAdmin();
         $I->click('Clowns', 'nav');
         $I->click('Erica');
-        $I->see('Erica hat die Datenschutzerklärung am 15.01.2124 akzeptiert.');
+        $I->see('Erica hat die Datenschutzerklärung am 15.01.2024 akzeptiert.');
     }
 }

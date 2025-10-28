@@ -18,7 +18,7 @@ class RegisterForTrainingCest extends AbstractCest
     {
         parent::_before($I);
 
-        $date = new DateTimeImmutable('2124-01-15');
+        $date = new DateTimeImmutable('2036-01-15');
         $daytime = TimeSlotPeriodInterface::PM;
 
         $this->playDateId = $this->playDateFactory->create(
@@ -35,7 +35,7 @@ class RegisterForTrainingCest extends AbstractCest
 
     public function test(FunctionalTester $I): void
     {
-        Functional::$now = '2124-01-15';
+        Functional::$now = '2036-01-15';
 
         $I->amGoingTo('register myself for the training');
         $I->loginAsClown('Emilio');
@@ -52,7 +52,7 @@ class RegisterForTrainingCest extends AbstractCest
 
     public function testWithPastPlayDate(FunctionalTester $I): void
     {
-        Functional::$now = '2124-01-16';
+        Functional::$now = '2036-01-16';
 
         $I->amGoingTo('register myself for the training');
         $I->loginAsClown('Emilio');

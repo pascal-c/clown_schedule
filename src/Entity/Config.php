@@ -53,6 +53,21 @@ class Config
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMaxPerWeek = null;
 
+    #[ORM\Column(options: ['default' => 10])]
+    private int $pointsPerPreferenceWorst;
+
+    #[ORM\Column(options: ['default' => 4])]
+    private int $pointsPerPreferenceWorse;
+
+    #[ORM\Column(options: ['default' => 2])]
+    private int $pointsPerPreferenceOk;
+
+    #[ORM\Column(options: ['default' => 1])]
+    private int $pointsPerPreferenceBetter;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $pointsPerPreferenceBest;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -208,6 +223,66 @@ class Config
     public function setPointsPerMaxPerWeek(int $pointsPerMaxPerWeek): static
     {
         $this->pointsPerMaxPerWeek = $pointsPerMaxPerWeek;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceWorst(): ?int
+    {
+        return $this->pointsPerPreferenceWorst;
+    }
+
+    public function setPointsPerPreferenceWorst(int $pointsPerPreferenceWorst): static
+    {
+        $this->pointsPerPreferenceWorst = $pointsPerPreferenceWorst;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceWorse(): ?int
+    {
+        return $this->pointsPerPreferenceWorse;
+    }
+
+    public function setPointsPerPreferenceWorse(int $pointsPerPreferenceWorse): static
+    {
+        $this->pointsPerPreferenceWorse = $pointsPerPreferenceWorse;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceOk(): ?int
+    {
+        return $this->pointsPerPreferenceOk;
+    }
+
+    public function setPointsPerPreferenceOk(int $pointsPerPreferenceOk): static
+    {
+        $this->pointsPerPreferenceOk = $pointsPerPreferenceOk;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceBetter(): ?int
+    {
+        return $this->pointsPerPreferenceBetter;
+    }
+
+    public function setPointsPerPreferenceBetter(int $pointsPerPreferenceBetter): static
+    {
+        $this->pointsPerPreferenceBetter = $pointsPerPreferenceBetter;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceBest(): ?int
+    {
+        return $this->pointsPerPreferenceBest;
+    }
+
+    public function setPointsPerPreferenceBest(int $pointsPerPreferenceBest): static
+    {
+        $this->pointsPerPreferenceBest = $pointsPerPreferenceBest;
 
         return $this;
     }

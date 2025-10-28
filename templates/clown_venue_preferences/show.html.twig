@@ -1,0 +1,58 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Spielort Präferenzen{% endblock %}
+
+{% block content %}
+    {{ component('clown_constraints_navigation', { active: 'venue_preferences'}) }}
+
+    <h4 class="pt-3">Spielort Präferenzen {{ showAll ? '' : clowns[0].name }}
+    {% if currentClown.active and not showAll and currentClown==clowns[0] %}
+        {{ include('_shared/_edit_link.html.twig', {url: path('clown_venue_preferences_edit', {clownId: clowns[0].id}), title: "Präferenzen bearbeiten"}) }}
+    {% endif %}
+    </h4>
+
+    {% if showAll %}
+        <a href="{{ path('clown_venue_preferences_show', {clownId: currentClown.id}) }}" class="btn btn-light mb-3">nur meine anzeigen</a>
+    {% else %}
+        <a href="{{ path('clown_venue_preferences_show') }}" class="btn btn-light mb-3">alle anzeigen</a>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table">
+            <caption>Legende: <br />
+                -- nur wenn's gar nicht anders geht <br />
+                - na gut <br />
+                o ok <br />
+                + sehr gerne <br />
+                ++ au ja, unbedingt! <br />
+            </caption>
+            <thead>
+                <tr>
+                    <th>Spielort</th>
+                    {% for clown in clowns %}
+                        <th>
+                            <a href="{{ path('clown_venue_preferences_show', {clownId: clown.id}) }}">{{ clown.name[:7] }}</a>
+                        </th>
+                    {% endfor %}
+                    {% if showAll %}
+                        <th>Ø</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for venue in venues %}
+                    <tr>
+                        <td>{{ venue.name }}</td>
+                        {% for clown in clowns %}
+                            <td>
+                                {{ clown.clownVenuePreferenceFor(venue) ? clown.clownVenuePreferenceFor(venue).preference.short : '?' }}
+                            </td>
+                        {% endfor %}
+                        {% if showAll %}
+                            <td>{{ venue.averagePreference.short }}</td>
+                        {% endif %}
+                    </tr>    
+                {% endfor %}    
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

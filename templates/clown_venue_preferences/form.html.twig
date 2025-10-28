@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    {{ component('clown_constraints_navigation', { active: 'venue_preferences'}) }}
+    
+    <h4 class="pt-3">Spielortpräferenzen für {{ clown.name }} festlegen</h4>
+    
+    {{ form_start(form) }}
+    {% for venuePreference in clown.clownVenuePreferences %}
+        <fieldset>
+            <div class="row align-items-center">
+                <div class="col-2">{{ form_label(form['clownVenuePreferences' ~ venuePreference.id])}}</div>
+                <div class="col-10">{{ form_widget(form['clownVenuePreferences' ~ venuePreference.id])}}</div>
+            </div>
+        </fieldset>
+        <hr />
+    {% endfor %}
+
+    {{ form_rest(form)}}
+{% endblock %}
