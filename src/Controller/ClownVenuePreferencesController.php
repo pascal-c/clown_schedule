@@ -29,7 +29,7 @@ class ClownVenuePreferencesController extends AbstractProtectedController
     }
 
     #[Route('/clown-venue-preferences/{clownId}', name: 'clown_venue_preferences_show', methods: ['GET'])]
-    public function show(?int $clownId = null): Response
+    public function indexAndShow(?int $clownId = null): Response
     {
         $this->sessionService->setActiveClownId($clownId);
         $clowns = $clownId ? [$this->clownRepository->find($clownId)] : $this->clownRepository->allActive();

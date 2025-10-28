@@ -371,16 +371,4 @@ class Clown
 
         return $this;
     }
-
-    public function removeClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
-    {
-        if ($this->clownVenuePreferences->removeElement($clownVenuePreference)) {
-            // set the owning side to null (unless already changed)
-            if ($clownVenuePreference->getClown() === $this) {
-                $clownVenuePreference->setClown(null);
-            }
-        }
-
-        return $this;
-    }
 }

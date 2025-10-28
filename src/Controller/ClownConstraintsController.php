@@ -24,7 +24,7 @@ class ClownConstraintsController extends AbstractProtectedController
             default => 'wishes_index',
         };
 
-        return $this->redirectToRoute($route, ['clownId' => $this->getCurrentClown()->getId()]);
+        return $this->redirectToRoute($route);
     }
 
     #[Route('/clown-constraints/venue-preferences', name: 'clown_venue_preferences_index', methods: ['GET'])]
