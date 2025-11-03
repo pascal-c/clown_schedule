@@ -37,19 +37,19 @@ class Config
     #[ORM\Column(options: ['default' => true])]
     private ?bool $featureAssignResponsibleClownAsFirstClown = null;
 
-    #[ORM\Column(options: ['default' => 100])]
+    #[ORM\Column(options: ['default' => 1000])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMissingPerson = null;
 
-    #[ORM\Column(options: ['default' => 1])]
+    #[ORM\Column(options: ['default' => 10])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMaybePerson = null;
 
-    #[ORM\Column(options: ['default' => 2])]
+    #[ORM\Column(options: ['default' => 20])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerTargetShifts = null;
 
-    #[ORM\Column(options: ['default' => 10])]
+    #[ORM\Column(options: ['default' => 100])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMaxPerWeek = null;
 
