@@ -31,4 +31,9 @@ class VenueRepository extends AbstractRepository
             ['name' => 'ASC']
         );
     }
+
+    public function all(): array
+    {
+        return $this->doctrineRepository->findBy([], ['name' => 'ASC']);
+    }
 }

@@ -7,10 +7,13 @@ namespace App\Gateway;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
+use App\Entity\ClownVenuePreference;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
 use App\Gateway\RosterCalculator\RosterResult;
 use App\Repository\ConfigRepository;
+use App\Repository\VenueRepository;
+use App\Value\Preference;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -21,6 +24,7 @@ class RosterCalculatorGateway
         private HttpClientInterface $httpClient,
         private ConfigRepository $configRepository,
         private ParameterBagInterface $params,
+        private VenueRepository $venueRepository,
     ) {
     }
 
@@ -99,13 +103,7 @@ class RosterCalculatorGateway
     private function serialize(array $playDates, array $clownAvailabilities): array
     {
         $config = $this->configRepository->find();
-        $venues = [];
-        foreach ($playDates as $playDate) {
-            $venue = $playDate->getVenue();
-            if ($venue && !in_array($venue, $venues, true)) {
-                $venues[] = $venue;
-            }
-        }
+        $venues = $this->venueRepository->all();
 
         return [
             'locations' => array_map(
@@ -137,6 +135,13 @@ class RosterCalculatorGateway
                 'maxShiftsPerDay' => $clownAvailability->getMaxPlaysDay(),
                 'maxShiftsPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive() ? $clownAvailability->getSoftMaxPlaysWeek() : null,
                 'targetShifts' => $clownAvailability->getTargetPlays() ?? 0,
+                'locationPreferences' => $clownAvailability->getClown()->getClownVenuePreferences()->map(
+                    fn (ClownVenuePreference $preference): array => [
+                        'locationId' => strval($preference->getVenue()->getId()),
+                        'points' => $this->configRepository->getPointsForPreference($preference->getPreference()),
+                    ]
+                )->toArray(),
+                'locationPreferenceDefaultPoints' => $this->configRepository->getPointsForPreference(Preference::OK),
             ],
             'availabilities' => $clownAvailability->getClownAvailabilityTimes()->map(fn (ClownAvailabilityTime $timeSlot): array => $this->serializeTimeSlot($timeSlot))->toArray(),
         ];
