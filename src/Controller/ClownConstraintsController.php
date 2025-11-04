@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\ConfigRepository;
 use App\Service\SessionService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ClownConstraintsController extends AbstractProtectedController
 {
-    public function __construct(private SessionService $sessionService)
+    public function __construct(private SessionService $sessionService, private ConfigRepository $configRepository)
     {
     }
 
@@ -18,9 +19,9 @@ class ClownConstraintsController extends AbstractProtectedController
     public function index(): Response
     {
         $activeKey = $this->sessionService->getClownConstraintsNavigationKey();
-        $route = match ($activeKey) {
-            'wishes' => 'wishes_index',
-            'venue_preferences' => 'clown_venue_preferences_index',
+        $route = match (true) {
+            'wishes' === $activeKey => 'wishes_index',
+            'venue_preferences' === $activeKey && $this->configRepository->isFeatureClownVenuePreferencesActive() => 'clown_venue_preferences_index',
             default => 'wishes_index',
         };
 

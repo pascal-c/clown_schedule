@@ -80,6 +80,7 @@ class ClownAvailabilityController extends AbstractProtectedController
             'month' => $month,
             'schedule' => $schedule,
             'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
+            'showVenuePreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive(),
         ]);
     }
 

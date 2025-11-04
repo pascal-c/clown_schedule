@@ -13,6 +13,9 @@ class clownVenuePreferencesCest extends AbstractCest
     public function _before(FunctionalTester $I): void
     {
         parent::_before($I);
+
+        $this->configFactory->update(featureClownVenuePreferencesActive: true);
+
         $venue1 = $this->venueFactory->create(name: 'Kino 1');
         $venue2 = $this->venueFactory->create(name: 'Theater 2');
         $this->clownFactory->create(name: 'Emily', clownVenuePreferences: [

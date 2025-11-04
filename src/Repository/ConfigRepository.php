@@ -29,6 +29,11 @@ class ConfigRepository extends AbstractRepository
         return $this->find()->isFeatureMaxPerWeekActive();
     }
 
+    public function isFeatureClownVenuePreferencesActive(): bool
+    {
+        return $this->find()->isFeatureClownVenuePreferencesActive();
+    }
+
     public function find(): Config
     {
         return $this->doctrineRepository->find(1);

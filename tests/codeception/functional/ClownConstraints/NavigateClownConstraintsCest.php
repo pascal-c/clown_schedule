@@ -20,6 +20,12 @@ class NavigateClownConstraintsCest extends AbstractCest
         Functional::$now = '2024-12-30';
         $I->loginAsAdmin();
         $I->click('Wünsche', '.nav');
+
+        // when feature is disabled the menu entry is not shown
+        $I->dontSee('Spielortpräferenzen', '.nav');
+        $this->configFactory->update(featureClownVenuePreferencesActive: true);
+        $I->click('Wünsche', '.nav');
+
         $I->see('Wünsche und Verfügbarkeiten', '.nav .nav-link.active');
         $I->see('Wünsche Dez. 2024 ', 'h4'); // this is the index page of wishes
 
@@ -34,6 +40,7 @@ class NavigateClownConstraintsCest extends AbstractCest
 
     public function navigateAsClown(FunctionalTester $I): void
     {
+        $this->configFactory->update(featureClownVenuePreferencesActive: true);
         Functional::$now = '2024-12-30';
 
         // when logged in as clown I land on detail wishes page for current clown

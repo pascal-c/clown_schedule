@@ -23,6 +23,7 @@ class ConfigCalculationFormType extends AbstractType
             ->add('useCalculation', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Automatische Berechnung',
+                'label_attr' => ['class' => 'checkbox-switch'],
                 'help' => 'Wenn aktiviert, kann der Spielplan automatisch unter Berücksichtigung der Clownswünsche berechnet werden',
             ]);
 
@@ -31,11 +32,13 @@ class ConfigCalculationFormType extends AbstractType
                 ->add('featureMaxPerWeekActive', CheckboxType::class, [
                     'required' => false,
                     'label' => 'Feature “Max. Spielanzahl pro Woche”',
+                    'label_attr' => ['class' => 'checkbox-switch'],
                     'help' => 'Clowns können sich eine maximale Spielanzahl pro Woche wünschen. Dies wird bei der Berechnung berücksichtigt.',
                 ])
                 ->add('featureAssignResponsibleClownAsFirstClownActive', CheckboxType::class, [
                     'required' => false,
                     'label' => 'Verantwortlichen Clown als 1. Clown zuordnen',
+                    'label_attr' => ['class' => 'checkbox-switch'],
                     'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte',
                 ])
                 ->add('pointsPerMissingPerson', IntegerType::class, [
@@ -54,25 +57,50 @@ class ConfigCalculationFormType extends AbstractType
                     'required' => true,
                     'label' => 'Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird',
                 ])
+                ->add('featureClownVenuePreferencesActive', CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'Feature “Spielortpräferenzen der Clowns”',
+                    'help' => 'Clowns können Spielortpräferenzen angeben. Dies wird bei der Berechnung berücksichtigt.',
+                    'label_attr' => ['class' => 'checkbox-switch'],
+                    'attr' => [
+                        'data-action' => 'toggle-by-checkbox#toggleVisibility',
+                        'data-target' => 'toggle-by-checkbox.input',
+                    ],
+                ])
                 ->add('pointsPerPreferenceWorst', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro Spielortpräferenz "wenn\'s gar nicht anders geht"',
+                    'row_attr' => [
+                        'data-target' => 'toggle-by-checkbox.hideme',
+                    ],
                 ])
                 ->add('pointsPerPreferenceWorse', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro Spielortpräferenz "na gut"',
+                    'row_attr' => [
+                        'data-target' => 'toggle-by-checkbox.hideme',
+                    ],
                 ])
                 ->add('pointsPerPreferenceOk', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro Spielortpräferenz "ok"',
+                    'row_attr' => [
+                        'data-target' => 'toggle-by-checkbox.hideme',
+                    ],
                 ])
                 ->add('pointsPerPreferenceBetter', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro Spielortpräferenz "sehr gerne"',
+                    'row_attr' => [
+                        'data-target' => 'toggle-by-checkbox.hideme',
+                    ],
                 ])
                 ->add('pointsPerPreferenceBest', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro Spielortpräferenz "au ja, unbedingt!"',
+                    'row_attr' => [
+                        'data-target' => 'toggle-by-checkbox.hideme',
+                    ],
                 ]);
         }
 

@@ -68,6 +68,9 @@ class Config
     #[ORM\Column(options: ['default' => 0])]
     private int $pointsPerPreferenceBest;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $featureClownVenuePreferences = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -283,6 +286,18 @@ class Config
     public function setPointsPerPreferenceBest(int $pointsPerPreferenceBest): static
     {
         $this->pointsPerPreferenceBest = $pointsPerPreferenceBest;
+
+        return $this;
+    }
+
+    public function isFeatureClownVenuePreferencesActive(): bool
+    {
+        return $this->featureClownVenuePreferences;
+    }
+
+    public function setFeatureClownVenuePreferencesActive(bool $featureClownVenuePreferences): static
+    {
+        $this->featureClownVenuePreferences = $featureClownVenuePreferences;
 
         return $this;
     }

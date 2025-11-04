@@ -135,16 +135,21 @@ class RosterCalculatorGateway
                 'maxShiftsPerDay' => $clownAvailability->getMaxPlaysDay(),
                 'maxShiftsPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive() ? $clownAvailability->getSoftMaxPlaysWeek() : null,
                 'targetShifts' => $clownAvailability->getTargetPlays() ?? 0,
-                'locationPreferences' => $clownAvailability->getClown()->getClownVenuePreferences()->map(
-                    fn (ClownVenuePreference $preference): array => [
-                        'locationId' => strval($preference->getVenue()->getId()),
-                        'points' => $this->configRepository->getPointsForPreference($preference->getPreference()),
-                    ]
-                )->toArray(),
-                'locationPreferenceDefaultPoints' => $this->configRepository->getPointsForPreference(Preference::OK),
+                'locationPreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive() ? $this->serializeClownVenuePreferences($clownAvailability) : [],
+                'locationPreferenceDefaultPoints' => $this->configRepository->isFeatureClownVenuePreferencesActive() ? $this->configRepository->getPointsForPreference(Preference::OK) : 0,
             ],
             'availabilities' => $clownAvailability->getClownAvailabilityTimes()->map(fn (ClownAvailabilityTime $timeSlot): array => $this->serializeTimeSlot($timeSlot))->toArray(),
         ];
+    }
+
+    private function serializeClownVenuePreferences(ClownAvailability $clownAvailability): array
+    {
+        return $clownAvailability->getClown()->getClownVenuePreferences()->map(
+            fn (ClownVenuePreference $preference): array => [
+                'locationId' => strval($preference->getVenue()->getId()),
+                'points' => $this->configRepository->getPointsForPreference($preference->getPreference()),
+            ]
+        )->toArray();
     }
 
     private function serializeTimeSlot(ClownAvailabilityTime $timeSlot): array

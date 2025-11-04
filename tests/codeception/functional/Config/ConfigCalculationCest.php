@@ -40,6 +40,7 @@ class ConfigCalculationCest extends AbstractCest
     public function featureMaxPlaysPerWeek(AdminTester $I): void
     {
         $I->loginAsAdmin();
+
         $I->click('Einstellungen');
         $I->click('Berechnung', '.nav');
 
@@ -60,6 +61,35 @@ class ConfigCalculationCest extends AbstractCest
         $I->uncheckOption('Feature “Max. Spielanzahl pro Woche”');
         $I->click('speichern');
         $I->dontSeeCheckboxIsChecked('Feature “Max. Spielanzahl pro Woche”');
+    }
+
+    public function featureVenuePreferences(AdminTester $I): void
+    {
+        $I->loginAsAdmin();
+
+        // the feature is disabled by default
+        $I->click('Wünsche', '.nav');
+        $I->dontSee('Spielortpräferenzen', '.nav');
+
+        $I->click('Einstellungen');
+        $I->click('Berechnung', '.nav');
+
+        $I->checkOption('Feature “Spielortpräferenzen der Clowns”');
+        $I->click('speichern');
+
+        $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
+        $I->seeCheckboxIsChecked('Feature “Spielortpräferenzen der Clowns”');
+
+        $I->amGoingTo('make sure that the feature is really enabled');
+        $I->click('Wünsche');
+        $I->see('Spielortpräferenzen', '.nav');
+
+        $I->amGoingTo('disable the feature again');
+        $I->click('Einstellungen');
+        $I->click('Berechnung', '.nav');
+        $I->uncheckOption('Feature “Spielortpräferenzen der Clowns”');
+        $I->click('speichern');
+        $I->dontSeeCheckboxIsChecked('Feature “Spielortpräferenzen der Clowns”');
     }
 
     public function ratingPoints(AdminTester $I): void
