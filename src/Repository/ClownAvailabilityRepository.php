@@ -23,6 +23,7 @@ class ClownAvailabilityRepository extends AbstractRepository
     {
         return $this->doctrineRepository->createQueryBuilder('ca', $indexedByClown ? 'ca.clown' : null)
             ->leftJoin('ca.clown', 'clown')
+            ->leftJoin('clown.clownVenuePreferences', 'cvp')
             ->where('ca.month = :month')
             ->setParameter('month', $month->getKey())
             ->getQuery()

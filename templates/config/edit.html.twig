@@ -5,5 +5,7 @@
 
     {{ include('config/_section_navigation.html.twig') }}
 
-    {{ form(form) }}
+    <div data-controller="toggle-by-checkbox">
+        {{ form(form) }}
+    </div>
 {% endblock %}

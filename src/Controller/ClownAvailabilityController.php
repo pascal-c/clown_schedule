@@ -14,6 +14,7 @@ use App\Repository\ClownRepository;
 use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
+use App\Service\SessionService;
 use App\ViewController\ScheduleViewController;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -35,6 +36,7 @@ class ClownAvailabilityController extends AbstractProtectedController
         private PlayDateRepository $playDateRepository,
         private ScheduleViewController $scheduleViewController,
         private ConfigRepository $configRepository,
+        private SessionService $sessionService,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -42,11 +44,11 @@ class ClownAvailabilityController extends AbstractProtectedController
     #[Route('/clowns/availabilities/{monthId}', name: 'clown_availability_index', methods: ['GET'])]
     public function index(SessionInterface $session, ?string $monthId = null): Response
     {
+        $this->sessionService->setActiveClownId(null);
         $month = $this->monthRepository->find($session, $monthId);
         $clowns = $this->clownRepository->all();
 
         return $this->render('clown_availability/index.html.twig', [
-            'active' => 'availability',
             'clowns' => $clowns,
             'month' => $month,
             'schedule' => $this->scheduleViewController->getSchedule($month),
@@ -56,6 +58,7 @@ class ClownAvailabilityController extends AbstractProtectedController
     #[Route('/clowns/{clownId}/availabilities/{monthId}', name: 'clown_availability_show', methods: ['GET'])]
     public function show(SessionInterface $session, int $clownId, ?string $monthId = null): Response
     {
+        $this->sessionService->setActiveClownId($clownId);
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);
         $clownAvailability = $this->clownAvailabilityRepository->find($month, $clown);
@@ -72,12 +75,12 @@ class ClownAvailabilityController extends AbstractProtectedController
         }
 
         return $this->render('clown_availability/show.html.twig', [
-            'active' => 'availability',
             'clownAvailability' => $clownAvailability,
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
             'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
+            'showVenuePreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive(),
         ]);
     }
 
@@ -106,7 +109,6 @@ class ClownAvailabilityController extends AbstractProtectedController
         }
 
         return $this->render('clown_availability/form.html.twig', [
-            'active' => 'availability',
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
@@ -168,7 +170,6 @@ class ClownAvailabilityController extends AbstractProtectedController
         }
 
         return $this->render('clown_availability/form.html.twig', [
-            'active' => 'availability',
             'clown' => $clown,
             'month' => $month,
             'schedule' => $schedule,
@@ -199,5 +200,12 @@ class ClownAvailabilityController extends AbstractProtectedController
         $this->addFlash('warning', 'Speichern fehlgeschlagen! Bitte nochmal versuchen!');
 
         return $this->redirectToRoute('clown_availability_edit', ['clownId' => $clown->getId(), 'monthId' => $month->getKey()]);
+    }
+
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
+    {
+        $this->sessionService->setClownConstraintsNavigationKey('wishes');
+
+        return parent::render($view, array_merge($parameters, ['active' => 'clown_constraints']), $response);
     }
 }

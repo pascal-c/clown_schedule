@@ -37,21 +37,39 @@ class Config
     #[ORM\Column(options: ['default' => true])]
     private ?bool $featureAssignResponsibleClownAsFirstClown = null;
 
-    #[ORM\Column(options: ['default' => 100])]
+    #[ORM\Column(options: ['default' => 1000])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMissingPerson = null;
 
-    #[ORM\Column(options: ['default' => 1])]
+    #[ORM\Column(options: ['default' => 10])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMaybePerson = null;
 
-    #[ORM\Column(options: ['default' => 2])]
+    #[ORM\Column(options: ['default' => 20])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerTargetShifts = null;
 
-    #[ORM\Column(options: ['default' => 10])]
+    #[ORM\Column(options: ['default' => 100])]
     #[Assert\Range(min: 0, max: 1000)]
     private ?int $pointsPerMaxPerWeek = null;
+
+    #[ORM\Column(options: ['default' => 10])]
+    private int $pointsPerPreferenceWorst;
+
+    #[ORM\Column(options: ['default' => 4])]
+    private int $pointsPerPreferenceWorse;
+
+    #[ORM\Column(options: ['default' => 2])]
+    private int $pointsPerPreferenceOk;
+
+    #[ORM\Column(options: ['default' => 1])]
+    private int $pointsPerPreferenceBetter;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $pointsPerPreferenceBest;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $featureClownVenuePreferences = false;
 
     public function getId(): ?int
     {
@@ -208,6 +226,78 @@ class Config
     public function setPointsPerMaxPerWeek(int $pointsPerMaxPerWeek): static
     {
         $this->pointsPerMaxPerWeek = $pointsPerMaxPerWeek;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceWorst(): ?int
+    {
+        return $this->pointsPerPreferenceWorst;
+    }
+
+    public function setPointsPerPreferenceWorst(int $pointsPerPreferenceWorst): static
+    {
+        $this->pointsPerPreferenceWorst = $pointsPerPreferenceWorst;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceWorse(): ?int
+    {
+        return $this->pointsPerPreferenceWorse;
+    }
+
+    public function setPointsPerPreferenceWorse(int $pointsPerPreferenceWorse): static
+    {
+        $this->pointsPerPreferenceWorse = $pointsPerPreferenceWorse;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceOk(): ?int
+    {
+        return $this->pointsPerPreferenceOk;
+    }
+
+    public function setPointsPerPreferenceOk(int $pointsPerPreferenceOk): static
+    {
+        $this->pointsPerPreferenceOk = $pointsPerPreferenceOk;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceBetter(): ?int
+    {
+        return $this->pointsPerPreferenceBetter;
+    }
+
+    public function setPointsPerPreferenceBetter(int $pointsPerPreferenceBetter): static
+    {
+        $this->pointsPerPreferenceBetter = $pointsPerPreferenceBetter;
+
+        return $this;
+    }
+
+    public function getPointsPerPreferenceBest(): ?int
+    {
+        return $this->pointsPerPreferenceBest;
+    }
+
+    public function setPointsPerPreferenceBest(int $pointsPerPreferenceBest): static
+    {
+        $this->pointsPerPreferenceBest = $pointsPerPreferenceBest;
+
+        return $this;
+    }
+
+    public function isFeatureClownVenuePreferencesActive(): bool
+    {
+        return $this->featureClownVenuePreferences;
+    }
+
+    public function setFeatureClownVenuePreferencesActive(bool $featureClownVenuePreferences): static
+    {
+        $this->featureClownVenuePreferences = $featureClownVenuePreferences;
 
         return $this;
     }

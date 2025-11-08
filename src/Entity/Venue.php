@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\Preference;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -89,6 +90,12 @@ class Venue
     #[ORM\OneToMany(targetEntity: RecurringDate::class, mappedBy: 'venue')]
     private Collection $recurringDates;
 
+    /**
+     * @var Collection<int, ClownVenuePreference>
+     */
+    #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'venue', orphanRemoval: true)]
+    private Collection $clownVenuePreferences;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -97,6 +104,7 @@ class Venue
         $this->fees = new ArrayCollection();
         $this->contacts = new ArrayCollection();
         $this->recurringDates = new ArrayCollection();
+        $this->clownVenuePreferences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -438,5 +446,39 @@ class Venue
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, ClownVenuePreference>
+     */
+    public function getClownVenuePreferences(): Collection
+    {
+        return $this->clownVenuePreferences;
+    }
+
+    public function addClownVenuePreference(ClownVenuePreference $clownVenuePreference): static
+    {
+        if (!$this->clownVenuePreferences->contains($clownVenuePreference)) {
+            $this->clownVenuePreferences->add($clownVenuePreference);
+            $clownVenuePreference->setVenue($this);
+        }
+
+        return $this;
+    }
+
+    public function getAveragePreference(): Preference
+    {
+        if ($this->clownVenuePreferences->isEmpty()) {
+            return Preference::OK;
+        }
+
+        $preferencesInPoints = $this->clownVenuePreferences->map(
+            fn (ClownVenuePreference $preference): int => $preference->getPreference()->int()
+        );
+        $totalPoints = array_sum($preferencesInPoints->toArray());
+
+        $averagePoints = intval(round($totalPoints / $preferencesInPoints->count()));
+
+        return Preference::fromInt($averagePoints);
     }
 }

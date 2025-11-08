@@ -92,6 +92,7 @@ class StatisticsController extends AbstractProtectedController
             'currentSubstitutions' => $substitutions,
             'active' => 'statistics',
             'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
+            'showVenuePreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive(),
             'calculatedRating' => $schedule?->getCalculatedRating(),
             'currentRating' => $this->rosterCalculatorGateway->rating($playDates, $clownAvailabilities),
         ]);

@@ -15,6 +15,7 @@ class ClownFactory extends AbstractFactory
         string $password = 'clown',
         $isAdmin = false,
         $isActive = true,
+        $clownVenuePreferences = [],
     ): Clown {
         $clown = (new Clown())
             ->setName($this->generate('firstName', $name))
@@ -24,6 +25,10 @@ class ClownFactory extends AbstractFactory
             ->setIsAdmin($isAdmin)
             ->setIsActive($isActive)
         ;
+
+        foreach ($clownVenuePreferences as $clownVenuePreference) {
+            $clown->addClownVenuePreference($clownVenuePreference);
+        }
 
         $this->entityManager->persist($clown);
         $this->entityManager->flush();
