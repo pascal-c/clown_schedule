@@ -16,9 +16,12 @@
             <button type="button" class="btn btn-link" data-action="click->availability#setUnavailable">Alles auf "Nein" stellen</button>
         </div>
 
-        <button type="button" class="btn btn-link mb-1 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
-        <button type="button" class="btn btn-link mb-1 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
-        
+        <div>
+            Für die Berechnung der Verfügbarkeit sind nur die Zeitslots mit Spielterminen relevant.
+            <button type="button" class="btn btn-link mb-1 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
+            <button type="button" class="btn btn-link mb-1 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
+        </div>
+
         <div class="container">
             {{ include('clown_availability/_edit_availabilites_in_schedue.html.twig') }}
         </div>

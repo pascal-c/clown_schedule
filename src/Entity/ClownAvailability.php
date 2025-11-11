@@ -64,6 +64,9 @@ class ClownAvailability
     #[ORM\Column(nullable: true)]
     private ?int $softMaxPlaysWeek = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $availabilityRatio = null;
+
     public function __construct()
     {
         $this->clownAvailabilityTimes = new ArrayCollection();
@@ -165,14 +168,16 @@ class ClownAvailability
         return $this;
     }
 
-    public function getAvailabilityRatio(): float
+    public function getAvailabilityRatio(): ?float
     {
-        $allTimeSlots = $this->getClownAvailabilityTimes();
-        $availableTimeSlots = $allTimeSlots->filter(
-            fn ($timeSlot) => 'no' != $timeSlot->getAvailability()
-        );
+        return $this->availabilityRatio;
+    }
 
-        return count($availableTimeSlots) / count($allTimeSlots);
+    public function setAvailabilityRatio(?float $availabilityRatio): static
+    {
+        $this->availabilityRatio = $availabilityRatio;
+
+        return $this;
     }
 
     private function getAvailabilityTimeSlot(TimeSlotInterface $timeSlot): ClownAvailabilityTime

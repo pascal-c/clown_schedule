@@ -3,9 +3,32 @@
 namespace App\Service\Scheduler;
 
 use App\Entity\ClownAvailability;
+use App\Entity\PlayDate;
 
 class FairPlayCalculator
 {
+    /**
+     * @param ClownAvailability[] $clownAvailabilities
+     * @param PlayDate[]          $playDates
+     */
+    public function calculateAvailabilityRatios(array $clownAvailabilities, array $playDates): void
+    {
+        if (empty($playDates)) {
+            return;
+        }
+
+        foreach ($clownAvailabilities as $availability) {
+            $availablePlays = 0;
+            foreach ($playDates as $playDate) {
+                if ($availability->isAvailableOn($playDate)) {
+                    ++$availablePlays;
+                }
+            }
+
+            $availability->setAvailabilityRatio($availablePlays / count($playDates));
+        }
+    }
+
     public function calculateEntitledPlays(array $clownAvailabilities, int $totalPlays): void
     {
         $fullClownNumber = array_reduce(

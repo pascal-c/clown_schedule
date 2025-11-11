@@ -22,14 +22,12 @@ final class ClownAvailabilityTest extends TestCase
         $this->assertEquals(2, $availability->getOpenTargetPlays());
     }
 
-    public function testgetAvailabilityRatio(): void
+    public function testGetAvailabilityRatio(): void
     {
         $availability = new ClownAvailability();
-        $availability->addClownAvailabilityTime($this->buildTimeSlot('yes'));
-        $availability->addClownAvailabilityTime($this->buildTimeSlot('maybe'));
-        $availability->addClownAvailabilityTime($this->buildTimeSlot('no'));
-        $availability->addClownAvailabilityTime($this->buildTimeSlot('no'));
+        $this->assertNull($availability->getAvailabilityRatio());
 
+        $availability->setAvailabilityRatio(0.5);
         $this->assertEquals(0.5, $availability->getAvailabilityRatio());
     }
 

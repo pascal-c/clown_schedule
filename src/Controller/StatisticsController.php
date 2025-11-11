@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Schedule;
 use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
@@ -12,6 +13,7 @@ use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
+use App\Service\Scheduler\FairPlayCalculator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -28,6 +30,7 @@ class StatisticsController extends AbstractProtectedController
         private ClownRepository $clownRepository,
         private ConfigRepository $configRepository,
         private RosterCalculatorGateway $rosterCalculatorGateway,
+        private FairPlayCalculator $fairPlayCalculator,
     ) {
     }
 
@@ -57,10 +60,12 @@ class StatisticsController extends AbstractProtectedController
     public function showPerMonth(SessionInterface $session, Request $request, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
-        $schedule = $this->scheduleRepository->find($month);
+        $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month);
         $playDates = $this->playDateRepository->regularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
+
+        $this->fairPlayCalculator->calculateAvailabilityRatios($clownAvailabilities, $playDates);
 
         $substitutions = [];
         $plays = [];
@@ -86,6 +91,7 @@ class StatisticsController extends AbstractProtectedController
 
         return $this->render('statistics/per_month.html.twig', [
             'month' => $month,
+            'schedule' => $schedule,
             'clownAvailabilities' => $clownAvailabilities,
             'currentPlays' => $plays,
             'currentPlayDatesCount' => count($playDates),
@@ -93,7 +99,7 @@ class StatisticsController extends AbstractProtectedController
             'active' => 'statistics',
             'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
             'showVenuePreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive(),
-            'calculatedRating' => $schedule?->getCalculatedRating(),
+            'calculatedRating' => $schedule->getCalculatedRating(),
             'currentRating' => $this->rosterCalculatorGateway->rating($playDates, $clownAvailabilities),
         ]);
     }

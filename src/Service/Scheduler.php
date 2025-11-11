@@ -65,6 +65,7 @@ class Scheduler
             }
         }
 
+        $this->fairPlayCalculator->calculateAvailabilityRatios($clownAvailabilities, $playDates);
         $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
         $this->fairPlayCalculator->calculateTargetPlays($clownAvailabilities, count($playDates) * 2);
         $result = $this->rosterCalculatorGateway->calcuate($playDates, $clownAvailabilities);
