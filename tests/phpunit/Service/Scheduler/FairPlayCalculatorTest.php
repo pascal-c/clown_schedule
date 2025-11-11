@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Service\Scheduler;
 
 use App\Entity\ClownAvailability;
-use App\Entity\ClownAvailabilityTime;
+use App\Entity\PlayDate;
 use App\Service\Scheduler\FairPlayCalculator;
+use Codeception\Stub;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -54,16 +55,16 @@ final class FairPlayCalculatorTest extends TestCase
         }
     }
 
-    public function testcalculateEntitledPlays(): void
+    public function testCalculateEntitledPlays(): void
     {
         $clownAvailabilities = [
-            self::buildClownAvailabilityWithTimeSlots(['yes' => 30]), // ratio 1
-            self::buildClownAvailabilityWithTimeSlots(['yes' => 24, 'no' => 6]), // ratio 0.8
-            self::buildClownAvailabilityWithTimeSlots(['yes' => 18, 'no' => 12]), // ratio 0.6
-            self::buildClownAvailabilityWithTimeSlots(['yes' => 9, 'maybe' => 9, 'no' => 12]), // ratio 0.6
+            (new ClownAvailability())->setAvailabilityRatio(1.0), // ratio 1
+            (new ClownAvailability())->setAvailabilityRatio(0.8), // ratio 0.8
+            (new ClownAvailability())->setAvailabilityRatio(0.6), // ratio 0.6
+            (new ClownAvailability())->setAvailabilityRatio(0.6), // ratio 0.6
         ];
         $fairPlayCalculator = new FairPlayCalculator();
-        $fairPlayCalculator->calculateentitledPlays($clownAvailabilities, 6);
+        $fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, 6);
 
         // calculate entitled plays
         $this->assertEquals(2.0, $clownAvailabilities[0]->getEntitledPlaysMonth()); // 6 * 1.0 / 3
@@ -72,17 +73,37 @@ final class FairPlayCalculatorTest extends TestCase
         $this->assertEquals(1.2, $clownAvailabilities[3]->getEntitledPlaysMonth()); // 6 * 0.6 / 3
     }
 
-    private static function buildClownAvailabilityWithTimeSlots(array $timeSlots): ClownAvailability
+    public function testCalculateAvailabilityRatios(): void
     {
-        $clownAvailability = new ClownAvailability();
-        foreach ($timeSlots as $availability => $number) {
-            for ($i = 0; $i < $number; ++$i) {
-                $timeSlot = new ClownAvailabilityTime();
-                $timeSlot->setAvailability($availability);
-                $clownAvailability->addClownAvailabilityTime($timeSlot);
-            }
+        $clownAvailabilities = [
+            Stub::make(ClownAvailability::class, ['isAvailableOn' => Stub::consecutive(true, true, true, true)]),
+            Stub::make(ClownAvailability::class, ['isAvailableOn' => Stub::consecutive(true, true, true, false)]),
+            Stub::make(ClownAvailability::class, ['isAvailableOn' => Stub::consecutive(true, true, false, false)]),
+            Stub::make(ClownAvailability::class, ['isAvailableOn' => Stub::consecutive(true, false, false, false)]),
+            Stub::make(ClownAvailability::class, ['isAvailableOn' => Stub::consecutive(false, false, false, false)]),
+        ];
+        $playDates = [
+            new PlayDate(),
+            new PlayDate(),
+            new PlayDate(),
+            new PlayDate(),
+        ];
+
+        // when play dates are empty
+        $fairPlayCalculator = new FairPlayCalculator();
+        $fairPlayCalculator->calculateAvailabilityRatios($clownAvailabilities, []);
+        foreach ($clownAvailabilities as $availability) {
+            $this->assertNull($availability->getAvailabilityRatio());
         }
 
-        return $clownAvailability;
+        // when play dates are not empty
+        $fairPlayCalculator->calculateAvailabilityRatios($clownAvailabilities, $playDates);
+
+        $this->assertEquals(1.0, $clownAvailabilities[0]->getAvailabilityRatio());
+        $this->assertEquals(0.75, $clownAvailabilities[1]->getAvailabilityRatio());
+        $this->assertEquals(0.5, $clownAvailabilities[2]->getAvailabilityRatio());
+        $this->assertEquals(0.25, $clownAvailabilities[3]->getAvailabilityRatio());
+        $this->assertEquals(0.0, $clownAvailabilities[4]->getAvailabilityRatio());
+
     }
 }

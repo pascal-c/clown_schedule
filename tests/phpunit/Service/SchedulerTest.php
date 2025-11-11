@@ -146,7 +146,9 @@ final class SchedulerTest extends TestCase
                     }
                 }
             );
-
+        $this->fairPlayCalculator->expects($this->once())
+            ->method('calculateAvailabilityRatios')
+            ->with($clownAvailabilities, [$playDate2, $playDate3, $playDate1]);
         $this->fairPlayCalculator->expects($this->once())
             ->method('calculateEntitledPlays')
             ->with($clownAvailabilities, 6);
