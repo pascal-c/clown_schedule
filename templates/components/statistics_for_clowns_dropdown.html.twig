@@ -1,0 +1,9 @@
+{% if showIt %}
+    <form class="mb-3">
+        <select id="statistics-type-dropdown" onchange="location = this.value;">
+            {% for type in types %}
+                <option value="{{ path('statistics_infinity', {'type': type.value}) }}" {% if currentType == type %}selected{% endif %}>{{ type.label }}</option>
+            {% endfor %}
+        </select>
+    </form>
+{% endif %}

@@ -44,8 +44,9 @@ class ClownRepository extends AbstractRepository
     public function allWithTotalPlayDateCounts(): array
     {
         return $this->doctrineRepository->createQueryBuilder('cl')
-            ->select('cl AS clown, count(pd.id) AS totalCount')
+            ->select('cl AS clown, count(DISTINCT(pd.id)) AS totalCount')
             ->leftJoin('cl.playDates', 'pd')
+            ->leftJoin('cl.clownAvailabilities', 'ca')
             ->where('pd.type = :play_date_type')
             ->setParameter('play_date_type', PlayDateType::REGULAR->value)
             ->groupBy('cl')

@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Statistiken{% endblock %}
+
+{% block content %}
+    {{ component('month_navigation', { urlKey: 'statistics' }) }}
+    <h4 class="pt-3">Ewige Statistik</h4>
+
+    {{ component('statistics_for_clowns_dropdown', { currentType: type }) }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Clown</th>
+                <th>{{ type.label }}</th>
+                <th>{{ type.labelNumerator }}</th>
+                <th>Anteil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clownWithCounts in clownsWithCounts %}
+            <tr>
+                <td>{{ clownWithCounts.clown.name }}</td>
+                <td>
+                    {{ clownWithCounts.denominator }}
+                </td>
+                <td>
+                    {{ clownWithCounts.numerator }}
+                </td>
+                <td>
+                    {% if clownWithCounts.denominator > 0 %}
+                        {{ (clownWithCounts.numerator / clownWithCounts.denominator * 100)|round }} %
+                    {% else %}
+                        --
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <th>Summe</th>
+                <td>
+                    {% set totalDenominator = clownsWithCounts|reduce((carry, v) => carry+v.denominator) %}
+                    {{ totalDenominator }}
+                </td>
+                <td>
+                    {% set totalNumerator = clownsWithCounts|reduce((carry, v) => carry+v.numerator) %}
+                    {{ totalNumerator }}
+                </td>
+                <td>
+                    {% if totalDenominator > 0 %}
+                        {{ (totalNumerator / totalDenominator * 100)|round }} %
+                    {% else %}
+                        --
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

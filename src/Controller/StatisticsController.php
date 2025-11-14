@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\ClownAvailability;
 use App\Entity\Schedule;
 use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
@@ -14,9 +15,11 @@ use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\FairPlayCalculator;
+use App\Value\StatisticsForClownsType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 class StatisticsController extends AbstractProtectedController
@@ -35,24 +38,42 @@ class StatisticsController extends AbstractProtectedController
     }
 
     #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]
-    public function showInfinity(): Response
+    public function showInfinity(#[MapQueryParameter] string $type = 'super'): Response
     {
         $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts();
         $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts();
 
+        $currentType = StatisticsForClownsType::from($type);
+
         foreach ($clownsWithTotalCount as $k => $clownWithTotalCount) {
-            $clownsWithTotalCount[$k]['superCount'] = 0;
-            foreach ($clownsWithSuperCount as $clownWithSuperCount) {
-                if ($clownWithSuperCount['clown'] === $clownWithTotalCount['clown']) {
-                    $clownsWithTotalCount[$k]['superCount'] = $clownWithSuperCount['superCount'];
+            $clownsWithTotalCount[$k]['numerator'] = 0;
+
+            if (StatisticsForClownsType::SUPER === $currentType) {
+                foreach ($clownsWithSuperCount as $clownWithSuperCount) {
+                    if ($clownWithSuperCount['clown'] === $clownWithTotalCount['clown']) {
+                        $clownsWithTotalCount[$k]['numerator'] = $clownWithSuperCount['superCount'];
+                    }
                 }
+                $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['totalCount'];
+            } else {
+                $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
+                    fn (int $carry, ClownAvailability $availability) => $carry + $availability->{'get'.ucfirst($currentType->value)}(),
+                    0,
+                );
+                $clownsWithTotalCount[$k]['numerator'] = StatisticsForClownsType::SCHEDULED_PLAYS_MONTH === $currentType ? $clownWithTotalCount['totalCount'] :
+                    $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
+                        fn (int $carry, ClownAvailability $availability) => $carry + $availability->getScheduledPlaysMonth(),
+                        0,
+                    );
             }
+
         }
 
-        return $this->render('statistics/infinity.html.twig', [
+        return $this->render('statistics/clown_property_percentage.html.twig', [
             'month' => null,
             'clownsWithCounts' => $clownsWithTotalCount,
             'active' => 'statistics',
+            'type' => $currentType,
         ]);
     }
 
