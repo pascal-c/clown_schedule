@@ -57,7 +57,7 @@ class StatisticsController extends AbstractProtectedController
                 $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['totalCount'];
             } else {
                 $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
-                    fn (int $carry, ClownAvailability $availability) => $carry + $availability->{'get' . ucfirst($currentType->value)}(),
+                    fn (int $carry, ClownAvailability $availability) => $carry + $availability->{'get'.ucfirst($currentType->value)}(),
                     0,
                 );
                 $clownsWithTotalCount[$k]['numerator'] = StatisticsForClownsType::SCHEDULED_PLAYS_MONTH === $currentType ? $clownWithTotalCount['totalCount'] :
@@ -68,7 +68,7 @@ class StatisticsController extends AbstractProtectedController
             }
 
         }
-        
+
         return $this->render('statistics/clown_property_percentage.html.twig', [
             'month' => null,
             'clownsWithCounts' => $clownsWithTotalCount,
