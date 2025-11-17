@@ -106,7 +106,7 @@
     "require-dev": {
         "codeception/codeception": "^5.3",
         "codeception/module-asserts": "^3.2",
-        "codeception/module-doctrine": "^3.1",
+        "codeception/module-doctrine": "^3.3",
         "codeception/module-phpbrowser": "^3.0",
         "codeception/module-symfony": "^3.5",
         "dama/doctrine-test-bundle": "^8.4",
