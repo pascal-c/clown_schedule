@@ -11,6 +11,7 @@ enum StatisticsForClownsType: string
     case TARGET_PLAYS = 'targetPlays';
     case CALCULATED_PLAYS_MONTH = 'calculatedPlaysMonth';
     case SCHEDULED_PLAYS_MONTH = 'scheduledPlaysMonth';
+    case SCHEDULED_SUBSTITUTIONS = 'scheduledSubstitutions';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum StatisticsForClownsType: string
             StatisticsForClownsType::TARGET_PLAYS => 'Zieltermine',
             StatisticsForClownsType::CALCULATED_PLAYS_MONTH => 'Berechnete Termine',
             StatisticsForClownsType::SCHEDULED_PLAYS_MONTH => 'Zugeteilte Termine',
+            StatisticsForClownsType::SCHEDULED_SUBSTITUTIONS => 'Zugeteilte Springer',
         };
     }
 
@@ -31,6 +33,7 @@ enum StatisticsForClownsType: string
             StatisticsForClownsType::TARGET_PLAYS => 'Zugeteilte Termine',
             StatisticsForClownsType::CALCULATED_PLAYS_MONTH => 'Zugeteilte Termine',
             StatisticsForClownsType::SCHEDULED_PLAYS_MONTH => 'Gespielte Termine gesamt',
+            StatisticsForClownsType::SCHEDULED_SUBSTITUTIONS => 'Zugeteilte Termine',
         };
     }
 }

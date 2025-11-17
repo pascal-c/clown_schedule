@@ -3,10 +3,15 @@
 {% block title %}Statistiken{% endblock %}
 
 {% block content %}
-    {{ component('month_navigation', { urlKey: 'statistics' }) }}
-    <h4 class="pt-3">Ewige Statistik</h4>
+    {{ component('statistics_navigation', { active: years is defined ? 'per_year' : 'infinity'}) }}
+    {% if years is defined %}
+        {{ include('statistics/_year_navigation.html.twig', {activeYear: activeYear, years: years, currentType: type}) }}
+        <h4 class="pt-3">Statistik für {{ activeYear }}</h4>
+    {% else %}
+        <h4 class="pt-3">Ewige Statistik</h4>
+    {% endif %}
 
-    {{ component('statistics_for_clowns_dropdown', { currentType: type }) }}
+    {{ component('statistics_for_clowns_dropdown', { currentType: type, path: years is defined ? path('statistics_per_year', {year: activeYear}) : path('statistics_infinity') }) }}
     <table class="table">
         <thead>
             <tr>
@@ -38,21 +43,21 @@
 
             <tr>
                 <th>Summe</th>
-                <td>
+                <th>
                     {% set totalDenominator = clownsWithCounts|reduce((carry, v) => carry+v.denominator) %}
                     {{ totalDenominator }}
-                </td>
-                <td>
+                </th>
+                <th>
                     {% set totalNumerator = clownsWithCounts|reduce((carry, v) => carry+v.numerator) %}
                     {{ totalNumerator }}
-                </td>
-                <td>
+                </th>
+                <th>
                     {% if totalDenominator > 0 %}
                         {{ (totalNumerator / totalDenominator * 100)|round }} %
                     {% else %}
                         --
                     {% endif %}
-                </td>
+                </th>
             </tr>
         </tbody>
     </table>

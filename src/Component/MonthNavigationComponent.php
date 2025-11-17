@@ -9,7 +9,7 @@ use App\Service\TimeService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-#[AsTwigComponent('month_navigation')]
+#[AsTwigComponent('month_navigation', template: 'components/sub_navigation.html.twig')]
 class MonthNavigationComponent
 {
     public string $active;

@@ -41,30 +41,45 @@ class ClownRepository extends AbstractRepository
         return $this->doctrineRepository->findOneByEmail($email);
     }
 
-    public function allWithTotalPlayDateCounts(): array
+    public function allWithTotalPlayDateCounts(?string $year = null): array
     {
-        return $this->doctrineRepository->createQueryBuilder('cl')
-            ->select('cl AS clown, count(DISTINCT(pd.id)) AS totalCount')
-            ->leftJoin('cl.playDates', 'pd')
-            ->leftJoin('cl.clownAvailabilities', 'ca')
-            ->where('pd.type = :play_date_type')
-            ->setParameter('play_date_type', PlayDateType::REGULAR->value)
-            ->groupBy('cl')
-            ->orderBy('cl.isActive', 'DESC')
-            ->addOrderBy('cl.name', 'ASC')
+        $queryBuilder = $this->doctrineRepository->createQueryBuilder('cl')
+           ->select('cl AS clown, count(DISTINCT(pd.id)) AS totalCount')
+           ->leftJoin('cl.playDates', 'pd')
+           ->where('pd.type = :play_date_type')
+           ->setParameter('play_date_type', PlayDateType::REGULAR->value)
+           ->groupBy('cl')
+           ->orderBy('cl.isActive', 'DESC')
+           ->addOrderBy('cl.name', 'ASC');
+        if ($year) {
+            $queryBuilder
+                ->andWhere('pd.date >= :startDate')
+                ->andWhere('pd.date <= :endDate')
+                ->setParameter('startDate', "{$year}-01-01")
+                ->setParameter('endDate', "{$year}-12-31");
+        }
+
+        return $queryBuilder
             ->getQuery()
             ->getResult();
     }
 
-    public function allWithSuperPlayDateCounts(): array
+    public function allWithSuperPlayDateCounts(?string $year = null): array
     {
-        return $this->doctrineRepository->createQueryBuilder('cl')
+        $queryBuilder = $this->doctrineRepository->createQueryBuilder('cl')
             ->select('cl AS clown, count(pd.id) AS superCount')
             ->leftJoin('cl.playDates', 'pd')
             ->where('pd.isSuper = 1')
-            ->groupBy('cl')
-            ->orderBy('cl.isActive', 'DESC')
-            ->addOrderBy('cl.name', 'ASC')
+            ->groupBy('cl');
+        if ($year) {
+            $queryBuilder
+                ->andWhere('pd.date >= :start')
+                ->andWhere('pd.date <= :end')
+                ->setParameter('start', "{$year}-01-01")
+                ->setParameter('end', "{$year}-12-31");
+        }
+
+        return $queryBuilder
             ->getQuery()
             ->getResult();
     }

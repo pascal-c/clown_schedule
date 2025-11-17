@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Value\StatisticsForClownsType;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SessionService
@@ -38,5 +39,23 @@ class SessionService
         $session = $this->requestStack->getSession();
 
         $session->set('active_clown_id', $clownId);
+    }
+
+    public function getActiveStatisticsForClownType(): StatisticsForClownsType
+    {
+        $session = $this->requestStack->getSession();
+
+        if ($session->has('active_statistics_for_clown_type')) {
+            return StatisticsForClownsType::from($session->get('active_statistics_for_clown_type'));
+        }
+
+        return StatisticsForClownsType::SUPER;
+    }
+
+    public function setActiveStatisticsForClownType(StatisticsForClownsType $type): void
+    {
+        $session = $this->requestStack->getSession();
+
+        $session->set('active_statistics_for_clown_type', $type->value);
     }
 }
