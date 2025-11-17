@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\ClownAvailability;
+use App\Entity\Month;
 use App\Entity\Schedule;
 use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
@@ -15,8 +16,9 @@ use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\FairPlayCalculator;
+use App\Service\SessionService;
+use App\Service\TimeService;
 use App\Value\StatisticsForClownsType;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -34,16 +36,38 @@ class StatisticsController extends AbstractProtectedController
         private ConfigRepository $configRepository,
         private RosterCalculatorGateway $rosterCalculatorGateway,
         private FairPlayCalculator $fairPlayCalculator,
+        private TimeService $timeService,
+        private SessionService $sessionService,
     ) {
     }
 
     #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]
-    public function showInfinity(#[MapQueryParameter] string $type = 'super'): Response
+    public function showInfinity(#[MapQueryParameter] ?string $type = null): Response
     {
-        $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts();
-        $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts();
+        return $this->showClownPropertyPercentage($type, null);
+    }
 
-        $currentType = StatisticsForClownsType::from($type);
+    #[Route('/statistics/per_year/{year}', name: 'statistics_per_year', methods: ['GET'])]
+    public function showPerYear(?string $year = null, #[MapQueryParameter] ?string $type = null): Response
+    {
+        $year ??= $this->timeService->currentYear();
+
+        return $this->showClownPropertyPercentage($type, $year);
+    }
+
+    private function showClownPropertyPercentage(?string $type, ?string $year): Response
+    {
+        $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
+
+        $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts($year);
+        $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts($year);
+
+        if ($type) {
+            $currentType = StatisticsForClownsType::from($type);
+            $this->sessionService->setActiveStatisticsForClownType($currentType);
+        } else {
+            $currentType = $this->sessionService->getActiveStatisticsForClownType();
+        }
 
         foreach ($clownsWithTotalCount as $k => $clownWithTotalCount) {
             $clownsWithTotalCount[$k]['numerator'] = 0;
@@ -56,17 +80,24 @@ class StatisticsController extends AbstractProtectedController
                 }
                 $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['totalCount'];
             } else {
-                $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
+                $availabilites = $clownWithTotalCount['clown']->getClownAvailabilities();
+                if ($year) {
+                    $startMonth = Month::build($year.'-01');
+                    $endMonth = Month::build($year.'-12');
+                    $availabilites = $availabilites->filter(
+                        fn (ClownAvailability $availability): bool => $availability->getMonth() >= $startMonth && $availability->getMonth() <= $endMonth,
+                    );
+                }
+                $clownsWithTotalCount[$k]['denominator'] = $availabilites->reduce(
                     fn (int $carry, ClownAvailability $availability) => $carry + $availability->{'get'.ucfirst($currentType->value)}(),
                     0,
                 );
                 $clownsWithTotalCount[$k]['numerator'] = StatisticsForClownsType::SCHEDULED_PLAYS_MONTH === $currentType ? $clownWithTotalCount['totalCount'] :
-                    $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
+                    $availabilites->reduce(
                         fn (int $carry, ClownAvailability $availability) => $carry + $availability->getScheduledPlaysMonth(),
                         0,
                     );
             }
-
         }
 
         return $this->render('statistics/clown_property_percentage.html.twig', [
@@ -74,11 +105,14 @@ class StatisticsController extends AbstractProtectedController
             'clownsWithCounts' => $clownsWithTotalCount,
             'active' => 'statistics',
             'type' => $currentType,
+            'activeYear' => $year,
+            'years'      => $years,
+            'showYears'  => !is_null($year),
         ]);
     }
 
     #[Route('/statistics/{monthId}', name: 'statistics', methods: ['GET'])]
-    public function showPerMonth(SessionInterface $session, Request $request, ?string $monthId = null): Response
+    public function showPerMonth(SessionInterface $session, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month);

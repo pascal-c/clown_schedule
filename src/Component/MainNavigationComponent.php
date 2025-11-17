@@ -23,16 +23,17 @@ class MainNavigationComponent
     {
         $useCalcuation = $this->configRepository->find()->useCalculation();
         $this->currentClown = $this->authService->getCurrentClown();
+        $statisticsUrl = $useCalcuation ? $this->urlHelper->generate('statistics') : $this->urlHelper->generate('statistics_per_year', ['type' => 'super']);
         $this->navigationItems = array_filter(
             [
                 'dashboard' => ['label' => 'Dashboard', 'url' => $this->urlHelper->generate('dashboard')],
-                'clown_constraints' => ['label' => 'Wünsche', 'url' => $this->urlHelper->generate('clown_constraints_index'), 'hide' => !$useCalcuation],
+                'clown_constraints' => ['label' => 'Wünsche', 'url' => $this->urlHelper->generate('clown_constraints_index'), 'show' => $useCalcuation],
                 'play_date' => ['label' => 'Spielplan', 'url' => $this->urlHelper->generate('schedule')],
-                'statistics' => ['label' => 'Statistiken', 'url' => $this->urlHelper->generate('statistics'), 'hide' => !$useCalcuation],
+                'statistics' => ['label' => 'Statistiken', 'url' => $statisticsUrl, 'show' => $useCalcuation || $this->currentClown?->isAdmin()],
                 'clown' => ['label' => 'Clowns', 'url' => $this->urlHelper->generate('clown_index')],
                 'venue' => ['label' => 'Spielorte', 'url' => $this->urlHelper->generate('venue_index')],
             ],
-            fn ($item) => empty($item['hide'])
+            fn (array $item): bool => !array_key_exists('show', $item) || $item['show']
         );
     }
 }
