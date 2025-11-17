@@ -44,55 +44,20 @@ class StatisticsController extends AbstractProtectedController
     #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]
     public function showInfinity(#[MapQueryParameter] ?string $type = null): Response
     {
-        $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts();
-        $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts();
-
-        if ($type) {
-            $currentType = StatisticsForClownsType::from($type);
-            $this->sessionService->setActiveStatisticsForClownType($currentType);
-        } else {
-            $currentType = $this->sessionService->getActiveStatisticsForClownType();
-        }
-
-        foreach ($clownsWithTotalCount as $k => $clownWithTotalCount) {
-            $clownsWithTotalCount[$k]['numerator'] = 0;
-
-            if (StatisticsForClownsType::SUPER === $currentType) {
-                foreach ($clownsWithSuperCount as $clownWithSuperCount) {
-                    if ($clownWithSuperCount['clown'] === $clownWithTotalCount['clown']) {
-                        $clownsWithTotalCount[$k]['numerator'] = $clownWithSuperCount['superCount'];
-                    }
-                }
-                $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['totalCount'];
-            } else {
-                $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
-                    fn (int $carry, ClownAvailability $availability) => $carry + $availability->{'get'.ucfirst($currentType->value)}(),
-                    0,
-                );
-                $clownsWithTotalCount[$k]['numerator'] = StatisticsForClownsType::SCHEDULED_PLAYS_MONTH === $currentType ? $clownWithTotalCount['totalCount'] :
-                    $clownWithTotalCount['clown']->getClownAvailabilities()->reduce(
-                        fn (int $carry, ClownAvailability $availability) => $carry + $availability->getScheduledPlaysMonth(),
-                        0,
-                    );
-            }
-
-        }
-
-        return $this->render('statistics/clown_property_percentage.html.twig', [
-            'month' => null,
-            'clownsWithCounts' => $clownsWithTotalCount,
-            'active' => 'statistics',
-            'type' => $currentType,
-        ]);
+        return $this->showClownPropertyPercentage($type, null);
     }
 
     #[Route('/statistics/per_year/{year}', name: 'statistics_per_year', methods: ['GET'])]
     public function showPerYear(?string $year = null, #[MapQueryParameter] ?string $type = null): Response
     {
         $year ??= $this->timeService->currentYear();
+
+        return $this->showClownPropertyPercentage($type, $year);
+    }
+
+    private function showClownPropertyPercentage(?string $type, ?string $year): Response
+    {
         $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
-        $startMonth = Month::build($year.'-01');
-        $endMonth = Month::build($year.'-12');
 
         $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts($year);
         $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts($year);
@@ -115,9 +80,14 @@ class StatisticsController extends AbstractProtectedController
                 }
                 $clownsWithTotalCount[$k]['denominator'] = $clownWithTotalCount['totalCount'];
             } else {
-                $availabilites =  $clownWithTotalCount['clown']->getClownAvailabilities()->filter(
-                    fn (ClownAvailability $availability): bool => $availability->getMonth() >= $startMonth && $availability->getMonth() <= $endMonth,
-                );
+                $availabilites = $clownWithTotalCount['clown']->getClownAvailabilities();
+                if ($year) {
+                    $startMonth = Month::build($year.'-01');
+                    $endMonth = Month::build($year.'-12');
+                    $availabilites = $availabilites->filter(
+                        fn (ClownAvailability $availability): bool => $availability->getMonth() >= $startMonth && $availability->getMonth() <= $endMonth,
+                    );
+                }
                 $clownsWithTotalCount[$k]['denominator'] = $availabilites->reduce(
                     fn (int $carry, ClownAvailability $availability) => $carry + $availability->{'get'.ucfirst($currentType->value)}(),
                     0,
@@ -128,7 +98,6 @@ class StatisticsController extends AbstractProtectedController
                         0,
                     );
             }
-
         }
 
         return $this->render('statistics/clown_property_percentage.html.twig', [
@@ -138,6 +107,7 @@ class StatisticsController extends AbstractProtectedController
             'type' => $currentType,
             'activeYear' => $year,
             'years'      => $years,
+            'showYears'  => !is_null($year),
         ]);
     }
 
