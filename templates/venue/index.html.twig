@@ -19,7 +19,12 @@
         <tbody>
     {% for venue in venues %}
         <tr>
-            <td><a href="{{ path('venue_show', {id: venue.id}) }}">{{ venue.name }}</<a></td>
+            <td>
+                <a href="{{ path('venue_show', {id: venue.id}) }}">{{ venue.name }}</a>
+                {% if venue.super %}
+                    <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spielort"></i>
+                {% endif %}
+            </td>
             <td>
                 {% for clown in venue.responsibleClowns %}
                     {{ clown.name }}{% if not loop.last %} | {% endif %}

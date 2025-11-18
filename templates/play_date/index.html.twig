@@ -17,10 +17,15 @@
     {% for play_date in play_dates %}
         <tr>
             <td>
-                {{ play_date.date|date("d.m.Y") }}&nbsp;{{ play_date.daytime }}
+                <a href="{{ path('play_date_show', {id: play_date.id}) }}" class="text-dark">{{ play_date.date|date("d.m.Y") }}&nbsp;{{ play_date.daytime }}</a>
             </td>
             <td>{{ play_date.name }}</td>
-            <td>{{ play_date.comment }}</td>
+            <td>
+               {% if play_date.super %}
+                    <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spieltermin"></i> Super-Spieltermin<br />
+                {% endif %}
+                {{ play_date.comment }}
+            </td>
             <td>
                 {% for clown in play_date.playingClowns %}{{ clown.name }} {% endfor %}
                 {% if currentClown.isAdmin %}

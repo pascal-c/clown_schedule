@@ -103,6 +103,14 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if playDate.super %}
+                <tr>
+                    <th>Super-Spieltermin</th>
+                    <td>
+                        <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spieltermin"></i> Dies ist ein Super-Spieltermin!
+                    </td>
+                </tr>
+            {% endif %}
             {% if not playDate.specialPlayDateUrl is empty %}
                 <tr>
                     <th>URL</th>
