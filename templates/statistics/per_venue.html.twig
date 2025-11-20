@@ -1,0 +1,54 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Statistiken{% endblock %}
+
+{% block content %}
+    {{ component('statistics_navigation', { active: 'per_venue' }) }}
+    {{ component('statistics_per_venue_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
+    {% if showYears %}
+        {{ include('statistics/_per_venue_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
+        <h4 class="pt-3">Statistik für {{ activeYear }}</h4>
+    {% else %}
+        <h4 class="pt-3">Ewige Statistik</h4>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Spielort</th>
+                <th>Spiele gesamt</th>
+                <th>Reguläre Spiele</th>
+                <th>Zusatztermine</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venue in venues %}
+            <tr>
+                <td>{{ venue.name }}</td>
+                <td>
+                    {{ venue.totalCount }}
+                </td>
+                <td>
+                    {{ venue.regularCount }}
+                </td>
+                <td>
+                    {{ venue.specialCount }}
+                </td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <th>Summe</th>
+                <th>
+                    {{ venues|reduce((carry, v) => carry+v.totalCount) }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.regularCount) }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.specialCount) }}
+                </th>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StatisticsController extends AbstractProtectedController
+class StatisticsPerClownController extends AbstractProtectedController
 {
     public function __construct(
         private ClownAvailabilityRepository $clownAvailabilityRepository,
@@ -44,7 +44,7 @@ class StatisticsController extends AbstractProtectedController
     #[Route('/statistics/infinity', name: 'statistics_infinity', methods: ['GET'])]
     public function showInfinity(#[MapQueryParameter] ?string $type = null): Response
     {
-        return $this->showClownPropertyPercentage($type, null);
+        return $this->showPerClown($type, null);
     }
 
     #[Route('/statistics/per_year/{year}', name: 'statistics_per_year', methods: ['GET'])]
@@ -52,10 +52,10 @@ class StatisticsController extends AbstractProtectedController
     {
         $year ??= $this->timeService->currentYear();
 
-        return $this->showClownPropertyPercentage($type, $year);
+        return $this->showPerClown($type, $year);
     }
 
-    private function showClownPropertyPercentage(?string $type, ?string $year): Response
+    private function showPerClown(?string $type, ?string $year): Response
     {
         $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
 
@@ -100,7 +100,7 @@ class StatisticsController extends AbstractProtectedController
             }
         }
 
-        return $this->render('statistics/clown_property_percentage.html.twig', [
+        return $this->render('statistics/per_clown.html.twig', [
             'month' => null,
             'clownsWithCounts' => $clownsWithTotalCount,
             'active' => 'statistics',
@@ -144,7 +144,7 @@ class StatisticsController extends AbstractProtectedController
             }
         }
 
-        return $this->render('statistics/per_month.html.twig', [
+        return $this->render('statistics/per_clown_per_month.html.twig', [
             'month' => $month,
             'schedule' => $schedule,
             'clownAvailabilities' => $clownAvailabilities,

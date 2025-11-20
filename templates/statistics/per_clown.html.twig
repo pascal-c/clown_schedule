@@ -3,9 +3,10 @@
 {% block title %}Statistiken{% endblock %}
 
 {% block content %}
-    {{ component('statistics_navigation', { active: showYears ? 'per_year' : 'infinity'}) }}
+    {{ component('statistics_navigation', { active: 'per_clown' }) }}
+    {{ component('statistics_per_clown_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
     {% if showYears %}
-        {{ include('statistics/_year_navigation.html.twig', {activeYear: activeYear, years: years, currentType: type}) }}
+        {{ include('statistics/_per_clown_year_navigation.html.twig', {activeYear: activeYear, years: years, currentType: type}) }}
         <h4 class="pt-3">Statistik für {{ activeYear }}</h4>
     {% else %}
         <h4 class="pt-3">Ewige Statistik</h4>

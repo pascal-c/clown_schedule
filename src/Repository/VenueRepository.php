@@ -32,8 +32,24 @@ class VenueRepository extends AbstractRepository
         );
     }
 
-    public function all(): array
+    public function all(?string $year = null): array
     {
-        return $this->doctrineRepository->findBy([], ['name' => 'ASC']);
+        $queryBuilder = $this->doctrineRepository->createQueryBuilder('venue')
+            ->select('venue, pd')
+            ->leftJoin('venue.playDates', 'pd');
+
+        if ($year) {
+            $queryBuilder
+                ->andWhere('pd.date >= :start')
+                ->andWhere('pd.date <= :end')
+                ->setParameter('start', "{$year}-01-01")
+                ->setParameter('end', "{$year}-12-31");
+        }
+
+        return $queryBuilder
+            ->orderBy('venue.archived', 'ASC')
+            ->addOrderBy('venue.name', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 }
