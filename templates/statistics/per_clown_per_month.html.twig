@@ -3,7 +3,8 @@
 {% block title %}Statistiken{% endblock %}
 
 {% block content %}
-    {{ component('statistics_navigation', { active: 'per_month' }) }}
+    {{ component('statistics_navigation', { active: 'per_clown' }) }}
+    {{ component('statistics_per_clown_navigation', { active: 'per_month' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'statistics' }) }}
     <h4 class="pt-3">Statistiken für {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
 

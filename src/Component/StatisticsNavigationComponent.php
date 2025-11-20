@@ -10,7 +10,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class StatisticsNavigationComponent
 {
     public array $navigationItems = [];
-    public string $active = 'per_month';
+    public string $active = 'per_clown';
 
     public function __construct(private UrlGeneratorInterface $urlHelper, private ConfigRepository $configRepository)
     {
@@ -18,13 +18,9 @@ class StatisticsNavigationComponent
 
     public function mount()
     {
-        $this->navigationItems = array_filter(
-            [
-                'per_month' => ['label' => 'monatlich', 'url' => $this->urlHelper->generate('statistics'), 'hide' => !$this->configRepository->isFeatureCalculationActive()],
-                'per_year' => ['label' => 'jährlich', 'url' => $this->urlHelper->generate('statistics_per_year')],
-                'infinity' => ['label' => 'ewig', 'url' => $this->urlHelper->generate('statistics_infinity')],
-            ],
-            fn ($item) => empty($item['hide'])
-        );
+        $this->navigationItems = [
+            'per_clown' => ['label' => 'Nach Clowns', 'url' => $this->urlHelper->generate('statistics')],
+            'per_venue' => ['label' => 'Nach Spielorten', 'url' => $this->urlHelper->generate('statistics_per_venue_per_year')],
+        ];
     }
 }

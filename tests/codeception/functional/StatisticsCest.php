@@ -9,7 +9,7 @@ use App\Tests\Helper\Functional;
 
 class StatisticsCest extends AbstractCest
 {
-    public function x(FunctionalTester $I): void
+    public function byClown(FunctionalTester $I): void
     {
         Functional::$now = '2024-12-30';
         $I->loginAsClown();
@@ -22,6 +22,23 @@ class StatisticsCest extends AbstractCest
         $I->see('jährlich', '.nav .nav-link.active');
         $I->see('Statistik für 2024', 'h4');
 
+
+        $I->click('ewig', '.nav');
+        $I->see('ewig', '.nav .nav-link.active');
+        $I->see('Ewige Statistik', 'h4');
+    }
+
+    public function byVenue(FunctionalTester $I): void
+    {
+        Functional::$now = '2024-12-30';
+        $I->loginAsClown();
+
+        $I->click('Statistiken', '.nav');
+        $I->click('Nach Spielorten', '.nav');
+
+        $I->click('jährlich', '.nav');
+        $I->see('jährlich', '.nav .nav-link.active');
+        $I->see('Statistik für 2024', 'h4');
 
         $I->click('ewig', '.nav');
         $I->see('ewig', '.nav .nav-link.active');

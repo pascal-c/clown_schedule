@@ -43,6 +43,25 @@ class PlayDateRepository extends AbstractRepository
             ->getResult()[0][1] ?? $this->timeService->currentYear();
     }
 
+    public function withoutVenue(?string $year): array
+    {
+        $queryBuilder =  $this->doctrineRepository->createQueryBuilder('pd')
+            ->where('pd.venue IS NULL')
+            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."' OR pd.type = '".PlayDateType::SPECIAL->value."'");
+
+        if ($year) {
+            $queryBuilder
+                ->andWhere('pd.date >= :start')
+                ->andWhere('pd.date <= :end')
+                ->setParameter('start', "{$year}-01-01")
+                ->setParameter('end', "{$year}-12-31");
+        }
+
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
+    }
+
     public function byYear(string $year): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
