@@ -72,6 +72,18 @@ class Clown
     #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'clown', orphanRemoval: true, cascade: ['persist'])]
     private Collection $clownVenuePreferences;
 
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'blockedBy')]
+    private Collection $blockedClowns;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'blockedClowns')]
+    private Collection $blockedBy;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -80,6 +92,8 @@ class Clown
         $this->clownAvailabilities = new ArrayCollection();
         $this->blockedVenues = new ArrayCollection();
         $this->clownVenuePreferences = new ArrayCollection();
+        $this->blockedClowns = new ArrayCollection();
+        $this->blockedBy = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -370,5 +384,37 @@ class Clown
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getBlockedClowns(): Collection
+    {
+        return $this->blockedClowns;
+    }
+
+    public function addBlockedClown(self $blockedClown): static
+    {
+        if (!$this->blockedClowns->contains($blockedClown)) {
+            $this->blockedClowns->add($blockedClown);
+        }
+
+        return $this;
+    }
+
+    public function removeBlockedClown(self $blockedClown): static
+    {
+        $this->blockedClowns->removeElement($blockedClown);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getBlockedBy(): Collection
+    {
+        return $this->blockedBy;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Clown;
 use App\Form\ClownFormType;
+use App\Form\ClownBlockedClownsFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -73,12 +74,12 @@ class ClownController extends AbstractProtectedController
         return $this->redirectToRoute('clown_index');
     }
 
-    #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PATCH'])]
+    #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PUT'])]
     public function edit(Clown $clown, Request $request): Response
     {
         $this->adminOnly();
 
-        $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PATCH']);
+        $form = $this->createForm(ClownFormType::class, $clown, ['method' => 'PUT']);
         $deleteForm = $this->createFormBuilder($clown)
             ->add(
                 'delete',
@@ -98,9 +99,6 @@ class ClownController extends AbstractProtectedController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $clown = $form->getData();
-            $clown->setIsActive($form['isActive']->isSubmitted());
-            $clown->setIsAdmin($form['isAdmin']->isSubmitted());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clown wurde erfolgreich gespeichert.');
@@ -115,6 +113,31 @@ class ClownController extends AbstractProtectedController
             'form' => $form,
             'delete_form' => $deleteForm,
             'send_invitation_form' => $clown->hasNoPassword() ? $sendInvitationForm : null,
+            'active' => 'clown',
+        ]);
+    }
+
+    #[Route('/clowns/{id}/blocked-clowns', name: 'clown_edit_blocked_clowns', methods: ['GET', 'PUT'])]
+    public function editBlockedClowns(Clown $clown, Request $request): Response
+    {
+        $this->adminOnly();
+
+        $form = $this->createForm(ClownBlockedClownsFormType::class, $clown, ['method' => 'PUT']);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Gesperrte Clowns für '.$clown->getName().' wurden erfolgreich gespeichert.');
+
+            return $this->redirectToRoute('clown_index');
+        } elseif ($form->isSubmitted()) {
+            $this->addFlash('warning', 'Gesperrte Clowns konnten nicht gespeichert werden.');
+        }
+
+        return $this->render('clown/edit_blocked_clowns.html.twig', [
+            'clown' => $clown,
+            'form' => $form,
             'active' => 'clown',
         ]);
     }

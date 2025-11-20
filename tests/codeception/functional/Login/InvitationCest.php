@@ -7,6 +7,7 @@ use App\Tests\FunctionalTester;
 use App\Tests\Helper\Functional;
 use App\Tests\Step\Functional\AdminTester;
 use Codeception\Attribute\Before;
+use Codeception\Util\Locator;
 
 class InvitationCest extends AbstractCest
 {
@@ -72,7 +73,7 @@ class InvitationCest extends AbstractCest
     {
         $I->loginAsAdmin();
         $I->click('Clowns', 'nav');
-        $I->click('Erica');
+        $I->click('Details bearbeiten', Locator::contains('tr', 'Erica'));
         $I->dontSee('Einladungsemail senden');
     }
 
@@ -83,7 +84,7 @@ class InvitationCest extends AbstractCest
         $I->loginAsAdmin();
         $I->stopFollowingRedirects();
         $I->click('Clowns', 'nav');
-        $I->click('Erica');
+        $I->click('Details bearbeiten', Locator::contains('tr', 'Erica'));
         $I->see('Einladungsemail senden');
         $I->click('Einladungsemail senden');
         $I->seeEmailIsSent(1);
@@ -94,7 +95,7 @@ class InvitationCest extends AbstractCest
     {
         $I->loginAsAdmin();
         $I->click('Clowns', 'nav');
-        $I->click('Erica');
+        $I->click('Details bearbeiten', Locator::contains('tr', 'Erica'));
         $I->see('Erica hat die Datenschutzerklärung am 15.01.2024 akzeptiert.');
     }
 }
