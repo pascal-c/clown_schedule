@@ -7,22 +7,36 @@
 
     <table class="table">
         <thead>
-            <tr><th>Clown</th><th>Email</th><th>aktiv</th><th>Büro?</th></tr>
+            <tr>
+                <th>Clown</th><th>Email</th><th>aktiv</th><th>Büro?</th>
+                {% if currentClown.isAdmin %}
+                    <th>Gesperrte Clowns</th>
+                {% endif %}
+            </tr>
         </thead>
         <tbody>
-
             {% for clown in clowns %}
                 <tr>
                     <td>
+                        {{ clown.name}}
                         {% if currentClown.isAdmin %}
-                            <a href="{{ path('clown_edit', {id: clown.id}) }}">{{ clown.name }}</a>
-                        {% else %}
-                            {{ clown.name}}
+                            <a href="{{ path('clown_edit', {id: clown.id}) }}"></a>
+                            {{ include('_shared/_edit_link.html.twig', {url: path('clown_edit', {id: clown.id}), title: "Details bearbeiten"}) }}
                         {% endif %}
                     </td>
                     <td><a href="mailto:{{ clown.email }}">{{ clown.email }}</a></td>
                     <td>{{ clown.active ? 'Ja' : 'Nein' }}</td>
                     <td>{{ clown.admin ? 'Ja' : 'Nein' }}</td>
+                    {% if currentClown.isAdmin %}
+                        <td>
+                            {% for blockedClown in clown.blockedClowns %}
+                                {{ blockedClown.name }}{% if not loop.last %}, {% endif %}
+                            {% else %}
+                                <i>keine</i>
+                            {% endfor %}
+                            {{ include('_shared/_edit_link.html.twig', {url: path('clown_edit_blocked_clowns', {id: clown.id}), title: "Gesperrte Clowns bearbeiten"}) }}
+                        </td>
+                    {% endif %}
                 </tr>    
             {% endfor %}    
         </tbody>

@@ -36,7 +36,7 @@ class ClownFormType extends AbstractType
                 'required' => false,
             ])
             ->add('isAdmin', CheckboxType::class, [
-                'label' => 'Admin?',
+                'label' => 'Büro?',
                 'required' => false,
             ]);
         if (!$clown->getId()) {

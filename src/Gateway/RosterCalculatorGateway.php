@@ -137,6 +137,7 @@ class RosterCalculatorGateway
                 'targetShifts' => $clownAvailability->getTargetPlays() ?? 0,
                 'locationPreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive() ? $this->serializeClownVenuePreferences($clownAvailability) : [],
                 'locationPreferenceDefaultPoints' => $this->configRepository->isFeatureClownVenuePreferencesActive() ? $this->configRepository->getPointsForPreference(Preference::OK) : 0,
+                'blockedPeopleIds' => $clownAvailability->getClown()->getBlockedClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
             ],
             'availabilities' => $clownAvailability->getClownAvailabilityTimes()->map(fn (ClownAvailabilityTime $timeSlot): array => $this->serializeTimeSlot($timeSlot))->toArray(),
         ];
