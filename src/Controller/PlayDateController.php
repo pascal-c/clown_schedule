@@ -188,7 +188,7 @@ class PlayDateController extends AbstractProtectedController
             $this->playDateService->move($playDate, $moveForm);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Der Spieltermin wurde verschoben. Achtung! Eventuell muss noch ein neuer Springer gefunden werden.');
+            $this->addFlash('success', 'Der Spieltermin wurde verschoben.');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } else {
