@@ -6,28 +6,28 @@
     </thead>
     <tbody>
         {% for key, date in dates %}
-            {% if date is of_type('class', 'App\\Entity\\PlayDate') %}
-                <tr title="{{ datesScheduled[key]['title'] ?? '' }}">
-                    <td class="lh-sm {{ datesScheduled[key]['class'] ?? '' }}">
-                        {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
-                        {{ include('play_date/_status_icons.html.twig', {playDate: date}) }}
-                        {% if date.comment != '' %}
-                            <br /><span class="fst-itlic fw-light">{{ date.comment|nl2br }}</i>
+            {% if date.dateEntity is of_type('class', 'App\\Entity\\PlayDate') %}
+                <tr title="{{ date.title ?? '' }}">
+                    <td class="lh-sm {{ date.class ?? '' }}">
+                        {{ date.dateEntity.date|date('d.m.Y') }} {{ date.dateEntity.daytime|trans }}
+                        {{ include('play_date/_status_icons.html.twig', {playDate: date.dateEntity}) }}
+                        {% if date.dateEntity.comment != '' %}
+                            <br /><span class="fst-itlic fw-light">{{ date.dateEntity.comment|nl2br }}</i>
                         {% endif %}
                     </td>
                     <td>
-                        <a class="text-dark" href="{{ path('play_date_show', {id: date.id}) }}">{{ date.name }}</a>
+                        <a class="text-dark" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">{{ date.dateEntity.name }}</a>
                     </td>
-                    <td class="{{ datesScheduled[key]['class'] ?? '' }}">{{ date.meetingTime is not empty ? date.meetingTime|date('H:i') }}</td>
-                    <td class="{{ datesScheduled[key]['class'] ?? '' }}">{{ date.playTimeFrom is not empty ? date.playTimeFrom|date('H:i') ~ ' -' }} {{ date.playTimeTo is not empty ? date.playTimeTo|date('H:i') }}</td>
-                    <td class="{{ datesScheduled[key]['class'] ?? '' }}">
-                        {{ date.playingClowns.count > 3 ? 'vielen' : date.playingClowns|filter(clown => clown!=currentClown)|map(clown => clown.name)|join('| ') }}
+                    <td class="{{ date.class ?? '' }}">{{ date.dateEntity.meetingTime is not empty ? date.dateEntity.meetingTime|date('H:i') }}</td>
+                    <td class="{{ date.class ?? '' }}">{{ date.dateEntity.playTimeFrom is not empty ? date.dateEntity.playTimeFrom|date('H:i') ~ ' -' }} {{ date.dateEntity.playTimeTo is not empty ? date.dateEntity.playTimeTo|date('H:i') }}</td>
+                    <td class="{{ date.class ?? '' }}">
+                        {{ date.dateEntity.playingClowns.count > 3 ? 'vielen' : date.dateEntity.playingClowns|filter(clown => clown!=currentClown)|map(clown => clown.name)|join('| ') }}
                     </td>
                 </tr>
             {% else %}
-                <tr title="{{ datesScheduled[key]['title'] ?? '' }}">
-                    <td class="{{ datesScheduled[key]['class'] ?? '' }}">
-                        {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
+                <tr title="{{ date.title ?? '' }}">
+                    <td class="{{ date.class ?? '' }}">
+                        {{ date.dateEntity.date|date('d.m.Y') }} {{ date.dateEntity.daytime|trans }}
                     </td>
                     <td colspan='4'><i>Springer:in</i></td>
                 </tr>

@@ -14,11 +14,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class NextDatesPerClownComponent
 {
     public Clown $currentClown;
-
-    /** @var array<TimeSlotInterface> */
     public array $dates = [];
-
-    public array $datesScheduled = [];
 
     public function __construct(
         private PlayDateRepository $playDateRepository,
@@ -32,9 +28,9 @@ class NextDatesPerClownComponent
         $playDates = $this->playDateRepository->futureByClown($currentClown);
         $substitutions = $this->substitutionRepository->futureByClown($currentClown);
         $this->currentClown = $currentClown;
-        $this->dates = array_merge($playDates, $substitutions);
+        $dateEntities = array_merge($playDates, $substitutions);
         usort(
-            $this->dates,
+            $dateEntities,
             fn (TimeSlotInterface $a, TimeSlotInterface $b) => $a->getDate() == $b->getDate()
                 ?
                 $a->getDaytime() <=> $b->getDaytime()
@@ -42,20 +38,23 @@ class NextDatesPerClownComponent
                 $a->getDate() <=> $b->getDate()
         );
 
-        foreach ($this->dates as $key => $date) {
-            if ($date instanceof PlayDate && $date->isCancelled()) {
-                $this->datesScheduled[$key]['class'] = 'text-muted';
-                $this->datesScheduled[$key]['title'] = 'Spieltermin abgesagt';
-            } elseif ($date instanceof PlayDate && $date->isMoved()) {
-                $this->datesScheduled[$key]['class'] = 'text-muted';
-                $this->datesScheduled[$key]['title'] = 'Spieltermin verschoben';
+        foreach ($dateEntities as $dateEntity) {
+            $date = ['dateEntity' => $dateEntity];
+            if ($dateEntity instanceof PlayDate && $dateEntity->isCancelled()) {
+                $date['class'] = 'text-muted';
+                $date['title'] = 'Spieltermin abgesagt';
+            } elseif ($dateEntity instanceof PlayDate && $dateEntity->isMoved()) {
+                $date['class'] = 'text-muted';
+                $date['title'] = 'Spieltermin verschoben';
             } else {
-                $schedule = $this->scheduleRepository->find($date->getMonth());
+                $schedule = $this->scheduleRepository->find($dateEntity->getMonth());
                 if ($schedule && !$schedule->isCompleted()) {
-                    $this->datesScheduled[$key]['class'] = 'text-muted';
-                    $this->datesScheduled[$key]['title'] = 'Termin noch unsicher!';
+                    $date['class'] = 'text-muted';
+                    $date['title'] = 'Termin noch unsicher!';
                 }
             }
+
+            $this->dates[] = $date;
         }
     }
 }

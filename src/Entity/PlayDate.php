@@ -13,7 +13,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Doctrine\ORM\Mapping\JoinColumn;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
@@ -40,7 +39,7 @@ class PlayDate implements TimeSlotPeriodInterface
     private ?string $daytime = null;
 
     #[ORM\ManyToOne(inversedBy: 'playDates')]
-    #[JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Assert\When(
         expression: 'this.isRegular()',
         constraints: [
@@ -95,7 +94,7 @@ class PlayDate implements TimeSlotPeriodInterface
     private ?string $status = self::STATUS_CONFIRMED;
 
     #[ORM\OneToOne(targetEntity: self::class, inversedBy: 'movedFrom', cascade: ['persist'])]
-    #[JoinColumn(onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?self $movedTo = null;
 
     #[ORM\OneToOne(mappedBy: 'movedTo', targetEntity: self::class)]

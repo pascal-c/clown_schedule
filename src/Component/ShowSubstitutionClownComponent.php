@@ -17,7 +17,6 @@ final class ShowSubstitutionClownComponent
 {
     public ?Substitution $substitution;
     public ?Clown $currentClown;
-    public string $colorClass = '';
     public bool $showIt = true;
     public bool $showSubstitutionClownWarning = false;
 
