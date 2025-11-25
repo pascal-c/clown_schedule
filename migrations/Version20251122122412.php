@@ -24,6 +24,10 @@ final class Version20251122122412 extends AbstractMigration
         $this->addSql('ALTER TABLE play_date ADD CONSTRAINT FK_A19BC9ABBFAF4E02 FOREIGN KEY (moved_to_id) REFERENCES play_date (id)');
         $this->addSql('CREATE INDEX IDX_A19BC9AB7B00651C ON play_date (status)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_A19BC9ABBFAF4E02 ON play_date (moved_to_id)');
+        $this->addSql('ALTER TABLE play_date DROP FOREIGN KEY `FK_A19BC9ABBFAF4E02`');
+        $this->addSql('ALTER TABLE play_date ADD CONSTRAINT FK_A19BC9ABBFAF4E02 FOREIGN KEY (moved_to_id) REFERENCES play_date (id) ON DELETE SET NULL');
+
+        $this->addSql("UPDATE play_date SET status = 'cancelled' WHERE comment LIKE '%abgesagt%' OR comment LIKE '%ausgefallen%'");
     }
 
     public function down(Schema $schema): void
