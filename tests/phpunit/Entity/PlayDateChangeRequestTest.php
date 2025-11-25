@@ -24,6 +24,9 @@ final class PlayDateChangeRequestTest extends TestCase
 
         $playDateToGiveOff->addPlayingClown($requestedBy);
         $this->assertTrue($playDateChangeRequest->isValid());
+
+        $playDateToGiveOff->cancel();
+        $this->assertFalse($playDateChangeRequest->isValid());
     }
 
     public function testIsValidSwap(): void
@@ -50,5 +53,9 @@ final class PlayDateChangeRequestTest extends TestCase
         // everything's fine
         $playDateWanted->addPlayingClown($requestedTo);
         $this->assertTrue($playDateChangeRequest->isValid());
+
+        // playDateWanted is cancelled
+        $playDateWanted->cancel();
+        $this->assertFalse($playDateChangeRequest->isValid());
     }
 }

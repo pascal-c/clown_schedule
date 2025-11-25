@@ -3,7 +3,16 @@
         <span class="{{ colorClass }}">
             {{ playDate.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}
         </span>
-    </a><br />
+    </a>
+
+    {% if showNotEnonoughClownsWarning %}
+        <span class="ms-2 text-danger" title="Es sind weniger als 2 Clowns für diesen Spieltermin eingetragen.">
+            <i class="bi bi-exclamation-triangle"></i>
+        </span>
+    {% endif %}
+    {{ include('play_date/_status_icons.html.twig', {playDate: playDate}) }}
+    <br />
+
     <span class="text-muted">
         {{ playDate.playTimeFrom is not empty ? playDate.playTimeFrom|date('H:i') ~ '-' }}{{ playDate.playTimeTo is not empty ? playDate.playTimeTo|date('H:i') }}
     </span>

@@ -19,8 +19,18 @@
                     {% endif %}
                     {% if currentClown.isAdmin %}
                         {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"}) }}
-                        {{ include('play_date/_delete_link.html.twig', {delete_form: delete_form, playDate: playDate, is_past: is_past}) }}
+                        {% if delete_form is not null %}
+                            {{ include('play_date/_delete_link.html.twig', {delete_form: delete_form, playDate: playDate, is_past: is_past}) }}
+                        {% endif %}
+                        {% if cancel_form is not null %}
+                            {{ include('play_date/_cancel_link.html.twig', {cancel_form: cancel_form, playDate: playDate}) }}
+                        {% endif %}
+                        {% if move_form is not null %}
+                            {{ include('play_date/_move_link.html.twig', {move_form: move_form, playDate: playDate}) }}
+                        {% endif %}
                     {% endif %}
+
+                    {{ include('play_date/_status_icons.html.twig', {playDate: playDate}) }}
                 </td>
             </tr>
             <tr>
@@ -28,7 +38,13 @@
                 <td>
                     {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }}
                     {% if playDate.comment != '' %}
-                        <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
+                        <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</span>
+                    {% endif %}
+                    {% if playDate.movedFrom %}
+                        <br />Verschoben von <a class="text-dark" href="{{ path('play_date_show', {id: playDate.movedFrom.id}) }}">{{ playDate.movedFrom.date|date('d.m.Y') }}</a>
+                    {% endif %}
+                    {% if playDate.movedTo %}
+                        <br />Verschoben auf <a class="text-dark" href="{{ path('play_date_show', {id: playDate.movedTo.id}) }}">{{ playDate.movedTo.date|date('d.m.Y') }}</a>
                     {% endif %}
                 </td>
             </tr>
@@ -226,7 +242,7 @@
                 <th>Datum</th>
                 <th>Spielende Clowns</th>
                 <th>geändert durch</th>
-                <th>Grund</th>
+                <th>Aktion</th>
         </thead>
         <tbody>
             {% for history in playDate.playDateHistory %}

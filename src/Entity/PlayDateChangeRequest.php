@@ -15,7 +15,7 @@ class PlayDateChangeRequest
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'PlayDateGiveOffRequests')]
+    #[ORM\ManyToOne(inversedBy: 'playDateGiveOffRequests')]
     #[ORM\JoinColumn(nullable: false)]
     private ?PlayDate $playDateToGiveOff = null;
 
@@ -150,6 +150,8 @@ class PlayDateChangeRequest
     public function isValid(): bool
     {
         return $this->playDateToGiveOff->getPlayingClowns()->contains($this->requestedBy)
-            && (is_null($this->PlayDateWanted) || $this->PlayDateWanted->getPlayingClowns()->contains($this->requestedTo));
+            && (is_null($this->PlayDateWanted) || $this->PlayDateWanted->getPlayingClowns()->contains($this->requestedTo))
+            && $this->playDateToGiveOff->isConfirmed()
+            && (is_null($this->PlayDateWanted) || $this->PlayDateWanted->isConfirmed());
     }
 }

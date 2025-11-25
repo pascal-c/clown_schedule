@@ -1,0 +1,9 @@
+{% if playDate.cancelled %}
+    <span class="ms-2 text-danger">
+        <i class="bi bi-x-circle"></i> abgesagt
+    </span>
+{% elseif playDate.moved %}
+    <span class="ms-2 text-danger" title="verschoben auf den {{ playDate.movedTo ? playDate.movedTo.date|date('d.m.Y') : '?' }}">
+        <i class="bi bi-arrows-move"></i></a> verschoben
+    </span>
+{% endif %}

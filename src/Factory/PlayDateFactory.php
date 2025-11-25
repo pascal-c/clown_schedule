@@ -30,7 +30,7 @@ class PlayDateFactory extends AbstractFactory
         ?string $daytime = null,
         ?Venue $venue = null,
         array $playingClowns = [],
-        $type = PlayDateType::REGULAR,
+        PlayDateType $type = PlayDateType::REGULAR,
         $title = null,
         ?string $meetingTime = null,
         ?string $playTimeFrom = null,

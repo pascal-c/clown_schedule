@@ -12,6 +12,8 @@ use App\Factory\PlayDateFactory;
 use App\Repository\PlayDateRepository;
 use App\Service\TimeService;
 use App\Value\PlayDateType;
+use App\Value\TimeSlotPeriod;
+use App\Value\TimeSlotPeriodInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use DateTimeImmutable;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -112,5 +114,38 @@ final class PlayDateRepositoryTest extends KernelTestCase
 
         $result = $this->repository->regularByMonth($month);
         $this->assertSame([$one], $result);
+    }
+
+    public function testFindByTimeSlotPeriodWithDaytimeAM(): void
+    {
+        $timeSlotPeriod = new TimeSlotPeriod(
+            date: new DateTimeImmutable('2024-02-12'),
+            daytime: TimeSlotPeriodInterface::AM,
+        );
+
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::AM, type: PlayDateType::SPECIAL); // correct!
+        $two = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::ALL); // correct!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::PM); // wrong daytime!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-13'), daytime: TimeSlotPeriodInterface::AM); // wrong date!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::AM, type: PlayDateType::TRAINING); // wrong type!
+
+        $result = $this->repository->findByTimeSlotPeriod($timeSlotPeriod);
+        $this->assertEqualsCanonicalizing([$one, $two], $result);
+    }
+
+    public function testFindByTimeSlotPeriodWithDaytimeALL(): void
+    {
+        $timeSlotPeriod = new TimeSlotPeriod(
+            date: new DateTimeImmutable('2024-02-12'),
+            daytime: TimeSlotPeriodInterface::ALL,
+        );
+
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::AM); // correct!
+        $two = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::ALL); // correct!
+        $three = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-12'), daytime: TimeSlotPeriodInterface::PM); // correct!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-13'), daytime: TimeSlotPeriodInterface::AM); // wrong date!
+
+        $result = $this->repository->findByTimeSlotPeriod($timeSlotPeriod);
+        $this->assertEqualsCanonicalizing([$one, $two, $three], $result);
     }
 }

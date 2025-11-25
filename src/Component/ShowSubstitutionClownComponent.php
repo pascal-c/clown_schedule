@@ -19,6 +19,7 @@ final class ShowSubstitutionClownComponent
     public ?Clown $currentClown;
     public string $colorClass = '';
     public bool $showIt = true;
+    public bool $showSubstitutionClownWarning = false;
 
     public function __construct(
         private SubstitutionRepository $substitutionRepository,
@@ -38,7 +39,7 @@ final class ShowSubstitutionClownComponent
         $this->currentClown = $this->authService->getCurrentClown();
 
         $schedule = $this->scheduleRepository->find($month);
-        $this->colorClass = $schedule && !$this->substitution->getSubstitutionClown() ? 'text-danger' : '';
-        $this->showIt = $this->currentClown->isAdmin() || ScheduleStatus::COMPLETED === $schedule?->getStatus();
+        $this->showSubstitutionClownWarning = $schedule && !$this->substitution->getSubstitutionClown();
+        $this->showIt = $this->currentClown->isAdmin() || $this->substitution->getSubstitutionClown() || ScheduleStatus::COMPLETED === $schedule?->getStatus();
     }
 }

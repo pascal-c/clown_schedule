@@ -19,7 +19,9 @@
             <td>
                 <a href="{{ path('play_date_show', {id: play_date.id}) }}" class="text-dark">{{ play_date.date|date("d.m.Y") }}&nbsp;{{ play_date.daytime }}</a>
             </td>
-            <td>{{ play_date.name }}</td>
+            <td>
+                {{ play_date.name }}<br />
+                {{ include('play_date/_status_icons.html.twig', {playDate: play_date}) }}</td>
             <td>
                {% if play_date.super %}
                     <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spieltermin"></i> Super-Spieltermin<br />

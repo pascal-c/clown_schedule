@@ -1,0 +1,30 @@
+<!-- cancel link triggers modal -->
+<a href="#" data-bs-toggle="modal" data-bs-target="#cancelModal" title="Spieltermin absagen"><i class="bi bi-x-circle"></i></a>
+
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      {{ form_start(cancel_form) }}
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="cancelModalLabel">Spieltermin absagen</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>{{ playDate.name }}, am {{ playDate.date|date('d.m.Y') }}</h6>
+          <p class="fst-itlic fw-light">
+          <a href=".info" data-bs-toggle="collapse"><i class="bi bi-info-circle"></i></a>
+            <span class="collapse info">
+              Der Spieltermin wird als abgesagt markiert. Falls zu dem Zeitslot kein anderer Spieltermin existiert, wird der Springertermin entfernt.
+            </span>
+          </p>
+          {{ form_row(cancel_form['comment']) }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary mb-3" data-bs-dismiss="modal">Abbrechen</button>
+          {{ form_row(cancel_form['save']) }}
+        </div>
+      {{ form_rest(cancel_form) }}
+      {{ form_end(cancel_form) }}
+    </div>
+  </div>
+</div>

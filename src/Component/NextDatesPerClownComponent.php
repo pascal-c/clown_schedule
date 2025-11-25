@@ -3,6 +3,7 @@
 namespace App\Component;
 
 use App\Entity\Clown;
+use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
@@ -17,7 +18,6 @@ class NextDatesPerClownComponent
     /** @var array<TimeSlotInterface> */
     public array $dates = [];
 
-    /** @var array<bool> */
     public array $datesScheduled = [];
 
     public function __construct(
@@ -43,8 +43,19 @@ class NextDatesPerClownComponent
         );
 
         foreach ($this->dates as $key => $date) {
-            $schedule = $this->scheduleRepository->find($date->getMonth());
-            $this->datesScheduled[$key] = is_null($schedule) || $schedule?->isCompleted();
+            if ($date instanceof PlayDate && $date->isCancelled()) {
+                $this->datesScheduled[$key]['class'] = 'text-muted';
+                $this->datesScheduled[$key]['title'] = 'Spieltermin abgesagt';
+            } elseif ($date instanceof PlayDate && $date->isMoved()) {
+                $this->datesScheduled[$key]['class'] = 'text-muted';
+                $this->datesScheduled[$key]['title'] = 'Spieltermin verschoben';
+            } else {
+                $schedule = $this->scheduleRepository->find($date->getMonth());
+                if ($schedule && !$schedule->isCompleted()) {
+                    $this->datesScheduled[$key]['class'] = 'text-muted';
+                    $this->datesScheduled[$key]['title'] = 'Termin noch unsicher!';
+                }
+            }
         }
     }
 }

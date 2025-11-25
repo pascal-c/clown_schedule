@@ -19,6 +19,7 @@ final class ShowPlayDateComponent
     public string $colorClass = '';
     public bool $showClowns = true;
     public string $specialPlayDateUrl = '';
+    public bool $showNotEnonoughClownsWarning = false;
 
     public function __construct(
         private AuthService $authService,
@@ -36,6 +37,7 @@ final class ShowPlayDateComponent
         $schedule = $this->scheduleRepository->find($month);
         $this->colorClass = $this->getColorClass($playDate, $schedule);
         $this->showClowns = $this->currentClown->isAdmin() || is_null($schedule) || $schedule?->isCompleted();
+        $this->showNotEnonoughClownsWarning = $schedule && $playDate->getPlayingClowns()->count() < 2;
     }
 
     private function getColorClass(PlayDate $playDate, ?Schedule $schedule): string
@@ -46,10 +48,6 @@ final class ShowPlayDateComponent
             return 'text-secondary text-opacity-75';
         }
 
-        if (null === $schedule || 2 === $playDate->getPlayingClowns()->count()) {
-            return 'text-dark';
-        }
-
-        return 'text-danger';
+        return 'text-dark';
     }
 }

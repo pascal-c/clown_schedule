@@ -9,6 +9,7 @@ use App\Entity\PlayDate;
 use App\Entity\Week;
 use App\Service\TimeService;
 use App\Value\PlayDateType;
+use App\Value\TimeSlotPeriodInterface;
 use Doctrine\ORM\QueryBuilder;
 
 class PlayDateRepository extends AbstractRepository
@@ -166,5 +167,22 @@ class PlayDateRepository extends AbstractRepository
             ->addOrderBy('pd.daytime', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /** @return [PlayDate] */
+    public function findByTimeSlotPeriod(TimeSlotPeriodInterface $timeSlotPeriod): array
+    {
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->where('pd.type = :type_regular OR pd.type = :type_special')
+            ->andWhere('pd.date = :date')
+            ->andWhere('pd.daytime = :daytime OR pd.daytime = :all OR :daytime = :all')
+            ->setParameter('date', $timeSlotPeriod->getDate())
+            ->setParameter('daytime', $timeSlotPeriod->getDaytime())
+            ->setParameter('all', TimeSlotPeriodInterface::ALL)
+            ->setParameter('type_regular', PlayDateType::REGULAR->value)
+            ->setParameter('type_special', PlayDateType::SPECIAL->value)
+            ->getQuery()
+            ->getResult();
+
     }
 }
