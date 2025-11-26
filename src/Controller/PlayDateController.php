@@ -7,15 +7,18 @@ namespace App\Controller;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
 use App\Form\PlayDate\AssignClownsFormType;
+use App\Form\PlayDate\CancelFormType;
+use App\Form\PlayDate\MoveFormType;
 use App\Form\PlayDate\RegularPlayDateFormType;
 use App\Form\PlayDate\SpecialPlayDateFormType;
 use App\Form\PlayDate\TrainingFormType;
-use App\Repository\ClownRepository;
+use App\Guard\PlayDateGuard;
 use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\VenueRepository;
 use App\Service\PlayDateHistoryService;
+use App\Service\PlayDateService;
 use App\Service\RecurringDateService;
 use App\Service\Scheduler\TrainingAssigner;
 use App\Service\TimeService;
@@ -39,13 +42,14 @@ class PlayDateController extends AbstractProtectedController
         private PlayDateRepository $playDateRepository,
         private ScheduleRepository $scheduleRepository,
         private PlayDateHistoryService $playDateHistoryService,
-        private ClownRepository $clownRepository,
         private TimeService $timeService,
         private TranslatorInterface $translator,
         private TrainingAssigner $trainingAssigner,
         private PlayDateViewController $playDateViewController,
         private ConfigRepository $configRepository,
         private RecurringDateService $recurringDateService,
+        private PlayDateGuard $playDateGuard,
+        private PlayDateService $playDateService,
     ) {
         $this->entityManager = $doctrine->getManager();
     }
@@ -90,7 +94,7 @@ class PlayDateController extends AbstractProtectedController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($playDate);
+            $this->playDateService->create($playDate);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
@@ -137,15 +141,61 @@ class PlayDateController extends AbstractProtectedController
             $this->generateUrl('play_date_delete_recurring', $deleteFromUrlParams),
             'Diesen Termin und alle künftigen Wiederholungen löschen',
         );
+        $cancelForm = $this->createForm(CancelFormType::class, $playDate);
+        $moveForm = $this->createForm(MoveFormType::class, $playDate);
+        $moveForm['daytime']->setData($playDate->getDaytime());
+        $moveForm['meetingTime']->setData($playDate->getMeetingTime());
+        $moveForm['playTimeFrom']->setData($playDate->getPlayTimeFrom());
+        $moveForm['playTimeTo']->setData($playDate->getPlayTimeTo());
 
         return $this->render('play_date/show.html.twig', [
             'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm,
             'config' => $this->configRepository->find(),
-            'delete_form' => $deleteForm,
-            'delete_recurring_form' => $deleteRecurringForm,
+            'delete_form' => $this->playDateGuard->canDelete($playDate) ? $deleteForm : null,
+            'delete_recurring_form' => $this->playDateGuard->canDelete($playDate) ? $deleteRecurringForm : null,
+            'cancel_form' => $this->playDateGuard->canCancel($playDate) ? $cancelForm : null,
+            'move_form' => $this->playDateGuard->canMove($playDate) ? $moveForm : null,
             'is_past' => $this->timeService->today() > $playDate->getDate(),
         ]);
+    }
+
+    #[Route('/play_dates/{id}/cancel', name: 'play_date_cancel', methods: ['PUT'])]
+    public function cancel(PlayDate $playDate, Request $request): Response
+    {
+        $cancelForm = $this->createForm(CancelFormType::class, $playDate);
+        $cancelForm->handleRequest($request);
+        if ($cancelForm->isSubmitted() && $cancelForm->isValid()) {
+            $this->playDateService->cancel($playDate);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Der Spieltermin wurde abgesagt. Schade!');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        } else {
+            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        }
+
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+    }
+
+    #[Route('/play_dates/{id}/move', name: 'play_date_move', methods: ['PUT'])]
+    public function move(PlayDate $playDate, Request $request): Response
+    {
+        $moveForm = $this->createForm(MoveFormType::class, $playDate);
+        $moveForm->handleRequest($request);
+        if ($moveForm->isSubmitted() && $moveForm->isValid()) {
+            $this->playDateService->move($playDate, $moveForm);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Der Spieltermin wurde verschoben.');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        } else {
+            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        }
+
+        return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
 
     #[Route('/play_dates/{id}/register', name: 'training_register', methods: ['POST'])]

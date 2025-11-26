@@ -4,6 +4,7 @@ namespace App\Form\PlayDate;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Guard\PlayDateGuard;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -16,13 +17,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RegularPlayDateFormType extends AbstractType
 {
+    public function __construct(private PlayDateGuard $playDateGuard)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** @var PlayDate $playDate */
+        $playDate = $options['data'];
+        $canEdit = $this->playDateGuard->canEdit($playDate);
+
         $builder
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Datum',
                 'input' => 'datetime_immutable',
+                'disabled' => !$canEdit,
             ])
             ->add('daytime', ChoiceType::class, [
                 'choices' => [
@@ -33,12 +43,14 @@ class RegularPlayDateFormType extends AbstractType
                 'label' => 'Tageszeit',
                 'expanded' => true,
                 'multiple' => false,
+                'disabled' => !$canEdit,
             ])
             ->add('venue', EntityType::class, [
                 'class' => Venue::class,
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Spielort',
+                'disabled' => !$canEdit,
             ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',

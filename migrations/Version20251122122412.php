@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DoctrineMigrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+final class Version20251122122412 extends AbstractMigration
+{
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function up(Schema $schema): void
+    {
+        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE play_date ADD status VARCHAR(100) DEFAULT \'confirmed\' NOT NULL, ADD moved_to_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE play_date ADD CONSTRAINT FK_A19BC9ABBFAF4E02 FOREIGN KEY (moved_to_id) REFERENCES play_date (id)');
+        $this->addSql('CREATE INDEX IDX_A19BC9AB7B00651C ON play_date (status)');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_A19BC9ABBFAF4E02 ON play_date (moved_to_id)');
+        $this->addSql('ALTER TABLE play_date DROP FOREIGN KEY `FK_A19BC9ABBFAF4E02`');
+        $this->addSql('ALTER TABLE play_date ADD CONSTRAINT FK_A19BC9ABBFAF4E02 FOREIGN KEY (moved_to_id) REFERENCES play_date (id) ON DELETE SET NULL');
+
+        $this->addSql("UPDATE play_date SET status = 'cancelled' WHERE comment LIKE '%abgesagt%' OR comment LIKE '%ausgefallen%'");
+    }
+
+    public function down(Schema $schema): void
+    {
+        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE play_date DROP FOREIGN KEY FK_A19BC9ABBFAF4E02');
+        $this->addSql('DROP INDEX IDX_A19BC9AB7B00651C ON play_date');
+        $this->addSql('DROP INDEX UNIQ_A19BC9ABBFAF4E02 ON play_date');
+        $this->addSql('ALTER TABLE play_date DROP status, DROP moved_to_id');
+    }
+}

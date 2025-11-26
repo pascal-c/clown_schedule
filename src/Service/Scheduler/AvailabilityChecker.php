@@ -74,7 +74,7 @@ class AvailabilityChecker
 
     private function isPlayingClownWithin(TimeSlotPeriodInterface $timeSlotPeriod, Clown $clown): bool
     {
-        $playDates = $this->playDateRepository->byMonth($timeSlotPeriod->getMonth());
+        $playDates = $this->playDateRepository->confirmedByMonth($timeSlotPeriod->getMonth());
         $playDatesSameTimeSlot = array_filter(
             $playDates,
             fn ($playDate) => $playDate->getPlayingClowns()->contains($clown)

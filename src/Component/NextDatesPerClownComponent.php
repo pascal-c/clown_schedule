@@ -3,6 +3,7 @@
 namespace App\Component;
 
 use App\Entity\Clown;
+use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
@@ -13,12 +14,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class NextDatesPerClownComponent
 {
     public Clown $currentClown;
-
-    /** @var array<TimeSlotInterface> */
     public array $dates = [];
-
-    /** @var array<bool> */
-    public array $datesScheduled = [];
 
     public function __construct(
         private PlayDateRepository $playDateRepository,
@@ -32,9 +28,9 @@ class NextDatesPerClownComponent
         $playDates = $this->playDateRepository->futureByClown($currentClown);
         $substitutions = $this->substitutionRepository->futureByClown($currentClown);
         $this->currentClown = $currentClown;
-        $this->dates = array_merge($playDates, $substitutions);
+        $dateEntities = array_merge($playDates, $substitutions);
         usort(
-            $this->dates,
+            $dateEntities,
             fn (TimeSlotInterface $a, TimeSlotInterface $b) => $a->getDate() == $b->getDate()
                 ?
                 $a->getDaytime() <=> $b->getDaytime()
@@ -42,9 +38,23 @@ class NextDatesPerClownComponent
                 $a->getDate() <=> $b->getDate()
         );
 
-        foreach ($this->dates as $key => $date) {
-            $schedule = $this->scheduleRepository->find($date->getMonth());
-            $this->datesScheduled[$key] = is_null($schedule) || $schedule?->isCompleted();
+        foreach ($dateEntities as $dateEntity) {
+            $date = ['dateEntity' => $dateEntity];
+            if ($dateEntity instanceof PlayDate && $dateEntity->isCancelled()) {
+                $date['class'] = 'text-muted';
+                $date['title'] = 'Spieltermin abgesagt';
+            } elseif ($dateEntity instanceof PlayDate && $dateEntity->isMoved()) {
+                $date['class'] = 'text-muted';
+                $date['title'] = 'Spieltermin verschoben';
+            } else {
+                $schedule = $this->scheduleRepository->find($dateEntity->getMonth());
+                if ($schedule && !$schedule->isCompleted()) {
+                    $date['class'] = 'text-muted';
+                    $date['title'] = 'Termin noch unsicher!';
+                }
+            }
+
+            $this->dates[] = $date;
         }
     }
 }

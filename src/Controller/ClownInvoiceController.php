@@ -30,7 +30,7 @@ class ClownInvoiceController extends AbstractProtectedController
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);
-        $playDates = $this->playDateRepository->byMonthAndClown($month, $clown);
+        $playDates = $this->playDateRepository->confirmedByMonthAndClown($month, $clown);
         $playDates = array_filter($playDates, fn (PlayDate $playDate): bool => !$playDate->isTraining());
         $activeClowns = $this->clownRepository->allActive();
 

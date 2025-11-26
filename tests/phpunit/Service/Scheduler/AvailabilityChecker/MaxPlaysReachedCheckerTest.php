@@ -142,7 +142,7 @@ final class MaxPlaysReachedCheckerTest extends TestCase
 
         // we have 1 PlayDate and 1 Substitution for this clown for this day
         $this->playDateRepository
-            ->method('byMonth')
+            ->method('confirmedByMonth')
             ->with($month)
             ->willReturn([
                 (new PlayDate())->setDate(new DateTimeImmutable('2024-02-13'))->addPlayingClown($clown), // correct!

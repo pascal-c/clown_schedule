@@ -61,7 +61,7 @@ class MaxPlaysReachedChecker
 
     public function maxPlaysDayReached(DateTimeInterface $date, ClownAvailability $clownAvailability): bool
     {
-        $playDates = $this->playDateRepository->byMonth($clownAvailability->getMonth());
+        $playDates = $this->playDateRepository->confirmedByMonth($clownAvailability->getMonth());
         $playDatesSameDay = array_filter(
             $playDates,
             fn (PlayDate $playDate): bool => $date == $playDate->getDate()

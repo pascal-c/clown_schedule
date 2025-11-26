@@ -30,13 +30,14 @@ class PlayDateFactory extends AbstractFactory
         ?string $daytime = null,
         ?Venue $venue = null,
         array $playingClowns = [],
-        $type = PlayDateType::REGULAR,
+        PlayDateType $type = PlayDateType::REGULAR,
         $title = null,
         ?string $meetingTime = null,
         ?string $playTimeFrom = null,
         ?string $playTimeTo = null,
         bool $isSuper = false,
         ?Fee $fee = null,
+        string $status = PlayDate::STATUS_CONFIRMED,
     ): PlayDate {
         $date ??= $month ? DateTimeImmutable::createFromMutable(
             $this->generator->dateTimeBetween($month->dbFormat(), $month->next()->dbFormat(), 'Europe/Berlin')
@@ -53,6 +54,7 @@ class PlayDateFactory extends AbstractFactory
             ->setPlayTimeTo($playTimeTo ? new DateTimeImmutable($playTimeTo) : null)
             ->setIsSuper($isSuper)
             ->setFee($fee)
+            ->setStatus($status)
         ;
         foreach ($playingClowns as $playingClown) {
             $playDate->addPlayingClown($playingClown);

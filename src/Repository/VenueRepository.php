@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\PlayDate;
 use App\Entity\Venue;
 
 class VenueRepository extends AbstractRepository
@@ -32,11 +33,13 @@ class VenueRepository extends AbstractRepository
         );
     }
 
-    public function all(?string $year = null): array
+    public function allWithConfirmedPlayDates(?string $year = null): array
     {
         $queryBuilder = $this->doctrineRepository->createQueryBuilder('venue')
             ->select('venue, pd')
-            ->leftJoin('venue.playDates', 'pd');
+            ->leftJoin('venue.playDates', 'pd')
+            ->where('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED);
 
         if ($year) {
             $queryBuilder
@@ -51,5 +54,10 @@ class VenueRepository extends AbstractRepository
             ->addOrderBy('venue.name', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function all(): array
+    {
+        return $this->doctrineRepository->findAll();
     }
 }

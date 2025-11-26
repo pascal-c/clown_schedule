@@ -1,0 +1,36 @@
+<!-- move link triggers modal -->
+<a href="#" data-bs-toggle="modal" data-bs-target="#moveModal" title="Spieltermin verschieben"><i class="bi bi-arrows-move"></i></a>
+
+<div class="modal fade" id="moveModal" tabindex="-1" aria-labelledby="moveModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      {{ form_start(move_form) }}
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="moveModalLabel">Spieltermin verschieben</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>{{ playDate.name }}, am {{ playDate.date|date('d.m.Y') }}</h6>
+          <p class="fst-itlic fw-light">
+            <a href=".info" data-bs-toggle="collapse"><i class="bi bi-info-circle"></i></a>
+            <span class="collapse info">Der Spieltermin wird auf ein neues Datum und/oder eine neue Uhrzeit verschoben. Ein neuer Spieltermin wird angelegt, 
+            der alte Spieltermin wird als verschoben markiert. Falls zu dem Zeitslot kein anderer Spieltermin existiert, wird der alte Springertermin entfernt.
+            Zu dem neuen Spieltermin muss ein Springer manuell zugeordnet werden.</span>
+          </p>
+
+          {{ form_row(move_form['date']) }}
+          {{ form_row(move_form['daytime']) }}
+          {{ form_row(move_form['meetingTime']) }}
+          {{ form_row(move_form['playTimeFrom']) }}
+          {{ form_row(move_form['playTimeTo']) }}
+          {{ form_row(move_form['comment']) }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary mb-3" data-bs-dismiss="modal">Abbrechen</button>
+          {{ form_row(move_form['save']) }}
+        </div>
+      {{ form_rest(move_form) }}
+      {{ form_end(move_form) }}
+    </div>
+  </div>
+</div>

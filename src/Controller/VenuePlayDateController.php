@@ -30,7 +30,7 @@ class VenuePlayDateController extends AbstractProtectedController
             'activeYear' => $year,
             'years' => $years,
             'playDates' => $venue->getPlayDates()->filter(
-                fn (PlayDate $playDate): bool => $year === $playDate->getDate()->format('Y')
+                fn (PlayDate $playDate): bool => $year === $playDate->getDate()->format('Y') && $playDate->isConfirmed()
             ),
         ]);
     }

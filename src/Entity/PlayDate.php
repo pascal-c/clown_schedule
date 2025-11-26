@@ -22,6 +22,10 @@ class PlayDate implements TimeSlotPeriodInterface
 {
     use TimeSlotPeriodTrait;
 
+    public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_MOVED = 'moved';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -85,6 +89,16 @@ class PlayDate implements TimeSlotPeriodInterface
 
     #[ORM\ManyToOne(inversedBy: 'playDates')]
     private ?RecurringDate $recurringDate = null;
+
+    #[ORM\Column(length: 100, index: true, options: ['default' => self::STATUS_CONFIRMED])]
+    private ?string $status = self::STATUS_CONFIRMED;
+
+    #[ORM\OneToOne(targetEntity: self::class, inversedBy: 'movedFrom', cascade: ['persist'])]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?self $movedTo = null;
+
+    #[ORM\OneToOne(mappedBy: 'movedTo', targetEntity: self::class)]
+    private ?self $movedFrom = null;
 
     public function __construct()
     {
@@ -395,5 +409,64 @@ class PlayDate implements TimeSlotPeriodInterface
         $this->recurringDate = $recurringDate;
 
         return $this;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function cancel(): static
+    {
+        $this->status = static::STATUS_CANCELLED;
+
+        return $this;
+    }
+
+    public function move(PlayDate $playDate): static
+    {
+        $this->status = static::STATUS_MOVED;
+        $this->movedTo = $playDate;
+
+        return $this;
+    }
+
+    public function isConfirmed(): bool
+    {
+        return self::STATUS_CONFIRMED === $this->status;
+    }
+
+    public function isCancelled(): bool
+    {
+        return self::STATUS_CANCELLED === $this->status;
+    }
+
+    public function isMoved(): bool
+    {
+        return self::STATUS_MOVED === $this->status;
+    }
+
+    public function getMovedTo(): ?self
+    {
+        return $this->movedTo;
+    }
+
+    public function setMovedTo(?self $movedTo): static
+    {
+        $this->movedTo = $movedTo;
+
+        return $this;
+    }
+
+    public function getMovedFrom(): ?self
+    {
+        return $this->movedFrom;
     }
 }

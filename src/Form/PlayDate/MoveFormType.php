@@ -3,40 +3,32 @@
 namespace App\Form\PlayDate;
 
 use App\Entity\PlayDate;
-use App\Guard\PlayDateGuard;
-use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class SpecialPlayDateFormType extends AbstractType
+class MoveFormType extends AbstractType
 {
-    public function __construct(private PlayDateGuard $playDateGuard)
+    public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var PlayDate $playDate */
-        $playDate = $options['data'];
-        $canEdit = $this->playDateGuard->canEdit($playDate);
-
         $builder
-            ->add('title', TextType::class, ['label' => 'Titel'])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
-                'label' => 'Datum',
+                'label' => 'Neues Datum für den Spieltermin',
                 'input' => 'datetime_immutable',
-                'disabled' => !$canEdit,
+                'required' => true,
+                'mapped' => false,
             ])
             ->add('daytime', ChoiceType::class, [
                 'choices' => [
@@ -47,45 +39,40 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Tageszeit',
                 'expanded' => true,
                 'multiple' => false,
-                'disabled' => !$canEdit,
+                'mapped' => false,
             ])
             ->add('meetingTime', TimeType::class, [
-                'input' => 'datetime',
+                'input' => 'datetime_immutable',
                 'widget' => 'choice',
                 'label' => 'Treffen',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                'disabled' => !$canEdit,
+                'mapped' => false,
             ])
             ->add('playTimeFrom', TimeType::class, [
-                'input' => 'datetime',
+                'input' => 'datetime_immutable',
                 'widget' => 'choice',
                 'label' => 'Spielzeit (von)',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                'disabled' => !$canEdit,
+                'mapped' => false,
             ])
             ->add('playTimeTo', TimeType::class, [
-                'input' => 'datetime',
+                'input' => 'datetime_immutable',
                 'widget' => 'choice',
                 'label' => 'Spielzeit (bis)',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                'disabled' => !$canEdit,
+                'mapped' => false,
             ])
-            ->add('isSuper', CheckboxType::class, [
-                'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
+            ->add('comment', TextareaType::class, [
+                'label' => 'Kommentar',
                 'required' => false,
+                'attr' => ['placeholder' => 'Optional: Grund der Verschiebung...'],
             ])
-            ->add(
-                $builder
-                    ->create('type', HiddenType::class)
-                    ->addModelTransformer(new CallbackTransformer(
-                        fn (PlayDateType $type): string => $type->value,
-                        fn (string $type): PlayDateType => PlayDateType::from($type),
-                    ))
-            )
-            ->add('save', SubmitType::class, ['label' => 'Zusatztermin speichern'])
+            ->setMethod('PUT')
+            ->setAction($this->urlGenerator->generate('play_date_move', ['id' => $options['data']->getId()]))
+            ->add('save', SubmitType::class, ['label' => 'Termin jetzt verschieben'])
         ;
     }
 

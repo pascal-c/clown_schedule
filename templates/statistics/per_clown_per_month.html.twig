@@ -3,10 +3,11 @@
 {% block title %}Statistiken{% endblock %}
 
 {% block content %}
+    <h4 class="pt-3">Statistiken</h4>
     {{ component('statistics_navigation', { active: 'per_clown' }) }}
     {{ component('statistics_per_clown_navigation', { active: 'per_month' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'statistics' }) }}
-    <h4 class="pt-3">Statistiken für {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    <h5 class="pt-2">Reguläre Spieltermine {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h5>
 
     <div>Spieltermine (aktuell): {{ currentPlayDatesCount }}</div>
            
@@ -102,7 +103,7 @@
                 {% endif %}
                 <th>
                     {% set entitledPlaysSum = clownAvailabilities|reduce((carry, v) => carry+v.entitledPlaysMonth) %}
-                    {{ entitledPlaysSum }}
+                    {{ entitledPlaysSum|round(2) }}
                 </th>
                 <th>
                     {{ clownAvailabilities|reduce((carry, v) => carry+v.targetPlays) }}

@@ -54,7 +54,7 @@ final class IsAvailableForTest extends TestCase
         $playDate = self::buildPlayDate('am', (new Clown())->setGender($firstClownGender), $blockedClown ?? new Clown());
         $this->playDateRepository
             ->expects($this->atMost(1))
-            ->method('byMonth')
+            ->method('confirmedByMonth')
             ->with($this->equalTo(Month::build('2022-04')))
             ->willReturn($otherPlayDates);
         $this->substitutionRepository
@@ -150,7 +150,7 @@ final class IsAvailableForTest extends TestCase
         $substitution = self::buildSubstitution();
         $this->playDateRepository
             ->expects($this->atMost(1))
-            ->method('byMonth')
+            ->method('confirmedByMonth')
             ->with($this->equalTo(Month::build('2022-04')))
             ->willReturn($otherPlayDates);
         $this->substitutionRepository

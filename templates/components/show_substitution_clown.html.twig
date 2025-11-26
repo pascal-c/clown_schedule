@@ -1,7 +1,12 @@
 {% if showIt %}
     <div class="pt-2">
-        <span class="{{ colorClass }}">Springer:</span>
-        {{ substitution.substitutionClown ? substitution.substitutionClown.name : '-' }} 
+        Springer:
+        {{ substitution.substitutionClown ? substitution.substitutionClown.name }} 
+        {% if showSubstitutionClownWarning %}
+            <span class="ms-2 text-danger" title="Kein Springer eingetragen.">
+                <i class="bi bi-exclamation-triangle"></i>
+            </span>
+        {% endif %}
         {% if currentClown.isAdmin %}
             {{ include('_shared/_edit_link.html.twig', {url: path('substitution_edit', {date: substitution.date|date('Y-m-d'), daytime: substitution.daytime}), title: "Springer bearbeiten"}) }}
         {% endif %}
