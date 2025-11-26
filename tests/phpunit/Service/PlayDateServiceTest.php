@@ -63,7 +63,7 @@ final class PlayDateServiceTest extends KernelTestCase
     {
         $playDate = new PlayDate();
         $this->playDateGuard->expects($this->once())->method('canCancel')->with($playDate)->willReturn(false);
-        $this->playDateRepository->expects($this->never())->method('findByTimeSlotPeriod');
+        $this->playDateRepository->expects($this->never())->method('findConfirmedByTimeSlotPeriod');
         $this->substitutionRepository->expects($this->never())->method('findByTimeSlotPeriod');
         $this->entityManager->expects($this->never())->method('remove');
         $this->playDateHistoryService->expects($this->never())->method('add');
@@ -78,7 +78,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $playDate = new PlayDate();
         $substitution = new Substitution();
         $this->playDateGuard->expects($this->once())->method('canCancel')->with($playDate)->willReturn(true);
-        $this->playDateRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$playDate]);
+        $this->playDateRepository->expects($this->once())->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate]);
         $this->substitutionRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$substitution]);
         $this->entityManager->expects($this->once())->method('remove')->with($substitution);
         $this->playDateHistoryService->expects($this->once())->method('add')->with(
@@ -97,7 +97,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $playDate = new PlayDate();
         $substitution = new Substitution();
         $this->playDateGuard->expects($this->once())->method('canCancel')->with($playDate)->willReturn(true);
-        $this->playDateRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$playDate, new PlayDate()]);
+        $this->playDateRepository->expects($this->once())->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate, new PlayDate()]);
         $this->substitutionRepository->expects($this->never())->method('findByTimeSlotPeriod');
         $this->entityManager->expects($this->never())->method('remove')->with($substitution);
         $this->playDateHistoryService->expects($this->once())->method('add')->with(
@@ -117,7 +117,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $moveForm = $this->container->get('form.factory')->create(MoveFormType::class, $playDate);
 
         $this->playDateGuard->expects($this->once())->method('canMove')->with($playDate)->willReturn(false);
-        $this->playDateRepository->expects($this->never())->method('findByTimeSlotPeriod');
+        $this->playDateRepository->expects($this->never())->method('findConfirmedByTimeSlotPeriod');
         $this->substitutionRepository->expects($this->never())->method('findByTimeSlotPeriod');
         $this->entityManager->expects($this->never())->method($this->anything());
         $this->playDateHistoryService->expects($this->never())->method('add');
@@ -139,7 +139,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $substitution = new Substitution();
 
         $this->playDateGuard->expects($this->once())->method('canMove')->with($playDate)->willReturn(true);
-        $this->playDateRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$playDate]);
+        $this->playDateRepository->expects($this->once())->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate]);
         $this->substitutionRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$substitution]);
         $this->entityManager->expects($this->once())->method('remove')->with($substitution);
         $this->entityManager->expects($this->once())->method('persist');

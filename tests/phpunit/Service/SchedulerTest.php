@@ -104,11 +104,11 @@ final class SchedulerTest extends TestCase
         $substitution = (new Substitution())->setSubstitutionClown(new Clown());
 
         $this->playDateRepository->expects($this->once())
-            ->method('regularByMonth')
+            ->method('confirmedRegularByMonth')
             ->with($month)
             ->willReturn($playDates);
         $this->playDateRepository->expects($this->once())
-            ->method('trainingByMonth')
+            ->method('confirmedTrainingByMonth')
             ->with($month)
             ->willReturn(['trainings']);
         $clownAvailabilities = $this->getClownAvailabilities();
@@ -219,7 +219,7 @@ final class SchedulerTest extends TestCase
         $substitution = (new Substitution())->setSubstitutionClown($clown1);
         $substitution2 = (new Substitution())->setSubstitutionClown($clown4);
 
-        $this->playDateRepository->expects($this->once())->method('regularByMonth')->willReturn($playDates);
+        $this->playDateRepository->expects($this->once())->method('confirmedRegularByMonth')->willReturn($playDates);
         $this->clownAvailabilityRepository->expects($this->once())->method('byMonth')->willReturn($clownAvailabilities);
         $this->clownAssigner->expects($this->never())->method($this->anything());
         $this->availabilityChecker->expects($this->never())->method($this->anything());

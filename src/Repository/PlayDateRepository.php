@@ -44,11 +44,13 @@ class PlayDateRepository extends AbstractRepository
             ->getResult()[0][1] ?? $this->timeService->currentYear();
     }
 
-    public function withoutVenue(?string $year): array
+    public function confirmedWithoutVenue(?string $year): array
     {
         $queryBuilder =  $this->doctrineRepository->createQueryBuilder('pd')
             ->where('pd.venue IS NULL')
-            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."' OR pd.type = '".PlayDateType::SPECIAL->value."'");
+            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."' OR pd.type = '".PlayDateType::SPECIAL->value."'")
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED);
 
         if ($year) {
             $queryBuilder
@@ -80,19 +82,23 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
-    public function regularByMonth(Month $month): array
+    public function confirmedRegularByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
             ->andWhere("pd.type = '".PlayDateType::REGULAR->value."'")
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->getQuery()
             ->enableResultCache(2)
             ->getResult();
     }
 
-    public function trainingByMonth(Month $month): array
+    public function confirmedTrainingByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
             ->andWhere("pd.type = '".PlayDateType::TRAINING->value."'")
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->getQuery()
             ->enableResultCache(2)
             ->getResult();
@@ -107,18 +113,31 @@ class PlayDateRepository extends AbstractRepository
         ;
     }
 
+    public function confirmedByMonth(Month $month): array
+    {
+        return $this->queryByMonth($month)
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
+            ->getQuery()
+            ->enableResultCache(2)
+            ->getResult()
+        ;
+    }
+
     public function countByClownAvailabilityAndWeek(ClownAvailability $clownAvailability, Week $week): int
     {
         return count(array_filter(
-            $this->byMonth($clownAvailability->getMonth()),
+            $this->confirmedByMonth($clownAvailability->getMonth()),
             fn ($playDate) => $week == $playDate->getWeek()
                 && $playDate->getPlayingClowns()->contains($clownAvailability->getClown())
         ));
     }
 
-    public function byMonthAndClown(Month $month, Clown $clown): array
+    public function confirmedByMonthAndClown(Month $month, Clown $clown): array
     {
         return $this->queryByMonth($month)
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->andWhere('clown = :clown')
             ->setParameter('clown', $clown)
             ->getQuery()
@@ -142,13 +161,15 @@ class PlayDateRepository extends AbstractRepository
             ->addOrderBy('pd.daytime', 'ASC');
     }
 
-    public function futureByMonth(Month $month): array
+    public function futureConfirmedByMonth(Month $month): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->where('pd.date >= :min_date')
             ->andWhere('pd.date < :max_date')
+            ->andWhere('pd.status = :status_confirmed')
             ->setParameter('min_date', max($month->dbFormat(), $this->timeService->today()->format('Y-m-d')))
             ->setParameter('max_date', $month->next()->dbFormat())
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->orderBy('pd.date', 'ASC')
             ->addOrderBy('pd.daytime', 'ASC')
             ->getQuery()
@@ -170,17 +191,19 @@ class PlayDateRepository extends AbstractRepository
     }
 
     /** @return [PlayDate] */
-    public function findByTimeSlotPeriod(TimeSlotPeriodInterface $timeSlotPeriod): array
+    public function findConfirmedByTimeSlotPeriod(TimeSlotPeriodInterface $timeSlotPeriod): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->where('pd.type = :type_regular OR pd.type = :type_special')
             ->andWhere('pd.date = :date')
             ->andWhere('pd.daytime = :daytime OR pd.daytime = :all OR :daytime = :all')
+            ->andWhere('pd.status = :status_confirmed')
             ->setParameter('date', $timeSlotPeriod->getDate())
             ->setParameter('daytime', $timeSlotPeriod->getDaytime())
             ->setParameter('all', TimeSlotPeriodInterface::ALL)
             ->setParameter('type_regular', PlayDateType::REGULAR->value)
             ->setParameter('type_special', PlayDateType::SPECIAL->value)
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->getQuery()
             ->getResult();
 

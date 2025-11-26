@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Repository\PlayDateRepository;
-use App\Service\AuthService;
 use App\Service\Scheduler\AvailabilityChecker;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,14 +17,13 @@ class PlayDateSwapRequestCreateFormType extends AbstractType
     public function __construct(
         private PlayDateRepository $playDateRepository,
         private AvailabilityChecker $availabilityChecker,
-        private AuthService $authService,
     ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $month = $options['playDateToGiveOff']->getMonth();
-        $playDates = $this->playDateRepository->futureByMonth($month);
+        $playDates = $this->playDateRepository->futureConfirmedByMonth($month);
         $choices = ['--- bitte wählen ---' => null];
         foreach ($playDates as $playDate) {
             $sameTimeSlotPeriod = $playDate->equalsTimeSlotPeriod($options['playDateToGiveOff']) && $playDate != $options['playDateToGiveOff'];

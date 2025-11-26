@@ -52,10 +52,10 @@ class StatisticsPerVenueController extends AbstractProtectedController
                     fn (PlayDate $playDate) => PlayDateType::SPECIAL === $playDate->getType(),
                 )->count(),
             ],
-            $this->venueRepository->all($year),
+            $this->venueRepository->allWithConfirmedPlayDates($year),
         );
 
-        $playDatesWithoutVenue = $this->playDateRepository->withoutVenue($year);
+        $playDatesWithoutVenue = $this->playDateRepository->confirmedWithoutVenue($year);
         if (count($playDatesWithoutVenue) > 0) {
             $venues[] = [
                 'name' => 'Ohne Veranstaltungsort',

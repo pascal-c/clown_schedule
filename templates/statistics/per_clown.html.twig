@@ -3,13 +3,14 @@
 {% block title %}Statistiken{% endblock %}
 
 {% block content %}
+    <h4 class="pt-3">Statistiken</h4>
     {{ component('statistics_navigation', { active: 'per_clown' }) }}
     {{ component('statistics_per_clown_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
     {% if showYears %}
         {{ include('statistics/_per_clown_year_navigation.html.twig', {activeYear: activeYear, years: years, currentType: type}) }}
-        <h4 class="pt-3">Statistik für {{ activeYear }}</h4>
+        <h5 class="pt-2">Reguläre Spieltermine {{ activeYear }}</h5>
     {% else %}
-        <h4 class="pt-3">Ewige Statistik</h4>
+        <h5 class="pt-2">Reguläre Spieltermine der Ewigkeit</h5>
     {% endif %}
 
     {{ component('statistics_for_clowns_dropdown', { currentType: type, path: showYears ? path('statistics_per_year', {year: activeYear}) : path('statistics_infinity') }) }}

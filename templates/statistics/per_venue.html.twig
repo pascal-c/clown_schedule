@@ -3,13 +3,14 @@
 {% block title %}Statistiken{% endblock %}
 
 {% block content %}
+    <h4 class="pt-3">Statistiken</h4>
     {{ component('statistics_navigation', { active: 'per_venue' }) }}
     {{ component('statistics_per_venue_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
     {% if showYears %}
         {{ include('statistics/_per_venue_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
-        <h4 class="pt-3">Statistik für {{ activeYear }}</h4>
+        <h5 class="pt-2">Statistik für {{ activeYear }}</h5>
     {% else %}
-        <h4 class="pt-3">Ewige Statistik</h4>
+        <h5 class="pt-2">Ewige Statistik</h5>
     {% endif %}
 
     <table class="table">

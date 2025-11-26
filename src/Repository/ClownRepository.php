@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Clown;
+use App\Entity\PlayDate;
 use App\Value\PlayDateType;
 use Doctrine\ORM\EntityRepository;
 
@@ -41,16 +42,18 @@ class ClownRepository extends AbstractRepository
         return $this->doctrineRepository->findOneByEmail($email);
     }
 
-    public function allWithTotalPlayDateCounts(?string $year = null): array
+    public function allWithConfirmedPlayDateCounts(?string $year = null): array
     {
         $queryBuilder = $this->doctrineRepository->createQueryBuilder('cl')
-           ->select('cl AS clown, count(DISTINCT(pd.id)) AS totalCount')
-           ->leftJoin('cl.playDates', 'pd')
-           ->where('pd.type = :play_date_type')
-           ->setParameter('play_date_type', PlayDateType::REGULAR->value)
-           ->groupBy('cl')
-           ->orderBy('cl.isActive', 'DESC')
-           ->addOrderBy('cl.name', 'ASC');
+            ->select('cl AS clown, count(DISTINCT(pd.id)) AS totalCount')
+            ->leftJoin('cl.playDates', 'pd')
+            ->where('pd.type = :play_date_type')
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('play_date_type', PlayDateType::REGULAR->value)
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
+            ->groupBy('cl')
+            ->orderBy('cl.isActive', 'DESC')
+            ->addOrderBy('cl.name', 'ASC');
         if ($year) {
             $queryBuilder
                 ->andWhere('pd.date >= :startDate')
@@ -64,12 +67,14 @@ class ClownRepository extends AbstractRepository
             ->getResult();
     }
 
-    public function allWithSuperPlayDateCounts(?string $year = null): array
+    public function allWithConfirmedSuperPlayDateCounts(?string $year = null): array
     {
         $queryBuilder = $this->doctrineRepository->createQueryBuilder('cl')
             ->select('cl AS clown, count(pd.id) AS superCount')
             ->leftJoin('cl.playDates', 'pd')
             ->where('pd.isSuper = 1')
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->groupBy('cl');
         if ($year) {
             $queryBuilder

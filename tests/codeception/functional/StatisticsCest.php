@@ -16,16 +16,16 @@ class StatisticsCest extends AbstractCest
 
         $I->click('Statistiken', '.nav');
         $I->see('monatlich', '.nav .nav-link.active');
-        $I->see('Statistiken für Dez. 2024', 'h4');
+        $I->see('Reguläre Spieltermine Dez. 2024', 'h5');
 
         $I->click('jährlich', '.nav');
         $I->see('jährlich', '.nav .nav-link.active');
-        $I->see('Statistik für 2024', 'h4');
+        $I->see('Reguläre Spieltermine 2024', 'h5');
 
 
         $I->click('ewig', '.nav');
         $I->see('ewig', '.nav .nav-link.active');
-        $I->see('Ewige Statistik', 'h4');
+        $I->see('Reguläre Spieltermine der Ewigkeit', 'h5');
     }
 
     public function byVenue(FunctionalTester $I): void
@@ -38,10 +38,10 @@ class StatisticsCest extends AbstractCest
 
         $I->click('jährlich', '.nav');
         $I->see('jährlich', '.nav .nav-link.active');
-        $I->see('Statistik für 2024', 'h4');
+        $I->see('Statistik für 2024', 'h5');
 
         $I->click('ewig', '.nav');
         $I->see('ewig', '.nav .nav-link.active');
-        $I->see('Ewige Statistik', 'h4');
+        $I->see('Ewige Statistik', 'h5');
     }
 }

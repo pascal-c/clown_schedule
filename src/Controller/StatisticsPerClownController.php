@@ -59,8 +59,8 @@ class StatisticsPerClownController extends AbstractProtectedController
     {
         $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
 
-        $clownsWithTotalCount = $this->clownRepository->allWithTotalPlayDateCounts($year);
-        $clownsWithSuperCount = $this->clownRepository->allWithSuperPlayDateCounts($year);
+        $clownsWithTotalCount = $this->clownRepository->allWithConfirmedPlayDateCounts($year);
+        $clownsWithSuperCount = $this->clownRepository->allWithConfirmedSuperPlayDateCounts($year);
 
         if ($type) {
             $currentType = StatisticsForClownsType::from($type);
@@ -116,7 +116,7 @@ class StatisticsPerClownController extends AbstractProtectedController
     {
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month);
-        $playDates = $this->playDateRepository->regularByMonth($month);
+        $playDates = $this->playDateRepository->confirmedRegularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
 

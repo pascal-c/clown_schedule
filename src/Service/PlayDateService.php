@@ -79,7 +79,7 @@ class PlayDateService
     private function removeSubstitutionsIfNecessary(PlayDate $playDate): void
     {
         // remove substitutions if no other playdate exists at the same time slot
-        $playDatesSameTimeSlot = $this->playDateRepository->findByTimeSlotPeriod($playDate);
+        $playDatesSameTimeSlot = $this->playDateRepository->findConfirmedByTimeSlotPeriod($playDate);
         if (1 === count($playDatesSameTimeSlot)) {
             foreach ($this->substitutionRepository->findByTimeSlotPeriod($playDate) as $substitution) {
                 $this->entityManager->remove($substitution);
