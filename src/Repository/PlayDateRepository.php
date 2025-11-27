@@ -44,13 +44,11 @@ class PlayDateRepository extends AbstractRepository
             ->getResult()[0][1] ?? $this->timeService->currentYear();
     }
 
-    public function confirmedWithoutVenue(?string $year): array
+    public function withoutVenue(?string $year, bool $onlyConfirmed = false): array
     {
         $queryBuilder =  $this->doctrineRepository->createQueryBuilder('pd')
             ->where('pd.venue IS NULL')
-            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."' OR pd.type = '".PlayDateType::SPECIAL->value."'")
-            ->andWhere('pd.status = :status_confirmed')
-            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED);
+            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."' OR pd.type = '".PlayDateType::SPECIAL->value."'");
 
         if ($year) {
             $queryBuilder
@@ -58,6 +56,12 @@ class PlayDateRepository extends AbstractRepository
                 ->andWhere('pd.date <= :end')
                 ->setParameter('start', "{$year}-01-01")
                 ->setParameter('end', "{$year}-12-31");
+        }
+
+        if ($onlyConfirmed) {
+            $queryBuilder
+                ->andWhere('pd.status = :status_confirmed_only')
+                ->setParameter('status_confirmed_only', PlayDate::STATUS_CONFIRMED);
         }
 
         return $queryBuilder

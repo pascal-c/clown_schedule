@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Value\PlayDateType;
 
 class VenueRepository extends AbstractRepository
 {
@@ -33,13 +34,14 @@ class VenueRepository extends AbstractRepository
         );
     }
 
-    public function allWithConfirmedPlayDates(?string $year = null): array
+    public function allWithPlays(?string $year = null, bool $onlyConfirmed = false): array
     {
         $queryBuilder = $this->doctrineRepository->createQueryBuilder('venue')
             ->select('venue, pd')
-            ->leftJoin('venue.playDates', 'pd')
-            ->where('pd.status = :status_confirmed')
-            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED);
+            ->where('pd.type = :type_regular OR pd.type = :type_special')
+            ->setParameter('type_regular', PlayDateType::REGULAR->value)
+            ->setParameter('type_special', PlayDateType::SPECIAL->value)
+            ->leftJoin('venue.playDates', 'pd');
 
         if ($year) {
             $queryBuilder
@@ -47,6 +49,12 @@ class VenueRepository extends AbstractRepository
                 ->andWhere('pd.date <= :end')
                 ->setParameter('start', "{$year}-01-01")
                 ->setParameter('end', "{$year}-12-31");
+        }
+
+        if ($onlyConfirmed) {
+            $queryBuilder
+                ->andWhere('pd.status = :status_confirmed_only')
+                ->setParameter('status_confirmed_only', PlayDate::STATUS_CONFIRMED);
         }
 
         return $queryBuilder

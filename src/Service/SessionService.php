@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Value\StatisticsForClownsType;
+use App\Value\StatisticsForVenuesType;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class SessionService
@@ -57,5 +58,23 @@ class SessionService
         $session = $this->requestStack->getSession();
 
         $session->set('active_statistics_for_clown_type', $type->value);
+    }
+
+    public function getActiveStatisticsForVenueType(): StatisticsForVenuesType
+    {
+        $session = $this->requestStack->getSession();
+
+        if ($session->has('active_statistics_for_venue_type')) {
+            return StatisticsForVenuesType::from($session->get('active_statistics_for_venue_type'));
+        }
+
+        return StatisticsForVenuesType::BY_TYPE;
+    }
+
+    public function setActiveStatisticsForVenueType(StatisticsForVenuesType $type): void
+    {
+        $session = $this->requestStack->getSession();
+
+        $session->set('active_statistics_for_venue_type', $type->value);
     }
 }
