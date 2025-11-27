@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Statistiken{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">Statistiken</h4>
+    {{ component('statistics_navigation', { active: 'per_venue' }) }}
+    {{ component('statistics_per_venue_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
+    {% if showYears %}
+        {{ include('statistics/_per_venue_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
+        <h5 class="pt-2">Spieltermine (reguläre und Zusatztermine) nach Status {{ activeYear }}</h5>
+    {% else %}
+        <h5 class="pt-2">Spieltermine (reguläre und Zusatztermine) nach Status</h5>
+    {% endif %}
+
+    {{ component('statistics_for_venues_dropdown', { currentType: type, path: showYears ? path('statistics_per_venue_per_year', {year: activeYear}) : path('statistics_per_venue_infinity') }) }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Spielort</th>
+                <th>Geplante Spiele</th>
+                <th>Abgesagte Spiele</th>
+                <th>Verschobene Spiele</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venue in venues %}
+            <tr>
+                <td>{{ venue.name }}</td>
+                <td>
+                    {{ venue.totalCount - venue.movedCount }}
+                </td>
+                <td>
+                    {{ venue.cancelledCount }}
+                </td>
+                <td>
+                    {{ venue.movedCount }}
+                </td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <th>Summe</th>
+                <th>
+                    {{ venues|reduce((carry, v) => carry+v.totalCount-v.movedCount) }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.cancelledCount) }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.movedCount) }}
+                </th>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

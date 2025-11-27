@@ -14,12 +14,6 @@ class InvitationCest extends AbstractCest
     public function _before(FunctionalTester $I): void
     {
         parent::_before($I);
-
-        $this->clownFactory->create(
-            name: 'Thorsten',
-            email: 'torte@example.org',
-            password: 'secret',
-        );
     }
 
     protected function invite(AdminTester $I)
