@@ -17,7 +17,8 @@ class VacationRepository
     public function byYear(string $year): array
     {
         $federalState = $this->configRepository->find()->getFederalState();
-        $byYear = $this->vacationGateway->findByYear($federalState, $year);
+        $thisYear = $this->vacationGateway->findByYear($federalState, $year);
+        $lastYear = $this->vacationGateway->findByYear($federalState, strval($year - 1));
 
         return array_map(
             fn (array $x) => new Vacation(
@@ -25,7 +26,7 @@ class VacationRepository
                 new DateTimeImmutable($x['end']),
                 $x['name']
             ),
-            $byYear
+            array_merge($lastYear, $thisYear)
         );
     }
 }
