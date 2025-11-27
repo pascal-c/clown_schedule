@@ -135,6 +135,18 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if playDate.training %}
+                <tr>
+                    <th>Anmeldung</th>
+                    <td>
+                        {% if playDate.playingClowns.contains(currentClown) %}
+                            Super, Du bist für dieses Training angemeldet!
+                        {% else %}
+                            Du bist für dieses Training leider (noch) nicht angemeldet.
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 

@@ -184,9 +184,11 @@ class PlayDateRepository extends AbstractRepository
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->leftJoin('pd.playingClowns', 'clown')
-            ->where('pd.date >= :today')
-            ->andWhere('clown = :clown')
+            ->where('pd.date >= :today AND pd.date <= :max_date')
+            ->andWhere('clown = :clown OR pd.type = :type_training')
+            ->setParameter('type_training', PlayDateType::TRAINING->value)
             ->setParameter('today', $this->timeService->today())
+            ->setParameter('max_date', $this->timeService->inThreeMonths())
             ->setParameter('clown', $clown)
             ->orderBy('pd.date', 'ASC')
             ->addOrderBy('pd.daytime', 'ASC')

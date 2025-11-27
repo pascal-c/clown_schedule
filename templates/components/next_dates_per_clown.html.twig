@@ -15,8 +15,14 @@
                             <br /><span class="fst-itlic fw-light">{{ date.dateEntity.comment|nl2br }}</i>
                         {% endif %}
                     </td>
-                    <td>
-                        <a class="text-dark" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">{{ date.dateEntity.name }}</a>
+                    <td class="{{ date.class ?? '' }}">
+                        {% if date.dateEntity.training and date.class is defined %}
+                            {{ date.dateEntity.name }}
+                            <a class="text-muted" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">anmelden</a>
+                        {% else %}
+                            <a class="{{ date.class ?? "text-dark" }}" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">{{ date.dateEntity.name }}</a>
+                        {% endif %}
+
                     </td>
                     <td class="{{ date.class ?? '' }}">{{ date.dateEntity.meetingTime is not empty ? date.dateEntity.meetingTime|date('H:i') }}</td>
                     <td class="{{ date.class ?? '' }}">{{ date.dateEntity.playTimeFrom is not empty ? date.dateEntity.playTimeFrom|date('H:i') ~ ' -' }} {{ date.dateEntity.playTimeTo is not empty ? date.dateEntity.playTimeTo|date('H:i') }}</td>
