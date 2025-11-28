@@ -46,7 +46,7 @@ class NextDatesPerClownComponent
             } elseif ($dateEntity instanceof PlayDate && $dateEntity->isMoved()) {
                 $date['class'] = 'text-muted';
                 $date['title'] = 'Spieltermin verschoben';
-            } elseif ($dateEntity->isTraining() && !$dateEntity->getPlayingClowns()->contains($this->currentClown)) {
+            } elseif ($dateEntity instanceof PlayDate && $dateEntity->isTraining() && !$dateEntity->getPlayingClowns()->contains($this->currentClown)) {
                 $date['class'] = 'text-muted';
                 $date['title'] = 'Du bist nicht angemeldet';
             } else {
