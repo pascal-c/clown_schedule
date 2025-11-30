@@ -49,8 +49,6 @@ class CancelPlayDateCest extends AbstractCest
         $I->click('Termin jetzt absagen');
         $I->see('Der Spieltermin wurde abgesagt.', '.alert-success');
 
-        sleep(1); // wait until cache for substitution is empty
-        $I->amOnPage('/play_dates/'.$this->playDate->getId());
         $I->see('Seniorenheim am See', Locator::contains('table tr', text: 'Wo'));
         $I->see('abgesagt', Locator::contains('table tr', text: 'Wo'));
         $I->see('Hannah Hosianna | Uwe Popuwe', Locator::contains('table tr', text: 'Spielende Clowns'));
