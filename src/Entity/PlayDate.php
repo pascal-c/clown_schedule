@@ -84,7 +84,7 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column(length: 255, nullable: false)]
     private string $type = PlayDateType::REGULAR->value;
 
-    #[ORM\ManyToOne(inversedBy: 'playDates')]
+    #[ORM\ManyToOne]
     private ?Fee $fee = null;
 
     #[ORM\ManyToOne(inversedBy: 'playDates')]

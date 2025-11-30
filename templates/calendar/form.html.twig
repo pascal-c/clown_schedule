@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Clowns{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">ICS Kalender Export {{ month.label }}</h4>
+    
+    {{ component('schedule_navigation', { active: 'calendar_export' }) }}
+    {{ component('month_navigation', { active: month.key, urlKey: 'calendar_export' }) }}
+    <p>
+        Hier kannst Du Dir einen ICS Kalender mit den Spielterminen herunterladen.
+        Diese Datei kannst Du in eine Kalender-App z.B. auf dem Handy importieren.
+    </p>
+
+    <form method="get" action="{{ path('calendar_download') }}">
+        <select name="type" class="form-select mb-3" style="width: auto;">
+            <option value="personal">Persönlicher Kalender (eigene Spieltermine und Springer)</option>
+            <option value="all">Vollständiger Kalender</option>
+        </select>
+        <button type="submit" class="btn btn-primary">ICS Kalender herunterladen</button>
+    </form>
+{% endblock %}

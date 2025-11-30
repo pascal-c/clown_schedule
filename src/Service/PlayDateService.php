@@ -83,6 +83,10 @@ class PlayDateService
         if (1 === count($playDatesSameTimeSlot)) {
             foreach ($this->substitutionRepository->findByTimeSlotPeriod($playDate) as $substitution) {
                 $this->entityManager->remove($substitution);
+                $this->entityManager
+                    ->getConfiguration()
+                    ?->getResultCache()
+                    ?->deleteItem($this->substitutionRepository->getByMonthCacheKey($substitution->getMonth()));
             }
         }
     }
