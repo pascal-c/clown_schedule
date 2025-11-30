@@ -69,8 +69,24 @@ class SubstitutionRepository extends AbstractRepository
     /** @return array<Substitution> */
     public function byMonth(Month $month): array
     {
-        $substitutions = $this->doctrineRepository->findBy(['month' => $month->getKey()]);
+        $substitutions = $this->doctrineRepository->createQueryBuilder('sub')
+            ->where('sub.month = :month')
+            ->setParameter('month', $month->getKey())
+            ->getQuery()
+            ->enableResultCache(1)
+            ->getResult();
         $this->cacheWarmUp($month, $substitutions);
+
+        return $substitutions;
+    }
+
+    /** @return array<Substitution> */
+    public function byMonthAndClown(Month $month, Clown $clown): array
+    {
+        $substitutions = $this->doctrineRepository->findBy([
+            'month' => $month->getKey(),
+            'substitutionClown' => $clown,
+        ]);
 
         return $substitutions;
     }
