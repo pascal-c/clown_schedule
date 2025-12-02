@@ -109,7 +109,7 @@
         "codeception/module-asserts": "^3.2",
         "codeception/module-doctrine": "^3.1",
         "codeception/module-phpbrowser": "^3.0",
-        "codeception/module-symfony": "^3.5",
+        "codeception/module-symfony": "^3.8",
         "dama/doctrine-test-bundle": "^8.4",
         "friendsofphp/php-cs-fixer": "^3.90",
         "phpunit/phpunit": "^11.4",
