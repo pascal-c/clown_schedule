@@ -273,6 +273,11 @@ class PlayDateController extends AbstractProtectedController
             $this->addFlash('warning', 'Hach! Termin konnte irgendwie nicht aktualisiert werden.');
         }
 
+        if (!$this->playDateGuard->canEdit($playDate)) {
+            $this->addFlash('warning', 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!
+            Eventuell wäre es sinnvoller, die "Verschieben"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.');
+        }
+
         return $this->render('play_date/edit.html.twig', [
             'playDate' => $playDate,
             'form' => $editForm,
