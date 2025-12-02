@@ -29,6 +29,7 @@ class SpecialPlayDateFormType extends AbstractType
         /** @var PlayDate $playDate */
         $playDate = $options['data'];
         $canEdit = $this->playDateGuard->canEdit($playDate);
+        $helpText = !$canEdit ? 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!' : '';
 
         $builder
             ->add('title', TextType::class, ['label' => 'Titel'])
@@ -36,7 +37,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Datum',
                 'input' => 'datetime_immutable',
-                'disabled' => !$canEdit,
+                'help' => $helpText,
             ])
             ->add('daytime', ChoiceType::class, [
                 'choices' => [
@@ -47,7 +48,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Tageszeit',
                 'expanded' => true,
                 'multiple' => false,
-                'disabled' => !$canEdit,
+                'help' => $helpText,
             ])
             ->add('meetingTime', TimeType::class, [
                 'input' => 'datetime',
@@ -55,7 +56,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Treffen',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                'disabled' => !$canEdit,
+                'help' => $helpText,
             ])
             ->add('playTimeFrom', TimeType::class, [
                 'input' => 'datetime',
@@ -63,7 +64,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Spielzeit (von)',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                'disabled' => !$canEdit,
+                'help' => $helpText,
             ])
             ->add('playTimeTo', TimeType::class, [
                 'input' => 'datetime',
@@ -71,7 +72,7 @@ class SpecialPlayDateFormType extends AbstractType
                 'label' => 'Spielzeit (bis)',
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
-                'disabled' => !$canEdit,
+                'help' => $helpText,
             ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
