@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\CalendarType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -425,24 +426,25 @@ class Clown
         return $this->blockedBy;
     }
 
-    public function getCalendar(string $type): ?Calendar
+    public function getCalendar(CalendarType $type): ?Calendar
     {
-        foreach($this->calendars as $calendar) {
-            if ($type === $calendar->getType()) {
+        foreach ($this->calendars as $calendar) {
+            if ($type->value === $calendar->getType()) {
                 return $calendar;
             }
         }
+
         return null;
     }
 
     public function getPersonalCalendar(): ?Calendar
     {
-        return $this->getCalendar(Calendar::TYPE_PERSONAL);
+        return $this->getCalendar(CalendarType::PERSONAL);
     }
 
     public function getFullCalendar(): ?Calendar
     {
-        return $this->getCalendar(Calendar::TYPE_ALL);
+        return $this->getCalendar(CalendarType::ALL);
     }
 
     /**

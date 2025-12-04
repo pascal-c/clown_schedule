@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\CalendarType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,9 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'calendar_clown_type_index', fields: ['clown', 'type'])]
 class Calendar
 {
-    public const TYPE_ALL = 'all';
-    public const TYPE_PERSONAL = 'personal';
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -70,11 +68,11 @@ class Calendar
 
     public function isPersonal(): bool
     {
-        return self::TYPE_PERSONAL === $this->type;
+        return CalendarType::PERSONAL->value === $this->type;
     }
 
     public function isFull(): bool
     {
-        return self::TYPE_ALL === $this->type;
+        return CalendarType::ALL->value === $this->type;
     }
 }

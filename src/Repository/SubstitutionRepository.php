@@ -110,7 +110,6 @@ class SubstitutionRepository extends AbstractRepository
             ->getResult();
     }
 
-
     public function byClown(Clown $clown): array
     {
         return $this->doctrineRepository->createQueryBuilder('ts')

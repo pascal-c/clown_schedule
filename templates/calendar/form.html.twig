@@ -3,39 +3,57 @@
 {% block title %}Clowns{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Ical Kalender Export {{ month.label }}</h4>
-    
     {{ component('schedule_navigation', { active: 'calendar_export' }) }}
-    {{ component('month_navigation', { active: month.key, urlKey: 'calendar_export' }) }}
+
+    <h5 class="pt-3">Kalender Download {{ month.label }}</h5>
     <p>
         Hier kannst Du Dir einen Ical Kalender(*.ics)  mit den Spielterminen herunterladen.
         Diese Datei kannst Du in eine Kalender-App z.B. auf dem Handy importieren.
     </p>
+    {{ component('month_navigation', { active: month.key, urlKey: 'calendar_export' }) }}
 
-    <form method="get" action="{{ path('calendar_download') }}">
-        <select name="type" class="form-select mb-3" style="width: auto;">
-            <option value="personal">Persönlicher Kalender (eigene Spieltermine und Springer)</option>
-            <option value="all">Vollständiger Kalender</option>
-        </select>
-        <button type="submit" class="btn btn-primary">ICS Kalender herunterladen</button>
-    </form>
+    <ul class="list-group">
+        {% for type in types %}
+        <li class="list-group-item">
+            <form action="{{ path('calendar_download') }}">
+                <input type="hidden" name="type" value="{{ type.value }}">
+                {{ type.label }}<br />
+                <button class="btn btn-link" type="submit">Jetzt herunterladen</a>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
 
-    <h5 class="pt-3">Kalender synchronisieren</h5>
+
+    <h5 class="pt-3">Kalender Abonnement</h5>
     <p>
-        Hier kannst Du Dir Kalender-Links erstellen, die Du in einer Kalender-App abonnieren kannst.
+        Hier kannst Du Dir Webcal-Kalender-Links erstellen, die Du in einer Kalender-App abonnieren kannst.
     </p>
-    {% if currentClown.calendars.count < 2 %}
-    <form method="post" action="{{ path('calendar_create_link') }}">
-        <select name="type" class="form-select mb-3" style="width: auto;">
-            {% if not currentClown.personalCalendar %}<option value="personal">Persönlicher Kalender (eigene Spieltermine und Springer)</option>{% endif %}
-            {% if not currentClown.fullCalendar %}<option value="all">Vollständiger Kalender</option>{% endif %}
-        </select>
-        <button type="submit" class="btn btn-primary">Kalender Link erzeugen</button>
-    </form>
-    {% endif %}
 
-    {% for calendar in currentClown.calendars %}
-        Achtung: Der Link ist öffentlich. Bitte gib den Link nicht weiter!<br />
-        {{ calendar.personal ? 'Persönlicher Kalendar' : 'Vollständiger Kalendar' }}: {{ url('calendar_download_for_subscription', {uuid: calendar.uuid}) }}
-    {% endfor %}
+    <ul class="list-group">
+        {% for type in types %}
+        <li class="list-group-item">
+            {{ type.label }}:<br />
+            {% if currentClown.getCalendar(type) %}
+                <span class="fw-lighter"><i class="bi bi-exclamation-triangle"></i> <i>Achtung: Der Link ist öffentlich. Bitte nicht weitergeben!</i><br /><br /></span>
+                {% set url=url('calendar_download_for_subscription', {uuid: currentClown.getCalendar(type).uuid}) %}
+                <span class="subscription-url">{{ url }}</span>
+                <a href="#" 
+                   onClick="navigator.clipboard.writeText('{{ url }}');" 
+                   title="in Zwischenablage kopieren"
+                ><i class="bi bi-copy copy-{{ type.value }}"></i></a>
+                {{ include('calendar/_delete_link.html.twig', {calendar: currentClown.getCalendar(type), type: type, token: token}) }}
+            {% else %}
+                <span class="fw-lighter"><i>kein Link angelegt</i></span>
+                <form method="post" action="{{ path('calendar_create_link') }}">
+                    <input type="hidden" name="type" value="{{ type.value }}" />
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <button type="submit" class="btn btn-link">Kalender-Abonnement-Link erzeugen</button>
+                </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+
 {% endblock %}

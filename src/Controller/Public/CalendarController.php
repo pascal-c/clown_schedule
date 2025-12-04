@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace App\Controller\Public;
 
 use App\Controller\AbstractController;
-use App\Entity\Calendar;
 use App\Repository\CalendarRepository;
-use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\CalendarExporter;
-use Doctrine\ORM\EntityManagerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -40,10 +36,10 @@ class CalendarController extends AbstractController
             $substitutions = []; // we don'need substitutions, they are shown in the play dates already
             $filename = 'calendar_all.ics';
         } else {
-            $clown = $this->authService->getCurrentClown();
+            $clown = $calendar->getClown();
             $dates = $this->playDateRepository->byClown($clown);
             $substitutions = $this->substitutionRepository->byClown($clown);
-            $filename = 'calendar_' . $clown->getName() . '.ics';
+            $filename = 'calendar_'.$clown->getName().'.ics';
         }
         $icsContent = $this->calendarExporter->ics($dates, $substitutions);
 
