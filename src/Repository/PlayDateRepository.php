@@ -28,6 +28,21 @@ class PlayDateRepository extends AbstractRepository
         return $this->doctrineRepository->find($id);
     }
 
+    public function all(): array
+    {
+        return $this->doctrineRepository->findAll();
+    }
+
+    public function byClown(Clown $clown): array
+    {
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->leftJoin('pd.playingClowns', 'clown')
+            ->where('clown = :clown')
+            ->setParameter('clown', $clown)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function minYear(): string
     {
         return $this->doctrineRepository->createQueryBuilder('pd')

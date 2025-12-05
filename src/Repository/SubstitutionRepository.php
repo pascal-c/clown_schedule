@@ -109,4 +109,14 @@ class SubstitutionRepository extends AbstractRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function byClown(Clown $clown): array
+    {
+        return $this->doctrineRepository->createQueryBuilder('ts')
+            ->leftJoin('ts.substitutionClown', 'clown')
+            ->where('clown = :clown')
+            ->setParameter('clown', $clown)
+            ->getQuery()
+            ->getResult();
+    }
 }

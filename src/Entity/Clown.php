@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\CalendarType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -84,6 +85,12 @@ class Clown
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'blockedClowns')]
     private Collection $blockedBy;
 
+    /**
+     * @var Collection<int, Calendar>
+     */
+    #[ORM\OneToMany(targetEntity: Calendar::class, mappedBy: 'clown', orphanRemoval: true)]
+    private Collection $calendars;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -94,6 +101,7 @@ class Clown
         $this->clownVenuePreferences = new ArrayCollection();
         $this->blockedClowns = new ArrayCollection();
         $this->blockedBy = new ArrayCollection();
+        $this->calendars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -416,5 +424,46 @@ class Clown
     public function getBlockedBy(): Collection
     {
         return $this->blockedBy;
+    }
+
+    public function getCalendar(CalendarType $type): ?Calendar
+    {
+        foreach ($this->calendars as $calendar) {
+            if ($type === $calendar->getType()) {
+                return $calendar;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Collection<int, Calendar>
+     */
+    public function getCalendars(): Collection
+    {
+        return $this->calendars;
+    }
+
+    public function addCalendar(Calendar $calendar): static
+    {
+        if (!$this->calendars->contains($calendar)) {
+            $this->calendars->add($calendar);
+            $calendar->setClown($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCalendar(Calendar $calendar): static
+    {
+        if ($this->calendars->removeElement($calendar)) {
+            // set the owning side to null (unless already changed)
+            if ($calendar->getClown() === $this) {
+                $calendar->setClown(null);
+            }
+        }
+
+        return $this;
     }
 }

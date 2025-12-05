@@ -1,9 +1,12 @@
 <nav class="navbar">
     <ul class="nav nav-tabs pt-1">
         {% for key, element in navigationItems %}
-            <li class="nav-item">
+            <li class="nav-item position-relative ">
                 <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">
                     {{ element['label'] }}
+                {% if element.badge is defined %}
+                    <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill text-bg-success">{{ element.badge }}</span>
+                {% endif %}
                 </a>
             </li>
         {% endfor %}

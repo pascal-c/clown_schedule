@@ -25,7 +25,7 @@ class ScheduleNavigationComponent
                 'schedule' => ['label' => 'Spielplan', 'url' => $this->urlHelper->generate('schedule')],
                 'clown_invoice' => ['label' => 'Rechnungsansicht', 'url' => $this->urlHelper->generate('clown_invoice_show', ['clownId' => $currentClown->getId()])],
                 'play_dates_by_year' => ['label' => 'Tabellarische Jahresansicht', 'url' => $this->urlHelper->generate('play_date_index'), 'hide' => !$isAdmin],
-                'calendar_export' => ['label' => 'Kalender Export', 'url' => $this->urlHelper->generate('calendar_export')],
+                'calendar_export' => ['label' => 'Kalender Export', 'url' => $this->urlHelper->generate('calendar_export'), 'badge' => 'neu'],
                 // 'statistics' => ['label' => 'Statistiken', 'url' => $this->urlHelper->generate('statistics')],
             ],
             fn ($item) => empty($item['hide'])
