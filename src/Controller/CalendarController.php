@@ -67,8 +67,8 @@ class CalendarController extends AbstractProtectedController
         ]);
     }
 
-    #[Route('/calendar/link', name: 'calendar_create_link', methods: ['POST'])]
-    public function createCalendarLink(Request $request): Response
+    #[Route('/calendar/subscription', name: 'calendar_create_subscription', methods: ['POST'])]
+    public function createCalendarSubscription(Request $request): Response
     {
         $clown = $this->getCurrentClown();
         $type = CalendarType::from($request->request->get('type'));
@@ -79,7 +79,7 @@ class CalendarController extends AbstractProtectedController
         } else {
             $this->addFlash('success', 'Ok, Kalender-Link wurde angelegt!');
             $calendar = new Calendar();
-            $calendar->setType($type->value);
+            $calendar->setType($type);
             $calendar->setUuid(Uuid::uuid4()->toString());
             $clown->addCalendar($calendar);
             $this->entityManager->persist($calendar);
@@ -89,8 +89,8 @@ class CalendarController extends AbstractProtectedController
         return $this->redirectToRoute('calendar_export');
     }
 
-    #[Route('/calendar/link/{uuid}', name: 'calendar_delete_link', methods: ['DELETE'])]
-    public function deleteCalendarLink(Request $request, string $uuid): Response
+    #[Route('/calendar/subscription/{uuid}', name: 'calendar_delete_subscription', methods: ['DELETE'])]
+    public function deleteCalendarSubscription(Request $request, string $uuid): Response
     {
         $calendar = $this->calendarRepository->findByUuid($uuid);
         if (!$calendar) {

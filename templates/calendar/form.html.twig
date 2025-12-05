@@ -11,7 +11,6 @@
         Diese Datei kannst Du in eine Kalender-App z.B. auf dem Handy importieren.
     </p>
     {{ component('month_navigation', { active: month.key, urlKey: 'calendar_export' }) }}
-
     <ul class="list-group">
         {% for type in types %}
         <li class="list-group-item">
@@ -24,12 +23,10 @@
         {% endfor %}
     </ul>
 
-
     <h5 class="pt-3">Kalender Abonnement</h5>
     <p>
         Hier kannst Du Dir Webcal-Kalender-Links erstellen, die Du in einer Kalender-App abonnieren kannst.
     </p>
-
     <ul class="list-group">
         {% for type in types %}
         <li class="list-group-item">
@@ -45,7 +42,7 @@
                 {{ include('calendar/_delete_link.html.twig', {calendar: currentClown.getCalendar(type), type: type, token: token}) }}
             {% else %}
                 <span class="fw-lighter"><i>kein Link angelegt</i></span>
-                <form method="post" action="{{ path('calendar_create_link') }}">
+                <form method="post" action="{{ path('calendar_create_subscription') }}">
                     <input type="hidden" name="type" value="{{ type.value }}" />
                     <input type="hidden" name="token" value="{{ token }}">
                     <button type="submit" class="btn btn-link">Kalender-Abonnement-Link erzeugen</button>
@@ -54,6 +51,5 @@
         </li>
         {% endfor %}
     </ul>
-
 
 {% endblock %}

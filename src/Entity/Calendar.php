@@ -13,17 +13,17 @@ class Calendar
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'calendars')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Clown $clown = null;
+    private Clown $clown;
 
     #[ORM\Column(type: Types::GUID)]
-    private ?string $uuid = null;
+    private string $uuid;
 
     #[ORM\Column(length: 100)]
-    private ?string $type = null;
+    private string $type = CalendarType::PERSONAL->value;
 
     public function getId(): ?int
     {
@@ -54,14 +54,14 @@ class Calendar
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): CalendarType
     {
-        return $this->type;
+        return CalendarType::from($this->type);
     }
 
-    public function setType(string $type): static
+    public function setType(CalendarType $type): static
     {
-        $this->type = $type;
+        $this->type = $type->value;
 
         return $this;
     }

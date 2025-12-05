@@ -12,7 +12,7 @@
         <p>Das Kalender-Abonnement wird hiermit beendet. Du kannst jederzeit einen neuen Link erzeugen. Dieser wird sich von diesem jedoch unterscheiden.</p>
       </div>
       <div class="modal-footer">
-        <form method="post" action="{{ path('calendar_delete_link', {uuid: calendar.uuid}) }}">
+        <form method="post" action="{{ path('calendar_delete_subscription', {uuid: calendar.uuid}) }}">
             <input type="hidden" name="token" value="{{ token }}">
             <input type="hidden" name="_method" value="DELETE">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>

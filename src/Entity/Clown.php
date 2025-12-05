@@ -429,22 +429,12 @@ class Clown
     public function getCalendar(CalendarType $type): ?Calendar
     {
         foreach ($this->calendars as $calendar) {
-            if ($type->value === $calendar->getType()) {
+            if ($type === $calendar->getType()) {
                 return $calendar;
             }
         }
 
         return null;
-    }
-
-    public function getPersonalCalendar(): ?Calendar
-    {
-        return $this->getCalendar(CalendarType::PERSONAL);
-    }
-
-    public function getFullCalendar(): ?Calendar
-    {
-        return $this->getCalendar(CalendarType::ALL);
     }
 
     /**
