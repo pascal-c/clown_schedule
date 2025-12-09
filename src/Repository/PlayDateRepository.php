@@ -7,6 +7,7 @@ use App\Entity\ClownAvailability;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Week;
+use App\Service\ArrayCache;
 use App\Service\TimeService;
 use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
@@ -14,7 +15,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class PlayDateRepository extends AbstractRepository
 {
-    public function __construct(private TimeService $timeService)
+    public function __construct(private TimeService $timeService, private ArrayCache $cache)
     {
     }
 
@@ -87,10 +88,6 @@ class PlayDateRepository extends AbstractRepository
     public function byYear(string $year): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
-            ->leftJoin('pd.playingClowns', 'clown')
-            ->leftJoin('pd.venue', 'venue')
-            ->leftJoin('venue.blockedClowns', 'blockedClown')
-            ->leftJoin('venue.responsibleClowns', 'responsibleClown')
             ->where('pd.date >= :start')
             ->andWhere('pd.date <= :end')
             ->setParameter('start', "{$year}-01-01")
@@ -134,13 +131,16 @@ class PlayDateRepository extends AbstractRepository
 
     public function confirmedByMonth(Month $month): array
     {
-        return $this->queryByMonth($month)
-            ->andWhere('pd.status = :status_confirmed')
-            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
-            ->getQuery()
-            ->enableResultCache(2)
-            ->getResult()
-        ;
+        return $this->cache->get(
+            self::class.'confirmedByMonth',
+            function () use ($month): array {
+                return  $this->queryByMonth($month)
+                    ->andWhere('pd.status = :status_confirmed')
+                    ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
+                    ->getQuery()
+                    ->getResult();
+            },
+        );
     }
 
     public function countByClownAvailabilityAndWeek(ClownAvailability $clownAvailability, Week $week): int
@@ -155,6 +155,7 @@ class PlayDateRepository extends AbstractRepository
     public function confirmedByMonthAndClown(Month $month, Clown $clown): array
     {
         return $this->queryByMonth($month)
+            ->leftJoin('pd.playingClowns', 'clown')
             ->andWhere('pd.status = :status_confirmed')
             ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->andWhere('clown = :clown')
@@ -168,6 +169,7 @@ class PlayDateRepository extends AbstractRepository
     public function byMonthAndClown(Month $month, Clown $clown): array
     {
         return $this->queryByMonth($month)
+            ->leftJoin('pd.playingClowns', 'clown')
             ->andWhere('clown = :clown')
             ->setParameter('clown', $clown)
             ->getQuery()
@@ -179,10 +181,6 @@ class PlayDateRepository extends AbstractRepository
     private function queryByMonth(Month $month): QueryBuilder
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
-            ->leftJoin('pd.playingClowns', 'clown')
-            ->leftJoin('pd.venue', 'venue')
-            ->leftJoin('venue.blockedClowns', 'blockedClown')
-            ->leftJoin('venue.responsibleClowns', 'responsibleClown')
             ->where('pd.date >= :this')
             ->andWhere('pd.date < :next')
             ->setParameter('this', $month->dbFormat())

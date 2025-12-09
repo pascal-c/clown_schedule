@@ -96,7 +96,7 @@ class ScheduleController extends AbstractProtectedController
     }
 
     #[Route('/schedule/{monthId}', name: 'schedule', methods: ['GET'])]
-    public function show(SessionInterface $session, Request $request, ?string $monthId = null): Response
+    public function show(SessionInterface $session, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::NOT_STARTED);

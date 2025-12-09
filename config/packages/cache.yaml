@@ -23,3 +23,5 @@ framework:
             # uses the "app" cache configuration
             vacation.cache:
                 adapter: cache.app
+            array.cache:
+                adapter: cache.adapter.array

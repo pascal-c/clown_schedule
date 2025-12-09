@@ -9,10 +9,9 @@ use App\Repository\ClownRepository;
 use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
-use App\ViewController\ScheduleViewController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ClownInvoiceController extends AbstractProtectedController
 {
@@ -20,7 +19,6 @@ class ClownInvoiceController extends AbstractProtectedController
         private ClownRepository $clownRepository,
         private MonthRepository $monthRepository,
         private PlayDateRepository $playDateRepository,
-        private ScheduleViewController $scheduleViewController,
         private ConfigRepository $configRepository,
     ) {
     }
