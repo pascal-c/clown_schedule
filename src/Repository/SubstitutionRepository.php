@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\Substitution;
+use App\Service\ArrayCache;
 use App\Service\TimeService;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
@@ -12,37 +13,8 @@ use DateTimeInterface;
 
 class SubstitutionRepository extends AbstractRepository
 {
-    public function __construct(private TimeService $timeService)
+    public function __construct(private TimeService $timeService, private ArrayCache $cache)
     {
-    }
-
-    private array $cache = [];
-
-    private function cacheWarmUp(Month $month, array $substitutions): void
-    {
-        $this->cache[$month->getKey()] = [];
-        foreach ($substitutions as $substitution) {
-            $this->cache[$month->getKey()][$substitution->getDate()->format('d')][$substitution->getDaytime()] = $substitution;
-        }
-    }
-
-    private function cacheNeedsWarmUp(Month $month): bool
-    {
-        return empty($this->cache[$month->getKey()]);
-    }
-
-    private function cacheGet(DateTimeInterface $date, string $daytime): ?Substitution
-    {
-        $month = new Month($date);
-        if ($this->cacheNeedsWarmUp($month)) {
-            $this->cacheWarmUp($month, $this->byMonth($month));
-        }
-
-        if (!isset($this->cache[$month->getKey()][$date->format('d')][$daytime])) {
-            return null;
-        }
-
-        return $this->cache[$month->getKey()][$date->format('d')][$daytime];
     }
 
     protected function getEntityName(): string
@@ -52,7 +24,12 @@ class SubstitutionRepository extends AbstractRepository
 
     public function find(DateTimeInterface $date, string $daytime): ?Substitution
     {
-        return $this->cacheGet($date, $daytime);
+        $this->byMonth(new Month($date));
+
+        return $this->cache->get(
+            $this->findCacheKey($date, $daytime),
+            fn () => null,
+        );
     }
 
     /**
@@ -69,20 +46,30 @@ class SubstitutionRepository extends AbstractRepository
     /** @return array<Substitution> */
     public function byMonth(Month $month): array
     {
-        $substitutions = $this->doctrineRepository->createQueryBuilder('sub')
-            ->where('sub.month = :month')
-            ->setParameter('month', $month->getKey())
-            ->getQuery()
-            ->enableResultCache(1, $this->getByMonthCacheKey($month))
-            ->getResult();
-        $this->cacheWarmUp($month, $substitutions);
+        $substitutions = $this->cache->get(
+            $this->byMonthCacheKey($month),
+            fn (): array => $this->doctrineRepository->createQueryBuilder('sub')
+                ->where('sub.month = :month')
+                ->setParameter('month', $month->getKey())
+                ->getQuery()
+                ->getResult(),
+        );
+
+        foreach ($substitutions as $substitution) {
+            $this->cache->get($this->findCacheKey($substitution->getDate(), $substitution->getDaytime()), fn () => $substitution);
+        }
 
         return $substitutions;
     }
 
-    public function getByMonthCacheKey(Month $month): string
+    public function byMonthCacheKey(Month $month): string
     {
-        return 'substitutionsByMonth'.$month->getKey();
+        return self::class.'byMonth'.$month->getKey();
+    }
+
+    public function findCacheKey(DateTimeInterface $date, string $daytime): string
+    {
+        return self::class.'find'.$date->format('d').$daytime;
     }
 
     /** @return array<Substitution> */

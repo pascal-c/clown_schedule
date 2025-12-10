@@ -38,4 +38,4 @@ yarn-error.log
 /bin/install.sh
 /bin/deploy.sh
 /bin/update.sh
-/config/settings.php
+/config/reference.php

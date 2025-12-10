@@ -14,4 +14,9 @@ class ArrayCache
 
         return $this->items[$key];
     }
+
+    public function remove(string $key): void
+    {
+        unset($this->items[$key]);
+    }
 }

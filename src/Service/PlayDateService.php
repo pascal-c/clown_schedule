@@ -21,6 +21,7 @@ class PlayDateService
         private EntityManagerInterface $entityManager,
         private PlayDateHistoryService $playDateHistoryService,
         private AuthService $authService,
+        private ArrayCache $cache,
     ) {
     }
 
@@ -83,10 +84,7 @@ class PlayDateService
         if (1 === count($playDatesSameTimeSlot)) {
             foreach ($this->substitutionRepository->findByTimeSlotPeriod($playDate) as $substitution) {
                 $this->entityManager->remove($substitution);
-                $this->entityManager
-                    ->getConfiguration()
-                    ?->getResultCache()
-                    ?->deleteItem($this->substitutionRepository->getByMonthCacheKey($substitution->getMonth()));
+                $this->cache->remove($this->substitutionRepository->byMonthCacheKey($substitution->getMonth()));
             }
         }
     }
