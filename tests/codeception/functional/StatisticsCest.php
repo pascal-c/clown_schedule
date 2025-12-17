@@ -38,7 +38,7 @@ class StatisticsCest extends AbstractCest
 
         // first I see yearly statistics by type
         $I->see('jährlich', '.nav .nav-link.active');
-        $I->see('Spieltermine (reguläre und Zusatztermine) nach Typ 2024', 'h5');
+        $I->see('Spieltermine (reguläre und Zusatztermine) 2024', 'h5');
         $I->see('2024', '.nav .nav-link.active'); // current year is active
 
         // switch to status
@@ -55,6 +55,6 @@ class StatisticsCest extends AbstractCest
         // switch back to type
         $I->amOnPage('/statistics/per-venue/infinity?type=byType');
         $I->see('ewig', '.nav .nav-link.active');
-        $I->see('Spieltermine (reguläre und Zusatztermine) nach Typ', 'h5');
+        $I->see('Spieltermine (reguläre und Zusatztermine)', 'h5');
     }
 }

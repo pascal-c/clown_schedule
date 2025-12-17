@@ -12,8 +12,8 @@ enum StatisticsForVenuesType: string
     public function label(): string
     {
         return match($this) {
-            static::BY_TYPE => 'Nach Typ',
-            static::BY_STATUS => 'Nach Status',
+            static::BY_TYPE => 'Reguläre und Zusatztermine',
+            static::BY_STATUS => 'Abgesagte und verschobene Termine',
         };
     }
 }
