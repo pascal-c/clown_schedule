@@ -4,6 +4,13 @@
     <h4 class="pt-3">Wiederkehrenden Termin anlegen</h4>
 
     {{ form_start(form) }}
+     <fieldset class="mb-3">
+        {{ form_label(form.venue) }}
+        <div class="row align-items-center">
+            <div class="col-auto">{{ form_widget(form.venue) }}</div>
+            <div class="col-auto">{{ form_widget(form.isSuper) }}</div>
+        </div>
+    </fieldset>
     <fieldset class="mb-3">
         <legend class="col-form-label">Zeitraum</legend>
         <div class="row align-items-center">
@@ -34,13 +41,6 @@
             <div class="col-auto">{{ form_widget(form.playTimeFrom) }}</div>
             <div class="col-auto">{{ form_label(form.playTimeTo) }}</div>
             <div class="col-auto">{{ form_widget(form.playTimeTo) }}</div>
-        </div>
-    </fieldset>
-     <fieldset class="mb-3">
-        {{ form_label(form.venue) }}
-        <div class="row align-items-center">
-            <div class="col-auto">{{ form_widget(form.venue) }}</div>
-            <div class="col-auto">{{ form_widget(form.isSuper) }}</div>
         </div>
     </fieldset>
 

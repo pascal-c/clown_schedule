@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,6 +30,13 @@ class RegularPlayDateFormType extends AbstractType
         $helpText = !$canEdit ? 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!' : '';
 
         $builder
+            ->add('venue', EntityType::class, [
+                'class' => Venue::class,
+                'choice_label' => 'name',
+                'required' => false,
+                'label' => 'Spielort',
+                'disabled' => !$canEdit,
+            ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Datum',
@@ -46,12 +54,29 @@ class RegularPlayDateFormType extends AbstractType
                 'multiple' => false,
                 'help' => $helpText,
             ])
-            ->add('venue', EntityType::class, [
-                'class' => Venue::class,
-                'choice_label' => 'name',
+            ->add('meetingTime', TimeType::class, [
+                'input' => 'datetime',
+                'widget' => 'choice',
+                'label' => 'Treffen',
                 'required' => false,
-                'label' => 'Spielort',
-                'disabled' => !$canEdit,
+                'minutes' => [0, 15, 30, 45],
+                'help' => $helpText,
+            ])
+            ->add('playTimeFrom', TimeType::class, [
+                'input' => 'datetime',
+                'widget' => 'choice',
+                'label' => 'Spielzeit (von)',
+                'required' => false,
+                'minutes' => [0, 15, 30, 45],
+                'help' => $helpText,
+            ])
+            ->add('playTimeTo', TimeType::class, [
+                'input' => 'datetime',
+                'widget' => 'choice',
+                'label' => 'Spielzeit (bis)',
+                'required' => false,
+                'minutes' => [0, 15, 30, 45],
+                'help' => $helpText,
             ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',

@@ -20,6 +20,12 @@ class RecurringDateFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('venue', EntityType::class, [
+                'class' => Venue::class,
+                'choice_label' => 'name',
+                'required' => false,
+                'label' => 'Spielort',
+            ])
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Start',
@@ -92,12 +98,6 @@ class RecurringDateFormType extends AbstractType
                 'widget' => 'choice',
                 'label' => 'Spielzeit (bis)',
                 'minutes' => [0, 15, 30, 45],
-            ])
-            ->add('venue', EntityType::class, [
-                'class' => Venue::class,
-                'choice_label' => 'name',
-                'required' => false,
-                'label' => 'Spielort',
             ])
             ->add('isSuper', CheckboxType::class, [
                 'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
