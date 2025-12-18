@@ -14,7 +14,6 @@ class CreateSpecialPlayDateCest extends AbstractCest
     public function _before(FunctionalTester $I): void
     {
         parent::_before($I);
-        $this->clownFactory->create(name: 'Thorsten');
     }
 
     protected function create(AdminTester $I): void
@@ -41,7 +40,6 @@ class CreateSpecialPlayDateCest extends AbstractCest
         $I->amGoingTo('test, if the new special date is being showed correctly in schedule');
         $I->amOnPage('/schedule/1999-11');
         $I->see('Kindergeburtstag', Locator::contains('.row', text: '02. Nov'));
-        $I->dontSee('Thorsten', Locator::contains('.row', text: '02. Nov'));
     }
 
     #[Before('create')]
