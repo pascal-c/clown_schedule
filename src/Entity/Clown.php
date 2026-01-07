@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Value\CalendarType;
+use App\Value\Preference;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -126,6 +127,21 @@ class Clown
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getLabelFor(?PlayDate $playDate): string
+    {
+        $label = $this->getName();
+
+        if ($playDate?->getVenue() && $playDate->getVenue()->getResponsibleClowns()->contains($this)) {
+            $label .= ' (Verantw.)';
+        }
+        if ($playDate?->getVenue()) {
+            $preference = $this->getVenuePreferenceFor($playDate->getVenue());
+            $label .= ' ('.$preference->short().')';
+        }
+
+        return $label;
     }
 
     /**
@@ -392,6 +408,13 @@ class Clown
         }
 
         return $this;
+    }
+
+    public function getVenuePreferenceFor(Venue $venue): Preference
+    {
+        $clownVenuePreference = $this->getClownVenuePreferenceFor($venue);
+
+        return $clownVenuePreference ? $clownVenuePreference->getPreference() : Preference::OK;
     }
 
     /**

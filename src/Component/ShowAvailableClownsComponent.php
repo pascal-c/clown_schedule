@@ -35,7 +35,7 @@ final class ShowAvailableClownsComponent
         );
         $this->entries = array_map(
             fn (ClownAvailability $availability) => [
-                'clown' => $availability->getClown(),
+                'clown_name' => $availability->getClown()->getLabelFor($playDate),
                 'type' => $this->getType($timeSlotPeriod, $availability, $playDate),
                 'messages' => $this->getMessages($timeSlotPeriod, $availability, $playDate),
             ],

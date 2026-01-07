@@ -15,14 +15,17 @@ class AssignClownsFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $playDate = $options['data'];
+
         $builder
             ->add('playingClowns', EntityType::class, [
                 'class' => Clown::class,
-                'choice_label' => 'name',
+                'choice_label' => fn (Clown $clown) => $clown->getLabelFor($playDate),
                 'required' => false,
                 'label' => 'Clowns',
                 'expanded' => true,
                 'multiple' => true,
+                'help' => 'Der Wert in Klammern hinter dem Clown-Namen gibt die Präferenz des Clowns für den Spielort an.',
             ])
             ->add('comment', TextareaType::class, [
                 'label' => 'Kommentar',

@@ -1,7 +1,7 @@
 <div class="pt-2">
     <i>Noch verfügbar:</i>
     {% for entry in entries %}
-        <span class="text-{{ entry.type }}" title="{{ entry.messages|join('\n') }}">{{ entry.clown.name }}</span>{% if not loop.last %} | {% endif %}
+        <span class="text-{{ entry.type }}" title="{{ entry.messages|join('\n') }}">{{ entry.clown_name }}</span>{% if not loop.last %} | {% endif %}
     {% else %}
         keener
     {% endfor %}

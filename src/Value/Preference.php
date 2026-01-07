@@ -19,7 +19,7 @@ enum Preference: string
         return match($this) {
             Preference::WORST => '--',
             Preference::WORSE => '-',
-            Preference::OK => 'o',
+            Preference::OK => 'ok',
             Preference::BETTER => '+',
             Preference::BEST => '++',
         };
