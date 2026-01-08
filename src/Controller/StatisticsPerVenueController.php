@@ -13,7 +13,7 @@ use App\Value\PlayDateType;
 use App\Value\StatisticsForVenuesType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class StatisticsPerVenueController extends AbstractProtectedController
 {
@@ -56,12 +56,12 @@ class StatisticsPerVenueController extends AbstractProtectedController
         return match($currentType) {
             StatisticsForVenuesType::BY_TYPE => $this->showPerType($year),
             StatisticsForVenuesType::BY_STATUS => $this->showPerStatus($year),
+            StatisticsForVenuesType::WITH_FEE => $this->showWithFee($year),
         };
     }
 
     private function showPerType(?string $year): Response
     {
-        $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
         $venues = array_map(
             fn ($venue) => [
                 'name' => $venue->getName(),
@@ -94,9 +94,7 @@ class StatisticsPerVenueController extends AbstractProtectedController
 
         return $this->render('statistics/per_venue_per_type.html.twig', [
             'venues' => $venues,
-            'active' => 'statistics',
             'activeYear' => $year,
-            'years'      => $years,
             'showYears'  => !is_null($year),
             'type'       => StatisticsForVenuesType::BY_TYPE,
         ]);
@@ -104,7 +102,6 @@ class StatisticsPerVenueController extends AbstractProtectedController
 
     private function showPerStatus(?string $year): Response
     {
-        $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
         $venues = array_map(
             fn ($venue) => [
                 'name' => $venue->getName(),
@@ -137,11 +134,76 @@ class StatisticsPerVenueController extends AbstractProtectedController
 
         return $this->render('statistics/per_venue_per_status.html.twig', [
             'venues' => $venues,
-            'active' => 'statistics',
             'activeYear' => $year,
-            'years'      => $years,
             'showYears'  => !is_null($year),
             'type'       => StatisticsForVenuesType::BY_STATUS,
         ]);
+    }
+
+    private function showWithFee(?string $year): Response
+    {
+        $venues = array_map(
+            fn ($venue) => [
+                'name' => $venue->getName(),
+                'totalCount' => $venue->getPlayDates()->count(),
+                'feeStandard' => $venue->getPlayDates()->reduce(
+                    fn ($fee, PlayDate $playDate) => $fee + $playDate->getFee()->getFeeStandard() * $playDate->getPlayingClowns()->count(),
+                    0.0,
+                ),
+                'feeAlternative' => $venue->getPlayDates()->reduce(
+                    fn ($fee, PlayDate $playDate) => $fee + $playDate->getFee()->getFeeAlternative() * $playDate->getPlayingClowns()->count(),
+                    0.0,
+                ),
+                'feePerKilometer' => $venue->getPlayDates()->reduce(
+                    fn ($fee, PlayDate $playDate) => $fee + $playDate->getFee()->getKilometersFee() * ($playDate->getFee()?->isKilometersFeeForAllClowns() ? $playDate->getPlayingClowns()->count() : 1),
+                    0.0,
+                ),
+            ],
+            $this->venueRepository->allWithPlays($year, onlyConfirmed: true),
+        );
+
+        $playDatesWithoutVenue = $this->playDateRepository->withoutVenue($year, onlyConfirmed: true);
+        if (count($playDatesWithoutVenue) > 0) {
+            $venues[] = [
+                'name' => 'Ohne Veranstaltungsort',
+                'totalCount' => count($playDatesWithoutVenue),
+                'feeStandard' => array_reduce(
+                    $playDatesWithoutVenue,
+                    fn ($fee, PlayDate $playDate) => $fee + $playDate->getFee()?->getFeeStandard() * $playDate->getPlayingClowns()->count(),
+                    0.0,
+                ),
+                'feeAlternative' => array_reduce(
+                    $playDatesWithoutVenue,
+                    fn ($fee, PlayDate $playDate) => $fee + $playDate->getFee()?->getFeeAlternative() * $playDate->getPlayingClowns()->count(),
+                    0.0,
+                ),
+                'feePerKilometer' => array_reduce(
+                    $playDatesWithoutVenue,
+                    fn ($fee, PlayDate $playDate) => $fee + $playDate->getFee()?->getKilometersFee() * ($playDate->getFee()?->isKilometersFeeForAllClowns() ? $playDate->getPlayingClowns()->count() : 1),
+                    0.0,
+                ),
+            ];
+        }
+
+        return $this->render('statistics/per_venue_with_fee.html.twig', [
+            'venues' => $venues,
+            'activeYear' => $year,
+            'showYears'  => !is_null($year),
+            'type'       => StatisticsForVenuesType::WITH_FEE,
+        ]);
+    }
+
+    protected function render(string $view, array $parameters = [], ?Response $response = null): Response
+    {
+        $years = range($this->playDateRepository->minYear(), $this->playDateRepository->maxYear());
+
+        return parent::render(
+            $view,
+            array_merge($parameters, [
+                'active' => 'statistics',
+                'years'      => $years,
+            ]),
+            $response
+        );
     }
 }

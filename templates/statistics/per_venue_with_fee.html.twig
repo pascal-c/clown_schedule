@@ -1,0 +1,63 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Statistiken{% endblock %}
+
+{% block content %}
+    <h4 class="pt-3">Statistiken</h4>
+    {{ component('statistics_navigation', { active: 'per_venue' }) }}
+    {{ component('statistics_per_venue_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
+    {% if showYears %}
+        {{ include('statistics/_per_venue_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
+        <h5 class="pt-2">Clowns-Honorare {{ activeYear }}</h5>
+    {% else %}
+        <h5 class="pt-2">Clowns-Honorare von Anbeginn der Zeit</h5>
+    {% endif %}
+
+    {{ component('statistics_for_venues_dropdown', { currentType: type, path: showYears ? path('statistics_per_venue_per_year', {year: activeYear}) : path('statistics_per_venue_infinity') }) }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Spielort</th>
+                <th>Spiele gesamt</th>
+                <th>Honorar</th>
+                <th>Honorar (alternativ)</th>
+                <th>Kilometergeld</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venue in venues %}
+            <tr>
+                <td>{{ venue.name }}</td>
+                <td>
+                    {{ venue.totalCount }}
+                </td>
+                <td>
+                    {{ venue.feeStandard|format_currency('EUR') }}
+                </td>
+                <td>
+                    {{ venue.feeAlternative|format_currency('EUR') }}
+                </td>
+                <td>
+                    {{ venue.feePerKilometer|format_currency('EUR') }}
+                </td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+                <th>Summe</th>
+                <th>
+                    {{ venues|reduce((carry, v) => carry+v.totalCount) }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.feeStandard)|format_currency('EUR') }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.feeAlternative)|format_currency('EUR') }}
+                </th>
+                <th> 
+                    {{ venues|reduce((carry, v) => carry+v.feePerKilometer)|format_currency('EUR') }}
+                </th>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
