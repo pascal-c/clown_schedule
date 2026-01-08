@@ -83,7 +83,8 @@ class StatisticsPerClownController extends AbstractProtectedController
                 $availabilites = $clownWithTotalCount['clown']->getClownAvailabilities();
                 if ($year) {
                     $startMonth = Month::build($year.'-01');
-                    $endMonth = Month::build($year.'-12');
+                    $endMonth = min(Month::build($year.'-12'), new Month($this->timeService->now()));
+
                     $availabilites = $availabilites->filter(
                         fn (ClownAvailability $availability): bool => $availability->getMonth() >= $startMonth && $availability->getMonth() <= $endMonth,
                     );

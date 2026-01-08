@@ -4,12 +4,17 @@ namespace App\Repository;
 
 use App\Entity\Clown;
 use App\Entity\PlayDate;
+use App\Service\TimeService;
 use App\Value\PlayDateType;
 use Doctrine\ORM\EntityRepository;
 
 class ClownRepository extends AbstractRepository
 {
     protected EntityRepository $doctrineRepository;
+
+    public function __construct(private TimeService $timeService)
+    {
+    }
 
     protected function getEntityName(): string
     {
@@ -49,6 +54,8 @@ class ClownRepository extends AbstractRepository
             ->leftJoin('cl.playDates', 'pd')
             ->where('pd.type = :play_date_type')
             ->andWhere('pd.status = :status_confirmed')
+            ->andWhere('pd.date < :firstOfNextMonth')
+            ->setParameter('firstOfNextMonth', $this->timeService->firstOfNextMonth())
             ->setParameter('play_date_type', PlayDateType::REGULAR->value)
             ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->groupBy('cl')
@@ -74,6 +81,8 @@ class ClownRepository extends AbstractRepository
             ->leftJoin('cl.playDates', 'pd')
             ->where('pd.isSuper = 1')
             ->andWhere('pd.status = :status_confirmed')
+            ->andWhere('pd.date < :firstOfNextMonth')
+            ->setParameter('firstOfNextMonth', $this->timeService->firstOfNextMonth())
             ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->groupBy('cl');
         if ($year) {
