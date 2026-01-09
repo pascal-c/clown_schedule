@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDate;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\VenueRepository;
 use App\Service\SessionService;
@@ -22,6 +23,7 @@ class StatisticsPerVenueController extends AbstractProtectedController
         private VenueRepository $venueRepository,
         private TimeService $timeService,
         private SessionService $sessionService,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -38,6 +40,7 @@ class StatisticsPerVenueController extends AbstractProtectedController
         return match($currentType) {
             StatisticsForVenuesType::BY_TYPE => $this->showPerType(null),
             StatisticsForVenuesType::BY_STATUS => $this->showPerStatus(null),
+            StatisticsForVenuesType::WITH_FEE => $this->showWithFee(null),
         };
     }
 
@@ -190,6 +193,7 @@ class StatisticsPerVenueController extends AbstractProtectedController
             'activeYear' => $year,
             'showYears'  => !is_null($year),
             'type'       => StatisticsForVenuesType::WITH_FEE,
+            'config'     => $this->configRepository->find(),
         ]);
     }
 
