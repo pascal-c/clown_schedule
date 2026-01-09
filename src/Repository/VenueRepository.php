@@ -4,10 +4,15 @@ namespace App\Repository;
 
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Service\TimeService;
 use App\Value\PlayDateType;
 
 class VenueRepository extends AbstractRepository
 {
+    public function __construct(private TimeService $timeService)
+    {
+    }
+
     protected function getEntityName(): string
     {
         return Venue::class;
@@ -34,11 +39,16 @@ class VenueRepository extends AbstractRepository
         );
     }
 
+    /**
+     * @return Venue[]
+     */
     public function allWithPlays(?string $year = null, bool $onlyConfirmed = false): array
     {
         $queryBuilder = $this->doctrineRepository->createQueryBuilder('venue')
             ->select('venue, pd')
             ->where('pd.type = :type_regular OR pd.type = :type_special')
+            ->andWhere('pd.date < :firstOfNextMonth')
+            ->setParameter('firstOfNextMonth', $this->timeService->firstOfNextMonth())
             ->setParameter('type_regular', PlayDateType::REGULAR->value)
             ->setParameter('type_special', PlayDateType::SPECIAL->value)
             ->leftJoin('venue.playDates', 'pd');

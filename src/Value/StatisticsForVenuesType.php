@@ -8,12 +8,14 @@ enum StatisticsForVenuesType: string
 {
     case BY_TYPE = 'byType';
     case BY_STATUS = 'byStatus';
+    case WITH_FEE = 'withFee';
 
     public function label(): string
     {
         return match($this) {
             static::BY_TYPE => 'Reguläre und Zusatztermine',
             static::BY_STATUS => 'Abgesagte und verschobene Termine',
+            static::WITH_FEE => 'Honorare',
         };
     }
 }
