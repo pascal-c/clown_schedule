@@ -12,10 +12,8 @@ use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
-use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\ClownAssigner;
 use App\Service\Scheduler\FairPlayCalculator;
-use App\Service\Scheduler\PlayDateSorter;
 use App\Service\Scheduler\TrainingAssigner;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriod;
@@ -28,12 +26,10 @@ class Scheduler
         private PlayDateRepository $playDateRepository,
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private ClownAssigner $clownAssigner,
-        private AvailabilityChecker $availabilityChecker,
         private FairPlayCalculator $fairPlayCalculator,
         private SubstitutionRepository $substitutionRepository,
         private ScheduleRepository $scheduleRepository,
         private EntityManagerInterface $entityManager,
-        private PlayDateSorter $playDateSorter,
         private RosterCalculatorGateway $rosterCalculatorGateway,
         private RosterResultApplier $rosterResultApplier,
         private TrainingAssigner $trainingAssigner,
@@ -49,10 +45,6 @@ class Scheduler
         if (!$keepExistingAssignments) {
             $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
         }
-        $playDates = $this->playDateSorter->sortByAvailabilities(
-            $playDates,
-            $clownAvailabilities,
-        );
 
         foreach ($playDates as $playDate) {
             if ($this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive()) {
