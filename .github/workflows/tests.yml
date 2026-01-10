@@ -14,7 +14,7 @@ jobs:
         id: setup-php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
 
       # handle env file
       - name: Copy test .env file
@@ -36,6 +36,8 @@ jobs:
 
       - name: composer install
         uses: php-actions/composer@v6
+        with:
+          php_version: '8.4'
         env:
           APP_ENV: test
 
