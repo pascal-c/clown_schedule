@@ -38,6 +38,7 @@ class RosterCalculatorGateway
     {
 
         $options = [
+            'auth_bearer' => $this->params->get('app.roster_calculator_api_token'),
             'timeout' => 90,
             'max_duration' => 90,
             'json' => $this->serialize($playDates, $clownAvailabilities),
@@ -79,6 +80,7 @@ class RosterCalculatorGateway
     public function rating(array $playDates, array $clownAvailabilities): ?array
     {
         $options = [
+            'auth_bearer' => $this->params->get('app.roster_calculator_api_token'),
             'timeout' => 10,
             'max_duration' => 10,
             'json' => $this->serialize($playDates, $clownAvailabilities),
