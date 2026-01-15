@@ -22,7 +22,7 @@ class ConfigCalculationFormType extends AbstractType
         $builder
             ->add('useCalculation', CheckboxType::class, [
                 'required' => false,
-                'label' => 'Automatische Berechnung',
+                'label' => 'Automatische Spielplanberechnung',
                 'label_attr' => ['class' => 'checkbox-switch'],
                 'help' => 'Wenn aktiviert, kann der Spielplan automatisch unter Berücksichtigung der Clownswünsche berechnet werden',
             ]);
@@ -37,9 +37,9 @@ class ConfigCalculationFormType extends AbstractType
                 ])
                 ->add('featureAssignResponsibleClownAsFirstClownActive', CheckboxType::class, [
                     'required' => false,
-                    'label' => 'Verantwortlichen Clown als 1. Clown zuordnen',
+                    'label' => 'Feature “Verantwortliche Clowns“',
                     'label_attr' => ['class' => 'checkbox-switch'],
-                    'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte',
+                    'help' => 'Es können jedem Spielort ein oder mehrere verantwortliche Clowns zugeordnet werden. Bei der Berechnung wird versucht als ersten Clown immer einen verantwortlichen Clown zu benennen. Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.',
                 ])
                 ->add('pointsPerMissingPerson', IntegerType::class, [
                     'required' => true,

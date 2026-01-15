@@ -37,7 +37,7 @@ class VenueFormType extends AbstractType
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Verantwortliche Clowns',
-                'help' => 'Bei der Spielplanerstellung wird versucht, immer einen der verantwortlichen Clowns als ersten Clown zuzuordnen',
+                'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.',
                 'multiple' => true,
                 'expanded' => true,
             ])
