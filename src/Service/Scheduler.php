@@ -47,7 +47,7 @@ class Scheduler
         }
 
         foreach ($playDates as $playDate) {
-            if ($this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive()) {
+            if ($this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive() && $playDate->getVenue()?->assignResponsibleClownAsFirstClown()) {
                 $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
             }
 

@@ -67,6 +67,6 @@ class EditVenueCest extends AbstractCest
         $I->uncheckOption('Verantwortlichen Clown als 1. Clown zuordnen');
         $I->click('Spielort speichern');
 
-        $I->dontSee('Verantwortliche Clowns');;
+        $I->dontSee('Verantwortliche Clowns');
     }
 }

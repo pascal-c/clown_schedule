@@ -103,6 +103,9 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
+    /**
+     * @return PlayDate[]
+     */
     public function confirmedRegularByMonth(Month $month): array
     {
         return $this->queryByMonth($month)

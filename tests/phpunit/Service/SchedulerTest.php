@@ -109,7 +109,7 @@ final class SchedulerTest extends TestCase
         $this->configRepository->expects($this->exactly(3))
             ->method('isFeatureAssignResponsibleClownAsFirstClownActive')
             ->willReturn($isFeatureAssignResponsibleClownAsFirstClownActive);
-        $this->clownAssigner->expects($isFeatureAssignResponsibleClownAsFirstClownActive ? $this->exactly(3) : $this->never())
+        $this->clownAssigner->expects($isFeatureAssignResponsibleClownAsFirstClownActive ? $this->exactly(2) : $this->never())
             ->method('assignFirstClown');
         $this->rosterCalculatorGateway->expects($this->once())
             ->method('calcuate')
@@ -212,10 +212,10 @@ final class SchedulerTest extends TestCase
 
     private function getPlayDates(): array
     {
-        return [$this->buildPlayDate(), $this->buildPlayDate(), $this->buildPlayDate()];
+        return [$this->buildPlayDate(), $this->buildPlayDate(), $this->buildPlayDate(assignResponsibleClownAsFirstClown: false)];
     }
 
-    private function buildPlayDate(?Clown $playingClown1 = null, ?Clown $playingClown2 = null): PlayDate
+    private function buildPlayDate(?Clown $playingClown1 = null, ?Clown $playingClown2 = null, bool $assignResponsibleClownAsFirstClown = true): PlayDate
     {
         static $counter = 0;
         ++$counter;
@@ -224,7 +224,7 @@ final class SchedulerTest extends TestCase
         $playDate->setDaytime('pm');
         $playDate->addPlayingClown($playingClown1 ?? new Clown());
         $playDate->addPlayingClown($playingClown2 ?? new Clown());
-        $playDate->setVenue((new Venue())->setName("Ort $counter"));
+        $playDate->setVenue((new Venue())->setName("Ort $counter")->setAssignResponsibleClownAsFirstClown($assignResponsibleClownAsFirstClown));
 
         return $playDate;
     }
