@@ -32,14 +32,26 @@ class VenueFormType extends AbstractType
             ->add('streetAndNumber', TextType::class, ['label' => 'Straße und Hausnummer', 'required' => false])
             ->add('postalCode', TextType::class, ['label' => 'PLZ', 'required' => false])
             ->add('city', TextType::class, ['label' => 'Ort', 'required' => false])
+            ->add('assignResponsibleClownAsFirstClown', CheckboxType::class, [
+                'label' => 'Verantwortlichen Clown als 1. Clown zuordnen',
+                'required' => false,
+                'help' => 'Bei der Berechnung wird versucht als ersten Clown immer einen verantwortlichen Clown zu benennen.',
+                'attr' => [
+                    'data-action' => 'toggle-by-checkbox#toggleVisibility',
+                    'data-target' => 'toggle-by-checkbox.input',
+                ],
+            ])
             ->add('responsibleClowns', EntityType::class, [
                 'class' => Clown::class,
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Verantwortliche Clowns',
-                'help' => 'Bei der Spielplanerstellung wird versucht, immer einen der verantwortlichen Clowns als ersten Clown zuzuordnen',
+                'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.',
                 'multiple' => true,
                 'expanded' => true,
+                'row_attr' => [
+                    'data-target' => 'toggle-by-checkbox.hideme',
+                ],
             ])
             ->add('blockedClowns', EntityType::class, [
                 'class' => Clown::class,

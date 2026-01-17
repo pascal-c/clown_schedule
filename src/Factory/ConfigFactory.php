@@ -12,11 +12,13 @@ class ConfigFactory extends AbstractFactory
         ?string $feeLabel = 'Honorar',
         ?string $alternativeFeeLabel = null,
         bool $featureClownVenuePreferencesActive = false,
+        bool $featureAssignResponsibleClownAsFirstClown = true,
     ): Config {
         $config = $this->entityManager->getRepository(Config::class)->find(1);
         $config->setFeeLabel($feeLabel);
         $config->setAlternativeFeeLabel($alternativeFeeLabel);
         $config->setFeatureClownVenuePreferencesActive($featureClownVenuePreferencesActive);
+        $config->setFeatureAssignResponsibleClownAsFirstClownActive($featureAssignResponsibleClownAsFirstClown);
         $this->entityManager->flush();
 
         return $config;

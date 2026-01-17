@@ -18,17 +18,17 @@ class ConfigCalculationCest extends AbstractCest
         $I->seeLink('Spielplan berechnen');
 
         $I->click('Einstellungen');
-        $I->click('Berechnung', '.nav');
+        $I->click('Spielplanberechnung', '.nav');
 
         $I->see('Feature “Max. Spielanzahl pro Woche”');
-        $I->see('Verantwortlichen Clown als 1. Clown zuordnen');
-        $I->uncheckOption('Automatische Berechnung');
+        $I->see('Feature “Verantwortliche Clowns“');
+        $I->uncheckOption('Automatische Spielplanberechnung');
         $I->click('speichern');
 
         // all calculation features are hidden when calculation itself is deactivated
         $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
         $I->dontSee('Feature “Max. Spielanzahl pro Woche”');
-        $I->dontSee('Verantwortlichen Clown als 1. Clown zuordnen');
+        $I->dontSee('Feature “Verantwortlichen Clowns“');
 
         // make sure calculation features are really deactivated
         $I->click('Dashboard');
@@ -42,7 +42,7 @@ class ConfigCalculationCest extends AbstractCest
         $I->loginAsAdmin();
 
         $I->click('Einstellungen');
-        $I->click('Berechnung', '.nav');
+        $I->click('Spielplanberechnung', '.nav');
 
         $I->checkOption('Feature “Max. Spielanzahl pro Woche”');
         $I->click('speichern');
@@ -57,7 +57,7 @@ class ConfigCalculationCest extends AbstractCest
 
         $I->amGoingTo('disable the feature again');
         $I->click('Einstellungen');
-        $I->click('Berechnung', '.nav');
+        $I->click('Spielplanberechnung', '.nav');
         $I->uncheckOption('Feature “Max. Spielanzahl pro Woche”');
         $I->click('speichern');
         $I->dontSeeCheckboxIsChecked('Feature “Max. Spielanzahl pro Woche”');
@@ -72,7 +72,7 @@ class ConfigCalculationCest extends AbstractCest
         $I->dontSee('Spielortpräferenzen', '.nav');
 
         $I->click('Einstellungen');
-        $I->click('Berechnung', '.nav');
+        $I->click('Spielplanberechnung', '.nav');
 
         $I->checkOption('Feature “Spielortpräferenzen der Clowns”');
         $I->click('speichern');
@@ -86,7 +86,7 @@ class ConfigCalculationCest extends AbstractCest
 
         $I->amGoingTo('disable the feature again');
         $I->click('Einstellungen');
-        $I->click('Berechnung', '.nav');
+        $I->click('Spielplanberechnung', '.nav');
         $I->uncheckOption('Feature “Spielortpräferenzen der Clowns”');
         $I->click('speichern');
         $I->dontSeeCheckboxIsChecked('Feature “Spielortpräferenzen der Clowns”');
@@ -96,7 +96,7 @@ class ConfigCalculationCest extends AbstractCest
     {
         $I->loginAsAdmin();
         $I->click('Einstellungen');
-        $I->click('Berechnung', '.nav');
+        $I->click('Spielplanberechnung', '.nav');
 
         $I->seeInField('Punkte pro fehlender Zuordnung', '100');
         $I->seeInField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '1');

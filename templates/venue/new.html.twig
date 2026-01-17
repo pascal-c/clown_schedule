@@ -3,5 +3,7 @@
 {% block content %}
     <h4 class="pt-3">Spielort anlegen</h4>
 
-    {{ form(form) }}
+    <div data-controller="toggle-by-checkbox">
+        {{ form(form) }}
+    </div>
 {% endblock %}

@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class VenueController extends AbstractProtectedController
 {
@@ -40,6 +40,7 @@ class VenueController extends AbstractProtectedController
             'active' => 'venue',
             'status' => $status,
             'showBlockedClowns' => $this->configRepository->isFeatureCalculationActive(),
+            'showResponsibleClowns' => $this->configRepository->isFeatureCalculationActive() && $this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive(),
         ]);
     }
 
@@ -49,6 +50,8 @@ class VenueController extends AbstractProtectedController
         $this->adminOnly();
 
         $venue = new Venue();
+        $config = $this->configRepository->find();
+        $venue->setAssignResponsibleClownAsFirstClown($config->useCalculation() && $config->isFeatureAssignResponsibleClownAsFirstClownActive());
 
         $form = $this->createForm(VenueFormType::class, $venue);
 
@@ -193,6 +196,7 @@ class VenueController extends AbstractProtectedController
             'venue' => $venue,
             'active' => 'venue',
             'showBlockedClowns' => $this->configRepository->isFeatureCalculationActive(),
+            'showResponsibleClowns' => $this->configRepository->isFeatureCalculationActive() && $this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive() && $venue->assignResponsibleClownAsFirstClown(),
         ]);
     }
 

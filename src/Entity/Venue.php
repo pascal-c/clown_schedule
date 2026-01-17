@@ -96,6 +96,9 @@ class Venue
     #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'venue', orphanRemoval: true)]
     private Collection $clownVenuePreferences;
 
+    #[ORM\Column]
+    private bool $assignResponsibleClownAsFirstClown = false;
+
     public function __construct()
     {
         $this->playDates = new ArrayCollection();
@@ -480,5 +483,17 @@ class Venue
         $averagePoints = intval(round($totalPoints / $preferencesInPoints->count()));
 
         return Preference::fromInt($averagePoints);
+    }
+
+    public function assignResponsibleClownAsFirstClown(): ?bool
+    {
+        return $this->assignResponsibleClownAsFirstClown;
+    }
+
+    public function setAssignResponsibleClownAsFirstClown(bool $assignResponsibleClownAsFirstClown): static
+    {
+        $this->assignResponsibleClownAsFirstClown = $assignResponsibleClownAsFirstClown;
+
+        return $this;
     }
 }

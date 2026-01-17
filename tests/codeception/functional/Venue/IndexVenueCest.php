@@ -25,6 +25,12 @@ class IndexVenueCest extends AbstractCest
             playingClowns: [$this->clownFactory->create(name: 'Nele')],
         );
         $this->venueFactory->create(
+            name: 'Borna',
+            daytimeDefault: TimeSlotPeriodInterface::ALL,
+            playingClowns: [$this->clownFactory->create(name: 'Häga')],
+            assignResponsibleClownAsFirstClown: false,
+        );
+        $this->venueFactory->create(
             name: 'Paris',
             daytimeDefault: TimeSlotPeriodInterface::AM,
             playingClowns: [$this->clownFactory->create(name: 'Emilio')],
@@ -37,15 +43,21 @@ class IndexVenueCest extends AbstractCest
         $I->loginAsAdmin();
         $I->click('Spielorte');
 
-        $I->amGoingTo('check the first venue');
+        $I->amGoingTo('check DRK Leipzig');
         $I->seeLink('DRK Leipzig');
         $I->see('Anke | Pascal', Locator::contains('table tr', text: 'DRK Leipzig'));
         $I->see('nachmittags', Locator::contains('table tr', text: 'DRK Leipzig'));
 
-        $I->amGoingTo('check the second venue');
+        $I->amGoingTo('check Wichern');
         $I->seeLink('Wichern');
         $I->see('Nele', Locator::contains('table tr', text: 'Wichern'));
         $I->see('ganztags', Locator::contains('table tr', text: 'Wichern'));
+
+        $I->amGoingTo('check Borna');
+        $I->seeLink('Borna');
+        $I->dontSee('Häga', Locator::contains('table tr', text: 'Borna'));
+        $I->see('für diesen Spielort deaktiviert', Locator::contains('table tr', text: 'Borna'));
+        $I->see('ganztags', Locator::contains('table tr', text: 'Borna'));
 
         $I->amGoingTo('check the archived venue');
         $I->dontSee('Paris');
