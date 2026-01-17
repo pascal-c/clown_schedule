@@ -72,6 +72,7 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDate')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Fee')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Contact')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\ClownVenuePreference')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Venue')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Substitution')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailabilityTime')->execute();
