@@ -11,7 +11,7 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Verantwortliche Clowns</th>
+                {% if showResponsibleClowns %}<th>Verantwortliche Clowns</th>{% endif %}
                 {% if showBlockedClowns %}<th>Gesperrte Clowns</th>{% endif %}
                 <th>Tageszeit</th>
             </tr>
@@ -25,11 +25,15 @@
                     <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spielort"></i>
                 {% endif %}
             </td>
-            <td>
-                {% for clown in venue.responsibleClowns %}
-                    {{ clown.name }}{% if not loop.last %} | {% endif %}
-                {% endfor %}
-            </td>
+            {% if showResponsibleClowns %}
+                <td>
+                    {% if venue.assignResponsibleClownAsFirstClown %}
+                        {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
+                    {% else %}
+                        <i>für diesen Spielort deaktiviert</i>
+                    {% endif %}
+                </td>
+            {% endif %}
             {% if showBlockedClowns %}
                 <td>
                     {% for clown in venue.blockedClowns %}

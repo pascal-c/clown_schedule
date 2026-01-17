@@ -19,6 +19,7 @@ class VenueFactory extends AbstractFactory
         ?string $playTimeTo = null,
         bool $isSuper = false,
         bool $archived = false,
+        bool $assignResponsibleClownAsFirstClown = true,
     ): Venue {
         list($daytimeDefaultGenerated, $meetingTimeGenerated, $playTimeFromGenerated, $playTimeToGenerated) = $this->timeOptions()->sample();
         $venue = (new Venue())
@@ -29,6 +30,7 @@ class VenueFactory extends AbstractFactory
             ->setPlayTimeTo(new DateTimeImmutable($playTimeTo ?? $playTimeToGenerated))
             ->setIsSuper($isSuper)
             ->setArchived($archived)
+            ->setAssignResponsibleClownAsFirstClown($assignResponsibleClownAsFirstClown)
         ;
         foreach ($playingClowns as $clown) {
             $venue->addResponsibleClown($clown);

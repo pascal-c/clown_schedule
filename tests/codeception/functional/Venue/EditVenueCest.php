@@ -56,4 +56,17 @@ class EditVenueCest extends AbstractCest
         $I->dontSee('Elena', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
         $I->dontSee('ist ein Super-Spielort!');
     }
+
+    public function disableResponsibleClownsFeatures(AdminTester $I): void
+    {
+        $I->loginAsAdmin();
+        $I->click('Spielorte');
+        $I->click('Superheim');
+        $I->click('bearbeiten');
+
+        $I->uncheckOption('Verantwortlichen Clown als 1. Clown zuordnen');
+        $I->click('Spielort speichern');
+
+        $I->dontSee('Verantwortliche Clowns');;
+    }
 }

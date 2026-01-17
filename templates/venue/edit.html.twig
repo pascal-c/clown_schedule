@@ -4,8 +4,9 @@
     {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'details'}) }}
 
     <h4 class="pt-3">Spielort bearbeiten</h4>
-
-    {{ form(form) }}
+    <div data-controller="toggle-by-checkbox">
+        {{ form(form) }}
+    </div>
     {{ venue.playDates.empty and venue.active ? form(delete_form) : form(archive_form) }}
 
 {% endblock %}

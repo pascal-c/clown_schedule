@@ -15,12 +15,14 @@
                      {{ venue.streetAndNumber }}, {{ venue.postalCode }} {{ venue.city }}
                 </td>
             </tr>
-            <tr title="Bei der Spielplanerstellung wird versucht als ersten Clown einen verantwortlichen Clown zuzuordnen">
-                <th>Verantwortliche Clowns</th>
-                <td>
-                    {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
-                </td>
-            </tr>
+            {% if showResponsibleClowns %}
+                <tr title="Bei der Spielplanerstellung wird versucht als ersten Clown einen verantwortlichen Clown zuzuordnen">
+                    <th>Verantwortliche Clowns</th>
+                    <td>
+                        {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
+                    </td>
+                </tr>
+            {% endif %}
             {% if showBlockedClowns %}
                 <tr title="Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet">
                     <th>Gesperrte Clowns</th>
