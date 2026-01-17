@@ -14,6 +14,7 @@ use App\Value\PlayDateChangeReason;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class TrainingAssignerTest extends TestCase
 {
     private AvailabilityChecker&MockObject $availabilityChecker;

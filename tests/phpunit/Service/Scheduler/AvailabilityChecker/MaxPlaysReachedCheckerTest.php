@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class MaxPlaysReachedCheckerTest extends TestCase
 {
     private MaxPlaysReachedChecker $maxPlaysReachedChecker;

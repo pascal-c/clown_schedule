@@ -8,9 +8,11 @@ use App\Repository\VacationRepository;
 use App\ViewController\DayViewController;
 use PHPUnit\Framework\TestCase;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
+#[AllowMockObjectsWithoutExpectations]
 final class DayViewControllerTest extends TestCase
 {
     private VacationRepository&MockObject $vacationRepository;

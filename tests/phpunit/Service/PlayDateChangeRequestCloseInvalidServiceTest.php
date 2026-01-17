@@ -17,6 +17,7 @@ use DateTimeImmutable;
 use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class PlayDateChangeRequestCloseInvalidServiceTest extends TestCase
 {
     private PlayDateChangeRequestCloseInvalidService $closeInvalidService;

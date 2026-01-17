@@ -25,6 +25,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class ClownAssignerTest extends TestCase
 {
     private AvailabilityChecker&MockObject $availabilityChecker;

@@ -12,6 +12,7 @@ use App\Value\Preference;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class ClownVenuePreferencesGeneratorTest extends TestCase
 {
     private ClownVenuePreferenceGenerator $clownVenuePreferenceGenerator;
