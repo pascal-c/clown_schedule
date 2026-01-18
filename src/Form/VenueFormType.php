@@ -108,6 +108,10 @@ class VenueFormType extends AbstractType
         if (!$this->configRepository->isFeatureCalculationActive()) {
             $builder->remove('blockedClowns');
         }
+        if (!$this->configRepository->isFeatureCalculationActive() || !$this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive()) {
+            $builder->remove('assignResponsibleClownAsFirstClown');
+            $builder->remove('responsibleClowns');
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
