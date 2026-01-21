@@ -43,4 +43,29 @@ class ConfigGeneralCest extends AbstractCest
         $I->amOnPage('/play_dates/'.$playDate->getId());
         $I->dontSee('Spieltermin tauschen', 'a');
     }
+
+    public function featureTeamsActive(AdminTester $I): void
+    {
+        $this->venueFactory->create(name: 'Superheim');
+        $I->loginAsAdmin();
+        $I->click('Spielorte');
+        $I->dontSee('Clownsteam');
+        $I->click('Superheim');
+        $I->dontSee('Clownsteam');
+
+        $I->click('Einstellungen');
+        $I->click('Spielplanberechnung', '.nav');
+        $I->dontSee('Punkte pro zugeordnetem Clown, der nicht im Team des Spielortes ist');
+
+        $I->click('Allgemein', '.nav');
+        $I->checkOption('Feature "Clownsteams"');
+        $I->click('speichern');
+
+        $I->click('Spielplanberechnung', '.nav');
+        $I->see('Punkte pro zugeordnetem Clown, der nicht im Team des Spielortes ist');
+        $I->click('Spielorte');
+        $I->see('Clownsteam');
+        $I->click('Superheim');
+        $I->see('Clownsteam');
+    }
 }

@@ -53,6 +53,11 @@ class ConfigGeneralFormType extends AbstractType
                 'label' => 'Feature "Spieltermine tauschen"',
                 'help' => 'Clowns können untereinander Spieltermine tauschen oder abgeben.',
             ])
+            ->add('featureTeamsActive', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Feature "Clownsteams"',
+                'help' => 'Für Spielorte können Clownsteams definiert werden, die diesen Spielort bevorzugt übernehmen.',
+            ])
             ->add('feeLabel', TextType::class, [
                 'required' => true,
                 'label' => 'Bezeichnung für Standard-Honorar',

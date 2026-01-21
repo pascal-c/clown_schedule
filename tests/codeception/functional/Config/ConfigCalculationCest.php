@@ -94,6 +94,7 @@ class ConfigCalculationCest extends AbstractCest
 
     public function ratingPoints(AdminTester $I): void
     {
+        $this->configFactory->update(featureTeamsActive: true);
         $I->loginAsAdmin();
         $I->click('Einstellungen');
         $I->click('Spielplanberechnung', '.nav');
@@ -102,6 +103,7 @@ class ConfigCalculationCest extends AbstractCest
         $I->seeInField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '1');
         $I->seeInField('Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt', '2');
         $I->seeInField('Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird', '10');
+        $I->seeInField('Punkte pro zugeordnetem Clown, der nicht im Team des Spielortes ist', '30');
         $I->seeInField('Punkte pro Spielortpräferenz "wenn\'s gar nicht anders geht"', '10');
         $I->seeInField('Punkte pro Spielortpräferenz "na gut"', '4');
         $I->seeInField('Punkte pro Spielortpräferenz "ok"', '2');
@@ -112,6 +114,7 @@ class ConfigCalculationCest extends AbstractCest
         $I->fillField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '3');
         $I->fillField('Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt', '4');
         $I->fillField('Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird', '11');
+        $I->fillField('Punkte pro zugeordnetem Clown, der nicht im Team des Spielortes ist', '40');
         $I->fillField('Punkte pro Spielortpräferenz "wenn\'s gar nicht anders geht"', '11');
         $I->fillField('Punkte pro Spielortpräferenz "na gut"', '5');
         $I->fillField('Punkte pro Spielortpräferenz "ok"', '3');
@@ -124,6 +127,7 @@ class ConfigCalculationCest extends AbstractCest
         $I->seeInField('Punkte pro zugeordnetem Clown, der nur kann, wenns sein muss', '3');
         $I->seeInField('Punkte pro Spiel, das ein Clown zuviel oder zuwenig bekommt', '4');
         $I->seeInField('Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird', '11');
+        $I->seeInField('Punkte pro zugeordnetem Clown, der nicht im Team des Spielortes ist', '40');
         $I->seeInField('Punkte pro Spielortpräferenz "wenn\'s gar nicht anders geht"', '11');
         $I->seeInField('Punkte pro Spielortpräferenz "na gut"', '5');
         $I->seeInField('Punkte pro Spielortpräferenz "ok"', '3');

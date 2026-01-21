@@ -49,6 +49,11 @@ class ConfigRepository extends AbstractRepository
         return $this->find()->isFeatureAssignResponsibleClownAsFirstClownActive();
     }
 
+    public function isFeatureTeamsActive(): bool
+    {
+        return $this->find()->isFeatureTeamsActive();
+    }
+
     public function getPointsForPreference(Preference $preference): int
     {
         $config = $this->find();

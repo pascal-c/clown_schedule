@@ -71,6 +71,12 @@ class Config
     #[ORM\Column(options: ['default' => false])]
     private bool $featureClownVenuePreferences = false;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $featureTeams = false;
+
+    #[ORM\Column(options: ['default' => 30])]
+    private int $pointsPerPersonNotInTeam = 30;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -298,6 +304,30 @@ class Config
     public function setFeatureClownVenuePreferencesActive(bool $featureClownVenuePreferences): static
     {
         $this->featureClownVenuePreferences = $featureClownVenuePreferences;
+
+        return $this;
+    }
+
+    public function isFeatureTeamsActive(): bool
+    {
+        return $this->featureTeams;
+    }
+
+    public function setFeatureTeamsActive(bool $featureTeams): static
+    {
+        $this->featureTeams = $featureTeams;
+
+        return $this;
+    }
+
+    public function getPointsPerPersonNotInTeam(): int
+    {
+        return $this->pointsPerPersonNotInTeam;
+    }
+
+    public function setPointsPerPersonNotInTeam(int $pointsPerPersonNotInTeam): static
+    {
+        $this->pointsPerPersonNotInTeam = $pointsPerPersonNotInTeam;
 
         return $this;
     }

@@ -96,8 +96,18 @@ class Venue
     #[ORM\OneToMany(targetEntity: ClownVenuePreference::class, mappedBy: 'venue', orphanRemoval: true)]
     private Collection $clownVenuePreferences;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => false])]
     private bool $assignResponsibleClownAsFirstClown = false;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $teamActive = false;
+
+    /**
+     * @var Collection<int, Clown>
+     */
+    #[ORM\JoinTable(name: 'venue_team')]
+    #[ORM\ManyToMany(targetEntity: Clown::class)]
+    private Collection $team;
 
     public function __construct()
     {
@@ -108,6 +118,7 @@ class Venue
         $this->contacts = new ArrayCollection();
         $this->recurringDates = new ArrayCollection();
         $this->clownVenuePreferences = new ArrayCollection();
+        $this->team = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -493,6 +504,54 @@ class Venue
     public function setAssignResponsibleClownAsFirstClown(bool $assignResponsibleClownAsFirstClown): static
     {
         $this->assignResponsibleClownAsFirstClown = $assignResponsibleClownAsFirstClown;
+
+        return $this;
+    }
+
+    public function isClownsteamActive(): ?bool
+    {
+        return $this->clownsteamActive;
+    }
+
+    public function setClownsteamActive(bool $clownsteamActive): static
+    {
+        $this->clownsteamActive = $clownsteamActive;
+
+        return $this;
+    }
+
+    public function isTeamActive(): ?bool
+    {
+        return $this->teamActive;
+    }
+
+    public function setTeamActive(bool $teamActive): static
+    {
+        $this->teamActive = $teamActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Clown>
+     */
+    public function getTeam(): Collection
+    {
+        return $this->team;
+    }
+
+    public function addTeam(Clown $team): static
+    {
+        if (!$this->team->contains($team)) {
+            $this->team->add($team);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Clown $team): static
+    {
+        $this->team->removeElement($team);
 
         return $this;
     }

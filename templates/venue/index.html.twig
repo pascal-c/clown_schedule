@@ -12,6 +12,7 @@
             <tr>
                 <th>Name</th>
                 {% if showResponsibleClowns %}<th>Verantwortliche Clowns</th>{% endif %}
+                {% if showTeam %}<th>Clownsteam</th>{% endif %}
                 {% if showBlockedClowns %}<th>Gesperrte Clowns</th>{% endif %}
                 <th>Tageszeit</th>
             </tr>
@@ -28,17 +29,24 @@
             {% if showResponsibleClowns %}
                 <td>
                     {% if venue.assignResponsibleClownAsFirstClown %}
-                        {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
+                        {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ')|default('---') }}
                     {% else %}
-                        <i>für diesen Spielort deaktiviert</i>
+                        <i>deaktiviert</i>
+                    {% endif %}
+                </td>
+            {% endif %}
+            {% if showTeam %}
+                <td>
+                    {% if venue.teamActive %}
+                        {{ venue.team|map(clown => clown.name)|join(' | ')|default('---') }}
+                    {% else %}
+                        <i>deaktiviert</i>
                     {% endif %}
                 </td>
             {% endif %}
             {% if showBlockedClowns %}
                 <td>
-                    {% for clown in venue.blockedClowns %}
-                        {{ clown.name }}{% if not loop.last %} | {% endif %}
-                    {% endfor %}
+                    {{ venue.blockedClowns|map(clown => clown.name)|join(' | ')|default('---') }}
                 </td>
             {% endif %}
             <td>

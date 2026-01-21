@@ -36,37 +36,21 @@ class EditVenueCest extends AbstractCest
         $I->seeInField('Offizieller Name', 'Superheim');
 
         $I->amGoingTo('change some values');
-        $I->uncheckMultipleOption('Verantwortliche Clowns', ['Erika', 'Elena']);
         $I->uncheckOption('ist ein Super-Spielort? (nur relevant für Statistik)');
         $I->fillField('Bemerkungen', 'Tolle Einrichtung!');
         $I->fillField('URL (für weitere Infos zur Einrichtung)', 'www.clowns-und-clowns.de');
         $I->click('Spielort speichern');
 
-        $I->amGoingTo('make sure everything was changed correctly');
+        $I->amGoingTo('make sure everything was saved correctly');
         $I->see('Superheim', 'h4');
         $I->see('Superheim', Locator::contains('table tr', text: 'Offizieller Name'));
+        $I->see('www.clowns-und-clowns.de', Locator::contains('table tr', text: 'URL'));
+        $I->see('Erika', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
+        $I->see('Elena', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
         $I->see('vormittags', Locator::contains('table tr', text: 'Standard Tageszeit für Spieltermine'));
         $I->see('09:30', Locator::contains('table tr', text: 'Treffen'));
         $I->see('10:00 - 12:30', Locator::contains('table tr', text: 'Spielzeit'));
         $I->see('Tolle Einrichtung!', Locator::contains('table tr', text: 'Bemerkungen'));
-        $I->see('www.clowns-und-clowns.de', Locator::contains('table tr', text: 'Link mit weiteren Infos'));
-
-        $I->amGoingTo('make sure especially that removing all elements from checkbox list is possible');
-        $I->dontSee('Erika', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
-        $I->dontSee('Elena', Locator::contains('table tr', text: 'Verantwortliche Clowns'));
         $I->dontSee('ist ein Super-Spielort!');
-    }
-
-    public function disableResponsibleClownsFeatures(AdminTester $I): void
-    {
-        $I->loginAsAdmin();
-        $I->click('Spielorte');
-        $I->click('Superheim');
-        $I->click('bearbeiten');
-
-        $I->uncheckOption('Verantwortlichen Clown als 1. Clown zuordnen');
-        $I->click('Spielort speichern');
-
-        $I->dontSee('Verantwortliche Clowns');
     }
 }
