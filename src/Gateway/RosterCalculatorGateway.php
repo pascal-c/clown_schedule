@@ -36,7 +36,6 @@ class RosterCalculatorGateway
      */
     public function calcuate(array $playDates, array $clownAvailabilities): RosterResult
     {
-
         $options = [
             'auth_bearer' => $this->params->get('app.roster_calculator_api_token'),
             'timeout' => 90,
@@ -122,6 +121,7 @@ class RosterCalculatorGateway
                 'pointsPerMaybePerson' => $config->getPointsPerMaybePerson(),
                 'pointsPerTargetShiftsMissed' => $config->getPointsPerTargetShifts(),
                 'pointsPerMaxPerWeekExceeded' => $config->getPointsPerMaxPerWeek(),
+                'pointsPerPersonNotInTeam' => $config->getPointsPerPersonNotInTeam(),
             ],
         ];
     }
@@ -170,8 +170,20 @@ class RosterCalculatorGateway
             'id' => strval($playDate->getId()),
             'date' => $playDate->getDate()->format('Y-m-d'),
             'daytime' => $playDate->getDaytime(),
-            'personIds' => $playDate->getPlayingClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
+            'assignedPeople' => $playDate->getPlayingClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
+            'team' => $this->getTeamMemberIds($playDate->getVenue()),
             'locationId' => strval($playDate->getVenue()->getId()),
         ];
+    }
+
+    private function getTeamMemberIds(?Venue $venue): ?array
+    {
+        if (null === $venue || !$this->configRepository->isFeatureTeamsActive()) {
+            return null;
+        }
+
+        return $venue->getTeam()->map(
+            fn (Clown $clown): string => strval($clown->getId()),
+        )->toArray();
     }
 }

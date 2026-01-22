@@ -15,11 +15,23 @@
                      {{ venue.streetAndNumber }}, {{ venue.postalCode }} {{ venue.city }}
                 </td>
             </tr>
+            <tr>
+                <th>URL</th>
+                <td>
+                     <a target="_blank" href="{{ venue.url }}">{{ venue.url }}</href>
+                </td>
+            </tr>
             {% if showResponsibleClowns %}
                 <tr title="Bei der Spielplanerstellung wird versucht als ersten Clown einen verantwortlichen Clown zuzuordnen">
                     <th>Verantwortliche Clowns</th>
                     <td>
-                        {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ') }}
+                        {% if venue.assignResponsibleClownAsFirstClown %}
+                            {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ')|default('---') }}
+                        {% else %}
+                            <i>deaktiviert</i>
+                        {% endif %}
+
+                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_responsible_clowns', {id: venue.id}), title: "Verantwortliche Clowns bearbeiten"}) }}
                     </td>
                 </tr>
             {% endif %}
@@ -27,7 +39,22 @@
                 <tr title="Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet">
                     <th>Gesperrte Clowns</th>
                     <td>
-                        {{ venue.blockedClowns|map(clown => clown.name)|join(' | ') }}
+                        {{ venue.blockedClowns|map(clown => clown.name)|join(' | ')|default('---') }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_blocked_clowns', {id: venue.id}), title: "Gesperrte Clowns bearbeiten"}) }}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if showTeam %}
+                <tr title="Dieser Spielort wird bevorzugt von Clowns aus diesem Team übernommen.">
+                    <th>Clownsteam</th>
+                    <td>
+                        {% if venue.teamActive %}
+                            {{ venue.team|map(clown => clown.name)|join(' | ')|default('---') }}
+                        {% else %}
+                            <i>deaktiviert</i>
+                        {% endif %}
+                        
+                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_team', {id: venue.id}), title: "Clownsteam bearbeiten"}) }}
                     </td>
                 </tr>
             {% endif %}
@@ -60,12 +87,6 @@
                     <td colspan="2">ist ein Super-Spielort!</td>
                 </tr>
             {% endif %}
-            <tr>
-                <th>Link mit weiteren Infos</th>
-                <td>
-                     <a target="_blank" href="{{ venue.url }}">{{ venue.url }}</href>
-                </td>
-            </tr>
         </tbody>
     </table>
 {% endblock %}

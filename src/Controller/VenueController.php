@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Venue;
+use App\Form\VenueBlockedClownsFormType;
 use App\Form\VenueFormType;
+use App\Form\VenueResponsibleClownsFormType;
+use App\Form\VenueTeamFormType;
 use App\Repository\ConfigRepository;
 use App\Repository\VenueRepository;
 use App\Service\TimeService;
@@ -41,6 +44,7 @@ class VenueController extends AbstractProtectedController
             'status' => $status,
             'showBlockedClowns' => $this->configRepository->isFeatureCalculationActive(),
             'showResponsibleClowns' => $this->configRepository->isFeatureCalculationActive() && $this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive(),
+            'showTeam' => $this->configRepository->isFeatureTeamsActive(),
         ]);
     }
 
@@ -75,12 +79,10 @@ class VenueController extends AbstractProtectedController
         ]);
     }
 
-    #[Route('/venues/edit/{id}', name: 'venue_edit', methods: ['GET', 'PUT'])]
-    public function edit(Request $request, int $id): Response
+    #[Route('/venues/{id}/edit', name: 'venue_edit', methods: ['GET', 'PUT'])]
+    public function edit(Venue $venue, Request $request): Response
     {
         $this->adminOnly();
-
-        $venue = $this->venueRepository->find($id);
 
         $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PUT']);
         $deleteForm = $this->createFormBuilder($venue)
@@ -90,7 +92,7 @@ class VenueController extends AbstractProtectedController
                 ['label' => 'Spielort löschen', 'attr' => ['onclick' => 'return confirm("Spielort endgültig löschen?")']]
             )
             ->setMethod('DELETE')
-            ->setAction($this->generateUrl('venue_delete', ['id' => $id]))
+            ->setAction($this->generateUrl('venue_delete', ['id' => $venue->getId()]))
             ->getForm();
         $archiveForm = $this->getArchiveForm($venue);
 
@@ -100,7 +102,7 @@ class VenueController extends AbstractProtectedController
 
             $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
 
-            return $this->redirectToRoute('venue_show', ['id' => $id]);
+            return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($editForm->isSubmitted()) {
             $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
         }
@@ -114,7 +116,82 @@ class VenueController extends AbstractProtectedController
         ]);
     }
 
-    #[Route('/venues/archive/{id}', name: 'venue_archive', methods: ['DELETE'])]
+    #[Route('/venues/{id}/edit-responsible-clowns', name: 'venue_edit_responsible_clowns', methods: ['GET', 'PUT'])]
+    public function editResponsibleClowns(Request $request, Venue $venue): Response
+    {
+        $this->adminOnly();
+
+        $editForm = $this->createForm(VenueResponsibleClownsFormType::class, $venue, ['method' => 'PUT']);
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+
+            return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
+        } elseif ($editForm->isSubmitted()) {
+            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+        }
+
+        return $this->render('venue/edit_clowns.html.twig', [
+            'venue' => $venue,
+            'form' => $editForm,
+            'title' => 'Verantwortliche Clowns bearbeiten',
+            'active' => 'venue',
+        ]);
+    }
+
+    #[Route('/venues/{id}/edit-blocked-clowns', name: 'venue_edit_blocked_clowns', methods: ['GET', 'PUT'])]
+    public function editBlockedClowns(Request $request, Venue $venue): Response
+    {
+        $this->adminOnly();
+
+        $editForm = $this->createForm(VenueBlockedClownsFormType::class, $venue, ['method' => 'PUT']);
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+
+            return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
+        } elseif ($editForm->isSubmitted()) {
+            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+        }
+
+        return $this->render('venue/edit_clowns.html.twig', [
+            'venue' => $venue,
+            'form' => $editForm,
+            'title' => 'Gesperrte Clowns bearbeiten',
+            'active' => 'venue',
+        ]);
+    }
+
+    #[Route('/venues/{id}/edit-team', name: 'venue_edit_team', methods: ['GET', 'PUT'])]
+    public function editTeam(Request $request, Venue $venue): Response
+    {
+        $this->adminOnly();
+
+        $editForm = $this->createForm(VenueTeamFormType::class, $venue, ['method' => 'PUT']);
+        $editForm->handleRequest($request);
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+
+            return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
+        } elseif ($editForm->isSubmitted()) {
+            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+        }
+
+        return $this->render('venue/edit_clowns.html.twig', [
+            'venue' => $venue,
+            'form' => $editForm,
+            'title' => 'Clownsteam bearbeiten',
+            'active' => 'venue',
+        ]);
+    }
+
+    #[Route('/venues/{id}/archive', name: 'venue_archive', methods: ['DELETE'])]
     public function archive(Request $request, int $id): Response
     {
         $this->adminOnly();
@@ -138,7 +215,7 @@ class VenueController extends AbstractProtectedController
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
 
-    #[Route('/venues/restore/{id}', name: 'venue_restore', methods: ['POST'])]
+    #[Route('/venues/{id}/restore', name: 'venue_restore', methods: ['POST'])]
     public function restore(Request $request, int $id): Response
     {
         $this->adminOnly();
@@ -196,7 +273,8 @@ class VenueController extends AbstractProtectedController
             'venue' => $venue,
             'active' => 'venue',
             'showBlockedClowns' => $this->configRepository->isFeatureCalculationActive(),
-            'showResponsibleClowns' => $this->configRepository->isFeatureCalculationActive() && $this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive() && $venue->assignResponsibleClownAsFirstClown(),
+            'showResponsibleClowns' => $this->configRepository->isFeatureCalculationActive() && $this->configRepository->isFeatureAssignResponsibleClownAsFirstClownActive(),
+            'showTeam' => $this->configRepository->isFeatureTeamsActive(),
         ]);
     }
 

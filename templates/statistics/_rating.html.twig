@@ -30,7 +30,10 @@
                     Spielortpräferenzen: {{ rating.locationPreferences }}
                 {% endif %}
             </div>
-            <div class="col-sm-6"> 
+            <div class="col-sm-6">
+                {% if rating.personNotInTeam is defined %}
+                    Zugeordneter Clown nicht im Team: {{ rating.personNotInTeam }}
+                {% endif %}
             </div>
         </div>
     </div>

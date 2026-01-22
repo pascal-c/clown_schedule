@@ -57,6 +57,10 @@ class ConfigCalculationFormType extends AbstractType
                     'required' => true,
                     'label' => 'Punkte pro Spiel, durch das ein Maximum pro Woche überschritten wird',
                 ])
+                ->add('pointsPerPersonNotInTeam', IntegerType::class, [
+                    'required' => true,
+                    'label' => 'Punkte pro zugeordnetem Clown, der nicht im Team des Spielortes ist',
+                ])
                 ->add('featureClownVenuePreferencesActive', CheckboxType::class, [
                     'required' => false,
                     'label' => 'Feature “Spielortpräferenzen der Clowns”',
@@ -102,6 +106,10 @@ class ConfigCalculationFormType extends AbstractType
                         'data-target' => 'toggle-by-checkbox.hideme',
                     ],
                 ]);
+
+            if (!$config->isFeatureTeamsActive()) {
+                $builder->remove('pointsPerPersonNotInTeam');
+            }
         }
 
         $builder

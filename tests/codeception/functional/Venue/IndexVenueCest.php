@@ -22,7 +22,7 @@ class IndexVenueCest extends AbstractCest
         $this->venueFactory->create(
             name: 'Wichern',
             daytimeDefault: TimeSlotPeriodInterface::ALL,
-            playingClowns: [$this->clownFactory->create(name: 'Nele')],
+            playingClowns: [],
         );
         $this->venueFactory->create(
             name: 'Borna',
@@ -50,13 +50,13 @@ class IndexVenueCest extends AbstractCest
 
         $I->amGoingTo('check Wichern');
         $I->seeLink('Wichern');
-        $I->see('Nele', Locator::contains('table tr', text: 'Wichern'));
+        $I->see('---', Locator::contains('table tr', text: 'Wichern'));
         $I->see('ganztags', Locator::contains('table tr', text: 'Wichern'));
 
         $I->amGoingTo('check Borna');
         $I->seeLink('Borna');
         $I->dontSee('Häga', Locator::contains('table tr', text: 'Borna'));
-        $I->see('für diesen Spielort deaktiviert', Locator::contains('table tr', text: 'Borna'));
+        $I->see('deaktiviert', Locator::contains('table tr', text: 'Borna'));
         $I->see('ganztags', Locator::contains('table tr', text: 'Borna'));
 
         $I->amGoingTo('check the archived venue');

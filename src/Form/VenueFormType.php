@@ -2,11 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\Clown;
 use App\Entity\Venue;
 use App\Repository\ConfigRepository;
 use App\Value\TimeSlotPeriodInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,35 +30,9 @@ class VenueFormType extends AbstractType
             ->add('streetAndNumber', TextType::class, ['label' => 'Straße und Hausnummer', 'required' => false])
             ->add('postalCode', TextType::class, ['label' => 'PLZ', 'required' => false])
             ->add('city', TextType::class, ['label' => 'Ort', 'required' => false])
-            ->add('assignResponsibleClownAsFirstClown', CheckboxType::class, [
-                'label' => 'Verantwortlichen Clown als 1. Clown zuordnen',
+            ->add('url', UrlType::class, [
+                'label' => 'URL (für weitere Infos zur Einrichtung)',
                 'required' => false,
-                'help' => 'Bei der Berechnung wird versucht als ersten Clown immer einen verantwortlichen Clown zu benennen.',
-                'attr' => [
-                    'data-action' => 'toggle-by-checkbox#toggleVisibility',
-                    'data-target' => 'toggle-by-checkbox.input',
-                ],
-            ])
-            ->add('responsibleClowns', EntityType::class, [
-                'class' => Clown::class,
-                'choice_label' => 'name',
-                'required' => false,
-                'label' => 'Verantwortliche Clowns',
-                'help' => 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.',
-                'multiple' => true,
-                'expanded' => true,
-                'row_attr' => [
-                    'data-target' => 'toggle-by-checkbox.hideme',
-                ],
-            ])
-            ->add('blockedClowns', EntityType::class, [
-                'class' => Clown::class,
-                'choice_label' => 'name',
-                'required' => false,
-                'label' => 'Gesperrte Clowns',
-                'help' => 'Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet',
-                'multiple' => true,
-                'expanded' => true,
             ])
             ->add('daytimeDefault', ChoiceType::class, [
                 'choices' => [
@@ -92,10 +64,6 @@ class VenueFormType extends AbstractType
             ])
             ->add('comments', TextareaType::class, [
                 'label' => 'Bemerkungen',
-                'required' => false,
-            ])
-            ->add('url', UrlType::class, [
-                'label' => 'URL (für weitere Infos zur Einrichtung)',
                 'required' => false,
             ])
             ->add('isSuper', CheckboxType::class, [
