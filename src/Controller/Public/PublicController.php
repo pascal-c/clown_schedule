@@ -6,7 +6,7 @@ namespace App\Controller\Public;
 
 use App\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class PublicController extends AbstractController
 {
