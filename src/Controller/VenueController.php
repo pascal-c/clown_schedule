@@ -84,8 +84,6 @@ class VenueController extends AbstractProtectedController
     {
         $this->adminOnly();
 
-        // $venue = $this->venueRepository->find($id);
-
         $editForm = $this->createForm(VenueFormType::class, $venue, ['method' => 'PUT']);
         $deleteForm = $this->createFormBuilder($venue)
             ->add(

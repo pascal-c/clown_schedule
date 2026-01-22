@@ -508,18 +508,6 @@ class Venue
         return $this;
     }
 
-    public function isClownsteamActive(): ?bool
-    {
-        return $this->clownsteamActive;
-    }
-
-    public function setClownsteamActive(bool $clownsteamActive): static
-    {
-        $this->clownsteamActive = $clownsteamActive;
-
-        return $this;
-    }
-
     public function isTeamActive(): ?bool
     {
         return $this->teamActive;
@@ -538,21 +526,5 @@ class Venue
     public function getTeam(): Collection
     {
         return $this->team;
-    }
-
-    public function addTeam(Clown $team): static
-    {
-        if (!$this->team->contains($team)) {
-            $this->team->add($team);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Clown $team): static
-    {
-        $this->team->removeElement($team);
-
-        return $this;
     }
 }
