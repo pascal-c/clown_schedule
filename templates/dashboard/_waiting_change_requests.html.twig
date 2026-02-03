@@ -21,7 +21,7 @@
                     </td>
                 {% elseif changeRequest.isGiveOff %}
                     <td>
-                        abgeben
+                        {{ changeRequest.requestedTo ? 'an Dich abgeben' : 'abgeben' }}
                     </td>
                     <td>
                         &nbsp;
@@ -51,7 +51,7 @@
                     </td>
                 {% elseif changeRequest.isGiveOff %}
                     <td>
-                        abgeben
+                        abgeben an {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'egal wen' }}
                     </td>
                     <td>
                         &nbsp;

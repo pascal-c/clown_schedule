@@ -195,9 +195,11 @@
                         {% elseif sentChangeRequest.isGiveOff %}
                             <td>
                                 {% if sentChangeRequest.requestedBy == currentClown %}
-                                    Du möchtest Diesen Spieltermin abgeben.
+                                    Du möchtest Diesen Spieltermin abgeben an {{ sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'egal wen'}}.
+                                {% elseif sentChangeRequest.requestedTo == currentClown %}
+                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin an Dich abgeben
                                 {% else %}
-                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin abgeben.
+                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin abgeben an {{ sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'egal wen'}}
                                 {% endif %}
                             </td>
                             <td>---</td>

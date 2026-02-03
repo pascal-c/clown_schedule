@@ -40,23 +40,39 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
     {
         $playDate = $this->playDateRepository->find($id);
 
-        $form = $this->createForm(PlayDateGiveOffRequestCreateFormType::class);
+        $form = $this->createForm(PlayDateGiveOffRequestCreateFormType::class, null, [
+            'playDateToGiveOff' => $playDate,
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $playDateChangeRequest = (new PlayDateChangeRequest())
-                ->setPlayDateToGiveOff($playDate)
-                ->setRequestedBy($this->getCurrentClown())
-                ->setRequestedAt($this->timeService->now())
-                ->setType(PlayDateChangeRequestType::GIVE_OFF);
+            $requestedToList = match($formData['requestedTo']) {
+                'all' => [null],
+                'team' => $playDate->getVenue()->getTeam()->toArray(),
+                default => [$this->clownRepository->find((int) $formData['requestedTo'])],
+            };
 
-            $this->entityManager->persist($playDateChangeRequest);
+            $playDateChangeRequests = [];
+            foreach ($requestedToList as $requestedTo) {
+                $playDateChangeRequest = (new PlayDateChangeRequest())
+                    ->setPlayDateToGiveOff($playDate)
+                    ->setRequestedBy($this->getCurrentClown())
+                    ->setRequestedTo($requestedTo)
+                    ->setRequestedAt($this->timeService->now())
+                    ->setType(PlayDateChangeRequestType::GIVE_OFF);
+
+                $this->entityManager->persist($playDateChangeRequest);
+                $playDateChangeRequests[] = $playDateChangeRequest;
+            }
+
             $this->entityManager->flush();
 
-            $this->mailer->sendGiveOffRequestMail($playDateChangeRequest, $formData['comment']);
+            foreach ($playDateChangeRequests as $playDateChangeRequest) {
+                $this->mailer->sendGiveOffRequestMail($playDateChangeRequest, $formData['comment']);
+            }
 
-            $this->addFlash('success', 'Deine Abgabe-Anfrage wurde erfolgreich gestellt. Alle aktiven Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!');
+            $this->addFlash('success', 'Deine Abgabe-Anfrage wurde erfolgreich gestellt. Alle angefragten Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {

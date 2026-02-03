@@ -64,6 +64,5 @@ class PlayDateSwapRequestCreateFormType extends AbstractType
     {
         $resolver->setDefault('currentClown', null);
         $resolver->setDefault('playDateToGiveOff', null);
-        $resolver->setDefault('clownAvailability', null);
     }
 }

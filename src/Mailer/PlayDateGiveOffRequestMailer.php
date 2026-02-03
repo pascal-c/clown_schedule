@@ -19,7 +19,7 @@ class PlayDateGiveOffRequestMailer
     {
         $receivers = array_map(
             fn (Clown $clown): Address => new Address($clown->getEmail(), $clown->getName()),
-            $this->clownRepository->allActive(),
+            is_null($playDateChangeRequest->getRequestedTo()) ? $this->clownRepository->allActive() : [$playDateChangeRequest->getRequestedTo()],
         );
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
