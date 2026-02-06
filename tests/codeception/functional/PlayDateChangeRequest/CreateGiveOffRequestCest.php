@@ -28,7 +28,7 @@ class CreateGiveOffRequestCest extends AbstractCest
         $this->playDate = $this->playDateFactory->create(playingClowns: [$this->clown], date: new DateTimeImmutable('2025-11-23'), venue: $venue);
     }
 
-    private function giveOffToOneClown(FunctionalTester $I): void
+    public function giveOffToOneClown(FunctionalTester $I): void
     {
         $I->login('me@clown.de', 'clownpass');
         $I->stopFollowingRedirects();
@@ -45,7 +45,7 @@ class CreateGiveOffRequestCest extends AbstractCest
         $I->assertEmailHtmlBodyContains('Ich kann da leider nicht.');
     }
 
-    private function giveOffToAnyClown(FunctionalTester $I): void
+    public function giveOffToAnyClown(FunctionalTester $I): void
     {
         $I->login('me@clown.de', 'clownpass');
         $I->stopFollowingRedirects();

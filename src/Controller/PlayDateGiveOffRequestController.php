@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDateChangeRequest;
+use App\Form\PlayDateChangeRequestCloseFormType;
 use App\Form\PlayDateGiveOffRequestAcceptFormType;
 use App\Form\PlayDateGiveOffRequestCreateFormType;
 use App\Mailer\PlayDateGiveOffRequestMailer;
@@ -120,6 +121,46 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
         return $this->render('play_date_change_request/accept_give-off_request.html.twig', [
             'playDateToGiveOff' => $playDateChangeRequest->getPlayDateToGiveOff(),
             'requestedBy' => $playDateChangeRequest->getRequestedBy(),
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/play_date_give-off_request/{id}/cancel', name: 'play_date_give-off_request_cancel', methods: ['GET', 'POST'])]
+    public function cancel(Request $request, int $id): Response
+    {
+        $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
+        if (is_null($playDateChangeRequest)) {
+            throw new NotFoundHttpException();
+        } elseif ($playDateChangeRequest->getRequestedBy() !== $this->getCurrentClown()) {
+            throw $this->createAccessDeniedException('Betrug! Nur die anfragende Person darf den Tausch abbrechen!');
+        }
+
+        $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
+
+        if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
+            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
+        }
+
+        $form = $this->createForm(PlayDateChangeRequestCloseFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->playDateChangeService->close($playDateChangeRequest);
+            $this->entityManager->flush();
+
+            $this->mailer->sendCancelGiveOffRequestMail($playDateChangeRequest, $form->getData()['comment']);
+
+            $this->addFlash('success', 'Ok! Anfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
+        }
+
+        return $this->render('play_date_change_request/cancel_give-off_request.html.twig', [
+            'playDateToGiveOff' => $playDateChangeRequest->getPlayDateToGiveOff(),
+            'requestedTo' => $playDateChangeRequest->getRequestedTo(),
             'form' => $form,
         ]);
     }

@@ -50,6 +50,22 @@ class PlayDateGiveOffRequestMailer
         $this->mailer->send($email);
     }
 
+    public function sendCancelGiveOffRequestMail(PlayDateChangeRequest $playDateChangeRequest, ?string $personalComment): void
+    {
+        $receiver = $playDateChangeRequest->getRequestedTo();
+        $email = (new TemplatedEmail())
+            ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
+            ->to(new Address($receiver->getEmail(), $receiver->getName()))
+            ->subject($playDateChangeRequest->getRequestedBy()->getName().' hat seine Anfrage zurückgenommen')
+            ->htmlTemplate('emails/play_date_change_request/give-off_request_cancel.html.twig')
+            ->context([
+                'changeRequest' => $playDateChangeRequest,
+                'personalComment' => $personalComment,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
     public function sendInformPartnersAboutChangeMail(PlayDateChangeRequest $playDateChangeRequest): void
     {
         $playDate = $playDateChangeRequest->getPlayDateToGiveOff();

@@ -57,7 +57,11 @@
                         &nbsp;
                     </td>
                     <td>
-                        <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                        {% if changeRequest.requestedTo %}
+                            <a href="{{ path('play_date_give-off_request_cancel', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                        {% else %}
+                            <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                        {% endif %}
                     </td>
                 {% endif %}
             </tr>
