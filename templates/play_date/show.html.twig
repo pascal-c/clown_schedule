@@ -183,13 +183,12 @@
                                 </a>
                             </td>
                             <td>
+                                <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% if sentChangeRequest.requestedTo == currentClown and sentChangeRequest.isWaiting %}
                                     <a href="{{ path('play_date_swap_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">annehmen</a> oder
                                     <a href="{{ path('play_date_swap_request_decline', {id: sentChangeRequest.id}) }}" class="link-danger">ablehnen</a>
                                 {% elseif sentChangeRequest.requestedBy == currentClown and sentChangeRequest.isWaiting %}
                                     <a href="{{ path('play_date_swap_request_cancel', {id: sentChangeRequest.id}) }}" class="link-danger">abbrechen</a>
-                                {% else %}    
-                                    <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% endif %}
                             <td>
                         {% elseif sentChangeRequest.isGiveOff %}
