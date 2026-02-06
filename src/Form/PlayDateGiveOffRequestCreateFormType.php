@@ -28,7 +28,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
         $choices['--- bitte wählen ---'] = null;
         $choices['Gruppe'] = $this->groupChoices($playDate);
         if ($this->hasTeam($playDate)) {
-            $choices['Einzelne aus Team '.$playDate->getVenue()->getName()] = $this->getIndivdualTeamChoices($playDate);
+            $choices['Einzelne aus Team '.$playDate->getVenue()->getName()] = $this->teamChoices($playDate);
         }
         $choices['Einzelne Clowns'] = $this->individualChoices($playDate);
 
@@ -84,12 +84,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
         return $choices;
     }
 
-    private function hasTeam(PlayDate $playDate): bool
-    {
-        return $this->configRepository->isFeatureTeamsActive() && $playDate->getVenue()?->isTeamActive() && $playDate->getVenue()->getTeam()->count() > 0;
-    }
-
-    private function getIndivdualTeamChoices(PlayDate $playDate): array
+    private function teamChoices(PlayDate $playDate): array
     {
         $choices = [];
         foreach ($playDate->getVenue()->getTeam() as $clown) {
@@ -101,5 +96,10 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
         }
 
         return $choices;
+    }
+
+    private function hasTeam(PlayDate $playDate): bool
+    {
+        return $this->configRepository->isFeatureTeamsActive() && $playDate->getVenue()?->isTeamActive() && $playDate->getVenue()->getTeam()->count() > 0;
     }
 }
