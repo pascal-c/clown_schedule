@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDateChangeRequest;
-use App\Form\PlayDateChangeRequestCloseFormType;
+use App\Form\PlayDateChangeRequestCancelFormType;
 use App\Form\PlayDateGiveOffRequestAcceptFormType;
 use App\Form\PlayDateGiveOffRequestCreateFormType;
 use App\Mailer\PlayDateGiveOffRequestMailer;
@@ -139,12 +139,12 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
+            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Anfrage ist bereits geschlossen worden.');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
 
-        $form = $this->createForm(PlayDateChangeRequestCloseFormType::class);
+        $form = $this->createForm(PlayDateChangeRequestCancelFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
