@@ -1,0 +1,31 @@
+<p>
+    Hallo {{ changeRequest.requestedTo.name }},
+</p>
+
+<p>
+    {{ changeRequest.requestedBy.name }} will den Spieltermin scheinbar doch nicht abgeben!<br />
+    Es ging um:
+</p>
+
+<p>
+    {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.name }}
+</p>
+
+<p>
+    Warum, kann ich leider auch nicht sagen!
+</p>
+
+{% if personalComment is not empty %}
+    <p>
+        Aber {{ changeRequest.requestedBy.name }} hat eine persönliche Nachricht für Dich hinterlassen:
+    </p>
+    <p>
+        <i>{{ personalComment|nl2br }}</i>
+    </p>
+{% endif %}
+
+<p>
+    <br />
+    Es lebe das Leben!<br />
+    Deine Spielplan App
+</p>

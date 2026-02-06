@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDateChangeRequest;
+use App\Form\PlayDateChangeRequestCancelFormType;
 use App\Form\PlayDateGiveOffRequestAcceptFormType;
 use App\Form\PlayDateGiveOffRequestCreateFormType;
 use App\Mailer\PlayDateGiveOffRequestMailer;
@@ -40,23 +41,39 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
     {
         $playDate = $this->playDateRepository->find($id);
 
-        $form = $this->createForm(PlayDateGiveOffRequestCreateFormType::class);
+        $form = $this->createForm(PlayDateGiveOffRequestCreateFormType::class, null, [
+            'playDateToGiveOff' => $playDate,
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
-            $playDateChangeRequest = (new PlayDateChangeRequest())
-                ->setPlayDateToGiveOff($playDate)
-                ->setRequestedBy($this->getCurrentClown())
-                ->setRequestedAt($this->timeService->now())
-                ->setType(PlayDateChangeRequestType::GIVE_OFF);
+            $requestedToList = match($formData['requestedTo']) {
+                'all' => [null],
+                'team' => $playDate->getVenue()->getTeam()->toArray(),
+                default => [$this->clownRepository->find((int) $formData['requestedTo'])],
+            };
 
-            $this->entityManager->persist($playDateChangeRequest);
+            $playDateChangeRequests = [];
+            foreach ($requestedToList as $requestedTo) {
+                $playDateChangeRequest = (new PlayDateChangeRequest())
+                    ->setPlayDateToGiveOff($playDate)
+                    ->setRequestedBy($this->getCurrentClown())
+                    ->setRequestedTo($requestedTo)
+                    ->setRequestedAt($this->timeService->now())
+                    ->setType(PlayDateChangeRequestType::GIVE_OFF);
+
+                $this->entityManager->persist($playDateChangeRequest);
+                $playDateChangeRequests[] = $playDateChangeRequest;
+            }
+
             $this->entityManager->flush();
 
-            $this->mailer->sendGiveOffRequestMail($playDateChangeRequest, $formData['comment']);
+            foreach ($playDateChangeRequests as $playDateChangeRequest) {
+                $this->mailer->sendGiveOffRequestMail($playDateChangeRequest, $formData['comment']);
+            }
 
-            $this->addFlash('success', 'Deine Abgabe-Anfrage wurde erfolgreich gestellt. Alle aktiven Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!');
+            $this->addFlash('success', 'Deine Abgabe-Anfrage wurde erfolgreich gestellt. Alle angefragten Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {
@@ -104,6 +121,46 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
         return $this->render('play_date_change_request/accept_give-off_request.html.twig', [
             'playDateToGiveOff' => $playDateChangeRequest->getPlayDateToGiveOff(),
             'requestedBy' => $playDateChangeRequest->getRequestedBy(),
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/play_date_give-off_request/{id}/cancel', name: 'play_date_give-off_request_cancel', methods: ['GET', 'POST'])]
+    public function cancel(Request $request, int $id): Response
+    {
+        $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
+        if (is_null($playDateChangeRequest)) {
+            throw new NotFoundHttpException();
+        } elseif ($playDateChangeRequest->getRequestedBy() !== $this->getCurrentClown()) {
+            throw $this->createAccessDeniedException('Betrug! Nur die anfragende Person darf den Tausch abbrechen!');
+        }
+
+        $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
+
+        if (!$playDateChangeRequest->isWaiting()) {
+            $this->entityManager->flush();
+            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Anfrage ist bereits geschlossen worden.');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
+        }
+
+        $form = $this->createForm(PlayDateChangeRequestCancelFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->playDateChangeService->close($playDateChangeRequest);
+            $this->entityManager->flush();
+
+            $this->mailer->sendCancelGiveOffRequestMail($playDateChangeRequest, $form->getData()['comment']);
+
+            $this->addFlash('success', 'Ok! Anfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
+        }
+
+        return $this->render('play_date_change_request/cancel_give-off_request.html.twig', [
+            'playDateToGiveOff' => $playDateChangeRequest->getPlayDateToGiveOff(),
+            'requestedTo' => $playDateChangeRequest->getRequestedTo(),
             'form' => $form,
         ]);
     }

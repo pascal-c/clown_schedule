@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class PlayDateSwapRequestCloseFormType extends AbstractType
+class PlayDateChangeRequestCancelFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -18,7 +18,7 @@ class PlayDateSwapRequestCloseFormType extends AbstractType
                 'attr' => ['placeholder' => 'optional'],
             ])
             ->add('accept', SubmitType::class, [
-                'label' => 'Tauschanfrage abbrechen',
+                'label' => 'Anfrage abbrechen',
                 'attr' => [
                     'class' => 'btn-danger',
                 ],

@@ -20,6 +20,8 @@ class VenueFactory extends AbstractFactory
         bool $isSuper = false,
         bool $archived = false,
         bool $assignResponsibleClownAsFirstClown = true,
+        array $team = [],
+        bool $teamActive = false,
     ): Venue {
         list($daytimeDefaultGenerated, $meetingTimeGenerated, $playTimeFromGenerated, $playTimeToGenerated) = $this->timeOptions()->sample();
         $venue = (new Venue())
@@ -31,9 +33,13 @@ class VenueFactory extends AbstractFactory
             ->setIsSuper($isSuper)
             ->setArchived($archived)
             ->setAssignResponsibleClownAsFirstClown($assignResponsibleClownAsFirstClown)
+            ->setTeamActive($teamActive)
         ;
         foreach ($playingClowns as $clown) {
             $venue->addResponsibleClown($clown);
+        }
+        foreach ($team as $teamClown) {
+            $venue->getTeam()->add($teamClown);
         }
 
         $this->entityManager->persist($venue);

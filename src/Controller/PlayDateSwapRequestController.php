@@ -6,7 +6,7 @@ namespace App\Controller;
 
 use App\Entity\PlayDateChangeRequest;
 use App\Form\PlayDateSwapRequestAcceptFormType;
-use App\Form\PlayDateSwapRequestCloseFormType;
+use App\Form\PlayDateChangeRequestCancelFormType;
 use App\Form\PlayDateSwapRequestCreateFormType;
 use App\Form\PlayDateSwapRequestDeclineFormType;
 use App\Mailer\PlayDateGiveOffRequestMailer;
@@ -191,7 +191,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
 
-        $form = $this->createForm(PlayDateSwapRequestCloseFormType::class);
+        $form = $this->createForm(PlayDateChangeRequestCancelFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
