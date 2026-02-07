@@ -100,6 +100,9 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\OneToOne(mappedBy: 'movedTo', targetEntity: self::class)]
     private ?self $movedFrom = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private bool $automaticAssignment = true;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -468,5 +471,17 @@ class PlayDate implements TimeSlotPeriodInterface
     public function getMovedFrom(): ?self
     {
         return $this->movedFrom;
+    }
+
+    public function hasAutomaticAssignment(): bool
+    {
+        return $this->automaticAssignment;
+    }
+
+    public function setAutomaticAssignment(bool $automaticAssignment): static
+    {
+        $this->automaticAssignment = $automaticAssignment;
+
+        return $this;
     }
 }
