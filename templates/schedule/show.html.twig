@@ -41,7 +41,7 @@
         <div>
             {{ include('_shared/_create_link.html.twig', {
                 url: path('play_date_new', {type: enum('App\\Value\\PlayDateType').TRAINING.value}), 
-                label: "Trainingstermin anlegen"
+                label: "#{enum('App\\Value\\PlayDateType').TRAINING.value|trans} anlegen"
             }) }}
         </div>
     {% endif %}

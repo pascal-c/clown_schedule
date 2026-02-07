@@ -23,6 +23,10 @@ class TrainingAssigner
     public function assignAllAvailable(array $clownAvailabilities, array $trainings): void
     {
         foreach ($trainings as $training) {
+            if (!$training->hasAutomaticAssignment()) {
+                continue;
+            }
+
             foreach ($clownAvailabilities as $clownAvailability) {
                 /** var ClownAvailability $clownAvailability */
                 if ($this->availabilityChecker->isAvailableOn($training, $clownAvailability)) {

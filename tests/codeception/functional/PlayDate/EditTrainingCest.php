@@ -32,7 +32,7 @@ class EditTrainingCest extends AbstractCest
         $I->loginAsAdmin();
         $I->amOnPage('/play_dates/'.$this->playDate->getId());
         $I->click('bearbeiten', Locator::contains('table tr', text: 'Training'));
-        $I->see('Trainingstermin bearbeiten', 'h4');
+        $I->see('Training / Team-Treffen bearbeiten', 'h4');
 
         $I->fillField('Titel', 'Workshop');
         $I->fillField('Datum', '2024-05-13');
@@ -40,14 +40,14 @@ class EditTrainingCest extends AbstractCest
         $I->selectTimeOption('training_form[meetingTime]', '09:30');
         $I->selectTimeOption('training_form[playTimeFrom]', '10:00');
         $I->selectTimeOption('training_form[playTimeTo]', '15:00');
-        $I->click('Trainingstermin speichern');
-        $I->see('Trainingstermin wurde aktualisiert');
+        $I->click('Termin speichern');
+        $I->see('Training / Team-Treffen wurde aktualisiert');
 
         $I->amGoingTo('test, if the new training is being showed correctly in schedule');
         $I->amOnPage('/schedule/2024-05');
         $I->see('Workshop (ganztags)', Locator::contains('.row', text: '13. Mai'));
         $I->click('Workshop (ganztags)', Locator::contains('.row', text: '13. Mai'));
-        $I->see('Trainingstermin', 'h4');
+        $I->see('Training / Team-Treffen', 'h4');
         $I->see('09:30', Locator::contains('table tr', text: 'Treffen'));
         $I->see('10:00 - 15:00', Locator::contains('table tr', text: 'Spielzeit'));
 

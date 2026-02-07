@@ -52,7 +52,7 @@ class ShowTrainingCest extends AbstractCest
     {
         $I->amOnPage('/play_dates/'.$this->playDateId);
 
-        $I->see('Trainingstermin', 'h4');
+        $I->see('Training / Team-Treffen', 'h4');
         $I->see('Toller Workshop', Locator::contains('table tr', text: 'Wo'));
         $I->see('15.01.2124 nachmittags', Locator::contains('table tr', text: 'Wann'));
         $I->see('14:45', Locator::contains('table tr', text: 'Treffen'));
