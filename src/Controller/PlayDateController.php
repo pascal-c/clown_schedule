@@ -213,7 +213,7 @@ class PlayDateController extends AbstractProtectedController
             $this->trainingAssigner->assignOne($playDate, $this->getCurrentClown());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Du bist jetzt für das Training angemeldet. Schön, dass Du dabei bist!');
+            $this->addFlash('success', 'Du bist jetzt für dieses Training / Team-Treffen angemeldet. Schön, dass Du dabei bist!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } else {
@@ -238,7 +238,7 @@ class PlayDateController extends AbstractProtectedController
             $this->trainingAssigner->unassignOne($playDate, $this->getCurrentClown());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Du bist jetzt für das Training abgemeldet. Schade, dass Du nicht dabei sein kannst!');
+            $this->addFlash('success', 'Du bist jetzt für das Training / Team-Treffen abgemeldet. Schade, dass Du nicht dabei sein kannst!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } else {

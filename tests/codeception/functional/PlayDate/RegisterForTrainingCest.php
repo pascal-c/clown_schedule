@@ -41,12 +41,12 @@ class RegisterForTrainingCest extends AbstractCest
         $I->loginAsClown('Emilio');
         $I->amOnPage('/play_dates/'.$this->playDateId);
         $I->click('Zum Training anmelden');
-        $I->see('Du bist jetzt für das Training angemeldet.');
+        $I->see('Du bist jetzt für dieses Training / Team-Treffen angemeldet.');
         $I->see('Emilio', Locator::contains('table tr', text: 'Spielende Clowns'));
 
         $I->amGoingTo('unregister from the training');
         $I->click('Vom Training abmelden');
-        $I->see('Du bist jetzt für das Training abgemeldet.');
+        $I->see('Du bist jetzt für das Training / Team-Treffen abgemeldet.');
         $I->dontSee('Emilio', Locator::contains('table tr', text: 'Spielende Clowns'));
     }
 

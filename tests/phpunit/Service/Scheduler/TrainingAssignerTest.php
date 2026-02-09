@@ -40,7 +40,9 @@ final class TrainingAssignerTest extends TestCase
         $clownAvailability2->method('getClown')->willReturn($clown2);
 
         $training1 = $this->createMock(PlayDate::class);
+        $training1->method('hasAutomaticAssignment')->willReturn(true);
         $training2 = $this->createMock(PlayDate::class);
+        $training2->method('hasAutomaticAssignment')->willReturn(true);
 
         $this->availabilityChecker
             ->expects($this->exactly(4))
@@ -54,6 +56,10 @@ final class TrainingAssignerTest extends TestCase
 
         $training1->expects($this->once())->method('addPlayingClown')->with($clown1);
         $training2->expects($this->once())->method('addPlayingClown')->with($clown2);
+        $this->playDateHistoryService
+            ->expects($this->exactly(2))
+            ->method('add')
+            ->with($this->anything(), null, PlayDateChangeReason::CALCULATION);
 
         $this->trainingAssigner->assignAllAvailable(
             [$clownAvailability1, $clownAvailability2],
@@ -65,6 +71,7 @@ final class TrainingAssignerTest extends TestCase
     {
         $clownAvailability = $this->createMock(ClownAvailability::class);
         $training = $this->createMock(PlayDate::class);
+        $training->method('hasAutomaticAssignment')->willReturn(true);
 
         $this->availabilityChecker
             ->expects($this->once())
@@ -72,6 +79,23 @@ final class TrainingAssignerTest extends TestCase
             ->with($training, $clownAvailability)
             ->willReturn(false);
 
+        $training->expects($this->never())->method('addPlayingClown');
+        $this->playDateHistoryService
+            ->expects($this->once())
+            ->method('add')
+            ->with($training, null, PlayDateChangeReason::CALCULATION);
+
+        $this->trainingAssigner->assignAllAvailable([$clownAvailability], [$training]);
+    }
+
+    public function testAssignAllAvailableWithDeactivatedAutomaticAssignment(): void
+    {
+        $clownAvailability = $this->createMock(ClownAvailability::class);
+        $training = $this->createMock(PlayDate::class);
+        $training->method('hasAutomaticAssignment')->willReturn(false);
+
+        $this->availabilityChecker->expects($this->never())->method($this->anything());
+        $this->playDateHistoryService->expects($this->never())->method($this->anything());
         $training->expects($this->never())->method('addPlayingClown');
 
         $this->trainingAssigner->assignAllAvailable([$clownAvailability], [$training]);
