@@ -16,7 +16,7 @@
                         {% endif %}
                     </td>
                     <td class="{{ date.class ?? '' }}">
-                        {% if date.dateEntity.training and date.class is defined %}
+                        {% if date.dateEntity.training and not date.dateEntity.playingClowns.contains(currentClown) %}
                             {{ date.dateEntity.name }}
                             <a class="text-muted" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">anmelden</a>
                         {% else %}
@@ -35,7 +35,7 @@
                     <td class="{{ date.class ?? '' }}">
                         {{ date.dateEntity.date|date('d.m.Y') }} {{ date.dateEntity.daytime|trans }}
                     </td>
-                    <td colspan='4'><i>Springer:in</i></td>
+                    <td colspan='4' class="{{ date.class ?? '' }}"><i>Springer:in</i></td>
                 </tr>
             {% endif %}
         {% else %}

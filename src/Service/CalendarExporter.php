@@ -10,7 +10,6 @@ use App\Service\CalendarExporter\PlayDateConverter;
 use App\Service\CalendarExporter\SubstitutionConverter;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\Event;
-use Eluceo\iCal\Domain\Enum\EventStatus;
 use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 
@@ -37,7 +36,7 @@ class CalendarExporter
                 ->setDescription($this->playDateConverter->getDescription($date))
                 ->setOccurrence($this->playDateConverter->getOccurence($date))
                 ->setLocation($this->playDateConverter->getLocation($date))
-                ->setStatus($date->isConfirmed() ? EventStatus::CONFIRMED() : EventStatus::CANCELLED())
+                ->setStatus($this->playDateConverter->getStatus($date))
             ;
             $calendar->addEvent($event);
         }
@@ -47,6 +46,7 @@ class CalendarExporter
                 ->setSummary($this->substitutionConverter->getSummary($substitution))
                 ->setDescription($this->substitutionConverter->getDescription($substitution))
                 ->setOccurrence($this->substitutionConverter->getOccurence($substitution))
+                ->setStatus($this->substitutionConverter->getStatus($substitution))
             ;
             $calendar->addEvent($event);
         }

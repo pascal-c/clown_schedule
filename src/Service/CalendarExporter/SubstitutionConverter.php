@@ -6,7 +6,10 @@ namespace App\Service\CalendarExporter;
 
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
+use App\Repository\ScheduleRepository;
+use Eluceo\iCal\Domain\Enum\EventStatus;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\Occurrence;
 use Eluceo\iCal\Domain\ValueObject\SingleDay;
@@ -17,6 +20,8 @@ class SubstitutionConverter
     public function __construct(
         private TranslatorInterface $translator,
         private PlayDateRepository $playDateRepository,
+        private ScheduleRepository $scheduleRepository,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -44,5 +49,13 @@ class SubstitutionConverter
     public function getOccurence(Substitution $substitution): Occurrence
     {
         return new SingleDay(new Date($substitution->getDate()));
+    }
+
+    public function getStatus(Substitution $substitution): EventStatus
+    {
+        $schedule = $this->scheduleRepository->find($substitution->getMonth());
+        $completed = !$this->configRepository->isFeatureCalculationActive() || $schedule?->isCompleted();
+
+        return $completed ? EventStatus::CONFIRMED() : EventStatus::TENTATIVE();
     }
 }
