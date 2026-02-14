@@ -21,6 +21,9 @@ class ClownFormType extends AbstractType
         $builder
             ->add('name', TextType::class)
             ->add('email', EmailType::class)
+            ->add('phone', TextType::class, [
+                'required' => false,
+            ])
             ->add('gender', ChoiceType::class, [
                 'choices' => [
                     'weiblich' => 'female',

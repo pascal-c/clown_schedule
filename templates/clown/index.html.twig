@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Clown</th><th>Email</th><th>aktiv</th><th>Büro?</th>
+                <th>Clown</th><th>Email</th><th>Telefon</th><th>aktiv</th><th>Büro?</th>
                 {% if currentClown.isAdmin %}
                     <th>Gesperrte Clowns</th>
                 {% endif %}
@@ -25,6 +25,7 @@
                         {% endif %}
                     </td>
                     <td><a href="mailto:{{ clown.email }}">{{ clown.email }}</a></td>
+                    <td>{{ clown.phone }}</td>
                     <td>{{ clown.active ? 'Ja' : 'Nein' }}</td>
                     <td>{{ clown.admin ? 'Ja' : 'Nein' }}</td>
                     {% if currentClown.isAdmin %}

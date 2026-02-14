@@ -92,6 +92,9 @@ class Clown
     #[ORM\OneToMany(targetEntity: Calendar::class, mappedBy: 'clown', orphanRemoval: true)]
     private Collection $calendars;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $phone = null;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -486,6 +489,18 @@ class Clown
                 $calendar->setClown(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }

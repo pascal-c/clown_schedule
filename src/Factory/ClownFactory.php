@@ -12,6 +12,7 @@ class ClownFactory extends AbstractFactory
     public function create(
         ?string $name = null,
         ?string $email = null,
+        ?string $phone = null,
         string $password = 'clown',
         $isAdmin = false,
         $isActive = true,
@@ -21,6 +22,7 @@ class ClownFactory extends AbstractFactory
             ->setName($this->generate('firstName', $name))
             ->setGender('diverse')
             ->setEmail($this->generate('safeEmail', $email))
+            ->setPhone($phone)
             ->setPassword(password_hash($password, PASSWORD_DEFAULT))
             ->setIsAdmin($isAdmin)
             ->setIsActive($isActive)
