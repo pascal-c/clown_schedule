@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\PlayDate;
-use App\Guard\PlayDateGuard;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Value\PlayDateChangeReason;
@@ -15,7 +14,6 @@ use Symfony\Component\Form\FormInterface;
 class PlayDateService
 {
     public function __construct(
-        private PlayDateGuard $playDateGuard,
         private PlayDateRepository $playDateRepository,
         private SubstitutionRepository $substitutionRepository,
         private EntityManagerInterface $entityManager,
@@ -25,26 +23,16 @@ class PlayDateService
     ) {
     }
 
-    public function cancel(PlayDate $playDate): bool
+    public function cancel(PlayDate $playDate): void
     {
-        if (!$this->playDateGuard->canCancel($playDate)) {
-            return false;
-        }
-
         $this->removeSubstitutionsIfNecessary($playDate);
 
         $playDate->cancel();
         $this->playDateHistoryService->add($playDate, $this->authService->getCurrentClown(), PlayDateChangeReason::CANCEL);
-
-        return true;
     }
 
-    public function move(PlayDate $playDate, FormInterface $form): bool
+    public function move(PlayDate $playDate, FormInterface $form): void
     {
-        if (!$this->playDateGuard->canMove($playDate)) {
-            return false;
-        }
-
         $this->removeSubstitutionsIfNecessary($playDate);
         $newPlayDate = new PlayDate();
         $newPlayDate
@@ -67,8 +55,6 @@ class PlayDateService
         $playDate->move($newPlayDate);
         $this->playDateHistoryService->add($playDate, $this->authService->getCurrentClown(), PlayDateChangeReason::MOVE);
         $this->create($newPlayDate);
-
-        return true;
     }
 
     public function create(PlayDate $playDate): void

@@ -26,8 +26,8 @@ class RegularPlayDateFormType extends AbstractType
     {
         /** @var PlayDate $playDate */
         $playDate = $options['data'];
-        $canEdit = $this->playDateGuard->canEdit($playDate);
-        $helpText = !$canEdit ? 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!' : '';
+        $shouldNotEdit = $this->playDateGuard->shouldNotEdit($playDate);
+        $helpText = $shouldNotEdit ? 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!' : '';
 
         $builder
             ->add('venue', EntityType::class, [
@@ -35,7 +35,7 @@ class RegularPlayDateFormType extends AbstractType
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Spielort',
-                'disabled' => !$canEdit,
+                'disabled' => $shouldNotEdit,
             ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',

@@ -28,8 +28,8 @@ class SpecialPlayDateFormType extends AbstractType
     {
         /** @var PlayDate $playDate */
         $playDate = $options['data'];
-        $canEdit = $this->playDateGuard->canEdit($playDate);
-        $helpText = !$canEdit ? 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!' : '';
+        $shouldNotEdit = $this->playDateGuard->shouldNotEdit($playDate);
+        $helpText = $shouldNotEdit ? 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!' : '';
 
         $builder
             ->add('title', TextType::class, ['label' => 'Titel'])

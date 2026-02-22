@@ -10,6 +10,13 @@ use Symfony\Component\Form\FormInterface;
 
 abstract class AbstractProtectedController extends AbstractController
 {
+    protected function checkAuthorization(bool $isAuthorized): void
+    {
+        if (!$isAuthorized) {
+            throw $this->createAccessDeniedException('Das darfst Du nicht.');
+        }
+    }
+
     protected function adminOnly(): void
     {
         if (!$this->getCurrentClown()->isAdmin()) {
