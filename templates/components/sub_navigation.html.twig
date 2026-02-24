@@ -1,14 +1,23 @@
-<nav class="navbar">
-    <ul class="nav nav-tabs pt-1">
-        {% for key, element in navigationItems %}
-            <li class="nav-item position-relative ">
-                <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}">
-                    {{ element['label'] }}
-                {% if element.badge is defined %}
-                    <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill text-bg-success">{{ element.badge }}</span>
-                {% endif %}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+<nav class="navbar navbar-expand-md">
+  <div class="container-fluid">
+    {% if navbarToggler is defined %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#subnavbarSupportedContent" aria-controls="subnavbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    {% endif %}
+    <div class="{{ navbarToggler is defined ? 'collapse navbar-collapse' : '' }}" id="subnavbarSupportedContent">
+        <ul class="nav nav-tabs pt-1">
+            {% for key, element in navigationItems %}
+                <li class="nav-item position-relative {{ element.li_class is defined ? element.li_class : '' }}">
+                    <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}" title="{{ element.title is defined ? element.title }}">
+                        {{ element['label'] }}
+                    {% if element.badge is defined %}
+                        <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill text-bg-success">{{ element.badge }}</span>
+                    {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+  </div>
 </nav>

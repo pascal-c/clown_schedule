@@ -30,32 +30,54 @@ class MonthNavigationComponent
         $this->urlKey = $urlKey;
         $this->active = $active;
 
-        $currentMonth = new Month($this->timeService->today());
+        
         $activeMonth = Month::build($this->active);
         $navigationItems = [];
-        $navigationItems['previous'] = [
+        $navigationItems['previousYear'] = [
             'label' => '<<',
+            'url' => $this->urlHelper->generate(
+                $this->urlKey,
+                array_merge($urlParams, ['monthId' => $activeMonth->previousYear()->getKey()])
+            ),
+            'li_class' => 'd-none d-lg-block',
+            'title' => 'Vorheriges Jahr',
+        ];
+        $navigationItems['previous'] = [
+            'label' => '<',
             'url' => $this->urlHelper->generate(
                 $this->urlKey,
                 array_merge($urlParams, ['monthId' => $activeMonth->previous()->getKey()])
             ),
+            'title' => 'Vorheriger Monat',
         ];
-        for ($i = 1; $i <= 3; ++$i) {
+        $currentMonth = new Month($this->timeService->today())->previous()->previous();
+        for ($i = 1; $i <= 6; ++$i) {
             $navigationItems[$currentMonth->getKey()] = [
                 'label' => $currentMonth->getLabel(),
                 'url' => $this->urlHelper->generate(
                     $this->urlKey,
                     array_merge($urlParams, ['monthId' => $currentMonth->getKey()])
                 ),
+                'li_class' => ($i>3 && $i<6) ? 'd-none d-sm-block' : (($i>=6 || $i<3) ? 'd-none d-lg-block' : ''),
             ];
             $currentMonth = $currentMonth->next();
         }
-        $navigationItems['next'] = [
-            'label' => '>>',
+        $navigationItems['nextMonth'] = [
+            'label' => '>',
             'url' => $this->urlHelper->generate(
                 $this->urlKey,
                 array_merge($urlParams, ['monthId' => $activeMonth->next()->getKey()])
             ),
+            'title' => 'Nächster Monat',
+        ];
+        $navigationItems['nextYear'] = [
+            'label' => '>>',
+            'url' => $this->urlHelper->generate(
+                $this->urlKey,
+                array_merge($urlParams, ['monthId' => $activeMonth->nextYear()->getKey()])
+            ),
+            'li_class' => 'd-none d-lg-block',
+            'title' => 'Nächstes Jahr',
         ];
 
         $this->navigationItems = $navigationItems;

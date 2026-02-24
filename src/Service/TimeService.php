@@ -19,6 +19,11 @@ class TimeService
         return $this->now()->modify('today');
     }
 
+    public function threeMonthAgo(): DateTimeImmutable
+    {
+        return $this->now()->modify('-3 months');
+    }
+
     public function inThreeMonths(): DateTimeImmutable
     {
         return $this->now()->modify('+3 months');
