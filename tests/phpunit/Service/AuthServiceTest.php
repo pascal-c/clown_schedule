@@ -11,6 +11,7 @@ use App\Repository\TokenRepository;
 use App\Service\AuthService;
 use App\Service\TimeService;
 use App\Service\TokenService;
+use Codeception\Stub;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -140,5 +141,20 @@ final class AuthServiceTest extends TestCase
 
         $success = $this->authService->loginByToken('abcdef');
         $this->assertFalse($success);
+    }
+
+    public function testIsAdmin(): void
+    {
+        $authService = Stub::make(AuthService::class, [
+            'getCurrentClown' => new Clown()->setIsAdmin(true),
+        ]);
+
+        $this->assertTrue($authService->isAdmin());
+
+        $authService = Stub::make(AuthService::class, [
+            'getCurrentClown' => new Clown()->setIsAdmin(false),
+        ]);
+
+        $this->assertFalse($authService->isAdmin());
     }
 }

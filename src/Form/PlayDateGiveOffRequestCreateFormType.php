@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\PlayDate;
 use App\Repository\ClownRepository;
-use App\Repository\ConfigRepository;
+use App\Service\VenueService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -15,8 +15,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PlayDateGiveOffRequestCreateFormType extends AbstractType
 {
-    public function __construct(private ClownRepository $clownRepository, private ConfigRepository $configRepository)
-    {
+    public function __construct(
+        private ClownRepository $clownRepository,
+        private VenueService $venueService,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,7 +29,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
         $choices = [];
         $choices['--- bitte wählen ---'] = null;
         $choices['Gruppe'] = $this->groupChoices($playDate);
-        if ($this->hasTeam($playDate)) {
+        if ($this->venueService->hasTeam($playDate->getVenue())) {
             $choices['Einzelne aus Team '.$playDate->getVenue()->getName()] = $this->teamChoices($playDate);
         }
         $choices['Einzelne Clowns'] = $this->individualChoices($playDate);
@@ -63,7 +65,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
     {
         $choices = [];
         $choices['alle Clowns'] = 'all';
-        if ($this->hasTeam($playDate)) {
+        if ($this->venueService->hasTeam($playDate->getVenue())) {
             $choices['alle im Team '.$playDate->getVenue()->getName()] = 'team';
         }
 
@@ -96,10 +98,5 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
         }
 
         return $choices;
-    }
-
-    private function hasTeam(PlayDate $playDate): bool
-    {
-        return $this->configRepository->isFeatureTeamsActive() && $playDate->getVenue()?->isTeamActive() && $playDate->getVenue()->getTeam()->count() > 0;
     }
 }

@@ -19,7 +19,7 @@
     
     {% if showClowns %}
         {{ playDate.playingClowns|map(clown => clown.name)|join(' | ')}}
-        {% if currentClown.isAdmin %}
+        {% if canAssign %}
             {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"}) }}
         {% endif %}
     {% endif %}

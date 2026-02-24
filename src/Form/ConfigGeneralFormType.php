@@ -57,6 +57,18 @@ class ConfigGeneralFormType extends AbstractType
                 'required' => false,
                 'label' => 'Feature "Clownsteams"',
                 'help' => 'Für Spielorte können Clownsteams definiert werden, die diesen Spielort bevorzugt übernehmen.',
+                'attr' => [
+                    'data-action' => 'toggle-by-checkbox#toggleVisibility',
+                    'data-target' => 'toggle-by-checkbox.input',
+                ],
+            ])
+            ->add('teamCanAssignPlayingClowns', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Mitglieder von Clownsteams können Zuordnungen vornehmen',
+                'help' => 'Die Zuordnung von Clowns zu Spielterminen kann von Mitgliedern des Teams dieses Spielortes vorgenommen werden. Sie bekommen auch einen Hinweis im Dashboard, wenn es offene Zuordnungen für diesen Spielort gibt.',
+                'row_attr' => [
+                    'data-target' => 'toggle-by-checkbox.hideme',
+                ],
             ])
             ->add('feeLabel', TextType::class, [
                 'required' => true,

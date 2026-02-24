@@ -152,17 +152,23 @@ class PlayDateController extends AbstractProtectedController
             'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm,
             'config' => $this->configRepository->find(),
-            'delete_form' => $this->playDateGuard->canDelete($playDate) ? $deleteForm : null,
-            'delete_recurring_form' => $this->playDateGuard->canDelete($playDate) ? $deleteRecurringForm : null,
-            'cancel_form' => $this->playDateGuard->canCancel($playDate) ? $cancelForm : null,
-            'move_form' => $this->playDateGuard->canMove($playDate) ? $moveForm : null,
-            'is_past' => $this->timeService->today() > $playDate->getDate(),
+            'can_assign' => $this->playDateGuard->canAssign($playDate),
+            'can_edit' => $this->playDateGuard->canEdit($playDate),
+            'can_delete' => $this->playDateGuard->canDelete($playDate),
+            'can_cancel' => $this->playDateGuard->canCancel($playDate),
+            'can_move' => $this->playDateGuard->canMove($playDate),
+            'should_not_delete' => $this->playDateGuard->shouldNotDelete($playDate),
+            'delete_form' => $deleteForm,
+            'delete_recurring_form' => $deleteRecurringForm,
+            'cancel_form' => $cancelForm,
+            'move_form' => $moveForm,
         ]);
     }
 
     #[Route('/play_dates/{id}/cancel', name: 'play_date_cancel', methods: ['PUT'])]
     public function cancel(PlayDate $playDate, Request $request): Response
     {
+        $this->checkAuthorization($this->playDateGuard->canCancel($playDate));
         $cancelForm = $this->createForm(CancelFormType::class, $playDate);
         $cancelForm->handleRequest($request);
         if ($cancelForm->isSubmitted() && $cancelForm->isValid()) {
@@ -182,6 +188,7 @@ class PlayDateController extends AbstractProtectedController
     #[Route('/play_dates/{id}/move', name: 'play_date_move', methods: ['PUT'])]
     public function move(PlayDate $playDate, Request $request): Response
     {
+        $this->checkAuthorization($this->playDateGuard->canMove($playDate));
         $moveForm = $this->createForm(MoveFormType::class, $playDate);
         $moveForm->handleRequest($request);
         if ($moveForm->isSubmitted() && $moveForm->isValid()) {
@@ -201,9 +208,7 @@ class PlayDateController extends AbstractProtectedController
     #[Route('/play_dates/{id}/register', name: 'training_register', methods: ['POST'])]
     public function registerPlayingClown(PlayDate $playDate, Request $request): Response
     {
-        if (!$this->playDateViewController->mayRegisterForTraining($playDate)) {
-            throw $this->createAccessDeniedException('Das ist nicht erlaubt.');
-        }
+        $this->checkAuthorization($this->playDateViewController->mayRegisterForTraining($playDate));
 
         $trainingForm = $this->createFormBuilder($playDate)
             ->add('register', SubmitType::class)
@@ -226,9 +231,7 @@ class PlayDateController extends AbstractProtectedController
     #[Route('/play_dates/{id}/unregister', name: 'training_unregister', methods: ['POST'])]
     public function unregisterPlayingClown(PlayDate $playDate, Request $request): Response
     {
-        if (!$this->playDateViewController->mayRegisterForTraining($playDate)) {
-            throw $this->createAccessDeniedException('Das ist nicht erlaubt.');
-        }
+        $this->checkAuthorization($this->playDateViewController->mayRegisterForTraining($playDate));
 
         $trainingForm = $this->createFormBuilder($playDate)
             ->add('unregister', SubmitType::class)
@@ -249,11 +252,9 @@ class PlayDateController extends AbstractProtectedController
     }
 
     #[Route('/play_dates/{id}/edit', name: 'play_date_edit', methods: ['GET', 'PUT'])]
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, PlayDate $playDate): Response
     {
-        $this->adminOnly();
-
-        $playDate = $this->playDateRepository->find($id);
+        $this->checkAuthorization($this->playDateGuard->canEdit($playDate));
 
         $editFormType = match($playDate->getType()) {
             PlayDateType::REGULAR => RegularPlayDateFormType::class,
@@ -273,9 +274,9 @@ class PlayDateController extends AbstractProtectedController
             $this->addFlash('warning', 'Hach! Termin konnte irgendwie nicht aktualisiert werden.');
         }
 
-        if (!$this->playDateGuard->canEdit($playDate)) {
+        if ($this->playDateGuard->shouldNotEdit($playDate)) {
             $this->addFlash('warning', 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!
-            Eventuell wäre es sinnvoller, die "Verschieben"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.');
+            Bei Terminverschiebungen wäre es eventuell sinnvoller, die "Verschieben"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.');
         }
 
         return $this->render('play_date/edit.html.twig', [
@@ -285,11 +286,9 @@ class PlayDateController extends AbstractProtectedController
     }
 
     #[Route('/play_dates/{id}/assign_clowns', name: 'play_date_assign_clowns', methods: ['GET', 'PUT'])]
-    public function assignClowns(Request $request, int $id): Response
+    public function assignClowns(Request $request, PlayDate $playDate): Response
     {
-        $this->adminOnly();
-
-        $playDate = $this->playDateRepository->find($id);
+        $this->checkAuthorization($this->playDateGuard->canAssign($playDate));
 
         $form = $this->createForm(AssignClownsFormType::class, $playDate, ['method' => 'PUT']);
         $form->handleRequest($request);
@@ -315,11 +314,9 @@ class PlayDateController extends AbstractProtectedController
     }
 
     #[Route('/play_dates/{id}', name: 'play_date_delete', methods: ['DELETE'])]
-    public function delete(Request $request, int $id): Response
+    public function delete(Request $request, PlayDate $playDate): Response
     {
-        $this->adminOnly();
-
-        $playDate = $this->playDateRepository->find($id);
+        $this->checkAuthorization($this->playDateGuard->canDelete($playDate));
 
         $deleteForm = $this->createDeleteForm()->handleRequest($request);
 
@@ -342,11 +339,9 @@ class PlayDateController extends AbstractProtectedController
     }
 
     #[Route('/play_dates/{id}/recurring', name: 'play_date_delete_recurring', methods: ['DELETE'])]
-    public function deleteRecurring(Request $request, int $id): Response
+    public function deleteRecurring(Request $request, PlayDate $playDate): Response
     {
-        $this->adminOnly();
-
-        $playDate = $this->playDateRepository->find($id);
+        $this->checkAuthorization($this->playDateGuard->canDelete($playDate));
 
         $deleteForm = $this->createDeleteForm()->handleRequest($request);
 

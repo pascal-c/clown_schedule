@@ -17,17 +17,17 @@
                     {% else %}
                         {{ playDate.name }}
                     {% endif %}
-                    {% if currentClown.isAdmin %}
+                    {% if can_edit %}
                         {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"}) }}
-                        {% if delete_form is not null %}
-                            {{ include('play_date/_delete_link.html.twig', {delete_form: delete_form, playDate: playDate, is_past: is_past}) }}
-                        {% endif %}
-                        {% if cancel_form is not null %}
-                            {{ include('play_date/_cancel_link.html.twig', {cancel_form: cancel_form, playDate: playDate}) }}
-                        {% endif %}
-                        {% if move_form is not null %}
-                            {{ include('play_date/_move_link.html.twig', {move_form: move_form, playDate: playDate}) }}
-                        {% endif %}
+                    {% endif %}
+                    {% if can_delete %}
+                        {{ include('play_date/_delete_link.html.twig', {delete_form: delete_form, delete_recurring_form: delete_recurring_form, playDate: playDate, should_not_delete: should_not_delete}) }}
+                    {% endif %}
+                    {% if can_cancel %}
+                        {{ include('play_date/_cancel_link.html.twig', {cancel_form: cancel_form, playDate: playDate}) }}
+                    {% endif %}
+                    {% if can_move %}
+                        {{ include('play_date/_move_link.html.twig', {move_form: move_form, playDate: playDate}) }}
                     {% endif %}
 
                     {{ include('play_date/_status_icons.html.twig', {playDate: playDate}) }}
@@ -64,7 +64,7 @@
                 <th>Spielende Clowns</th>
                 <td>
                     {{ playDate.playingClowns|map(clown => clown.name)|join(' | ') }}
-                    {% if currentClown.isAdmin %}
+                    {% if can_assign %}
                         {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"}) }}
                     {% endif %}
                 </td>

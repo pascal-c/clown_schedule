@@ -8,7 +8,6 @@ use App\Entity\Clown;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Form\PlayDate\MoveFormType;
-use App\Guard\PlayDateGuard;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\ArrayCache;
@@ -26,7 +25,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 #[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class PlayDateServiceTest extends KernelTestCase
 {
-    private PlayDateGuard&MockObject $playDateGuard;
     private PlayDateRepository&MockObject $playDateRepository;
     private SubstitutionRepository&MockObject $substitutionRepository;
     private EntityManagerInterface&MockObject $entityManager;
@@ -43,7 +41,6 @@ final class PlayDateServiceTest extends KernelTestCase
         self::bootKernel();
         $this->container = static::getContainer();
 
-        $this->playDateGuard = $this->createMock(PlayDateGuard::class);
         $this->playDateRepository = $this->createMock(PlayDateRepository::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
@@ -51,7 +48,6 @@ final class PlayDateServiceTest extends KernelTestCase
         $this->authService = $this->createMock(AuthService::class);
         $this->cache = $this->createMock(ArrayCache::class);
         $this->playDateService = new PlayDateService(
-            $this->playDateGuard,
             $this->playDateRepository,
             $this->substitutionRepository,
             $this->entityManager,
@@ -64,25 +60,10 @@ final class PlayDateServiceTest extends KernelTestCase
         $this->authService->method('getCurrentClown')->willReturn($this->currentClown);
     }
 
-    public function testCancelWhenNotPossible(): void
-    {
-        $playDate = new PlayDate();
-        $this->playDateGuard->expects($this->once())->method('canCancel')->with($playDate)->willReturn(false);
-        $this->playDateRepository->expects($this->never())->method('findConfirmedByTimeSlotPeriod');
-        $this->substitutionRepository->expects($this->never())->method('findByTimeSlotPeriod');
-        $this->entityManager->expects($this->never())->method('remove');
-        $this->playDateHistoryService->expects($this->never())->method('add');
-
-        $result = $this->playDateService->cancel($playDate);
-        $this->assertTrue($playDate->isConfirmed());
-        $this->assertFalse($result);
-    }
-
     public function testCancelSuccessfully(): void
     {
         $playDate = new PlayDate();
         $substitution = (new Substitution())->setDate(new DateTimeImmutable('2024-12'));
-        $this->playDateGuard->expects($this->once())->method('canCancel')->with($playDate)->willReturn(true);
         $this->playDateRepository->expects($this->once())->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate]);
         $this->substitutionRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$substitution]);
         $this->substitutionRepository->expects($this->once())->method('byMonthCacheKey')->willReturn('key');
@@ -94,16 +75,14 @@ final class PlayDateServiceTest extends KernelTestCase
             PlayDateChangeReason::CANCEL,
         );
 
-        $result = $this->playDateService->cancel($playDate);
+        $this->playDateService->cancel($playDate);
         $this->assertTrue($playDate->isCancelled());
-        $this->assertTrue($result);
     }
 
     public function testCancelSuccessfullyWhenOtherPlayDatesExist(): void
     {
         $playDate = new PlayDate();
         $substitution = (new Substitution())->setDate(new DateTimeImmutable('2024-12'));
-        $this->playDateGuard->expects($this->once())->method('canCancel')->with($playDate)->willReturn(true);
         $this->playDateRepository->expects($this->once())->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate, new PlayDate()]);
         $this->substitutionRepository->expects($this->never())->method('findByTimeSlotPeriod');
         $this->entityManager->expects($this->never())->method('remove')->with($substitution);
@@ -113,25 +92,8 @@ final class PlayDateServiceTest extends KernelTestCase
             PlayDateChangeReason::CANCEL,
         );
 
-        $result = $this->playDateService->cancel($playDate);
+        $this->playDateService->cancel($playDate);
         $this->assertTrue($playDate->isCancelled());
-        $this->assertTrue($result);
-    }
-
-    public function testMoveWhenNotPossible(): void
-    {
-        $playDate = (new PlayDate())->setId(317);
-        $moveForm = $this->container->get('form.factory')->create(MoveFormType::class, $playDate);
-
-        $this->playDateGuard->expects($this->once())->method('canMove')->with($playDate)->willReturn(false);
-        $this->playDateRepository->expects($this->never())->method('findConfirmedByTimeSlotPeriod');
-        $this->substitutionRepository->expects($this->never())->method('findByTimeSlotPeriod');
-        $this->entityManager->expects($this->never())->method($this->anything());
-        $this->playDateHistoryService->expects($this->never())->method('add');
-
-        $result = $this->playDateService->move($playDate, $moveForm);
-        $this->assertTrue($playDate->isConfirmed());
-        $this->assertFalse($result);
     }
 
     public function testMoveSuccessfully(): void
@@ -145,7 +107,6 @@ final class PlayDateServiceTest extends KernelTestCase
         $moveForm['playTimeTo']->setData(new DateTimeImmutable('17:00'));
         $substitution = (new Substitution())->setDate(new DateTimeImmutable('2024-12'));
 
-        $this->playDateGuard->expects($this->once())->method('canMove')->with($playDate)->willReturn(true);
         $this->playDateRepository->expects($this->once())->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate]);
         $this->substitutionRepository->expects($this->once())->method('findByTimeSlotPeriod')->willReturn([$substitution]);
         $this->substitutionRepository->expects($this->once())->method('byMonthCacheKey')->willReturn('key');
@@ -164,9 +125,8 @@ final class PlayDateServiceTest extends KernelTestCase
                 }
             );
 
-        $result = $this->playDateService->move($playDate, $moveForm);
+        $this->playDateService->move($playDate, $moveForm);
         $this->assertTrue($playDate->isMoved());
-        $this->assertTrue($result);
 
         $this->assertSame('Spieltermin', $playDate->getMovedTo()->getTitle());
         $this->assertEquals(new DateTimeImmutable('2028-12-20'), $playDate->getMovedTo()->getDate());

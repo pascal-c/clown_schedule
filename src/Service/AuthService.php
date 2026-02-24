@@ -69,6 +69,13 @@ class AuthService
         return $this->currentClown;
     }
 
+    public function isAdmin(): bool
+    {
+        $clown = $this->getCurrentClown();
+
+        return $clown?->isAdmin() ?? false;
+    }
+
     public function getLoginToken(Clown $clown, string $expirationInterval = '+1 hour'): string
     {
         $this->tokenService->deleteExpired();
