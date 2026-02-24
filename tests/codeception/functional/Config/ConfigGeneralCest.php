@@ -18,6 +18,8 @@ class ConfigGeneralCest extends AbstractCest
         $I->uncheckOption('Feature "Spieltermine tauschen"');
         $I->fillField('Bezeichnung für Standard-Honorar', 'Standard-Honorar');
         $I->fillField('Bezeichnung für alternatives Honorar', '');
+        $I->checkOption('Feature "Clownsteams"');
+        $I->checkOption('Mitglieder von Clownsteams können Zuordnungen vornehmen');
         $I->click('speichern');
 
         $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
@@ -26,6 +28,8 @@ class ConfigGeneralCest extends AbstractCest
         $I->seeInField('Bezeichnung für Standard-Honorar', 'Standard-Honorar');
         $I->seeInField('Bezeichnung für alternatives Honorar', '');
         $I->seeInField('Bundesland', 'Sachsen');
+        $I->seeCheckboxIsChecked('Feature "Clownsteams"');
+        $I->seeCheckboxIsChecked('Mitglieder von Clownsteams können Zuordnungen vornehmen');
     }
 
     public function featurePlayDateChangeRequestsActive(AdminTester $I): void

@@ -30,9 +30,6 @@
             </td>
             <td>
                 {% for clown in play_date.playingClowns %}{{ clown.name }} {% endfor %}
-                {% if currentClown.isAdmin %}
-                    {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: play_date.id}), title: "Zuordnung bearbeiten"}) }}
-                {% endif %}
             </td>
             <td>{% if currentClown.isAdmin %}<a href="{{ path('play_date_edit', {id: play_date.id}) }}">Spieltermin bearbeiten</a>{% endif %}</td>
         </tr>

@@ -152,6 +152,7 @@ class PlayDateController extends AbstractProtectedController
             'playDate' => $this->playDateViewController->getPlayDateViewModel($playDate, $this->getCurrentClown()),
             'trainingForm' => $trainingForm,
             'config' => $this->configRepository->find(),
+            'can_assign' => $this->playDateGuard->canAssign($playDate),
             'can_edit' => $this->playDateGuard->canEdit($playDate),
             'can_delete' => $this->playDateGuard->canDelete($playDate),
             'can_cancel' => $this->playDateGuard->canCancel($playDate),
@@ -285,11 +286,9 @@ class PlayDateController extends AbstractProtectedController
     }
 
     #[Route('/play_dates/{id}/assign_clowns', name: 'play_date_assign_clowns', methods: ['GET', 'PUT'])]
-    public function assignClowns(Request $request, int $id): Response
+    public function assignClowns(Request $request, PlayDate $playDate): Response
     {
-        $this->adminOnly();
-
-        $playDate = $this->playDateRepository->find($id);
+        $this->checkAuthorization($this->playDateGuard->canAssign($playDate));
 
         $form = $this->createForm(AssignClownsFormType::class, $playDate, ['method' => 'PUT']);
         $form->handleRequest($request);

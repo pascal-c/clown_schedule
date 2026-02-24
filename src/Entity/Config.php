@@ -77,6 +77,9 @@ class Config
     #[ORM\Column(options: ['default' => 30])]
     private int $pointsPerPersonNotInTeam = 30;
 
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $teamCanAssignPlayingClowns = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -328,6 +331,18 @@ class Config
     public function setPointsPerPersonNotInTeam(int $pointsPerPersonNotInTeam): static
     {
         $this->pointsPerPersonNotInTeam = $pointsPerPersonNotInTeam;
+
+        return $this;
+    }
+
+    public function teamCanAssignPlayingClowns(): ?bool
+    {
+        return $this->teamCanAssignPlayingClowns;
+    }
+
+    public function setTeamCanAssignPlayingClowns(bool $teamCanAssignPlayingClowns): static
+    {
+        $this->teamCanAssignPlayingClowns = $teamCanAssignPlayingClowns;
 
         return $this;
     }
