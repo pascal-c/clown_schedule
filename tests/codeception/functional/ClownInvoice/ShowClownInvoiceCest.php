@@ -8,7 +8,7 @@ use App\Value\PlayDateType;
 use Codeception\Util\Locator;
 use DateTimeImmutable;
 
-class showClownInvoiceCest extends AbstractCest
+class ShowClownInvoiceCest extends AbstractCest
 {
     public function _before(FunctionalTester $I): void
     {
@@ -101,7 +101,7 @@ class showClownInvoiceCest extends AbstractCest
 
         // January 2000
         $I->amGoingTo('test next month as well');
-        $I->click('>>');
+        $I->click('Nächster Monat');
 
         // first row
         $I->see('Regulär 1', '//table//tr[1]');
