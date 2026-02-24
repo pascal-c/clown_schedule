@@ -13,6 +13,7 @@ use App\Entity\Venue;
 use App\Gateway\RosterCalculator\RosterResult;
 use App\Repository\ConfigRepository;
 use App\Repository\VenueRepository;
+use App\Service\VenueService;
 use App\Value\Preference;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -25,6 +26,7 @@ class RosterCalculatorGateway
         private ConfigRepository $configRepository,
         private ParameterBagInterface $params,
         private VenueRepository $venueRepository,
+        private VenueService $venueService,
     ) {
     }
 
@@ -176,13 +178,9 @@ class RosterCalculatorGateway
         ];
     }
 
-    private function getTeamMemberIds(?Venue $venue): ?array
+    private function getTeamMemberIds(?Venue $venue): array
     {
-        if (null === $venue || !$this->configRepository->isFeatureTeamsActive()) {
-            return null;
-        }
-
-        return $venue->getTeam()->map(
+        return $this->venueService->getTeam($venue)->map(
             fn (Clown $clown): string => strval($clown->getId()),
         )->toArray();
     }
