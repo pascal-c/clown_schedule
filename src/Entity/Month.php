@@ -68,8 +68,18 @@ class Month
         return new Month($this->date->add($interval));
     }
 
+    public function nextYear(): Month
+    {
+        return new Month($this->date->modify('+1 year'));
+    }
+
     public function previous(): Month
     {
         return new Month($this->date->modify('-1 month'));
+    }
+
+    public function previousYear(): Month
+    {
+        return new Month($this->date->modify('-1 year'));
     }
 }

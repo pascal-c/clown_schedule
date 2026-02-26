@@ -14,6 +14,7 @@ class MonthNavigationComponent
 {
     public string $active;
     public ?string $urlKey;
+    public array $urlParams = [];
     public array $navigationItems;
     public Clown $currentClown;
 
@@ -28,36 +29,54 @@ class MonthNavigationComponent
     {
         $this->currentClown = $this->authService->getCurrentClown();
         $this->urlKey = $urlKey;
+        $this->urlParams = $urlParams;
         $this->active = $active;
 
-        $currentMonth = new Month($this->timeService->today());
         $activeMonth = Month::build($this->active);
         $navigationItems = [];
-        $navigationItems['previous'] = [
+        $navigationItems['previousYear'] = [
             'label' => '<<',
-            'url' => $this->urlHelper->generate(
-                $this->urlKey,
-                array_merge($urlParams, ['monthId' => $activeMonth->previous()->getKey()])
-            ),
+            'url' => $this->urlForMonth($activeMonth->previousYear()),
+            'li_class' => 'd-none d-lg-block',
+            'title' => 'Vorheriges Jahr',
         ];
-        for ($i = 1; $i <= 3; ++$i) {
+        $navigationItems['previousMonth'] = [
+            'label' => '<',
+            'url' => $this->urlForMonth($activeMonth->previous()),
+            'title' => 'Vorheriger Monat',
+        ];
+
+        $currentMonth = new Month($this->timeService->today())->previous()->previous();
+        for ($i = 1; $i <= 6; ++$i) {
             $navigationItems[$currentMonth->getKey()] = [
                 'label' => $currentMonth->getLabel(),
-                'url' => $this->urlHelper->generate(
-                    $this->urlKey,
-                    array_merge($urlParams, ['monthId' => $currentMonth->getKey()])
-                ),
+                'url' => $this->urlForMonth($currentMonth),
+                // 3 is current month and always visible, 4 and 5 are visible from sm breakpoint, 1,2,6 are only visible on lg breakpoint
+                'li_class' => ($i > 3 && $i < 6) ? 'd-none d-sm-block' : (($i >= 6 || $i < 3) ? 'd-none d-lg-block' : ''),
             ];
             $currentMonth = $currentMonth->next();
         }
-        $navigationItems['next'] = [
+
+        $navigationItems['nextMonth'] = [
+            'label' => '>',
+            'url' => $this->urlForMonth($activeMonth->next()),
+            'title' => 'Nächster Monat',
+        ];
+        $navigationItems['nextYear'] = [
             'label' => '>>',
-            'url' => $this->urlHelper->generate(
-                $this->urlKey,
-                array_merge($urlParams, ['monthId' => $activeMonth->next()->getKey()])
-            ),
+            'url' => $this->urlForMonth($activeMonth->nextYear()),
+            'li_class' => 'd-none d-lg-block',
+            'title' => 'Nächstes Jahr',
         ];
 
         $this->navigationItems = $navigationItems;
+    }
+
+    private function urlForMonth(Month $month): string
+    {
+        return $this->urlHelper->generate(
+            $this->urlKey,
+            array_merge($this->urlParams, ['monthId' => $month->getKey()])
+        );
     }
 }

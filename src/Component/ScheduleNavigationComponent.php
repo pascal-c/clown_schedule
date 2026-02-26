@@ -11,6 +11,7 @@ class ScheduleNavigationComponent
 {
     public array $navigationItems = [];
     public string $active = 'schedule';
+    public bool $navbarToggler = true;
 
     public function __construct(private UrlGeneratorInterface $urlHelper, private AuthService $authService)
     {
