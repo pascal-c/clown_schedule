@@ -9,10 +9,12 @@ use Symfony\Contracts\Service\Attribute\Required;
 abstract class AbstractRepository
 {
     protected EntityRepository $doctrineRepository;
+    protected EntityManagerInterface $entityManager;
 
     #[Required]
     public function setEntityManager(EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
         $this->doctrineRepository = $entityManager->getRepository($this->getEntityName());
     }
 

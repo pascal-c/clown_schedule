@@ -19,6 +19,11 @@ class TimeService
         return $this->now()->modify('today');
     }
 
+    public function firstOfMonthAfterNext(): DateTimeImmutable
+    {
+        return $this->today()->modify('+2 month first day of');
+    }
+
     public function inThreeMonths(): DateTimeImmutable
     {
         return $this->now()->modify('+3 months');

@@ -3,6 +3,8 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+    {{ component('dates_with_missing_clowns', {currentClown: currentClown}) }}
+    
     {% if showChangeRequestsOverview %}
         {{ include('dashboard/_waiting_change_requests.html.twig', {sentChangeRequests: sentChangeRequests, receivedChangeRequests: receivedChangeRequests}) }}
     {% endif %}

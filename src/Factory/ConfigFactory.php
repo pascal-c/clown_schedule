@@ -14,6 +14,7 @@ class ConfigFactory extends AbstractFactory
         bool $featureClownVenuePreferencesActive = false,
         bool $featureAssignResponsibleClownAsFirstClown = true,
         bool $featureTeamsActive = false,
+        bool $teamCanAssignPlayingClowns = false,
     ): Config {
         $config = $this->entityManager->getRepository(Config::class)->find(1);
         $config->setFeeLabel($feeLabel);
@@ -21,6 +22,7 @@ class ConfigFactory extends AbstractFactory
         $config->setFeatureClownVenuePreferencesActive($featureClownVenuePreferencesActive);
         $config->setFeatureAssignResponsibleClownAsFirstClownActive($featureAssignResponsibleClownAsFirstClown);
         $config->setFeatureTeamsActive($featureTeamsActive);
+        $config->setTeamCanAssignPlayingClowns($teamCanAssignPlayingClowns);
         $this->entityManager->flush();
 
         return $config;
