@@ -40,6 +40,11 @@ final class TimeServiceTest extends TestCase
         $this->assertEquals(new DateTimeImmutable('2037-03-01'), $this->timeService->firstOfNextMonth());
     }
 
+    public function testBeginningOfLastYear(): void
+    {
+        $this->assertEquals(new DateTimeImmutable('2036-01-01'), $this->timeService->beginningOfLastYear());
+    }
+
     public function testEndOfYear(): void
     {
         $this->assertEquals(new DateTimeImmutable('2037-12-31'), $this->timeService->endOfYear());

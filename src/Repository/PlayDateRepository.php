@@ -30,17 +30,27 @@ class PlayDateRepository extends AbstractRepository
         return $this->doctrineRepository->find($id);
     }
 
-    public function all(): array
+    public function all(DateTimeImmutable $since): array
     {
-        return $this->doctrineRepository->findAll();
+        return $this->doctrineRepository->createQueryBuilder('pd')
+            ->where('pd.date >= :since')
+            ->setParameter('since', $since)
+            ->orderBy('pd.date', 'ASC')
+            ->addOrderBy('pd.daytime', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
-    public function byClown(Clown $clown): array
+    public function byClown(Clown $clown, DateTimeImmutable $since): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
             ->leftJoin('pd.playingClowns', 'clown')
             ->where('clown = :clown')
             ->setParameter('clown', $clown)
+            ->andWhere('pd.date >= :since')
+            ->setParameter('since', $since)
+            ->orderBy('pd.date', 'ASC')
+            ->addOrderBy('pd.daytime', 'ASC')
             ->getQuery()
             ->getResult();
     }

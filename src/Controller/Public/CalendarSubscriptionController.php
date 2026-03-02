@@ -9,7 +9,7 @@ use App\Repository\CalendarRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\CalendarExporter;
-use Symfony\Component\HttpFoundation\Request;
+use App\Service\TimeService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -20,11 +20,12 @@ class CalendarSubscriptionController extends AbstractController
         private CalendarRepository $calendarRepository,
         private PlayDateRepository $playDateRepository,
         private SubstitutionRepository $substitutionRepository,
+        private TimeService $timeService,
     ) {
     }
 
     #[Route('/calendar/subscriptions/{uuid}', name: 'calendar_download_for_subscription', methods: ['GET'])]
-    public function downloadIcs(Request $request, string $uuid): Response
+    public function downloadIcs(string $uuid): Response
     {
         $calendar = $this->calendarRepository->findByUuid($uuid);
         if (is_null($calendar)) {
@@ -32,13 +33,13 @@ class CalendarSubscriptionController extends AbstractController
         }
 
         if ($calendar->isFull()) {
-            $dates = $this->playDateRepository->all();
+            $dates = $this->playDateRepository->all(since: $this->timeService->beginningOfLastYear());
             $substitutions = []; // we don'need substitutions, they are shown in the play dates already
             $filename = 'calendar_all.ics';
         } else {
             $clown = $calendar->getClown();
-            $dates = $this->playDateRepository->byClown($clown);
-            $substitutions = $this->substitutionRepository->byClown($clown);
+            $dates = $this->playDateRepository->byClown($clown, since: $this->timeService->beginningOfLastYear());
+            $substitutions = $this->substitutionRepository->byClown($clown, since: $this->timeService->beginningOfLastYear());
             $filename = 'calendar_'.$clown->getName().'.ics';
         }
         $icsContent = $this->calendarExporter->ics($dates, $substitutions);

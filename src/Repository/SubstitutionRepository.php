@@ -9,6 +9,7 @@ use App\Service\ArrayCache;
 use App\Service\TimeService;
 use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
+use DateTimeImmutable;
 use DateTimeInterface;
 
 class SubstitutionRepository extends AbstractRepository
@@ -97,12 +98,16 @@ class SubstitutionRepository extends AbstractRepository
             ->getResult();
     }
 
-    public function byClown(Clown $clown): array
+    public function byClown(Clown $clown, DateTimeImmutable $since): array
     {
         return $this->doctrineRepository->createQueryBuilder('ts')
             ->leftJoin('ts.substitutionClown', 'clown')
             ->where('clown = :clown')
             ->setParameter('clown', $clown)
+            ->andWhere('ts.date >= :since')
+            ->setParameter('since', $since)
+            ->orderBy('ts.date', 'ASC')
+            ->addOrderBy('ts.daytime', 'ASC')
             ->getQuery()
             ->getResult();
     }

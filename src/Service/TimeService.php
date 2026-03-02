@@ -49,6 +49,11 @@ class TimeService
         return $this->today()->modify('+1 month first day of');
     }
 
+    public function beginningOfLastYear(): DateTimeImmutable
+    {
+        return $this->today()->modify('first day of January last year');
+    }
+
     public function endOfYear(): DateTimeImmutable
     {
         return $this->today()->modify('last day of December');
