@@ -1,11 +1,14 @@
-{% if dates|length > 0 %}
+{% if dates|length > 0 or message is not empty %}
     <h4 class="pt-3">
         Termine mit fehlender Besetzung 
         <span class="ms-2 text-danger">
             <i class="bi bi-exclamation-triangle"></i>
         </span>
     </h4>
+    <h6>Termine bis {{ until|date('d.m.Y')}}</h6>
+{% endif %}
 
+{% if dates|length > 0 %}
     <table class="table">
         <thead>
             <tr><th>Wann</th><th>Wo</th><th>Treffen</th><th>Spielzeit</th><th>Es spielen</th></tr>
@@ -35,4 +38,10 @@
             {% endfor %}    
         </tbody>
     </table>
+{% endif %}
+
+{% if message is not empty %}
+    <div class="alert alert-warning fade show d-flex pt-3" role="alert">
+        <div>{{ message|nl2br }}</div>
+    </div>
 {% endif %}

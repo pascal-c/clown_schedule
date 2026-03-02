@@ -81,6 +81,8 @@ class ShowDatesWithMissingDatesCest extends AbstractCest
         $I->see('17.12.2024', '//table/tbody/tr[1]');
         $I->see('18.12.2024', '//table/tbody/tr[2]');
         $I->see('19.12.2024', '//table/tbody/tr[3]');
+
+        $I->see('ACHTUNG! Die Spielplanberechnung für den Monat Jan. 2025 wurde noch nicht abgeschlossen.');
     }
 
     public function showMissingDatesForNoTeamClown(FunctionalTester $I): void
@@ -92,6 +94,8 @@ class ShowDatesWithMissingDatesCest extends AbstractCest
         $I->dontSee('17.12.2024', '//table/tbody/tr[1]');
         $I->dontSee('18.12.2024', '//table/tbody/tr[2]');
         $I->dontSee('19.12.2024', '//table/tbody/tr[3]');
+
+        $I->dontSee('ACHTUNG! Die Spielplanberechnung für den Monat Jan. 2025 wurde noch nicht abgeschlossen.');
     }
 
     public function showMissingDatesForTeamClown(FunctionalTester $I): void
@@ -103,5 +107,7 @@ class ShowDatesWithMissingDatesCest extends AbstractCest
         $I->see('17.12.2024', '//table/tbody/tr[1]');
         $I->dontSee('18.12.2024');
         $I->dontSee('19.12.2024');
+
+        $I->dontSee('ACHTUNG! Die Spielplanberechnung für den Monat Jan. 2025 wurde noch nicht abgeschlossen.');
     }
 }
