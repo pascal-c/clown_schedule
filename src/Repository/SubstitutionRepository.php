@@ -69,7 +69,7 @@ class SubstitutionRepository extends AbstractRepository
 
     public function findCacheKey(DateTimeInterface $date, string $daytime): string
     {
-        return self::class.'find'.$date->format('d').$daytime;
+        return self::class.'find'.$date->format('Ymd').$daytime;
     }
 
     /** @return array<Substitution> */
