@@ -11,6 +11,7 @@ use App\Service\ArrayCache;
 use App\Service\TimeService;
 use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
+use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 
 class PlayDateRepository extends AbstractRepository
@@ -245,5 +246,25 @@ class PlayDateRepository extends AbstractRepository
             ->getQuery()
             ->getResult();
 
+    }
+
+    public function futurePlayDatesWithMissingClowns(DateTimeImmutable $until): array
+    {
+        $query = $this->entityManager->createQuery(
+            'SELECT pd FROM App\Entity\PlayDate pd WHERE 
+            pd.date >= :today AND 
+            pd.date < :until AND
+            (pd.type = :type_regular OR pd.type = :type_special) AND 
+            pd.status = :status_confirmed AND 
+            pd.neededClowns > (SELECT count(clown) FROM App\Entity\PlayDate pd2 LEFT JOIN pd2.playingClowns clown WHERE pd2.id = pd.id)
+            ORDER BY pd.date ASC, pd.daytime ASC'
+        )
+            ->setParameter('today', $this->timeService->today())
+            ->setParameter('until', $until)
+            ->setParameter('type_regular', PlayDateType::REGULAR->value)
+            ->setParameter('type_special', PlayDateType::SPECIAL->value)
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED);
+
+        return $query->getResult();
     }
 }

@@ -151,4 +151,20 @@ final class PlayDateRepositoryTest extends KernelTestCase
         $result = $this->repository->findConfirmedByTimeSlotPeriod($timeSlotPeriod);
         $this->assertEqualsCanonicalizing([$one, $two, $three], $result);
     }
+
+    public function testFuturePlayDatesWithMissingClowns(): void
+    {
+        $this->timeService->method('today')->willReturn(new DateTimeImmutable('2025-02-12'));
+        $until = new DateTimeImmutable('2025-03-01');
+
+        $this->playDateFactory->create(date: new DateTimeImmutable('2020-02-10')); // too early
+        $this->playDateFactory->create(date: new DateTimeImmutable('2025-03-01')); // too late
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2025-02-12'), type: PlayDateType::SPECIAL); // correct!
+        $two = $this->playDateFactory->create(date: new DateTimeImmutable('2025-02-28'), playingClowns: [$this->clownFactory->create()]); // correct!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2025-02-15'), type: PlayDateType::TRAINING); // wrong type!
+        $this->playDateFactory->create(date: new DateTimeImmutable('2025-02-15'), status: PlayDate::STATUS_MOVED); // wrong status
+
+        $result = $this->repository->futurePlayDatesWithMissingClowns($until);
+        $this->assertSame([$one, $two], $result);
+    }
 }

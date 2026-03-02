@@ -103,6 +103,9 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column(options: ['default' => true])]
     private bool $automaticAssignment = true;
 
+    #[ORM\Column(options: ['default' => 2])]
+    private int $neededClowns = 2;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -481,6 +484,18 @@ class PlayDate implements TimeSlotPeriodInterface
     public function setAutomaticAssignment(bool $automaticAssignment): static
     {
         $this->automaticAssignment = $automaticAssignment;
+
+        return $this;
+    }
+
+    public function getNeededClowns(): int
+    {
+        return $this->neededClowns;
+    }
+
+    public function setNeededClowns(int $neededClowns): static
+    {
+        $this->neededClowns = $neededClowns;
 
         return $this;
     }
