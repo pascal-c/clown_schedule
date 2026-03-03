@@ -29,6 +29,16 @@
                     <td>
                         <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-success">übernehmen</a>
                     </td>
+                {% elseif changeRequest.isTakeOver %}
+                    <td>
+                        {{ changeRequest.requestedTo ? 'an Dich vergeben' : 'vergeben' }}
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <a href="{{ path('play_date_take-over_request_accept', {id: changeRequest.id}) }}" class="link-success">übernehmen</a>
+                    </td>
                 {% endif %}
             </tr>
             {% endfor %}
@@ -62,6 +72,16 @@
                         {% else %}
                             <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
                         {% endif %}
+                    </td>
+                {% elseif changeRequest.isTakeOver %}
+                    <td>
+                        vergeben an {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'egal wen' }}
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <a href="{{ path('play_date_take-over_request_cancel', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
                     </td>
                 {% endif %}
             </tr>

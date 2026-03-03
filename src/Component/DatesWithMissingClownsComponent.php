@@ -12,6 +12,7 @@ use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\TimeService;
 use App\Value\ScheduleStatus;
+use App\ViewController\PlayDateViewController;
 use DateTimeImmutable;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
@@ -29,6 +30,7 @@ class DatesWithMissingClownsComponent
         private ConfigRepository $configRepository,
         private TimeService $timeService,
         private PlayDateGuard $playDateGuard,
+        private PlayDateViewController $playDateViewController,
     ) {
     }
 
@@ -37,11 +39,15 @@ class DatesWithMissingClownsComponent
         $this->currentClown = $currentClown;
         $this->message = $this->message();
         $this->until = $this->until();
-        $this->dates = $this->playDateRepository->futurePlayDatesWithMissingClowns($this->until);
 
-        $this->dates = array_filter(
-            $this->dates,
+        $playDates = $this->playDateRepository->futurePlayDatesWithMissingClowns($this->until);
+        $playDates = array_filter(
+            $playDates,
             fn (PlayDate $date): bool => $this->playDateGuard->canAssign($date)
+        );
+        $this->dates = array_map(
+            fn (PlayDate $playDate) => $this->playDateViewController->getPlayDateViewModel($playDate, $this->currentClown),
+            $playDates
         );
     }
 

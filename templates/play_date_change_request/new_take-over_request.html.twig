@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Clowns für unterbesetzten Spieltermin anfragen</h4>
+
+    <p>Deine Anfrage wird per Email an die gewählten Clowns gesendet.</p>
+    <p>
+        Achtung! Wenn Du zwei Clowns suchst, musst Du zwei separate Anfragen stellen.
+        Diese Anfrage wird geschlossen, sobald sich ein Clown gefunden hat.
+    </p>
+
+    <h5>
+        {{ playDate.name }}, {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }} 
+    </h5>    
+
+    {{ form(form) }}
+{% endblock %}

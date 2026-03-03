@@ -30,7 +30,7 @@ class PlayDateChangeRequest
     private ?Clown $requestedTo = null;
 
     #[ORM\Column(length: 100)]
-    private string $status = 'waiting';
+    private string $status = PlayDateChangeRequestStatus::WAITING->value;
 
     #[ORM\Column(length: 100)]
     private ?string $type = null;
@@ -135,6 +135,11 @@ class PlayDateChangeRequest
         return PlayDateChangeRequestType::GIVE_OFF === $this->getType();
     }
 
+    public function isTakeOver(): bool
+    {
+        return PlayDateChangeRequestType::TAKE_OVER === $this->getType();
+    }
+
     public function getRequestedAt(): ?DateTimeImmutable
     {
         return $this->requestedAt;
@@ -147,11 +152,59 @@ class PlayDateChangeRequest
         return $this;
     }
 
+    public function canAccept(Clown $clown): bool
+    {
+        if (!$this->isWaiting()) {
+            return false;
+        }
+
+        if ($this->isGiveOff()) {
+            return $this->requestedBy !== $clown && (null === $this->requestedTo || $this->requestedTo === $clown);
+        }
+
+        if ($this->isTakeOver()) {
+            return null === $this->requestedTo || $this->requestedTo === $clown;
+        }
+
+        if ($this->isSwap()) {
+            return $this->requestedTo === $clown;
+        }
+
+        return false;
+    }
+
+    public function canCancel(Clown $clown): bool
+    {
+        return $this->requestedBy === $clown;
+    }
+
     public function isValid(): bool
     {
+        if (!$this->playDateToGiveOff->isConfirmed()) {
+            return false;
+        }
+
+        return match ($this->getType()) {
+            PlayDateChangeRequestType::GIVE_OFF => $this->isValidGiveOff(),
+            PlayDateChangeRequestType::TAKE_OVER => $this->isValidTakeOver(),
+            PlayDateChangeRequestType::SWAP => $this->isValidSwap(),
+        };
+    }
+
+    private function isValidGiveOff(): bool
+    {
+        return $this->playDateToGiveOff->getPlayingClowns()->contains($this->requestedBy);
+    }
+
+    private function isValidTakeOver(): bool
+    {
+        return count($this->playDateToGiveOff->getPlayingClowns()) < $this->playDateToGiveOff->getNeededClowns();
+    }
+
+    private function isValidSwap(): bool
+    {
         return $this->playDateToGiveOff->getPlayingClowns()->contains($this->requestedBy)
-            && (is_null($this->PlayDateWanted) || $this->PlayDateWanted->getPlayingClowns()->contains($this->requestedTo))
-            && $this->playDateToGiveOff->isConfirmed()
-            && (is_null($this->PlayDateWanted) || $this->PlayDateWanted->isConfirmed());
+            && $this->PlayDateWanted->getPlayingClowns()->contains($this->requestedTo)
+            && $this->PlayDateWanted->isConfirmed();
     }
 }
