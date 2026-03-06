@@ -14,6 +14,7 @@ class PlayDate
         public readonly array $substitutionClowns,
         public readonly string $specialPlayDateUrl,
         public readonly bool $showChangeRequestLink,
+        public readonly bool $showTakeOverRequestLink,
         public readonly bool $showRegisterForTrainingLink,
     ) {
     }

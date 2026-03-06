@@ -5,6 +5,7 @@ namespace App\ViewController;
 use App\Entity\Clown;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
+use App\Guard\PlayDateGuard;
 use App\Repository\ConfigRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\PlayDateChangeRequestCloseInvalidService;
@@ -13,8 +14,12 @@ use App\ViewModel\PlayDate as PlayDateViewModel;
 
 class PlayDateViewController
 {
-    public function __construct(private SubstitutionRepository $substitutionRepository, private ConfigRepository $configRepository, private TimeService $timeService)
-    {
+    public function __construct(
+        private SubstitutionRepository $substitutionRepository,
+        private ConfigRepository $configRepository,
+        private TimeService $timeService,
+        private PlayDateGuard $playDateGuard,
+    ) {
     }
 
     public function getPlayDateViewModel(PlayDate $playDate, Clown $currentClown): PlayDateViewModel
@@ -30,6 +35,7 @@ class PlayDateViewController
             substitutionClowns: $substitutionClowns,
             specialPlayDateUrl: $specialPlayDateUrl,
             showChangeRequestLink: $this->getShowChangeRequestLink($playDate, $currentClown),
+            showTakeOverRequestLink: $this->getShowTakeOverRequestLink($playDate, $currentClown),
             showRegisterForTrainingLink: $this->mayRegisterForTraining($playDate),
         );
     }
@@ -42,6 +48,19 @@ class PlayDateViewController
     private function getShowChangeRequestLink(PlayDate $playDate, Clown $currentClown): bool
     {
         if (!$this->configRepository->isFeaturePlayDateChangeRequestsActive() || $playDate->isTraining() || !$playDate->getPlayingClowns()->contains($currentClown)) {
+            return false;
+        }
+
+        return $playDate->getDate() >= $this->timeService->today()->modify(PlayDateChangeRequestCloseInvalidService::CREATABLE_UNTIL_PERIOD);
+    }
+
+    private function getShowTakeOverRequestLink(PlayDate $playDate, Clown $currentClown): bool
+    {
+        if (!$this->configRepository->isFeaturePlayDateChangeRequestsActive()
+            || $playDate->isTraining()
+            || $playDate->getPlayingClowns()->count() >= $playDate->getNeededClowns()
+            || !$this->playDateGuard->canAssign($playDate)
+        ) {
             return false;
         }
 

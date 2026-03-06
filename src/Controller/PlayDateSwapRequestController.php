@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\PlayDate;
 use App\Entity\PlayDateChangeRequest;
 use App\Form\PlayDateSwapRequestAcceptFormType;
 use App\Form\PlayDateChangeRequestCancelFormType;
@@ -21,7 +22,6 @@ use App\Value\PlayDateChangeRequestType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 class PlayDateSwapRequestController extends AbstractProtectedController
@@ -39,9 +39,9 @@ class PlayDateSwapRequestController extends AbstractProtectedController
     }
 
     #[Route('/play_date/{id}/swap_request/new', name: 'play_date_new_swap_request', methods: ['GET', 'POST'])]
-    public function new(Request $request, int $id): Response
+    public function new(Request $request, PlayDate $playDate): Response
     {
-        $playDate = $this->playDateRepository->find($id);
+        $this->checkAuthorization($playDate->getPlayingClowns()->contains($this->getCurrentClown()));
 
         $form = $this->createForm(PlayDateSwapRequestCreateFormType::class, null, [
             'currentClown' => $this->getCurrentClown(),
@@ -83,17 +83,9 @@ class PlayDateSwapRequestController extends AbstractProtectedController
     }
 
     #[Route('/play_date_swap_request/{id}/accept', name: 'play_date_swap_request_accept', methods: ['GET', 'POST'])]
-    public function accept(Request $request, int $id, PlayDateGiveOffRequestMailer $playDateGiveOffRequestMailer): Response
+    public function accept(Request $request, PlayDateChangeRequest $playDateChangeRequest, PlayDateGiveOffRequestMailer $playDateGiveOffRequestMailer): Response
     {
-        $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
-        if (is_null($playDateChangeRequest)) {
-            throw new NotFoundHttpException();
-        } elseif (
-            !is_null($playDateChangeRequest->getRequestedTo())
-            && $playDateChangeRequest->getRequestedTo() !== $this->getCurrentClown()
-        ) {
-            throw $this->createAccessDeniedException('Betrug! Nur die angefragte Person darf den Tausch annehmen!');
-        }
+        $this->checkAuthorization($playDateChangeRequest->canAccept($this->getCurrentClown()));
 
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
 
@@ -129,17 +121,9 @@ class PlayDateSwapRequestController extends AbstractProtectedController
     }
 
     #[Route('/play_date_swap_request/{id}/decline', name: 'play_date_swap_request_decline', methods: ['GET', 'POST'])]
-    public function decline(Request $request, int $id): Response
+    public function decline(Request $request, PlayDateChangeRequest $playDateChangeRequest): Response
     {
-        $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
-        if (is_null($playDateChangeRequest)) {
-            throw new NotFoundHttpException();
-        } elseif (
-            !is_null($playDateChangeRequest->getRequestedTo())
-            && $playDateChangeRequest->getRequestedTo() !== $this->getCurrentClown()
-        ) {
-            throw $this->createAccessDeniedException('Betrug! Nur die angefragte Person darf den Tausch ablehnen!');
-        }
+        $this->checkAuthorization($playDateChangeRequest->canDecline($this->getCurrentClown()));
 
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
 
@@ -173,14 +157,9 @@ class PlayDateSwapRequestController extends AbstractProtectedController
     }
 
     #[Route('/play_date_swap_request/{id}/cancel', name: 'play_date_swap_request_cancel', methods: ['GET', 'POST'])]
-    public function cancel(Request $request, int $id): Response
+    public function cancel(Request $request, PlayDateChangeRequest $playDateChangeRequest): Response
     {
-        $playDateChangeRequest = $this->playDateChangeRequestRepository->find($id);
-        if (is_null($playDateChangeRequest)) {
-            throw new NotFoundHttpException();
-        } elseif ($playDateChangeRequest->getRequestedBy() !== $this->getCurrentClown()) {
-            throw $this->createAccessDeniedException('Betrug! Nur die anfragende Person darf den Tausch abbrechen!');
-        }
+        $this->checkAuthorization($playDateChangeRequest->canCancel($this->getCurrentClown()));
 
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
 

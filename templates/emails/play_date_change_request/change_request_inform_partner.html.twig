@@ -1,9 +1,13 @@
 <p>
-    Liebe:r {{ clown.name }}<br />
+    Yippieh {{ clown.name }}!<br />
 </p>
 
 <p>
-    ich wollte Dir nur mitteilen, dass {{ oldPartner.name }} und {{ newPartner.name }} getauscht haben.
+    {% if oldPartner %}
+        ich wollte Dir nur mitteilen, dass {{ oldPartner.name }} und {{ newPartner.name }} getauscht haben.
+    {% else %}
+        Gute Neuigkeiten! Du spielst mit {{ newPartner.name }}.
+    {% endif %}
 </p>
 
 <p>
@@ -11,7 +15,8 @@
 </p>
 
 <p>
-    Du spielst dort jetzt mit {{ newPartner.name }}, statt mit {{ oldPartner.name }}. Jetzt weißte Bescheid.
+    Du spielst dort jetzt mit {{ newPartner.name }}, statt mit {{ oldPartner ? oldPartner.name : 'niemandem' }}. 
+    Jetzt weißte Bescheid.
 </p>
 
 <p>

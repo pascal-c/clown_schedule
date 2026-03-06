@@ -8,4 +8,5 @@ enum PlayDateChangeRequestType: string
 {
     case SWAP = 'swap';
     case GIVE_OFF = 'give-off';
+    case TAKE_OVER = 'take-over';
 }

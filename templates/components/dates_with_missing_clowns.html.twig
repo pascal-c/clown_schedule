@@ -14,7 +14,7 @@
             <tr><th>Wann</th><th>Wo</th><th>Treffen</th><th>Spielzeit</th><th>Es spielen</th></tr>
         </thead>
         <tbody>
-            {% for key, date in dates %}
+            {% for date in dates %}
                 <tr title="{{ date.title ?? '' }}">
                     <td class="lh-sm">
                         {{ date.date|date('d.m.Y') }} {{ date.daytime|trans }}
@@ -33,6 +33,10 @@
                     <td>{{ date.playTimeFrom is not empty ? date.playTimeFrom|date('H:i') ~ ' -' }} {{ date.playTimeTo is not empty ? date.playTimeTo|date('H:i') }}</td>
                     <td>
                         {{ date.playingClowns|map(clown => clown.name)|join('| ') }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: date.id}), title: "Zuordnung bearbeiten"}) }}
+                        {% if date.showTakeOverRequestLink %}
+                            <a href="{{ path('play_date_new_take-over_request', {id: date.id}) }}" title="Clowns anfragen"><i class="bi bi-envelope"></i></a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}    

@@ -53,7 +53,7 @@ class PlayDateChangeRequestCloseInvalidService
         if ($playDateChangeRequest->getPlayDateToGiveOff()->getDate() < $deadline) {
             return false;
         }
-        if ($playDateChangeRequest->isGiveOff()) {
+        if ($playDateChangeRequest->isGiveOff() || $playDateChangeRequest->isTakeOver()) {
             return true;
         }
 

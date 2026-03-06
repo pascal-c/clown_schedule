@@ -46,7 +46,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
                 'help' => '',
             ])
             ->add('comment', TextareaType::class, [
-                'label' => 'Hier kannst Du eine Nachricht an die anderen Clownis hinterlassen.',
+                'label' => 'Hier kannst Du eine persönliche Nachricht hinzufügen',
                 'required' => false,
                 'attr' => ['placeholder' => 'optional'],
             ])
