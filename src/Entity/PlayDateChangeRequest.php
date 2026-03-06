@@ -154,23 +154,12 @@ class PlayDateChangeRequest
 
     public function canAccept(Clown $clown): bool
     {
-        if (!$this->isWaiting()) {
-            return false;
-        }
+        return null === $this->requestedTo || $this->requestedTo === $clown;
+    }
 
-        if ($this->isGiveOff()) {
-            return $this->requestedBy !== $clown && (null === $this->requestedTo || $this->requestedTo === $clown);
-        }
-
-        if ($this->isTakeOver()) {
-            return null === $this->requestedTo || $this->requestedTo === $clown;
-        }
-
-        if ($this->isSwap()) {
-            return $this->requestedTo === $clown;
-        }
-
-        return false;
+    public function canDecline(Clown $clown): bool
+    {
+        return $this->canAccept($clown);
     }
 
     public function canCancel(Clown $clown): bool

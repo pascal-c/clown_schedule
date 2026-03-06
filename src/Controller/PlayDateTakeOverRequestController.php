@@ -6,13 +6,12 @@ namespace App\Controller;
 
 use App\Entity\PlayDate;
 use App\Entity\PlayDateChangeRequest;
-use App\Form\PlayDateGiveOffRequestCreateFormType;
 use App\Form\PlayDateTakeOverRequestAcceptFormType;
 use App\Form\PlayDateTakeOverRequestCancelFormType;
+use App\Form\PlayDateTakeOverRequestCreateFormType;
 use App\Guard\PlayDateGuard;
 use App\Mailer\PlayDateTakeOverRequestMailer;
 use App\Repository\ClownRepository;
-use App\Repository\PlayDateChangeRequestRepository;
 use App\Service\PlayDateChangeRequestCloseInvalidService;
 use App\Service\PlayDateChangeService;
 use App\Service\TimeService;
@@ -27,7 +26,6 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
     public function __construct(
         private ClownRepository $clownRepository,
         private TimeService $timeService,
-        private PlayDateChangeRequestRepository $playDateChangeRequestRepository,
         private PlayDateChangeService $playDateChangeService,
         private PlayDateChangeRequestCloseInvalidService $playDateChangeRequestCloseInvalidService,
         private EntityManagerInterface $entityManager,
@@ -41,7 +39,7 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
     {
         $this->checkAuthorization($this->playDateGuard->canAssign($playDate));
 
-        $form = $this->createForm(PlayDateGiveOffRequestCreateFormType::class, null, [
+        $form = $this->createForm(PlayDateTakeOverRequestCreateFormType::class, null, [
             'playDateToGiveOff' => $playDate,
         ]);
 
@@ -89,7 +87,7 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
     #[Route('/play_date_take-over_request/{id}/accept', name: 'play_date_take-over_request_accept', methods: ['GET', 'POST'])]
     public function accept(Request $request, PlayDateChangeRequest $playDateChangeRequest): Response
     {
-        $this->checkAuthorization(null === $playDateChangeRequest->getRequestedTo() || $playDateChangeRequest->getRequestedTo() === $this->getCurrentClown());
+        $this->checkAuthorization($playDateChangeRequest->canAccept($this->getCurrentClown()));
 
         $this->playDateChangeRequestCloseInvalidService->closeIfInvalid($playDateChangeRequest);
 

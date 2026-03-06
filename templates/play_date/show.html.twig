@@ -187,10 +187,10 @@
                             </td>
                             <td>
                                 <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
-                                {% if sentChangeRequest.canAccept(currentClown) %}
+                                {% if sentChangeRequest.canAccept(currentClown) and sentChangeRequest.isWaiting %}
                                     <a href="{{ path('play_date_swap_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">annehmen</a> oder
                                     <a href="{{ path('play_date_swap_request_decline', {id: sentChangeRequest.id}) }}" class="link-danger">ablehnen</a>
-                                {% elseif sentChangeRequest.canCancel(currentClown) %}
+                                {% elseif sentChangeRequest.canCancel(currentClown) and sentChangeRequest.isWaiting %}
                                     <a href="{{ path('play_date_swap_request_cancel', {id: sentChangeRequest.id}) }}" class="link-danger">abbrechen</a>
                                 {% endif %}
                             <td>
@@ -209,7 +209,7 @@
                                 <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% if sentChangeRequest.isAccepted %}
                                     {{ sentChangeRequest.requestedTo.name }} hat übernommen
-                                {% elseif sentChangeRequest.canAccept(currentClown) %}
+                                {% elseif sentChangeRequest.canAccept(currentClown) and sentChangeRequest.isWaiting %}
                                     <a href="{{ path('play_date_give-off_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">übernehmen</a>
                                 {% endif %}
                             </td>
@@ -222,7 +222,7 @@
                                 <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% if sentChangeRequest.isAccepted %}
                                     {{ sentChangeRequest.requestedTo.name }} hat übernommen
-                                {% elseif sentChangeRequest.canAccept(currentClown) %}
+                                {% elseif sentChangeRequest.canAccept(currentClown) and sentChangeRequest.isWaiting %}
                                     <a href="{{ path('play_date_take-over_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">übernehmen</a>
                                 {% endif %}
                             </td>
@@ -247,7 +247,7 @@
                             </a>
                         </td>
                         <td>
-                            {% if swapRequest.canAccept(currentClown) %}
+                            {% if swapRequest.canAccept(currentClown) and swapRequest.isWaiting %}
                                 <a href="{{ path('play_date_swap_request_accept', {id: swapRequest.id}) }}" class="link-success">annehmen</a> oder
                                 <a href="{{ path('play_date_swap_request_decline', {id: swapRequest.id}) }}" class="link-danger">ablehnen</a>
                             {% else %}    

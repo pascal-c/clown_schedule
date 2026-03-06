@@ -49,7 +49,7 @@ class CreateTakeOverRequestCest extends AbstractCest
     {
         $I->login('me@clown.de', 'clownpass');
         $I->stopFollowingRedirects();
-        
+
         // create TakeOverRequest from dashboard
         $I->see('Termine mit fehlender Besetzung', 'h4');
         $I->click('Clowns anfragen');

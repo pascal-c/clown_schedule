@@ -13,11 +13,6 @@ class PlayDateChangeRequestRepository extends AbstractRepository
         return PlayDateChangeRequest::class;
     }
 
-    public function find(int $id): ?PlayDateChangeRequest
-    {
-        return $this->doctrineRepository->find($id);
-    }
-
     /**
      * @return array<PlayDateChangeRequest>
      */
