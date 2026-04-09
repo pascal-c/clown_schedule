@@ -53,7 +53,7 @@ class BundlePlayDateCest extends AbstractCest
         $I->loginAsAdmin();
         $I->click('Spielplan');
         $I->click('Seniorenheim am See');
-        $I->see('kein Bündel', Locator::contains('table tr', text: 'gebündelt mit'));
+        $I->dontSee('gebündelt mit');
         $I->click('Spieltermine bündeln');
         $I->dontSee('Training');
         $I->checkMultipleOption('Spieltermine', ['Sondertermin 1', 'Sondertermin 2']);
