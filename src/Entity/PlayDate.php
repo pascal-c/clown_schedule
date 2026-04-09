@@ -106,6 +106,10 @@ class PlayDate implements TimeSlotPeriodInterface
     #[ORM\Column(options: ['default' => 2])]
     private int $neededClowns = 2;
 
+    #[ORM\ManyToOne(inversedBy: 'playDates', cascade: ['persist'])]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?PlayDateBundle $bundle = null;
+
     public function __construct()
     {
         $this->playingClowns = new ArrayCollection();
@@ -496,6 +500,23 @@ class PlayDate implements TimeSlotPeriodInterface
     public function setNeededClowns(int $neededClowns): static
     {
         $this->neededClowns = $neededClowns;
+
+        return $this;
+    }
+
+    public function hasBundle(): bool
+    {
+        return null !== $this->bundle;
+    }
+
+    public function getBundle(): ?PlayDateBundle
+    {
+        return $this->bundle;
+    }
+
+    public function setBundle(?PlayDateBundle $bundle): static
+    {
+        $this->bundle = $bundle;
 
         return $this;
     }

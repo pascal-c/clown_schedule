@@ -24,6 +24,11 @@ class PlayDateGuard
     ) {
     }
 
+    public function canBundle(PlayDate $_playDate): bool
+    {
+        return $this->authService->isAdmin();
+    }
+
     public function canDelete(PlayDate $_playDate): bool
     {
         return $this->authService->isAdmin();

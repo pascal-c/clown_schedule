@@ -6,15 +6,19 @@ namespace App\Tests\Service;
 
 use App\Entity\Clown;
 use App\Entity\PlayDate;
+use App\Entity\PlayDateBundle;
+use App\Entity\Schedule;
 use App\Entity\Substitution;
 use App\Form\PlayDate\MoveFormType;
 use App\Repository\PlayDateRepository;
+use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\ArrayCache;
 use App\Service\AuthService;
 use App\Service\PlayDateHistoryService;
 use App\Service\PlayDateService;
 use App\Value\PlayDateChangeReason;
+use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriodInterface;
 use DateTimeImmutable;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -31,6 +35,7 @@ final class PlayDateServiceTest extends KernelTestCase
     private PlayDateHistoryService&MockObject $playDateHistoryService;
     private AuthService&MockObject $authService;
     private ArrayCache&MockObject $cache;
+    private ScheduleRepository&MockObject $scheduleRepository;
     private PlayDateService $playDateService;
 
     private ContainerInterface $container;
@@ -47,6 +52,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $this->playDateHistoryService = $this->createMock(PlayDateHistoryService::class);
         $this->authService = $this->createMock(AuthService::class);
         $this->cache = $this->createMock(ArrayCache::class);
+        $this->scheduleRepository = $this->createMock(ScheduleRepository::class);
         $this->playDateService = new PlayDateService(
             $this->playDateRepository,
             $this->substitutionRepository,
@@ -54,13 +60,14 @@ final class PlayDateServiceTest extends KernelTestCase
             $this->playDateHistoryService,
             $this->authService,
             $this->cache,
+            $this->scheduleRepository,
         );
 
         $this->currentClown = new Clown();
         $this->authService->method('getCurrentClown')->willReturn($this->currentClown);
     }
 
-    public function testCancelSuccessfully(): void
+    public function testCancel(): void
     {
         $playDate = new PlayDate();
         $substitution = (new Substitution())->setDate(new DateTimeImmutable('2024-12'));
@@ -79,7 +86,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $this->assertTrue($playDate->isCancelled());
     }
 
-    public function testCancelSuccessfullyWhenOtherPlayDatesExist(): void
+    public function testCancelWhenOtherPlayDatesExist(): void
     {
         $playDate = new PlayDate();
         $substitution = (new Substitution())->setDate(new DateTimeImmutable('2024-12'));
@@ -96,7 +103,7 @@ final class PlayDateServiceTest extends KernelTestCase
         $this->assertTrue($playDate->isCancelled());
     }
 
-    public function testMoveSuccessfully(): void
+    public function testMove(): void
     {
         $playDate = (new PlayDate())->setId(317)->setTitle('Spieltermin');
         $moveForm = $this->container->get('form.factory')->create(MoveFormType::class, $playDate);
@@ -134,5 +141,53 @@ final class PlayDateServiceTest extends KernelTestCase
         $this->assertSame('14:00', $playDate->getMovedTo()->getMeetingTime()->format('H:i'));
         $this->assertSame('15:00', $playDate->getMovedTo()->getPlayTimeFrom()->format('H:i'));
         $this->assertSame('17:00', $playDate->getMovedTo()->getPlayTimeTo()->format('H:i'));
+    }
+
+    public function testAssignWithoutBundle(): void
+    {
+        $playDate = (new PlayDate())->setDate(new DateTimeImmutable())->setTitle('Spieltermin')->addPlayingClown(new Clown());
+        $clown1 = (new Clown())->setName('Clown 1');
+        $clown2 = (new Clown())->setName('Clown 2');
+        $schedule = (new Schedule())->setStatus(ScheduleStatus::COMPLETED);
+
+        $this->scheduleRepository->expects($this->once())->method('find')->willReturn($schedule);
+        $this->playDateHistoryService
+            ->expects($this->once())
+            ->method('add')
+            ->with(
+                $playDate,
+                $this->currentClown,
+                PlayDateChangeReason::MANUAL_CHANGE,
+            );
+
+        $this->playDateService->assign($playDate, [$clown1, $clown2]);
+        $this->assertCount(2, $playDate->getPlayingClowns());
+        $this->assertSame([$clown1, $clown2], array_values($playDate->getPlayingClowns()->toArray()));
+    }
+
+    public function testAssignWithBundle(): void
+    {
+        $playDate = (new PlayDate())->setDate(new DateTimeImmutable())->setTitle('Spieltermin')->addPlayingClown(new Clown());
+        $bundledPlayDate = (new PlayDate())->setDate(new DateTimeImmutable())->setTitle('Spieltermin 2')->addPlayingClown(new Clown());
+        new PlayDateBundle()->addPlayDate($playDate)->addPlayDate($bundledPlayDate);
+        $clown1 = (new Clown())->setName('Clown 1');
+        $clown2 = (new Clown())->setName('Clown 2');
+        $schedule = (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS);
+
+        $this->scheduleRepository->expects($this->once())->method('find')->willReturn($schedule);
+        $this->playDateHistoryService
+            ->expects($this->exactly(2))
+            ->method('add')
+            ->with(
+                $this->anything(),
+                $this->currentClown,
+                PlayDateChangeReason::MANUAL_CHANGE_FOR_SCHEDULE,
+            );
+
+        $this->playDateService->assign($playDate, [$clown1, $clown2]);
+        $this->assertCount(2, $playDate->getPlayingClowns());
+        $this->assertSame([$clown1, $clown2], array_values($playDate->getPlayingClowns()->toArray()));
+        $this->assertCount(2, $bundledPlayDate->getPlayingClowns());
+        $this->assertSame([$clown1, $clown2], array_values($bundledPlayDate->getPlayingClowns()->toArray()));
     }
 }

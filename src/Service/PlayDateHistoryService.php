@@ -23,7 +23,7 @@ class PlayDateHistoryService
 
         $playDateHistoryEntry = (new PlayDateHistory())
             ->setChangedAt($this->timeService->now())
-            ->setChangedBy($changedBy)
+            ->setChangedBy($reason->isCalculation() ? null : $changedBy)
             ->setReason($reason);
 
         foreach ($playDate->getPlayingClowns() as $clown) {

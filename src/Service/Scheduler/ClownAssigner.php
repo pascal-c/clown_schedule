@@ -8,7 +8,7 @@ use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Repository\SubstitutionRepository;
-use App\Service\PlayDateHistoryService;
+use App\Service\PlayDateService;
 use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Value\PlayDateChangeReason;
 use App\Value\TimeSlotPeriod;
@@ -22,7 +22,7 @@ class ClownAssigner
         private MaxPlaysReachedChecker $maxPlaysReachedChecker,
         private SubstitutionRepository $substitutionRepository,
         private EntityManagerInterface $entityManager,
-        private PlayDateHistoryService $playDateHistoryService,
+        private PlayDateService $playDateService,
     ) {
     }
 
@@ -50,7 +50,7 @@ class ClownAssigner
             $clownAvailability = $this->clownWithMostRecentPlay($playDate->getVenue(), $availableClownAvailabilities);
         }
 
-        $this->assignClown($playDate, $clownAvailability);
+        $this->playDateService->assign($playDate, [$clownAvailability->getClown()], PlayDateChangeReason::CALCULATION);
     }
 
     public function assignSubstitutionClown(TimeSlotPeriod $timeSlotPeriod, array $clownAvailabilities): void
@@ -111,12 +111,6 @@ class ClownAssigner
         $substitution->setSubstitutionClown($clown);
 
         return true;
-    }
-
-    private function assignClown(PlayDate $playDate, ClownAvailability $clownAvailability): void
-    {
-        $playDate->addPlayingClown($clownAvailability->getClown());
-        $this->playDateHistoryService->add($playDate, null, PlayDateChangeReason::CALCULATION);
     }
 
     private function getAvailabilitiesFor(PlayDate $playDate, array $clownAvailabilities)

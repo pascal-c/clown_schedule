@@ -8,6 +8,12 @@
         - {{ playDate.name }} {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"}) }}
     </h5>
 
+    {% if playDate.bundle %}
+        <div class="alert alert-info">
+            Dieser Spieltermin ist Teil eines Bündels mit {{ playDate.bundle.playDates.count }} Terminen. Zuordnungen wirken sich auf alle Termine im Bündel aus.
+        </div>
+    {% endif %}
+
     {{ component('show_available_clowns', { date: playDate.date, daytime: playDate.daytime, playDate: playDate }) }}
     {{ form(form) }}
 {% endblock %}

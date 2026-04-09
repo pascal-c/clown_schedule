@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\PlayDate;
+use App\Entity\PlayDateBundle;
 use App\Entity\Venue;
 use App\Form\PlayDate\AssignClownsFormType;
+use App\Form\PlayDate\BundleFormType;
 use App\Form\PlayDate\CancelFormType;
 use App\Form\PlayDate\MoveFormType;
 use App\Form\PlayDate\RegularPlayDateFormType;
@@ -22,7 +24,6 @@ use App\Service\PlayDateService;
 use App\Service\RecurringDateService;
 use App\Service\Scheduler\TrainingAssigner;
 use App\Service\TimeService;
-use App\Value\PlayDateChangeReason;
 use App\Value\PlayDateType;
 use App\ViewController\PlayDateViewController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -157,11 +158,53 @@ class PlayDateController extends AbstractProtectedController
             'can_delete' => $this->playDateGuard->canDelete($playDate),
             'can_cancel' => $this->playDateGuard->canCancel($playDate),
             'can_move' => $this->playDateGuard->canMove($playDate),
+            'can_bundle' => $this->playDateGuard->canBundle($playDate),
             'should_not_delete' => $this->playDateGuard->shouldNotDelete($playDate),
             'delete_form' => $deleteForm,
             'delete_recurring_form' => $deleteRecurringForm,
             'cancel_form' => $cancelForm,
             'move_form' => $moveForm,
+        ]);
+    }
+
+    #[Route('/play_dates/{id}/bundle', name: 'play_date_bundle', methods: ['GET', 'PUT'])]
+    public function bundle(PlayDate $playDate, Request $request): Response
+    {
+        $this->checkAuthorization($this->playDateGuard->canBundle($playDate));
+
+        $bundle = $playDate->getBundle() ?? (new PlayDateBundle()->addPlayDate($playDate));
+        $form = $this->createForm(BundleFormType::class, $bundle, [
+            'playDateChoices' => array_filter(
+                $this->playDateRepository->confirmedByMonth($playDate->getMonth()),
+                fn (PlayDate $pd) => $pd->isPaid() && (!$pd->hasBundle() || $pd->getBundle() === $bundle),
+            ),
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->has('remove') && $form->get('remove')->isClicked()) {
+            $this->entityManager->remove($bundle);
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Das Bündel wurde aufgelöst. Tabula rasa!');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        } elseif ($form->isSubmitted() && $form->has('cancel') && $form->get('cancel')->isClicked()) {
+            $this->addFlash('success', 'Bündelung abgebrochen. Besser so!');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Die Spieltermine wurden gebündelt. Gut gemacht!');
+
+            return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
+        } elseif ($form->isSubmitted()) {
+            $this->addFlash('warning', 'Da ist was schiefgegangen, tut mir leid!');
+        }
+
+        return $this->render('play_date/bundle.html.twig', [
+            'playDate' => $playDate,
+            'form' => $form,
         ]);
     }
 
@@ -293,11 +336,7 @@ class PlayDateController extends AbstractProtectedController
         $form = $this->createForm(AssignClownsFormType::class, $playDate, ['method' => 'PUT']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $schedule = $this->scheduleRepository->find($playDate->getMonth());
-            $changeReason = !is_null($schedule) && $schedule->isCompleted()
-                ? PlayDateChangeReason::MANUAL_CHANGE
-                : PlayDateChangeReason::MANUAL_CHANGE_FOR_SCHEDULE;
-            $this->playDateHistoryService->add($playDate, $this->getCurrentClown(), $changeReason);
+            $this->playDateService->assign($playDate, $form->get('playingClowns')->getData()->toArray());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Clowns wurden zugeordnet. Tip top!');

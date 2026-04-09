@@ -12,7 +12,7 @@ use App\Entity\Substitution;
 use App\Entity\Venue;
 use App\Entity\Week;
 use App\Repository\SubstitutionRepository;
-use App\Service\PlayDateHistoryService;
+use App\Service\PlayDateService;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Service\Scheduler\ClownAssigner;
@@ -32,7 +32,7 @@ final class ClownAssignerTest extends TestCase
     private MaxPlaysReachedChecker&MockObject $maxPlaysReachedChecker;
     private SubstitutionRepository&MockObject $substitutionRepository;
     private EntityManagerInterface&MockObject $entityManager;
-    private PlayDateHistoryService&MockObject $playDateHistoryService;
+    private PlayDateService&MockObject $playDateService;
 
     private ClownAssigner $clownAssigner;
 
@@ -42,14 +42,14 @@ final class ClownAssignerTest extends TestCase
         $this->maxPlaysReachedChecker = $this->createMock(MaxPlaysReachedChecker::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->playDateHistoryService = $this->createMock(PlayDateHistoryService::class);
+        $this->playDateService = $this->createMock(PlayDateService::class);
 
         $this->clownAssigner = new ClownAssigner(
             $this->availabilityChecker,
             $this->maxPlaysReachedChecker,
             $this->substitutionRepository,
             $this->entityManager,
-            $this->playDateHistoryService,
+            $this->playDateService,
         );
     }
 
@@ -121,18 +121,12 @@ final class ClownAssignerTest extends TestCase
 
         $this->substitutionRepository->expects($this->never())->method($this->anything());
         if (is_null($expectedClownAvailability)) {
-            $this->playDateHistoryService->expects($this->never())->method($this->anything());
+            $this->playDateService->expects($this->never())->method($this->anything());
         } else {
-            $this->playDateHistoryService->expects($this->once())->method('add')->with($playDate, null, PlayDateChangeReason::CALCULATION);
+            $this->playDateService->expects($this->once())->method('assign')->with($playDate, [$expectedClownAvailability->getClown()], PlayDateChangeReason::CALCULATION);
         }
 
         $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
-
-        if (is_null($expectedClownAvailability)) {
-            $this->assertTrue($playDate->getPlayingClowns()->isEmpty());
-        } else {
-            $this->assertSame($expectedClownAvailability->getClown(), $playDate->getPlayingClowns()->first());
-        }
     }
 
     public function testAssignFirstClownWhenAlreadyAssigned(): void
@@ -145,7 +139,7 @@ final class ClownAssignerTest extends TestCase
         $this->availabilityChecker
             ->expects($this->never())
             ->method($this->anything());
-        $this->playDateHistoryService->expects($this->never())->method($this->anything());
+        $this->playDateService->expects($this->never())->method($this->anything());
 
         $this->clownAssigner->assignFirstClown($playDate, $clownAvailabilities);
         $this->assertSame(1, $playDate->getPlayingClowns()->count());
@@ -241,7 +235,7 @@ final class ClownAssignerTest extends TestCase
                 ->method('find')
                 ->willReturnOnConsecutiveCalls($substitution, $substitution2);
         }
-        $this->playDateHistoryService->expects($this->never())->method($this->anything());
+        $this->playDateService->expects($this->never())->method($this->anything());
 
         $this->clownAssigner->assignSubstitutionClown(new TimeSlotPeriod($date, $daytime), $clownAvailabilities);
 

@@ -119,6 +119,23 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if config.useCalculation and (playDate.regular or playDate.special) %}
+                <tr>
+                    <th>gebündelt mit</th>
+                    <td>
+                    {% if playDate.bundle %}
+                        {% for bundledPlayDate in playDate.bundle.playDates|filter(bundledPlayDate => bundledPlayDate.id != playDate.id) %}
+                            {{ loop.first ? '' : '<br />' }} {{ bundledPlayDate.date|date('d.m.Y') }} {{ bundledPlayDate.name }}
+                        {% endfor %}
+                    {% else %}
+                            <i>kein Bündel</i>
+                    {% endif %}
+                    {% if can_bundle %}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), title: "Spieltermine bündeln"}) }}
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
             {% if playDate.super %}
                 <tr>
                     <th>Super-Spieltermin</th>
