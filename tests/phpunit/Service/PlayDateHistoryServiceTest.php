@@ -53,4 +53,27 @@ final class PlayDateHistoryServiceTest extends TestCase
         $this->assertCount(1, $playDateHistoryEntry->getPlayingClowns());
         $this->assertSame($playingClown, $playDateHistoryEntry->getPlayingClowns()->first());
     }
+
+    public function testAddWithCalculationReason(): void
+    {
+        $playDate = new PlayDate();
+        $playingClown = new Clown();
+        $playDate->addPlayingClown($playingClown);
+        $changingClown = new Clown();
+
+        $now = new DateTimeImmutable();
+        $this->timeService->expects($this->once())->method('now')->willReturn($now);
+        $this->closeInvalidService->expects($this->once())->method('closeInvalidChangeRequests');
+
+        $this->playDateHistoryService->add($playDate, $changingClown, PlayDateChangeReason::CALCULATION);
+        $this->assertNotEmpty($playDate->getPlayDateHistory());
+        /** @var PlayDateHistory $playDateHistoryEntry */
+        $playDateHistoryEntry = $playDate->getPlayDateHistory()->first();
+
+        $this->assertSame($now, $playDateHistoryEntry->getChangedAt());
+        $this->assertNull($playDateHistoryEntry->getChangedBy());
+        $this->assertSame(PlayDateChangeReason::CALCULATION, $playDateHistoryEntry->getReason());
+        $this->assertCount(1, $playDateHistoryEntry->getPlayingClowns());
+        $this->assertSame($playingClown, $playDateHistoryEntry->getPlayingClowns()->first());
+    }
 }

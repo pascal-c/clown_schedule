@@ -15,6 +15,7 @@ use App\Repository\ScheduleRepository;
 use App\Service\AuthService;
 use App\Service\TimeService;
 use App\Service\VenueService;
+use App\Value\PlayDateType;
 use App\Value\ScheduleStatus;
 use Codeception\Stub;
 use DateTimeImmutable;
@@ -244,6 +245,50 @@ final class PlayDateGuardTest extends TestCase
             'schedule' => (new Schedule())->setStatus(ScheduleStatus::COMPLETED),
             'today' => '2027-10-07',
             'isNew' => true,
+            'expected' => false,
+        ];
+    }
+
+    #[DataProvider('canBundleProvider')]
+    public function testCanBundle(PlayDateType $type, bool $isAdmin, bool $useCalculation, bool $expected): void
+    {
+        $playDate = new PlayDate()->setType($type);
+        $this->authService->method('isAdmin')->willReturn($isAdmin);
+        $this->configRepository->method('isFeatureCalculationActive')->willReturn($useCalculation);
+
+        $this->assertSame($expected, $this->playDateGuard->canBundle($playDate));
+    }
+
+    public static function canBundleProvider(): Generator
+    {
+        yield 'when is admin, calculation active and play date is regular' => [
+            'type' => PlayDateType::REGULAR,
+            'isAdmin' => true,
+            'useCalculation' => true,
+            'expected' => true,
+        ];
+        yield 'when is admin, calculation active but play date is special' => [
+            'type' => PlayDateType::SPECIAL,
+            'isAdmin' => true,
+            'useCalculation' => true,
+            'expected' => true,
+        ];
+        yield 'when is admin, calculation active but play date is not paid' => [
+            'type' => PlayDateType::TRAINING,
+            'isAdmin' => true,
+            'useCalculation' => true,
+            'expected' => false,
+        ];
+        yield 'when is admin but calculation not active' => [
+            'type' => PlayDateType::REGULAR,
+            'isAdmin' => true,
+            'useCalculation' => false,
+            'expected' => false,
+        ];
+        yield 'when is not admin but calculation active' => [
+            'type' => PlayDateType::REGULAR,
+            'isAdmin' => false,
+            'useCalculation' => true,
             'expected' => false,
         ];
     }

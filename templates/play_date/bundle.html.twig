@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h4 class="pt-3">Spieltermine bündeln</h4>
+    <p>
+        <i class="bi bi-info-circle"></i>
+        Hier können mehrere Spieltermine gebündelt werden. 
+        <br />Alle Spieltermine eines Bündels werden bei der Berechnung aber auch bei manueller Zuordnung mit den gleichen Clowns besetzt.
+    </p>
+
+    {{ form_start(form) }}
+    {{ form_row(form.playDates) }}
+    <div class="row">
+    <div class="col-auto">
+        {{ form.remove is defined ? form_row(form.remove) }}
+    </div>
+    <div class="col-auto">
+        {{ form.cancel is defined ? form_row(form.cancel) }}
+    </div>
+    <div class="col-auto">
+        {{ form_row(form.save) }}
+    </div>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}

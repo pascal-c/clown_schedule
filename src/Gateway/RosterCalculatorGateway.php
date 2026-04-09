@@ -175,6 +175,7 @@ class RosterCalculatorGateway
             'assignedPeople' => $playDate->getPlayingClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
             'team' => $this->getTeamMemberIds($playDate->getVenue()),
             'locationId' => strval($playDate->getVenue()->getId()),
+            'bundleId' => $playDate->hasBundle() ? strval($playDate->getBundle()->getId()) : null,
         ];
     }
 

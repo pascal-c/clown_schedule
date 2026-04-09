@@ -14,4 +14,9 @@ enum PlayDateChangeReason: string
     case MANUAL_CHANGE = 'manual-change';
     case MOVE = 'move';
     case SWAP = 'swap';
+
+    public function isCalculation(): bool
+    {
+        return PlayDateChangeReason::CALCULATION === $this;
+    }
 }

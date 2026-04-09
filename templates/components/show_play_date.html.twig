@@ -1,7 +1,7 @@
 <div class="pt-2 lh-sm">
     <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id}) }}">
         <span class="{{ colorClass }}">
-            {{ playDate.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}
+            {{ playDate.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}  {% if playDate.bundle %}<i class="bi bi-{{ playDate.bundle.playDates.count }}-circle" title="Es sind {{ playDate.bundle.playDates.count }} Termine gebündelt"></i>{% endif %}
         </span>
     </a>
 

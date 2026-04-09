@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\PlayDate;
 use App\Repository\PlayDateRepository;
+use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Value\PlayDateChangeReason;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ class PlayDateService
         private PlayDateHistoryService $playDateHistoryService,
         private AuthService $authService,
         private ArrayCache $cache,
+        private ScheduleRepository $scheduleRepository,
     ) {
     }
 
@@ -61,6 +63,24 @@ class PlayDateService
     {
         $this->entityManager->persist($playDate);
         $this->playDateHistoryService->add($playDate, $this->authService->getCurrentClown(), PlayDateChangeReason::CREATE);
+    }
+
+    public function assign(PlayDate $playDate, array $clowns, ?PlayDateChangeReason $changeReason = null): void
+    {
+        $schedule = $this->scheduleRepository->find($playDate->getMonth());
+        $changeReason ??= $schedule?->isCompleted()
+            ? PlayDateChangeReason::MANUAL_CHANGE
+            : PlayDateChangeReason::MANUAL_CHANGE_FOR_SCHEDULE;
+
+        // assign clowns to all playdates in the bundle (or just the single playdate if it is not bundled)
+        $playDates = $playDate->hasBundle() ? $playDate->getBundle()->getPlayDates() : [$playDate];
+        foreach ($playDates as $bundledPlayDate) {
+            $bundledPlayDate->getPlayingClowns()->clear();
+            foreach ($clowns as $clown) {
+                $bundledPlayDate->addPlayingClown($clown);
+            }
+            $this->playDateHistoryService->add($bundledPlayDate, $this->authService->getCurrentClown(), $changeReason);
+        }
     }
 
     private function removeSubstitutionsIfNecessary(PlayDate $playDate): void

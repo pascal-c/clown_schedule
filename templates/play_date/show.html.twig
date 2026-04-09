@@ -119,6 +119,19 @@
                     </td>
                 </tr>
             {% endif %}
+            {% if playDate.bundle %}
+                <tr>
+                    <th>gebündelt mit</th>
+                    <td>
+                    {% for bundledPlayDate in playDate.bundle.playDates|filter(bundledPlayDate => bundledPlayDate.id != playDate.id) %}
+                        {{ loop.first ? '' : '<br />' }} {{ bundledPlayDate.date|date('d.m.Y') }} {{ bundledPlayDate.name }}
+                    {% endfor %}
+                    {% if can_bundle %}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), title: "Spieltermine bündeln"}) }}
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
             {% if playDate.super %}
                 <tr>
                     <th>Super-Spieltermin</th>
@@ -158,7 +171,10 @@
     {% if playDate.showTakeOverRequestLink %}
         <a href="{{ path('play_date_new_take-over_request', {id: playDate.id}) }}">Clowns für diesen Spieltermin anfragen</a>
     {% endif %}
-
+    {% if can_bundle and not playDate.bundle %}
+        {{ include('_shared/_create_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), label: "Spieltermine bündeln"}) }}
+    {% endif %}
+    
     {% if playDate.showRegisterForTrainingLink %}
         {{ form(trainingForm) }}
     {% endif %}
