@@ -15,7 +15,7 @@ class PasswordFormType extends AbstractType
         $builder->add('password', RepeatedType::class, [
             'type' => PasswordType::class,
             'invalid_message' => 'Die Passwörter stimmen nicht überein.',
-            'options' => ['label' => false, 'constraints' => [new Length(['min' => 8])]],
+            'options' => ['label' => false, 'constraints' => [new Length(min: 8)]],
             'required' => true,
             'first_options' => ['attr' => ['placeholder' => 'Neues Passwort', 'autocomplete' => 'new-password']],
             'second_options' => ['attr' => ['placeholder' => 'Neues Passwort Wiederholung', 'autocomplete' => 'new-password']],
