@@ -10,7 +10,7 @@ use DateTimeImmutable;
 // all public methods declared in helper class will be available in $I
 class Functional extends \Codeception\Module
 {
-    public static $now = 'now';
+    public static string $now = 'now';
 
     public function _initialize()
     {
@@ -22,6 +22,6 @@ class Functional extends \Codeception\Module
         $container = $this->getModule('Symfony')->_getContainer();
 
         $container->set(TimeService::class, $timeService);
-        $this->getModule('Symfony')->persistService(TimeService::class);
+        $this->getModule('Symfony')->persistPermanentService(TimeService::class);
     }
 }

@@ -64,9 +64,10 @@ class RecurringDateController extends AbstractProtectedController
 
             if ($venue) {
                 return $this->redirectToRoute('venue_play_date_index', ['id' => $venue->getId()]);
-            } else {
-                return $this->redirectToRoute('schedule');
             }
+
+            return $this->redirectToRoute('schedule');
+
 
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Termin konnte nicht angelegt werden.');

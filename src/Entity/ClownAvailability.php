@@ -249,9 +249,9 @@ class ClownAvailability
     {
         if ($this->calculatedPlaysMonth < 1) {
             throw new RuntimeException('calculated plays cannot be negative');
-        } else {
-            --$this->calculatedPlaysMonth;
         }
+        --$this->calculatedPlaysMonth;
+
 
         return $this;
     }

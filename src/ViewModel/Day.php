@@ -41,9 +41,9 @@ class Day
             return array_key_exists($key, $this->entriesAm) ? $this->entriesAm[$key] : [];
         } elseif (Daytime::PM == $daytime) {
             return array_key_exists($key, $this->entriesPm) ? $this->entriesPm[$key] : [];
-        } else {
-            throw new InvalidArgumentException('this is not a valid daytime');
         }
+        throw new InvalidArgumentException('this is not a valid daytime');
+
     }
 
     public function getDayNumber(): string

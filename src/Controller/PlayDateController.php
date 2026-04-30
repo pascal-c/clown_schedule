@@ -221,9 +221,9 @@ class PlayDateController extends AbstractProtectedController
             $this->addFlash('success', 'Der Spieltermin wurde abgesagt. Schade!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
-        } else {
-            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
         }
+        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
@@ -241,9 +241,9 @@ class PlayDateController extends AbstractProtectedController
             $this->addFlash('success', 'Der Spieltermin wurde verschoben.');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
-        } else {
-            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
         }
+        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
@@ -264,9 +264,9 @@ class PlayDateController extends AbstractProtectedController
             $this->addFlash('success', 'Du bist jetzt für dieses Training / Team-Treffen angemeldet. Schön, dass Du dabei bist!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
-        } else {
-            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
         }
+        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
@@ -287,9 +287,9 @@ class PlayDateController extends AbstractProtectedController
             $this->addFlash('success', 'Du bist jetzt für das Training / Team-Treffen abgemeldet. Schade, dass Du nicht dabei sein kannst!');
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
-        } else {
-            $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
         }
+        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
