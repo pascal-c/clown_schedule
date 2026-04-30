@@ -9,7 +9,7 @@
         "ext-iconv": "*",
         "doctrine/annotations": "^2.0",
         "doctrine/dbal": "^4.2",
-        "doctrine/doctrine-bundle": "^2.15",
+        "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.6",
         "eluceo/ical": "^2.16",
