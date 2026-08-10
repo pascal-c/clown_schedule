@@ -5,6 +5,7 @@ namespace App\Tests\Helper;
 use App\Service\TimeService;
 use Codeception\Stub;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
@@ -19,9 +20,12 @@ class Functional extends \Codeception\Module
             'now' => fn () => new DateTimeImmutable(Functional::$now),
         ]);
 
-        $container = $this->getModule('Symfony')->_getContainer();
+        /** @var \Codeception\Module\Symfony $symfonyModule */
+        $symfonyModule = $this->getModule('Symfony');
+        $container = $symfonyModule->_getContainer();
 
         $container->set(TimeService::class, $timeService);
-        $this->getModule('Symfony')->persistPermanentService(TimeService::class);
+        $symfonyModule->persistPermanentService(TimeService::class);
+        $symfonyModule->persistPermanentService(EntityManagerInterface::class);
     }
 }
