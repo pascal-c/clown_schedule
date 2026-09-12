@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Clown;
 use App\Form\ClownFormType;
 use App\Form\ClownBlockedClownsFormType;
+use App\Form\MeFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -72,6 +73,29 @@ class ClownController extends AbstractProtectedController
         $this->addFlash('success', sprintf('Alles klar! Ich habe eine Einladungsemail an %s geschickt.', $clown->getName()));
 
         return $this->redirectToRoute('clown_index');
+    }
+
+    #[Route('/clowns/me', name: 'me', methods: ['GET', 'PUT'])]
+    public function me(Request $request): Response
+    {
+        $form = $this->createForm(MeFormType::class, $this->getCurrentClown(), ['method' => 'PUT']);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Deine Daten wurden erfolgreich gespeichert.');
+
+            return $this->redirectToRoute('me');
+        } elseif ($form->isSubmitted()) {
+            $this->addFlash('warning', 'Uuups, da ist etwas schiefgelaufen. Deine Daten konnten nicht gespeichert werden.');
+        }
+
+        return $this->render('clown/me.html.twig', [
+            'clown' => $this->getCurrentClown(),
+            'form' => $form,
+            'active' => 'clown',
+        ]);
     }
 
     #[Route('/clowns/{id}', name: 'clown_edit', methods: ['GET', 'PUT'])]
