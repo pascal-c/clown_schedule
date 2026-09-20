@@ -94,12 +94,17 @@ final class SchedulerTest extends TestCase
     {
         $month = Month::build('1978-12');
         $playDates = $this->getPlayDates();
+        $otherDates = ['otherDates'];
         $substitution = (new Substitution())->setSubstitutionClown(new Clown());
 
         $this->playDateRepository->expects($this->once())
             ->method('confirmedRegularByMonth')
             ->with($month)
             ->willReturn($playDates);
+        $this->playDateRepository->expects($this->once())
+            ->method('confirmedNonRegularByMonth')
+            ->with($month)
+            ->willReturn($otherDates);
         $this->playDateRepository->expects($this->once())
             ->method('confirmedTrainingByMonth')
             ->with($month)
@@ -115,7 +120,7 @@ final class SchedulerTest extends TestCase
             ->method('assignFirstClown');
         $this->rosterCalculatorGateway->expects($this->once())
             ->method('calcuate')
-            ->with($playDates, $clownAvailabilities)
+            ->with($playDates, $otherDates, $clownAvailabilities)
             ->willReturn($rosterResult = new RosterResult());
         $this->rosterResultApplier->expects($this->once())
             ->method('apply')

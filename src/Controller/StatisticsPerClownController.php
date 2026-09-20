@@ -118,6 +118,7 @@ class StatisticsPerClownController extends AbstractProtectedController
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month);
         $playDates = $this->playDateRepository->confirmedRegularByMonth($month);
+        $otherDates = $this->playDateRepository->confirmedNonRegularByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
 
@@ -156,7 +157,7 @@ class StatisticsPerClownController extends AbstractProtectedController
             'showMaxPerWeek' => $this->configRepository->isFeatureMaxPerWeekActive(),
             'showVenuePreferences' => $this->configRepository->isFeatureClownVenuePreferencesActive(),
             'calculatedRating' => $schedule->getCalculatedRating(),
-            'currentRating' => $this->rosterCalculatorGateway->rating($playDates, $clownAvailabilities),
+            'currentRating' => $this->rosterCalculatorGateway->rating($playDates, $otherDates, $clownAvailabilities),
         ]);
     }
 }

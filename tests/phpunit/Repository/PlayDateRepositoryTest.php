@@ -119,6 +119,21 @@ final class PlayDateRepositoryTest extends KernelTestCase
         $this->assertSame([$one], $result);
     }
 
+    public function testNonRegularByMonth(): void
+    {
+        $month = Month::build('2024-02');
+
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-01-31')); // wrong month
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::REGULAR); // wrong type
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::SPECIAL); // correct!
+        $two = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-29'), type: PlayDateType::TRAINING); // correct
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-03-01')); // wrong month
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), status: PlayDate::STATUS_MOVED); // wrong status
+
+        $result = $this->repository->confirmedNonRegularByMonth($month);
+        $this->assertSame([$one, $two], $result);
+    }
+
     public function testFindByTimeSlotPeriodWithDaytimeAM(): void
     {
         $timeSlotPeriod = new TimeSlotPeriod(
