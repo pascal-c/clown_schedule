@@ -31,18 +31,19 @@ class RosterCalculatorGateway
     }
 
     /**
-     * @param array<PlayDate>          $playDates
+     * @param array<PlayDate>          $playDates           shifts to be calculated
+     * @param array<PlayDate>          $otherDates          other events to be considered for availability
      * @param array<ClownAvailability> $clownAvailabilities
      *
      * @return RosterResult the calculated roster
      */
-    public function calcuate(array $playDates, array $clownAvailabilities): RosterResult
+    public function calcuate(array $playDates, array $otherDates, array $clownAvailabilities): RosterResult
     {
         $options = [
             'auth_bearer' => $this->params->get('app.roster_calculator_api_token'),
             'timeout' => 90,
             'max_duration' => 90,
-            'json' => $this->serialize($playDates, $clownAvailabilities),
+            'json' => $this->serialize($playDates, $otherDates, $clownAvailabilities),
         ];
 
         $response = $this->httpClient->request(
@@ -74,17 +75,18 @@ class RosterCalculatorGateway
 
     /**
      * @param array<PlayDate>          $playDates
+     * @param array<PlayDate>          $otherDates
      * @param array<ClownAvailability> $clownAvailabilities
      *
-     * @return RosterResult the calculated roster
+     * @return ?RosterResult the calculated roster
      */
-    public function rating(array $playDates, array $clownAvailabilities): ?array
+    public function rating(array $playDates, array $otherDates, array $clownAvailabilities): ?array
     {
         $options = [
             'auth_bearer' => $this->params->get('app.roster_calculator_api_token'),
             'timeout' => 10,
             'max_duration' => 10,
-            'json' => $this->serialize($playDates, $clownAvailabilities),
+            'json' => $this->serialize($playDates, $otherDates, $clownAvailabilities),
         ];
 
         $response = $this->httpClient->request(
@@ -103,7 +105,7 @@ class RosterCalculatorGateway
         return null;
     }
 
-    private function serialize(array $playDates, array $clownAvailabilities): array
+    private function serialize(array $playDates, array $otherDates, array $clownAvailabilities): array
     {
         $config = $this->configRepository->find();
         $venues = $this->venueRepository->all();
@@ -117,6 +119,7 @@ class RosterCalculatorGateway
                 $venues
             ),
             'shifts' => array_map(fn (PlayDate $playDate): array => $this->serializePlayDate($playDate), $playDates),
+            'otherDates' => array_map(fn (PlayDate $playDate): array => $this->serializePlayDate($playDate), $otherDates),
             'people' => array_map(fn (ClownAvailability $clownAvailability): array => $this->serializeClownAvailability($clownAvailability), $clownAvailabilities),
             'ratingPointWeightings' => [
                 'pointsPerMissingPerson' => $config->getPointsPerMissingPerson(),
@@ -174,7 +177,7 @@ class RosterCalculatorGateway
             'daytime' => $playDate->getDaytime(),
             'assignedPeople' => $playDate->getPlayingClowns()->map(fn (Clown $clown): string => strval($clown->getId()))->toArray(),
             'team' => $this->getTeamMemberIds($playDate->getVenue()),
-            'locationId' => strval($playDate->getVenue()->getId()),
+            'locationId' => $playDate->getVenue() ? strval($playDate->getVenue()->getId()) : null,
             'bundleId' => $playDate->hasBundle() ? strval($playDate->getBundle()->getId()) : null,
         ];
     }

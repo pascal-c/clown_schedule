@@ -128,6 +128,20 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
+    /**
+     * @return PlayDate[]
+     */
+    public function confirmedNonRegularByMonth(Month $month): array
+    {
+        return $this->queryByMonth($month)
+            ->andWhere("pd.type != '".PlayDateType::REGULAR->value."'")
+            ->andWhere('pd.status = :status_confirmed')
+            ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
+            ->getQuery()
+            ->enableResultCache(2)
+            ->getResult();
+    }
+
     public function confirmedTrainingByMonth(Month $month): array
     {
         return $this->queryByMonth($month)

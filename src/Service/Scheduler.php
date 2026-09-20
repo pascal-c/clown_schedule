@@ -42,6 +42,7 @@ class Scheduler
         $timeSlotPeriods = [];
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $playDates = $this->playDateRepository->confirmedRegularByMonth($month);
+        $otherDates = $this->playDateRepository->confirmedNonRegularByMonth($month);
         if (!$keepExistingAssignments) {
             $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
         }
@@ -60,7 +61,7 @@ class Scheduler
         $this->fairPlayCalculator->calculateAvailabilityRatios($clownAvailabilities, $playDates);
         $this->fairPlayCalculator->calculateEntitledPlays($clownAvailabilities, count($playDates) * 2);
         $this->fairPlayCalculator->calculateTargetPlays($clownAvailabilities, count($playDates) * 2);
-        $result = $this->rosterCalculatorGateway->calcuate($playDates, $clownAvailabilities);
+        $result = $this->rosterCalculatorGateway->calcuate($playDates, $otherDates, $clownAvailabilities);
         $this->rosterResultApplier->apply($result, $month);
 
         foreach ($timeSlotPeriods as $timeSlot) {
