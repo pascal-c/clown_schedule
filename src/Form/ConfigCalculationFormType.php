@@ -41,6 +41,12 @@ class ConfigCalculationFormType extends AbstractType
                     'label_attr' => ['class' => 'checkbox-switch'],
                     'help' => 'Es können jedem Spielort ein oder mehrere verantwortliche Clowns zugeordnet werden. Bei der Berechnung wird versucht als ersten Clown immer einen verantwortlichen Clown zu benennen. Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.',
                 ])
+                ->add('featureAvoidOnlyMenActive', CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'Feature “Männerregelung”',
+                    'label_attr' => ['class' => 'checkbox-switch'],
+                    'help' => 'Es wird bei der Berechnung vermieden, dass zwei männliche Clowns zusammen eingeteilt werden.',
+                ])
                 ->add('pointsPerMissingPerson', IntegerType::class, [
                     'required' => true,
                     'label' => 'Punkte pro fehlender Zuordnung',
