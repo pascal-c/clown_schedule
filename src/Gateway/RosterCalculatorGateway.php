@@ -128,6 +128,7 @@ class RosterCalculatorGateway
                 'pointsPerMaxPerWeekExceeded' => $config->getPointsPerMaxPerWeek(),
                 'pointsPerPersonNotInTeam' => $config->getPointsPerPersonNotInTeam(),
             ],
+            'avoidOnlyMen' => $config->isFeatureAvoidOnlyMenActive(),
         ];
     }
 

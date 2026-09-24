@@ -80,6 +80,9 @@ class Config
     #[ORM\Column(options: ['default' => false])]
     private ?bool $teamCanAssignPlayingClowns = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $featureAvoidOnlyMen = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -343,6 +346,18 @@ class Config
     public function setTeamCanAssignPlayingClowns(bool $teamCanAssignPlayingClowns): static
     {
         $this->teamCanAssignPlayingClowns = $teamCanAssignPlayingClowns;
+
+        return $this;
+    }
+
+    public function isfeatureAvoidOnlyMenActive(): bool
+    {
+        return $this->featureAvoidOnlyMen;
+    }
+
+    public function setfeatureAvoidOnlyMenActive(bool $featureAvoidOnlyMen): static
+    {
+        $this->featureAvoidOnlyMen = $featureAvoidOnlyMen;
 
         return $this;
     }

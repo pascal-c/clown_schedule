@@ -63,6 +63,20 @@ class ConfigCalculationCest extends AbstractCest
         $I->dontSeeCheckboxIsChecked('Feature “Max. Spielanzahl pro Woche”');
     }
 
+    public function featureAvoidOnlyMen(AdminTester $I): void
+    {
+        $I->loginAsAdmin();
+
+        $I->click('Einstellungen');
+        $I->click('Spielplanberechnung', '.nav');
+
+        $I->checkOption('Feature “Männerregelung”');
+        $I->click('speichern');
+
+        $I->see('Yep! Einstellungen wurden gespeichert.', '.alert-success');
+        $I->seeCheckboxIsChecked('Feature “Männerregelung”');
+    }
+
     public function featureVenuePreferences(AdminTester $I): void
     {
         $I->loginAsAdmin();

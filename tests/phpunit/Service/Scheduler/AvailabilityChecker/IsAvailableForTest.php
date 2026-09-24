@@ -7,14 +7,17 @@ namespace App\Tests\Service\Scheduler\AvailabilityChecker;
 use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\ClownAvailabilityTime;
+use App\Entity\Config;
 use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
 use App\Entity\Venue;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
+use Codeception\Stub;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
@@ -27,16 +30,19 @@ final class IsAvailableForTest extends TestCase
     private PlayDateRepository&MockObject $playDateRepository;
     private SubstitutionRepository&MockObject $substitutionRepository;
     private MaxPlaysReachedChecker&MockObject $maxPlaysReachedChecker;
+    private ConfigRepository&MockObject $configRepository;
 
     public function setUp(): void
     {
         $this->playDateRepository = $this->createMock(PlayDateRepository::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->maxPlaysReachedChecker = $this->createMock(MaxPlaysReachedChecker::class);
+        $this->configRepository = $this->createMock(ConfigRepository::class);
         $this->availabilityChecker = new AvailabilityChecker(
             $this->playDateRepository,
             $this->substitutionRepository,
             $this->maxPlaysReachedChecker,
+            $this->configRepository,
         );
     }
 
@@ -50,6 +56,7 @@ final class IsAvailableForTest extends TestCase
         ?Clown $blockedClown = null,
         bool $maxPlaysMonthReached = false,
         bool $maxPlaysDayReached = false,
+        bool $isFeatureAvoidOnlyMenActive = true,
     ): void {
         $playDate = self::buildPlayDate('am', (new Clown())->setGender($firstClownGender), $blockedClown ?? new Clown());
         $this->playDateRepository
@@ -71,6 +78,15 @@ final class IsAvailableForTest extends TestCase
             ->method('maxPlaysDayReached')
             ->with($this->equalTo(new DateTimeImmutable('2022-04-01')), $clownAvailability)
             ->willReturn($maxPlaysDayReached);
+        $this->configRepository
+            ->expects($this->atMost(1))
+            ->method('find')
+            ->willReturn(Stub::make(
+                Config::class,
+                [
+                    'isFeatureAvoidOnlyMenActive' => $isFeatureAvoidOnlyMenActive,
+                ]
+            ));
 
         $result = $this->availabilityChecker->isAvailableFor($playDate, $clownAvailability);
         $this->assertSame($expectedResult, $result);
@@ -130,6 +146,12 @@ final class IsAvailableForTest extends TestCase
                 'firstClownGender' => 'male',
                 'expectedResult' => false,
             ],
+            'with two males but feature avoidOnlyMen not active' => [
+                'clownAvailability' => self::buildClownAvailability('yes', gender: 'male'),
+                'firstClownGender' => 'male',
+                'isFeatureAvoidOnlyMenActive' => false,
+                'expectedResult' => true,
+            ],
             'when this clown is blocked' => [
                 'clownAvailability' => $clownAvailability,
                 'blockedClown' => $clownAvailability->getClown(),
@@ -167,6 +189,15 @@ final class IsAvailableForTest extends TestCase
             ->method('maxPlaysDayReached')
             ->with($this->equalTo(new DateTimeImmutable('2022-04-01')), $clownAvailability)
             ->willReturn($maxPlaysDayReached);
+        $this->configRepository
+            ->expects($this->atMost(1))
+            ->method('find')
+            ->willReturn(Stub::make(
+                Config::class,
+                [
+                    'isFeatureAvoidOnlyMenActive' => true,
+                ]
+            ));
 
         $result = $this->availabilityChecker->isAvailableForSubstitution($substitution, $clownAvailability);
         $this->assertSame($expectedResult, $result);

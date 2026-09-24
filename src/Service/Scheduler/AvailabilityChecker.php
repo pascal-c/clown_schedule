@@ -6,6 +6,7 @@ use App\Entity\Clown;
 use App\Entity\ClownAvailability;
 use App\Entity\PlayDate;
 use App\Entity\Venue;
+use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
@@ -18,6 +19,7 @@ class AvailabilityChecker
         private PlayDateRepository $playDateRepository,
         private SubstitutionRepository $substitutionRepository,
         private MaxPlaysReachedChecker $maxPlaysReachedChecker,
+        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -52,7 +54,7 @@ class AvailabilityChecker
 
     private function onlyMen(PlayDate $playDate, ClownAvailability $clownAvailability): bool
     {
-        if (1 != $playDate->getPlayingClowns()->count()) {
+        if (!$this->configRepository->find()->isFeatureAvoidOnlyMenActive() || 1 != $playDate->getPlayingClowns()->count()) {
             return false;
         }
 
