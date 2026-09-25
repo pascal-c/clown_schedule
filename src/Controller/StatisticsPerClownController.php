@@ -117,8 +117,8 @@ class StatisticsPerClownController extends AbstractProtectedController
     {
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month);
-        $playDates = $this->playDateRepository->confirmedRegularByMonth($month);
-        $otherDates = $this->playDateRepository->confirmedNonRegularByMonth($month);
+        $playDates = $this->playDateRepository->confirmedCalculatableByMonth($month);
+        $otherDates = $this->playDateRepository->confirmedNonCalculatableByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
 
