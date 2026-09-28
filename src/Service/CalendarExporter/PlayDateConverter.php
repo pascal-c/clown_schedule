@@ -42,6 +42,11 @@ class PlayDateConverter
 
     public function getDescription(PlayDate $date): string
     {
+        return $date->isPlayDate() ? $this->getDescriptionForPlayDate($date) : $this->getDescriptionForTraining($date);
+    }
+
+    private function getDescriptionForPlayDate(PlayDate $date): string
+    {
         $substitutionClowns = array_filter(array_map(
             fn (Substitution $substitution): ?Clown => $substitution->getSubstitutionClown(),
             $this->substitutionRepository->findByTimeSlotPeriod($date),
@@ -63,7 +68,22 @@ class PlayDateConverter
             "Spielzeit: {$date->getPlayTimeFrom()?->format('H:i')}-{$date->getPLayTimeTo()?->format('H:i')}\n".
             ($date->getComment() ? "Kommentar: {$date->getComment()}" : '')
         ;
+    }
 
+    private function getDescriptionForTraining(PlayDate $date): string
+    {
+        $clowns = implode(
+            ', ',
+            $date->getPlayingClowns()->map(fn (Clown $clown): string => $clown->getName())->toArray()
+        );
+
+        return
+            "Teilnehmende: $clowns\n".
+            "Tageszeit: {$this->translator->trans($date->getDaytime())}\n".
+            "Treffen: {$date->getMeetingTime()?->format('H:i')}\n".
+            "Zeitraum: {$date->getPlayTimeFrom()?->format('H:i')}-{$date->getPLayTimeTo()?->format('H:i')}\n".
+            ($date->getComment() ? "Kommentar: {$date->getComment()}" : '')
+        ;
     }
 
     public function getOccurence(PlayDate $date): Occurrence

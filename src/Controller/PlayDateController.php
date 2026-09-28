@@ -119,7 +119,7 @@ class PlayDateController extends AbstractProtectedController
                 ->add(
                     'unregister',
                     SubmitType::class,
-                    ['label' => 'Vom Training abmelden', 'attr' => ['class' => 'btn-danger']]
+                    ['label' => 'abmelden', 'attr' => ['class' => 'btn-danger']]
                 )
                 ->setAction($this->generateUrl('training_unregister', ['id' => $playDate->getId()]))
                 ->getForm();
@@ -128,7 +128,7 @@ class PlayDateController extends AbstractProtectedController
                 ->add(
                     'register',
                     SubmitType::class,
-                    ['label' => 'Zum Training anmelden'],
+                    ['label' => 'Zum diesem Termin anmelden'],
                 )
                 ->setAction($this->generateUrl('training_register', ['id' => $playDate->getId()]))
                 ->getForm();
