@@ -40,7 +40,7 @@
         "symfony/serializer": "^8.0",
         "symfony/string": "^8.0",
         "symfony/translation": "^8.0",
-        "symfony/twig-bundle": "^8.0",
+        "symfony/twig-bundle": "^8.1",
         "symfony/ux-twig-component": "^2.30",
         "symfony/validator": "^8.0",
         "symfony/web-link": "^8.0",
