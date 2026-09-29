@@ -56,7 +56,8 @@ class ShowTrainingCest extends AbstractCest
         $I->see('Toller Workshop', Locator::contains('table tr', text: 'Wo'));
         $I->see('15.01.2124 nachmittags', Locator::contains('table tr', text: 'Wann'));
         $I->see('14:45', Locator::contains('table tr', text: 'Treffen'));
-        $I->see('15:30 - 17:30', Locator::contains('table tr', text: 'Spielzeit'));
-        $I->see('Hannah | Uwe', Locator::contains('table tr', text: 'Spielende Clowns'));
+        $I->see('15:30 - 17:30', Locator::contains('table tr', text: 'Zeitraum'));
+        $I->see('Hannah | Uwe', Locator::contains('table tr', text: 'Teilnehmende'));
+        $I->dontSee('Springer');
     }
 }

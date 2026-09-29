@@ -42,12 +42,12 @@ class RegisterForTrainingCest extends AbstractCest
         $I->amOnPage('/play_dates/'.$this->playDateId);
         $I->click('Zum diesem Termin anmelden');
         $I->see('Du bist jetzt für dieses Training / Team-Treffen angemeldet.');
-        $I->see('Emilio', Locator::contains('table tr', text: 'Spielende Clowns'));
+        $I->see('Emilio', Locator::contains('table tr', text: 'Teilnehmende'));
 
         $I->amGoingTo('unregister from the training');
         $I->click('abmelden');
         $I->see('Du bist jetzt für das Training / Team-Treffen abgemeldet.');
-        $I->dontSee('Emilio', Locator::contains('table tr', text: 'Spielende Clowns'));
+        $I->dontSee('Emilio', Locator::contains('table tr', text: 'Teilnehmende'));
     }
 
     public function testWithPastPlayDate(FunctionalTester $I): void
