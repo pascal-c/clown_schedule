@@ -72,6 +72,10 @@ final class PlayDateTest extends TestCase
         $playDate->setType(PlayDateType::SPECIAL);
         $this->assertSame(PlayDateType::SPECIAL, $playDate->getType());
         $this->assertTrue($playDate->isSpecial());
+
+        $playDate->setType(PlayDateType::OTHER);
+        $this->assertSame(PlayDateType::OTHER, $playDate->getType());
+        $this->assertTrue($playDate->isOther());
     }
 
     public function testGetFee(): void
@@ -87,8 +91,33 @@ final class PlayDateTest extends TestCase
         $venue->addFee($venueFee = (new Fee())->setValidFrom($date->modify('-1 day')));
         $this->assertSame($venueFee, $playDate->getFee());
 
+        $playDate->setType(PlayDateType::SPECIAL);
+        $this->assertNull($playDate->getFee());
+
         $playDate->setFee($playDateFee = new Fee());
         $this->assertSame($playDateFee, $playDate->getFee());
+
+        $playDate->setType(PlayDateType::REGULAR);
+        $this->assertSame($playDateFee, $playDate->getFee());
+    }
+
+    public function testHasVenueFee(): void
+    {
+        $date = new DateTimeImmutable('2024-11-06');
+        $playDate = (new PlayDate())->setDate($date);
+        $this->assertFalse($playDate->hasVenueFee());
+
+        $fee = (new Fee())->setValidFrom($date->modify('-1 day'));
+        $venue = (new Venue())->addFee($fee);
+        $playDate->setVenue($venue);
+        $this->assertFalse($playDate->hasVenueFee());
+
+        // Add an ID to the fee to simulate it being persisted
+        $venue->addFee($fee->setId(1));
+        $this->assertTrue($playDate->hasVenueFee());
+
+        $playDate->setType(PlayDateType::SPECIAL);
+        $this->assertFalse($playDate->hasVenueFee());
     }
 
     public function testIsPaid(): void
@@ -98,6 +127,9 @@ final class PlayDateTest extends TestCase
         $this->assertTrue($playDate->isPaid());
 
         $playDate->setType(PlayDateType::SPECIAL);
+        $this->assertTrue($playDate->isPaid());
+
+        $playDate->setType(PlayDateType::OTHER);
         $this->assertTrue($playDate->isPaid());
 
         $playDate->setType(PlayDateType::TRAINING);

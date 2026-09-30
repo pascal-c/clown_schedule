@@ -195,9 +195,14 @@ class PlayDate implements TimeSlotPeriodInterface
         return PlayDateType::SPECIAL === $this->getType();
     }
 
+    public function isOther(): bool
+    {
+        return PlayDateType::OTHER === $this->getType();
+    }
+
     public function isPaid(): bool
     {
-        return $this->isRegular() || $this->isSpecial();
+        return $this->isRegular() || $this->isSpecial() || $this->isOther();
     }
 
     public function isPlayDate(): bool
@@ -374,7 +379,7 @@ class PlayDate implements TimeSlotPeriodInterface
 
     public function getVenueFee(): ?Fee
     {
-        return $this->getVenue()?->getFeeFor($this->getDate());
+        return $this->isRegular() ? $this->getVenue()?->getFeeFor($this->getDate()) : null;
     }
 
     public function hasVenueFee(): bool

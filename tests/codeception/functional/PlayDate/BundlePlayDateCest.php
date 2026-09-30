@@ -28,13 +28,13 @@ class BundlePlayDateCest extends AbstractCest
         );
         $this->playDateFactory->create(
             type: PlayDateType::SPECIAL,
-            title: 'Sondertermin 1',
+            title: 'Zusatztermin',
             date: new DateTimeImmutable('2036-01-11'),
             daytime: TimeSlotPeriodInterface::PM,
         );
         $this->playDateFactory->create(
-            type: PlayDateType::SPECIAL,
-            title: 'Sondertermin 2',
+            type: PlayDateType::OTHER,
+            title: 'Sonstiger Termin',
             date: new DateTimeImmutable('2036-01-12'),
             daytime: TimeSlotPeriodInterface::ALL,
         );
@@ -56,19 +56,19 @@ class BundlePlayDateCest extends AbstractCest
         $I->dontSee('gebündelt mit');
         $I->click('Spieltermine bündeln');
         $I->dontSee('Training');
-        $I->checkMultipleOption('Spieltermine', ['Sondertermin 1', 'Sondertermin 2']);
+        $I->checkMultipleOption('Spieltermine', ['Zusatztermin', 'Sonstiger Termin']);
         $I->click('speichern');
         $I->see('Die Spieltermine wurden gebündelt. Gut gemacht!', '.alert-success');
 
-        $I->see('11.01.2036 Sondertermin 1 12.01.2036 Sondertermin 2', Locator::contains('table tr', text: 'gebündelt mit'));
+        $I->see('11.01.2036 Zusatztermin 12.01.2036 Sonstiger Termin', Locator::contains('table tr', text: 'gebündelt mit'));
 
         // test assigning clowns to bundled play date will assign them to all play dates in the bundle
         $I->click('Zuordnung bearbeiten');
         $I->checkMultipleOption('Clowns', ['Claudine', 'Bobo']);
         $I->click('Zuordnung speichern');
         $I->see('Clowns wurden zugeordnet. Tip top!', '.alert-success');
-        $I->see('Claudine | Bobo', Locator::contains('div.lh-sm', text: 'Sondertermin 1'));
-        $I->see('Claudine | Bobo', Locator::contains('div.lh-sm', text: 'Sondertermin 2'));
+        $I->see('Claudine | Bobo', Locator::contains('div.lh-sm', text: 'Zusatztermin'));
+        $I->see('Claudine | Bobo', Locator::contains('div.lh-sm', text: 'Sonstiger Termin'));
         $I->see('Claudine | Bobo', Locator::contains('div.lh-sm', text: 'Seniorenheim am See'));
     }
 }
