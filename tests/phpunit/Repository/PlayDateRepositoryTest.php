@@ -104,34 +104,34 @@ final class PlayDateRepositoryTest extends KernelTestCase
         $this->assertEqualsCanonicalizing([$one, $two], $result);
     }
 
-    public function testRegularByMonth(): void
+    public function testCalculatableByMonth(): void
     {
         $month = Month::build('2024-02');
 
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-01-31')); // wrong month
         $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01')); // correct!
-        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::SPECIAL); // wrong type!
+        $two = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-29'), type: PlayDateType::SPECIAL); // correct!
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-29'), type: PlayDateType::TRAINING); // wrong type!
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-03-01')); // wrong month
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), status: PlayDate::STATUS_MOVED); // wrong status
 
-        $result = $this->repository->confirmedRegularByMonth($month);
-        $this->assertSame([$one], $result);
+        $result = $this->repository->confirmedCalculatableByMonth($month);
+        $this->assertSame([$one, $two], $result);
     }
 
-    public function testNonRegularByMonth(): void
+    public function testNonCalculatableByMonth(): void
     {
         $month = Month::build('2024-02');
 
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-01-31')); // wrong month
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::REGULAR); // wrong type
-        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::SPECIAL); // correct!
-        $two = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-29'), type: PlayDateType::TRAINING); // correct
+        $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), type: PlayDateType::SPECIAL); // wrong type
+        $one = $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-29'), type: PlayDateType::TRAINING); // correct
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-03-01')); // wrong month
         $this->playDateFactory->create(date: new DateTimeImmutable('2024-02-01'), status: PlayDate::STATUS_MOVED); // wrong status
 
-        $result = $this->repository->confirmedNonRegularByMonth($month);
-        $this->assertSame([$one, $two], $result);
+        $result = $this->repository->confirmedNonCalculatableByMonth($month);
+        $this->assertSame([$one], $result);
     }
 
     public function testFindByTimeSlotPeriodWithDaytimeAM(): void

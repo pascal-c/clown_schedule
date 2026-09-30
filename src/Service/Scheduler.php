@@ -41,8 +41,8 @@ class Scheduler
     {
         $timeSlotPeriods = [];
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);
-        $playDates = $this->playDateRepository->confirmedRegularByMonth($month);
-        $otherDates = $this->playDateRepository->confirmedNonRegularByMonth($month);
+        $playDates = $this->playDateRepository->confirmedCalculatableByMonth($month);
+        $otherDates = $this->playDateRepository->confirmedNonCalculatableByMonth($month);
         if (!$keepExistingAssignments) {
             $this->removeClownAssignments($playDates, $clownAvailabilities, $month);
         }
@@ -86,7 +86,7 @@ class Scheduler
             return null;
         }
 
-        $playDates = $this->playDateRepository->confirmedRegularByMonth($month);
+        $playDates = $this->playDateRepository->confirmedCalculatableByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month, indexedByClown: true);
         $substitutionTimeSlots = $this->substitutionRepository->byMonth($month);
 

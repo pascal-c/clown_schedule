@@ -117,10 +117,10 @@ class PlayDateRepository extends AbstractRepository
     /**
      * @return PlayDate[]
      */
-    public function confirmedRegularByMonth(Month $month): array
+    public function confirmedCalculatableByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
-            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."'")
+            ->andWhere("pd.type = '".PlayDateType::REGULAR->value."' OR pd.type = '".PlayDateType::SPECIAL->value."'")
             ->andWhere('pd.status = :status_confirmed')
             ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->getQuery()
@@ -131,10 +131,10 @@ class PlayDateRepository extends AbstractRepository
     /**
      * @return PlayDate[]
      */
-    public function confirmedNonRegularByMonth(Month $month): array
+    public function confirmedNonCalculatableByMonth(Month $month): array
     {
         return $this->queryByMonth($month)
-            ->andWhere("pd.type != '".PlayDateType::REGULAR->value."'")
+            ->andWhere("pd.type != '".PlayDateType::REGULAR->value."' AND pd.type != '".PlayDateType::SPECIAL->value."'")
             ->andWhere('pd.status = :status_confirmed')
             ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
             ->getQuery()
@@ -253,7 +253,7 @@ class PlayDateRepository extends AbstractRepository
             ->getResult();
     }
 
-    /** @return [PlayDate] */
+    /** @return array<PlayDate> */
     public function findConfirmedByTimeSlotPeriod(TimeSlotPeriodInterface $timeSlotPeriod): array
     {
         return $this->doctrineRepository->createQueryBuilder('pd')
