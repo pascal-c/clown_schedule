@@ -3,10 +3,12 @@
 namespace App\Form\PlayDate;
 
 use App\Entity\PlayDate;
+use App\Repository\ConfigRepository;
 use App\Value\PlayDateType;
 use App\Value\TimeSlotPeriodInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -18,6 +20,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TrainingFormType extends AbstractType
 {
+    public function __construct(private ConfigRepository $configRepository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -58,6 +64,11 @@ class TrainingFormType extends AbstractType
                 'required' => false,
                 'minutes' => [0, 15, 30, 45],
             ])
+            ->add('automaticAssignment', CheckboxType::class, [
+                'label' => 'automatische Zordnung',
+                'required' => false,
+                'help' => 'Wenn aktiviert, werden Clowns im Rahmen der Berechnung automatisch zugeordnet, wenn sie verfügbar sind.',
+            ])
             ->add(
                 $builder
                     ->create('type', HiddenType::class)
@@ -68,6 +79,10 @@ class TrainingFormType extends AbstractType
             )
             ->add('save', SubmitType::class, ['label' => 'Termin speichern'])
         ;
+
+        if (!$this->configRepository->isFeatureCalculationActive()) {
+            $builder->remove('automaticAssignment');
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
