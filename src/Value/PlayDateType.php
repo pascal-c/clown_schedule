@@ -9,6 +9,7 @@ enum PlayDateType: string
     case REGULAR = 'regular';
     case SPECIAL = 'special';
     case TRAINING = 'training';
+    case OTHER = 'other';
 
     public function isRegular(): bool
     {

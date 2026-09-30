@@ -10,7 +10,6 @@ use App\Value\TimeSlotPeriodInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -20,7 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SpecialPlayDateFormType extends AbstractType
+class OtherDateFormType extends AbstractType
 {
     public function __construct(private PlayDateGuard $playDateGuard, private TranslatorInterface $translator)
     {
@@ -82,10 +81,6 @@ class SpecialPlayDateFormType extends AbstractType
                 'minutes' => [0, 15, 30, 45],
                 'help' => $helpText,
             ])
-            ->add('isSuper', CheckboxType::class, [
-                'label' => 'ist ein Super-Spieltermin? (nur relevant für Statistik)',
-                'required' => false,
-            ])
             ->add(
                 $builder
                     ->create('type', ChoiceType::class, [
@@ -102,7 +97,7 @@ class SpecialPlayDateFormType extends AbstractType
                         fn (string $type): PlayDateType => PlayDateType::from($type),
                     ))
             )
-            ->add('save', SubmitType::class, ['label' => 'Zusatztermin speichern'])
+            ->add('save', SubmitType::class, ['label' => 'Termin speichern'])
         ;
     }
 

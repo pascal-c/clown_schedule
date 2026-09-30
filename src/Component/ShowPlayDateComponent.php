@@ -40,13 +40,13 @@ final class ShowPlayDateComponent
         $schedule = $this->scheduleRepository->find($month);
         $this->colorClass = $this->getColorClass($playDate, $schedule);
         $this->showClowns = $this->currentClown->isAdmin() || is_null($schedule) || $schedule?->isCompleted();
-        $this->showNotEnonoughClownsWarning = $schedule && $playDate->getPlayingClowns()->count() < 2;
+        $this->showNotEnonoughClownsWarning = $schedule && $playDate->isPlayDate() && $playDate->getPlayingClowns()->count() < 2;
         $this->canAssign = $this->playDateGuard->canAssign($playDate);
     }
 
     private function getColorClass(PlayDate $playDate, ?Schedule $schedule): string
     {
-        if ($playDate->isSpecial()) {
+        if ($playDate->isOther()) {
             return 'text-secondary';
         } elseif ($playDate->isTraining()) {
             return 'text-secondary text-opacity-75';

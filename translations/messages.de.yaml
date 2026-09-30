@@ -19,6 +19,7 @@ move: 'Termin verschoben'
 regular: 'Spieltermin (regulär)'
 special: 'Zusatztermin'
 training: 'Training / Team-Treffen'
+other: 'Sonstiger Termin'
 
 First name: 'Vorname'
 Last name: 'Nachname'

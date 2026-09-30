@@ -10,7 +10,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>{{ playDate.training ? "Was" : "Wo" }}</th>
+                <th>{{ not playDate.isPlayDate ? "Was" : "Wo" }}</th>
                 <td>
                     {% if playDate.venue %}
                         <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.name }}</a>
@@ -94,17 +94,14 @@
                         {% endif %}
                     </td>
                 </tr>
-                <tr>
-                    <th>Kilometergeld</th>
-                    <td>
-                    {% if playDate.fee %}
-                            {{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}
-                        {% else %}    
-                            ?
-                        {% endif %}
-                        
-                    </td>
-                </tr>
+                {% if playDate.fee %}
+                    <tr>
+                        <th>Kilometergeld</th>
+                        <td>
+                                {{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}
+                        </td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <th>wiederkehrend</th>
                     <td>

@@ -30,10 +30,10 @@ class CalendarCest extends AbstractCest
 
         // click to page
         $I->click('Spielplan', '.nav');
-        $I->click('Kalender Export', '.nav');
+        $I->click('Kalender abonnieren', '.nav');
 
         // test active navigation and headline
-        $I->see('Kalender Export', '.nav .nav-link.active');
+        $I->see('Kalender abonnieren', '.nav .nav-link.active');
         $I->see('Kalender Download Nov. 2024', 'h5');
 
         // test download personal calendar
@@ -59,10 +59,10 @@ class CalendarCest extends AbstractCest
 
         // click to page
         $I->click('Spielplan', '.nav');
-        $I->click('Kalender Export', '.nav');
+        $I->click('Kalender abonnieren', '.nav');
 
         // test active navigation and headline
-        $I->see('Kalender Export', '.nav .nav-link.active');
+        $I->see('Kalender abonnieren', '.nav .nav-link.active');
         $I->see('Kalender Abonnement', 'h5');
 
         // test create subscription url for personal calendar

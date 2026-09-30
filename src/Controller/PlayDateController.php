@@ -11,6 +11,7 @@ use App\Form\PlayDate\AssignClownsFormType;
 use App\Form\PlayDate\BundleFormType;
 use App\Form\PlayDate\CancelFormType;
 use App\Form\PlayDate\MoveFormType;
+use App\Form\PlayDate\OtherDateFormType;
 use App\Form\PlayDate\RegularPlayDateFormType;
 use App\Form\PlayDate\SpecialPlayDateFormType;
 use App\Form\PlayDate\TrainingFormType;
@@ -90,6 +91,7 @@ class PlayDateController extends AbstractProtectedController
             PlayDateType::REGULAR => RegularPlayDateFormType::class,
             PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
             PlayDateType::TRAINING => TrainingFormType::class,
+            PlayDateType::OTHER => OtherDateFormType::class,
         };
         $form = $this->createForm($formType, $playDate);
 
@@ -303,6 +305,7 @@ class PlayDateController extends AbstractProtectedController
             PlayDateType::REGULAR => RegularPlayDateFormType::class,
             PlayDateType::SPECIAL => SpecialPlayDateFormType::class,
             PlayDateType::TRAINING => TrainingFormType::class,
+            PlayDateType::OTHER => OtherDateFormType::class,
         };
         $editForm = $this->createForm($editFormType, $playDate, ['method' => 'PUT']);
 

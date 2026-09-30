@@ -43,6 +43,13 @@ class Fee
         return $this->id;
     }
 
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getVenue(): ?Venue
     {
         return $this->venue;
