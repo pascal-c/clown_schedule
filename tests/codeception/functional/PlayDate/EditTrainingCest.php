@@ -49,7 +49,7 @@ class EditTrainingCest extends AbstractCest
         $I->click('Workshop (ganztags)', Locator::contains('.row', text: '13. Mai'));
         $I->see('Training / Team-Treffen', 'h4');
         $I->see('09:30', Locator::contains('table tr', text: 'Treffen'));
-        $I->see('10:00 - 15:00', Locator::contains('table tr', text: 'Spielzeit'));
+        $I->see('10:00 - 15:00', Locator::contains('table tr', text: 'Zeitraum'));
 
     }
 }

@@ -14,6 +14,7 @@ use App\Repository\ConfigRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\CalendarExporter\PlayDateConverter;
 use App\Repository\SubstitutionRepository;
+use App\Value\PlayDateType;
 use App\Value\ScheduleStatus;
 use App\Value\TimeSlotPeriodInterface;
 use DateTimeImmutable;
@@ -65,7 +66,7 @@ final class PlayDateConverterTest extends TestCase
         $this->assertSame('Auftritt VERSCHOBEN', $this->converter->getName($playDate));
     }
 
-    public function testGetDescription(): void
+    public function testGetDescriptionForPlayDate(): void
     {
         $playDate = (new PlayDate())
             ->setDaytime(TimeSlotPeriodInterface::ALL)
@@ -88,6 +89,29 @@ final class PlayDateConverterTest extends TestCase
         $this->assertStringContainsString('Tageszeit: geht den ganzen Tag', $description);
         $this->assertStringContainsString('Treffen: 12:45', $description);
         $this->assertStringContainsString('Spielzeit: 13:15-15:15', $description);
+        $this->assertStringContainsString('Kommentar: Das wird schön!', $description);
+    }
+
+    public function testGetDescriptionForTraining(): void
+    {
+        $playDate = (new PlayDate())
+            ->setDaytime(TimeSlotPeriodInterface::ALL)
+            ->setType(PlayDateType::TRAINING)
+            ->setComment('Das wird schön!')
+            ->addPlayingClown((new Clown())->setName('Antonia'))
+            ->addPlayingClown((new Clown())->setName('Biff'))
+            ->setMeetingTime(new DateTimeImmutable('12:45'))
+            ->setPlayTimeFrom(new DateTimeImmutable('13:15'))
+            ->setPlayTimeTo(new DateTimeImmutable('15:15'))
+        ;
+        $this->translator->method('trans')->with('all')->willReturn('geht den ganzen Tag');
+
+        $description = $this->converter->getDescription($playDate);
+
+        $this->assertStringContainsString('Teilnehmende: Antonia, Biff', $description);
+        $this->assertStringContainsString('Tageszeit: geht den ganzen Tag', $description);
+        $this->assertStringContainsString('Treffen: 12:45', $description);
+        $this->assertStringContainsString('Zeitraum: 13:15-15:15', $description);
         $this->assertStringContainsString('Kommentar: Das wird schön!', $description);
     }
 

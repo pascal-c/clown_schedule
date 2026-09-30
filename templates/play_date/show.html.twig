@@ -10,7 +10,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Wo</th>
+                <th>{{ playDate.training ? "Was" : "Wo" }}</th>
                 <td>
                     {% if playDate.venue %}
                         <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.name }}</a>
@@ -55,13 +55,13 @@
                 </td>
             </tr>
             <tr>
-                <th>Spielzeit</th>
+                <th>{{ playDate.isPlayDate ? "Spielzeit" : "Zeitraum" }}</th>
                 <td>
                     {{ playDate.playTimeFrom is not empty ? playDate.playTimeFrom|date('H:i') }} - {{ playDate.playTimeTo is not empty ? playDate.playTimeTo|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>Spielende Clowns</th>
+                <th>{{ playDate.isPlayDate ? "Spielende Clowns" : "Teilnehmende" }}</th>
                 <td>
                     {{ playDate.playingClowns|map(clown => clown.name)|join(' | ') }}
                     {% if can_assign %}
@@ -69,12 +69,14 @@
                     {% endif %}
                 </td>
             </tr>
-            <tr>
-                <th>Springer:in</th>
-                <td>
-                    {{ playDate.substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
-                </td>
-            </tr>
+            {% if playDate.isPlayDate %}
+                <tr>
+                    <th>Springer:in</th>
+                    <td>
+                        {{ playDate.substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
+                    </td>
+                </tr>
+            {% endif %}
             {% if playDate.isPaid %}
                 <tr>
                     <th>Honorar</th>
