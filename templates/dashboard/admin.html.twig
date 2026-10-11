@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Büro-Dashboard{% endblock %}
+
+{% block content %}
+    {{ component('dashboard/dates_with_missing_clowns', {currentClown: currentClown, asClown: false}) }}
+    {{ component('dashboard/open_invoices_for_admin') }}
+    {{ component('dashboard/issued_invoices_for_admin') }}
+{% endblock %}

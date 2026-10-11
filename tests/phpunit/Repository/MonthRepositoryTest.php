@@ -78,4 +78,15 @@ final class MonthRepositoryTest extends KernelTestCase
         $month = $this->monthRepository->find($session, '2022-07');
         $this->assertSame('2022-07', $month->getKey());
     }
+
+    public function testCurrent()
+    {
+        $this->timeService
+            ->expects($this->once())
+            ->method('now')
+            ->willReturn(new DateTimeImmutable('2022-08-11 22:00:00'));
+
+        $month = $this->monthRepository->current();
+        $this->assertSame('2022-08', $month->getKey());
+    }
 }

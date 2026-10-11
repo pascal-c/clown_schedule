@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component;
+namespace App\Component\Dashboard;
 
 use App\Entity\Clown;
 use App\Entity\PlayDate;
@@ -10,7 +10,7 @@ use App\Repository\SubstitutionRepository;
 use App\Value\TimeSlotInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-#[AsTwigComponent('next_dates_per_clown')]
+#[AsTwigComponent('dashboard/next_dates_per_clown')]
 class NextDatesPerClownComponent
 {
     public Clown $currentClown;

@@ -27,6 +27,7 @@ class MainNavigationComponent
         $this->navigationItems = array_filter(
             [
                 'dashboard' => ['label' => 'Dashboard', 'url' => $this->urlHelper->generate('dashboard')],
+                'dashboard_admin' => ['label' => 'Büro-Dashboard', 'url' => $this->urlHelper->generate('dashboard_admin'), 'show' => $this->currentClown?->isAdmin()],
                 'clown_constraints' => ['label' => 'Wünsche', 'url' => $this->urlHelper->generate('clown_constraints_index'), 'show' => $useCalcuation],
                 'play_date' => ['label' => 'Spielplan', 'url' => $this->urlHelper->generate('schedule')],
                 'statistics' => ['label' => 'Statistiken', 'url' => $statisticsUrl, 'show' => $useCalcuation || $this->currentClown?->isAdmin()],

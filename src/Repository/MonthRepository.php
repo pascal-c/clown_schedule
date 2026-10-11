@@ -27,4 +27,9 @@ class MonthRepository
 
         return Month::build($id);
     }
+
+    public function current(): Month
+    {
+        return Month::build($this->timeService->now()->format('Y-m'));
+    }
 }

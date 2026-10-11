@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component;
+namespace App\Component\Dashboard;
 
 use App\Entity\Clown;
 use App\Entity\Month;
@@ -16,7 +16,7 @@ use App\ViewController\PlayDateViewController;
 use DateTimeImmutable;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-#[AsTwigComponent('dates_with_missing_clowns')]
+#[AsTwigComponent('dashboard/dates_with_missing_clowns')]
 class DatesWithMissingClownsComponent
 {
     public Clown $currentClown;
@@ -34,16 +34,16 @@ class DatesWithMissingClownsComponent
     ) {
     }
 
-    public function mount(Clown $currentClown)
+    public function mount(Clown $currentClown, bool $asClown)
     {
         $this->currentClown = $currentClown;
-        $this->message = $this->message();
+        $this->message = $asClown ? null : $this->message();
         $this->until = $this->until();
 
         $playDates = $this->playDateRepository->futurePlayDatesWithMissingClowns($this->until);
         $playDates = array_filter(
             $playDates,
-            fn (PlayDate $date): bool => $this->playDateGuard->canAssign($date)
+            fn (PlayDate $date): bool => $asClown ? $this->playDateGuard->canAssignAsClown($date) : $this->playDateGuard->canAssign($date)
         );
         $this->dates = array_map(
             fn (PlayDate $playDate) => $this->playDateViewController->getPlayDateViewModel($playDate, $this->currentClown),
