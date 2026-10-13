@@ -53,4 +53,17 @@ final class InvoiceRepositoryTest extends KernelTestCase
         $this->assertCount(1, $result);
         $this->assertSame($invoice, $result[0]);
     }
+
+    public function testFindIssued()
+    {
+        $currentMonth = Month::build('2024-06');
+        $invoice = $this->invoiceFactory->create(month: $currentMonth->previous()->previous(), status: Invoice::STATUS_ISSUED); // correct
+        $this->invoiceFactory->create(month: $currentMonth->previous()->previous(), status: Invoice::STATUS_OPEN); // wrong status
+        $this->invoiceFactory->create(month: $currentMonth->previous(), status: Invoice::STATUS_PAID); // wrong status
+        $this->monthRepository->expects($this->never())->method($this->anything());
+
+        $result = $this->repository->findIssued();
+        $this->assertCount(1, $result);
+        $this->assertSame($invoice, $result[0]);
+    }
 }
