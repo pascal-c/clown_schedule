@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:create-invoices',
     description: 'create invoices for confirmed and paid play dates',
 )]
-class CreateInvoicesCommand 
+class CreateInvoicesCommand
 {
     public function __construct(
         private InvoiceService $service,

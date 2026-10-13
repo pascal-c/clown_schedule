@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     description: 'run all jobs that should be run every day for this application',
     help: 'this command can be run safely several times a day',
 )]
-class DailyJobsCommand 
+class DailyJobsCommand
 {
     public function __invoke(Application $application, InputInterface $input, OutputInterface $output): int
     {
@@ -28,7 +27,7 @@ class DailyJobsCommand
         ];
 
         foreach ($inputs as $commandInput) {
-            $io->writeln('run command ' . $commandInput);
+            $io->writeln('run command '.$commandInput);
             $commandInput->setInteractive(false);
             $application->doRun($commandInput, $output);
         }
