@@ -85,49 +85,8 @@ class DashboardController extends AbstractProtectedController
     #[Route('/dashboard-admin', name: 'dashboard_admin', methods: ['GET'])]
     public function dashboardAdmin(): Response
     {
-        $today = $this->timeService->today();
-        $currentMonth = new Month($today);
-        $nextMonth = $currentMonth->next();
-        $afterNextMonth = $nextMonth->next();
-        $nextMonthSchedule = $this->scheduleRepository->find($nextMonth);
-        $afterNextMonthSchedule = $this->scheduleRepository->find($afterNextMonth);
-        $currentClown = $this->getCurrentClown();
-        $nextMonthFilled = $this->clownAvailabilityRepository->find($nextMonth, $currentClown);
-        $afterNextMonthFilled = $this->clownAvailabilityRepository->find($afterNextMonth, $currentClown);
-        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && !$nextMonthSchedule && !$nextMonthFilled) {
-            $this->addFlash(
-                'danger',
-                sprintf(
-                    'Hey %s, Du musst DRINGEND noch Deine Wünsche für %s eintragen',
-                    $currentClown->getName(),
-                    $nextMonth->getLabel()
-                )
-            );
-        }
-        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && $today > $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule && !$afterNextMonthFilled) {
-            $this->addFlash(
-                'warning',
-                sprintf(
-                    'Hey %s, Du musst noch Deine Wünsche für %s eintragen',
-                    $currentClown->getName(),
-                    $afterNextMonth->getLabel()
-                )
-            );
-        }
-
         return $this->render('dashboard/admin.html.twig', [
-            'nextMonth' => $nextMonth,
-            'afterNextMonth' => $afterNextMonth,
-            'nextMonthSchedule' => $nextMonthSchedule,
-            'afterNextMonthSchedule' => $afterNextMonthSchedule,
-            'nextMonthFilled' => $nextMonthFilled,
-            'afterNextMonthFilled' => $afterNextMonthFilled,
-            'feedbackUrl' => $this->getParameter('app.feedback_url'),
             'active' => 'dashboard_admin',
-            'sentChangeRequests' => $this->playDateChangeRequestRepository->findSentRequestsWaiting($currentClown),
-            'receivedChangeRequests' => $this->playDateChangeRequestRepository->findReceivedRequestsWaiting($currentClown),
-            'showAvailabilityOverview' => $this->configRepository->isFeatureCalculationActive(),
-            'showChangeRequestsOverview' => $this->configRepository->isFeaturePlayDateChangeRequestsActive() && $currentClown->isActive(),
         ]);
     }
 }
