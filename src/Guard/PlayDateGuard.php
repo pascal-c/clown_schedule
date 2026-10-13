@@ -56,6 +56,11 @@ class PlayDateGuard
             return true;
         }
 
+        return $this->canAssignAsClown($playDate);
+    }
+
+    public function canAssignAsClown(PlayDate $playDate): bool
+    {
         if (!$this->configRepository->find()->teamCanAssignPlayingClowns()) {
             return false;
         }

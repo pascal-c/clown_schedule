@@ -44,3 +44,7 @@ on Thursday: 'am Donnerstag'
 on Friday: 'am Freitag'
 on Saturday: 'am Samstag'
 on Sunday: 'am Sonntag'
+
+invoice-status-open: 'Rechnung offen'
+invoice-status-issued: 'Rechnung gestellt'
+invoice-status-paid: 'Rechnung bezahlt'
