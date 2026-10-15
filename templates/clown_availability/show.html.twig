@@ -1,47 +1,47 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Wünsche{% endblock %}
+{% block title %}{{ 'Wünsche'|trans }}{% endblock %}
 
 {% block content %}
     {{ component('clown_constraints_navigation', { active: 'wishes'}) }}
-    <h4 class="pt-3">Wünsche {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
-    <a href="{{ path('clown_availability_index') }}" class="btn btn-light mb-3">alle anzeigen</a>
+    <h4 class="pt-3">{{ 'Wünsche'|trans }} {{ clown.name }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    <a href="{{ path('clown_availability_index') }}" class="btn btn-light mb-3">{{ 'alle anzeigen'|trans }}</a>
 
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_show', urlParams: {clownId: clown.id} }) }}
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
-                Gewünschte Anzahl Spiele pro Monat: <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
+                {{ 'Gewünschte Anzahl Spiele pro Monat:'|trans }} <strong>{{ clownAvailability.wishedPlaysMonth }}</strong>
             </div>
             <div class="col-sm-6">
-                Maximale Anzahl Spiele pro Monat: <strong>{{ clownAvailability.maxPlaysMonth }}</strong>
+                {{ 'Maximale Anzahl Spiele pro Monat:'|trans }} <strong>{{ clownAvailability.maxPlaysMonth }}</strong>
             </div>
         </div>
         <div class="row pb-3">
             <div class="col-sm-6">
-                Maximale Anzahl Spiele pro Tag: <strong>{{ clownAvailability.maxPlaysDay }}</strong>
+                {{ 'Maximale Anzahl Spiele pro Tag:'|trans }} <strong>{{ clownAvailability.maxPlaysDay }}</strong>
             </div>
             <div class="col-sm-6">
                 {% if showMaxPerWeek %}
-                    Gewünschte maximale Anzahl Spiele pro Woche: <strong>{{ clownAvailability.softMaxPlaysWeek }}</strong>
+                    {{ 'Gewünschte maximale Anzahl Spiele pro Woche:'|trans }} <strong>{{ clownAvailability.softMaxPlaysWeek }}</strong>
                 {% endif %}    
             </div>
         </div>
         {% if clownAvailability.additionalWishes is not empty %}
             <div class="row pb-3">
                 <div class="col">
-                    Weitere Wünsche/Anmerkungen: {{ clownAvailability.additionalWishes|nl2br }}
+                    {{ 'Weitere Wünsche/Anmerkungen:'|trans }} {{ clownAvailability.additionalWishes|nl2br }}
                 </div>
             </div>
         {% endif %}
 
-        <h4 class="pt-3">Verfügbarkeiten</h4>
-        <button type="button" class="btn btn-link mb-1 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine anzeigen</button>
-        <button type="button" class="btn btn-link mb-1 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">Spieltermine verstecken</button>
+        <h4 class="pt-3">{{ 'Verfügbarkeiten'|trans }}</h4>
+        <button type="button" class="btn btn-link mb-1 collapse show play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">{{ 'Spieltermine anzeigen'|trans }}</button>
+        <button type="button" class="btn btn-link mb-1 collapse play_dates" data-bs-target=".play_dates" data-bs-toggle="collapse">{{ 'Spieltermine verstecken'|trans }}</button>
 
         {{ include('clown_availability/_show_availabilities_in_schedule.html.twig') }}
     </div>
     <div class="container pt-3">
-        <a href="{{ path('clown_availability_edit', {clownId: clown.id, monthId: month.key}) }}">Wünsche bearbeiten</a>
+        <a href="{{ path('clown_availability_edit', {clownId: clown.id, monthId: month.key}) }}">{{ 'Wünsche bearbeiten'|trans }}</a>
     </div>
 {% endblock %}

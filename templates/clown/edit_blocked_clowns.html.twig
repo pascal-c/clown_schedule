@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Gesperrte Clowns für {{ clown.name }} bearbeiten</h4>
+    <h4 class="pt-3">{{ 'Gesperrte Clowns für %name% bearbeiten'|trans({'%name%': clown.name}) }}</h4>
 
     {{ form(form) }}
 {% endblock %}

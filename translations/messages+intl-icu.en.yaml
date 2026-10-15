@@ -1,0 +1,5 @@
+every.week: >-
+    {weeks, plural,
+        =1    {every week}
+        other {every # weeks}
+    }

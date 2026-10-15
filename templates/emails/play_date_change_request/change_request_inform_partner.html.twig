@@ -1,26 +1,25 @@
 <p>
-    Yippieh {{ clown.name }}!<br />
+    {{ 'Yippieh %name%!'|trans({'%name%': clown.name}) }}<br />
 </p>
 
 <p>
     {% if oldPartner %}
-        ich wollte Dir nur mitteilen, dass {{ oldPartner.name }} und {{ newPartner.name }} getauscht haben.
+        {{ 'ich wollte Dir nur mitteilen, dass %old% und %new% getauscht haben.'|trans({'%old%': oldPartner.name, '%new%': newPartner.name}) }}
     {% else %}
-        Gute Neuigkeiten! Du spielst mit {{ newPartner.name }}.
+        {{ 'Gute Neuigkeiten! Du spielst mit %name%.'|trans({'%name%': newPartner.name}) }}
     {% endif %}
 </p>
 
 <p>
-    Es geht um {{ playDate.date|date('d.m.Y') }} {{ playDate.name }}.
+    {{ 'Es geht um %date% %playDate%.'|trans({'%date%': playDate.date|date('d.m.Y'), '%playDate%': playDate.name}) }}
 </p>
 
 <p>
-    Du spielst dort jetzt mit {{ newPartner.name }}, statt mit {{ oldPartner ? oldPartner.name : 'niemandem' }}. 
-    Jetzt weißte Bescheid.
+    {{ 'Du spielst dort jetzt mit %new%, statt mit %old%. Jetzt weißte Bescheid.'|trans({'%new%': newPartner.name, '%old%': oldPartner ? oldPartner.name : 'niemandem'|trans}) }}
 </p>
 
 <p>
-    Viel Spaß!
+    {{ 'Viel Spaß!'|trans }}
     <br />
-    Deine Dich liebende Spielplan App
+    {{ 'Deine Dich liebende Spielplan App'|trans }}
 </p>

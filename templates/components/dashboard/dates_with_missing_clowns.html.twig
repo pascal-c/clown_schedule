@@ -1,17 +1,17 @@
 {% if dates|length > 0 or message is not empty %}
     <h4 class="pt-3">
-        Termine mit fehlender Besetzung 
+        {{ 'Termine mit fehlender Besetzung'|trans }}
         <span class="ms-2 text-danger">
             <i class="bi bi-exclamation-triangle"></i>
         </span>
     </h4>
-    <h6>Termine bis {{ until|date('d.m.Y')}}</h6>
+    <h6>{{ 'Termine bis'|trans }} {{ until|date('d.m.Y')}}</h6>
 {% endif %}
 
 {% if dates|length > 0 %}
     <table class="table">
         <thead>
-            <tr><th>Wann</th><th>Wo</th><th>Treffen</th><th>Spielzeit</th><th>Es spielen</th></tr>
+            <tr><th>{{ 'Wann'|trans }}</th><th>{{ 'Wo'|trans }}</th><th>{{ 'Treffen'|trans }}</th><th>{{ 'Spielzeit'|trans }}</th><th>{{ 'Es spielen'|trans }}</th></tr>
         </thead>
         <tbody>
             {% for date in dates %}
@@ -25,7 +25,7 @@
                     </td>
                     <td>
                         <a class="text-dark" href="{{ path('play_date_show', {id: date.id}) }}">{{ date.name }}</a>
-                        <span class="ms-2 text-danger" title="Es sind weniger als 2 Clowns für diesen Spieltermin eingetragen.">
+                        <span class="ms-2 text-danger" title="{{ 'Es sind weniger als 2 Clowns für diesen Spieltermin eingetragen.'|trans }}">
                             <i class="bi bi-exclamation-triangle"></i>
                         </span>
                     </td>
@@ -33,9 +33,9 @@
                     <td>{{ date.playTimeFrom is not empty ? date.playTimeFrom|date('H:i') ~ ' -' }} {{ date.playTimeTo is not empty ? date.playTimeTo|date('H:i') }}</td>
                     <td>
                         {{ date.playingClowns|map(clown => clown.name)|join('| ') }}
-                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: date.id}), title: "Zuordnung bearbeiten"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: date.id}), title: "Zuordnung bearbeiten"|trans}) }}
                         {% if date.showTakeOverRequestLink %}
-                            <a href="{{ path('play_date_new_take-over_request', {id: date.id}) }}" title="Clowns anfragen"><i class="bi bi-envelope"></i></a>
+                            <a href="{{ path('play_date_new_take-over_request', {id: date.id}) }}" title="{{ "Clowns anfragen"|trans }}"><i class="bi bi-envelope"></i></a>
                         {% endif %}
                     </td>
                 </tr>

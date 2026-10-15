@@ -1,26 +1,26 @@
 <!-- delete link triggers modal -->
-<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Spieltermin löschen"><i class="bi bi-trash"></i></a>
+<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal" title="{{ "Spieltermin löschen"|trans }}"><i class="bi bi-trash"></i></a>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="deleteModalLabel">Spieltermin löschen</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h1 class="modal-title fs-5" id="deleteModalLabel">{{ 'Spieltermin löschen'|trans }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'Close'|trans }}"></button>
       </div>
       <div class="modal-body">
         {% if should_not_delete %}
           <p class="text-danger fw-bold">
-              ACHTUNG! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!
+              {{ 'ACHTUNG! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!'|trans }}
           </p>
           <p>
-            Eventuell wäre es sinnvoller, die "Absagen"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.
+            {{ 'Eventuell wäre es sinnvoller, die "Absagen"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.'|trans }}
           </p>
         {% endif %}
-        <p>Der Spieltermin wird dann endgültig gelöscht und kann nicht wiederhergestellt werden.</p>
+        <p>{{ 'Der Spieltermin wird dann endgültig gelöscht und kann nicht wiederhergestellt werden.'|trans }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary mb-3" data-bs-dismiss="modal">Abbrechen</button>
+        <button type="button" class="btn btn-secondary mb-3" data-bs-dismiss="modal">{{ 'Abbrechen'|trans }}</button>
         {{ form(delete_form)}}
         {% if playDate.isRecurring %}
           {{ form(delete_recurring_form) }}

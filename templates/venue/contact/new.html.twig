@@ -3,7 +3,7 @@
 {% block innercontent %}
     {{ component('venue/details_navigation', {venue: venue, active: 'contacts'}) }}
 
-    <h5 class="pt-3">Neuen Kontakt für {{ venue.name }} anlegen</h5>
+    <h5 class="pt-3">{{ 'Neuen Kontakt für %venue% anlegen'|trans({'%venue%': venue.name}) }}</h5>
 
     {{ form(form) }}
 {% endblock %}

@@ -1,10 +1,10 @@
 <p>
-    Hallo {{ changeRequest.requestedTo.name }},
+    {{ 'Hallo %name%,'|trans({'%name%': changeRequest.requestedTo.name}) }}
 </p>
 
 <p>
-    {{ changeRequest.requestedBy.name }} will den Spieltermin scheinbar doch nicht abgeben!<br />
-    Es ging um:
+    {{ '%name% will den Spieltermin scheinbar doch nicht abgeben!'|trans({'%name%': changeRequest.requestedBy.name}) }}<br />
+    {{ 'Es ging um:'|trans }}
 </p>
 
 <p>
@@ -12,12 +12,12 @@
 </p>
 
 <p>
-    Warum, kann ich leider auch nicht sagen!
+    {{ 'Warum, kann ich leider auch nicht sagen!'|trans }}
 </p>
 
 {% if personalComment is not empty %}
     <p>
-        Aber {{ changeRequest.requestedBy.name }} hat eine persönliche Nachricht für Dich hinterlassen:
+        {{ 'Aber %name% hat eine persönliche Nachricht für Dich hinterlassen:'|trans({'%name%': changeRequest.requestedBy.name}) }}
     </p>
     <p>
         <i>{{ personalComment|nl2br }}</i>
@@ -26,6 +26,6 @@
 
 <p>
     <br />
-    Es lebe das Leben!<br />
-    Deine Spielplan App
+    {{ 'Es lebe das Leben!'|trans }}<br />
+    {{ 'Deine Spielplan App'|trans }}
 </p>

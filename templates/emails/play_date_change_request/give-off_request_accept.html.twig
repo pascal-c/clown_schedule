@@ -1,10 +1,10 @@
 <p>
-    Hey {{ changeRequest.requestedBy.name }},<br />
+    {{ 'Hey %name%,'|trans({'%name%': changeRequest.requestedBy.name}) }}<br />
 </p>
 
 <p>
-    gute Neuigkeiten!<br />
-    {{ changeRequest.requestedTo.name }} übernimmt Dein Spiel:
+    {{ 'gute Neuigkeiten!'|trans }}<br />
+    {{ '%name% übernimmt Dein Spiel:'|trans({'%name%': changeRequest.requestedTo.name}) }}
 </p>
 
 <p>
@@ -13,7 +13,7 @@
 
 {% if personalComment is not empty %}
     <p>
-        Persönliche Nachricht von {{ changeRequest.requestedTo.name }}:
+        {{ 'Persönliche Nachricht von %name%:'|trans({'%name%': changeRequest.requestedTo.name}) }}
     </p>
     <p>
         <i>{{ personalComment|nl2br }}</i>
@@ -21,11 +21,11 @@
 {% endif %}
 
 <p>
-    Super, Du musst Dich um nichts weiter kümmern. Ich habe den Spielplan bereits entsprechend aktualisiert.
+    {{ 'Super, Du musst Dich um nichts weiter kümmern. Ich habe den Spielplan bereits entsprechend aktualisiert.'|trans }}
 </p>
 
 <p>
-    Das Leben ist schön!
+    {{ 'Das Leben ist schön!'|trans }}
     <br />
-    Deine Dich liebende Spielplan App
+    {{ 'Deine Dich liebende Spielplan App'|trans }}
 </p>
