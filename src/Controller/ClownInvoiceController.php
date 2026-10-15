@@ -36,10 +36,8 @@ class ClownInvoiceController extends AbstractProtectedController
     {
         $month = $this->monthRepository->find($session, $monthId);
         $clown = $this->clownRepository->find($clownId);
-        $invoice = $clown->getInvoiceFor($month);
         $playDates = $this->playDateRepository->confirmedAndPaidByMonthAndClown($month, $clown);
         $activeClowns = $this->clownRepository->allActive();
-        $invoiceForm = $this->createForm(InvoiceFormType::class, $invoice);
 
         return $this->render('clown_invoice/show.html.twig', [
             'active' => 'clown_invoice',
@@ -66,8 +64,6 @@ class ClownInvoiceController extends AbstractProtectedController
                     $playDates
                 )
             ),
-            'invoice' => $invoice,
-            'invoiceForm' => $invoiceForm->createView(),
         ]);
     }
 
