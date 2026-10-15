@@ -1,5 +1,5 @@
 <div class="pt-2">
-    <i>Noch verfügbar:</i>
+    <i>{{ 'Noch verfügbar:'|trans }}</i>
     {% for entry in entries %}
         <span class="text-{{ entry.type }}" title="{{ entry.messages|join('\n') }}">{{ entry.clown_name }}</span>{% if not loop.last %} | {% endif %}
     {% else %}

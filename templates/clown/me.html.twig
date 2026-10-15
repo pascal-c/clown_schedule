@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Meine Einstellungen</h4>
+    <h4 class="pt-3">{{ 'Meine Einstellungen'|trans }}</h4>
     <twig:me_navigation :active="subnavigationElement.value" />
     {{ form(form) }}
 {% endblock %}

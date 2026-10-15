@@ -1,43 +1,43 @@
  {% if receivedChangeRequests or sentChangeRequests %}
-    <h4 class="pt-3">Offene Tauschanfragen</h4>
+    <h4 class="pt-3">{{ 'Offene Tauschanfragen'|trans }}</h4>
     <table class="table">
         <tbody>
             {% for changeRequest in receivedChangeRequests %}
             <tr>
-                <td><strong>{{ changeRequest.requestedBy.name }}</strong> möchte</th>
+                <td><strong>{{ changeRequest.requestedBy.name }}</strong> {{ 'möchte'|trans }}</th>
                 <td>
                     {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
                 </td>
                 {% if changeRequest.isSwap %}
                     <td>
-                        an Dich abgeben gegen
+                        {{ 'an Dich abgeben gegen'|trans }}
                     </td>
                     <td>
                         {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
                     </td>
                     <td>
-                        <a href="{{ path('play_date_swap_request_accept', {id: changeRequest.id}) }}" class="link-success">annehmen</a> oder
-                        <a href="{{ path('play_date_swap_request_decline', {id: changeRequest.id}) }}" class="link-danger">ablehnen</a>
+                        <a href="{{ path('play_date_swap_request_accept', {id: changeRequest.id}) }}" class="link-success">{{ 'annehmen'|trans }}</a> {{ 'oder'|trans }}
+                        <a href="{{ path('play_date_swap_request_decline', {id: changeRequest.id}) }}" class="link-danger">{{ 'ablehnen'|trans }}</a>
                     </td>
                 {% elseif changeRequest.isGiveOff %}
                     <td>
-                        {{ changeRequest.requestedTo ? 'an Dich abgeben' : 'abgeben' }}
+                        {{ changeRequest.requestedTo ? 'an Dich abgeben'|trans : 'abgeben'|trans }}
                     </td>
                     <td>
                         &nbsp;
                     </td>
                     <td>
-                        <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-success">übernehmen</a>
+                        <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-success">{{ 'übernehmen'|trans }}</a>
                     </td>
                 {% elseif changeRequest.isTakeOver %}
                     <td>
-                        {{ changeRequest.requestedTo ? 'an Dich vergeben' : 'vergeben' }}
+                        {{ changeRequest.requestedTo ? 'an Dich vergeben'|trans : 'vergeben'|trans }}
                     </td>
                     <td>
                         &nbsp;
                     </td>
                     <td>
-                        <a href="{{ path('play_date_take-over_request_accept', {id: changeRequest.id}) }}" class="link-success">übernehmen</a>
+                        <a href="{{ path('play_date_take-over_request_accept', {id: changeRequest.id}) }}" class="link-success">{{ 'übernehmen'|trans }}</a>
                     </td>
                 {% endif %}
             </tr>
@@ -45,43 +45,43 @@
 
             {% for changeRequest in sentChangeRequests %}
             <tr>
-                <td>Du möchtest</td>
+                <td>{{ 'Du möchtest'|trans }}</td>
                 <td>
                     {{ changeRequest.playDateToGiveOff.name }} {{ changeRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ changeRequest.playDateToGiveOff.daytime|trans }}
                 </td>
                 {% if changeRequest.isSwap %}
                     <td>
-                        an <strong>{{ changeRequest.requestedTo.name }}</strong> abgeben gegen
+                        {{ 'an %name% abgeben gegen'|trans({'%name%': changeRequest.requestedTo.name}) }}
                     </td>
                     <td>
                         {{ changeRequest.playDateWanted.name }} {{ changeRequest.playDateWanted.date|date('d.m.Y') }} {{ changeRequest.playDateWanted.daytime|trans }}
                     </td>
                     <td>
-                        <a href="{{ path('play_date_swap_request_cancel', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                        <a href="{{ path('play_date_swap_request_cancel', {id: changeRequest.id}) }}" class="link-danger">{{ 'abbrechen'|trans }}</a>
                     </td>
                 {% elseif changeRequest.isGiveOff %}
                     <td>
-                        abgeben an {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'egal wen' }}
+                        {{ 'abgeben an'|trans }} {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'egal wen'|trans }}
                     </td>
                     <td>
                         &nbsp;
                     </td>
                     <td>
                         {% if changeRequest.requestedTo %}
-                            <a href="{{ path('play_date_give-off_request_cancel', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                            <a href="{{ path('play_date_give-off_request_cancel', {id: changeRequest.id}) }}" class="link-danger">{{ 'abbrechen'|trans }}</a>
                         {% else %}
-                            <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                            <a href="{{ path('play_date_give-off_request_accept', {id: changeRequest.id}) }}" class="link-danger">{{ 'abbrechen'|trans }}</a>
                         {% endif %}
                     </td>
                 {% elseif changeRequest.isTakeOver %}
                     <td>
-                        vergeben an {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'egal wen' }}
+                        {{ 'vergeben an'|trans }} {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'egal wen'|trans }}
                     </td>
                     <td>
                         &nbsp;
                     </td>
                     <td>
-                        <a href="{{ path('play_date_take-over_request_cancel', {id: changeRequest.id}) }}" class="link-danger">abbrechen</a>
+                        <a href="{{ path('play_date_take-over_request_cancel', {id: changeRequest.id}) }}" class="link-danger">{{ 'abbrechen'|trans }}</a>
                     </td>
                 {% endif %}
             </tr>

@@ -3,7 +3,7 @@
 {% block innercontent %}
     {{ component('venue/details_navigation', {venue: venue, active: 'fees'}) }}
 
-    <h5 class="pt-3">Honorar für {{ venue.name }} bearbeiten</h5>
+    <h5 class="pt-3">{{ 'Honorar für %venue% bearbeiten'|trans({'%venue%': venue.name}) }}</h5>
 
     {{ form(form) }}
 {% endblock %}

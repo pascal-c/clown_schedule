@@ -1,16 +1,16 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Clowns{% endblock %}
+{% block title %}{{ 'Clowns'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Clowns</h4>
+    <h4 class="pt-3">{{ 'Clowns'|trans }}</h4>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Clown</th><th>Email</th><th>Telefon</th><th>aktiv</th><th>Büro?</th>
+                <th>{{ 'Clown'|trans }}</th><th>{{ 'Email'|trans }}</th><th>{{ 'Telefon'|trans }}</th><th>{{ 'aktiv'|trans }}</th><th>{{ 'Büro?'|trans }}</th>
                 {% if currentClown.isAdmin %}
-                    <th>Gesperrte Clowns</th>
+                    <th>{{ 'Gesperrte Clowns'|trans }}</th>
                 {% endif %}
             </tr>
         </thead>
@@ -21,7 +21,7 @@
                         {{ clown.name}}
                         {% if currentClown.isAdmin %}
                             <a href="{{ path('clown_edit', {id: clown.id}) }}"></a>
-                            {{ include('_shared/_edit_link.html.twig', {url: path('clown_edit', {id: clown.id}), title: "Details bearbeiten"}) }}
+                            {{ include('_shared/_edit_link.html.twig', {url: path('clown_edit', {id: clown.id}), title: "Details bearbeiten"|trans}) }}
                         {% endif %}
                     </td>
                     <td><a href="mailto:{{ clown.email }}">{{ clown.email }}</a></td>
@@ -33,9 +33,9 @@
                             {% for blockedClown in clown.blockedClowns %}
                                 {{ blockedClown.name }}{% if not loop.last %}, {% endif %}
                             {% else %}
-                                <i>keine</i>
+                                <i>{{ 'keine'|trans }}</i>
                             {% endfor %}
-                            {{ include('_shared/_edit_link.html.twig', {url: path('clown_edit_blocked_clowns', {id: clown.id}), title: "Gesperrte Clowns bearbeiten"}) }}
+                            {{ include('_shared/_edit_link.html.twig', {url: path('clown_edit_blocked_clowns', {id: clown.id}), title: "Gesperrte Clowns bearbeiten"|trans}) }}
                         </td>
                     {% endif %}
                 </tr>    
@@ -46,7 +46,7 @@
     {% if currentClown.isAdmin %}
         {{ include('_shared/_create_link.html.twig', {
             url: path('clown_new'), 
-            label: "Clown anlegen"
+            label: "Clown anlegen"|trans
         }) }}
     {% endif %}    
 {% endblock %}

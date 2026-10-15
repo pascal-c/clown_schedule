@@ -1,26 +1,26 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Statistiken{% endblock %}
+{% block title %}{{ 'Statistiken'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Statistiken</h4>
+    <h4 class="pt-3">{{ 'Statistiken'|trans }}</h4>
     {{ component('statistics_navigation', { active: 'per_venue' }) }}
     {{ component('statistics_per_venue_navigation', {active: showYears ? 'per_year' : 'infinity'}) }}
     {% if showYears %}
         {{ include('statistics/_per_venue_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
-        <h5 class="pt-2">Spieltermine (reguläre und Zusatztermine) {{ activeYear }}</h5>
+        <h5 class="pt-2">{{ 'Spieltermine (reguläre und Zusatztermine)'|trans }} {{ activeYear }}</h5>
     {% else %}
-        <h5 class="pt-2">Spieltermine (reguläre und Zusatztermine)</h5>
+        <h5 class="pt-2">{{ 'Spieltermine (reguläre und Zusatztermine)'|trans }}</h5>
     {% endif %}
 
     {{ component('statistics_for_venues_dropdown', { currentType: type, path: showYears ? path('statistics_per_venue_per_year', {year: activeYear}) : path('statistics_per_venue_infinity') }) }}
     <table class="table">
         <thead>
             <tr>
-                <th>Spielort</th>
-                <th>Spiele gesamt</th>
-                <th>Reguläre Spiele</th>
-                <th>Zusatztermine</th>
+                <th>{{ 'Spielort'|trans }}</th>
+                <th>{{ 'Spiele gesamt'|trans }}</th>
+                <th>{{ 'Reguläre Spiele'|trans }}</th>
+                <th>{{ 'Zusatztermine'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +40,7 @@
             {% endfor %}
 
             <tr>
-                <th>Summe</th>
+                <th>{{ 'Summe'|trans }}</th>
                 <th>
                     {{ venues|reduce((carry, v) => carry+v.totalCount) }}
                 </th>

@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Spieltermin{% endblock %}
+{% block title %}{{ 'Spieltermin'|trans }}{% endblock %}
 
 {% block content %}
     <h4 class="pt-3">
@@ -10,7 +10,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>{{ not playDate.isPlayDate ? "Was" : "Wo" }}</th>
+                <th>{{ (not playDate.isPlayDate ? 'Was' : 'Wo')|trans }}</th>
                 <td>
                     {% if playDate.venue %}
                         <a class="text-dark" href="{{ path('venue_show', {id: playDate.venue.id}) }}">{{ playDate.name }}</a>
@@ -18,7 +18,7 @@
                         {{ playDate.name }}
                     {% endif %}
                     {% if can_edit %}
-                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id}), title: "Termin bearbeiten"|trans}) }}
                     {% endif %}
                     {% if can_delete %}
                         {{ include('play_date/_delete_link.html.twig', {delete_form: delete_form, delete_recurring_form: delete_recurring_form, playDate: playDate, should_not_delete: should_not_delete}) }}
@@ -34,44 +34,44 @@
                 </td>
             </tr>
             <tr>
-                <th>Wann</th>
+                <th>{{ 'Wann'|trans }}</th>
                 <td>
                     {{ playDate.date|date('d.m.Y') }} {{ playDate.daytime|trans }}
                     {% if playDate.comment != '' %}
                         <br /><span class="fst-itlic fw-light">{{ playDate.comment|nl2br }}</span>
                     {% endif %}
                     {% if playDate.movedFrom %}
-                        <br />Verschoben von <a class="text-dark" href="{{ path('play_date_show', {id: playDate.movedFrom.id}) }}">{{ playDate.movedFrom.date|date('d.m.Y') }}</a>
+                        <br />{{ 'Verschoben von'|trans }} <a class="text-dark" href="{{ path('play_date_show', {id: playDate.movedFrom.id}) }}">{{ playDate.movedFrom.date|date('d.m.Y') }}</a>
                     {% endif %}
                     {% if playDate.movedTo %}
-                        <br />Verschoben auf <a class="text-dark" href="{{ path('play_date_show', {id: playDate.movedTo.id}) }}">{{ playDate.movedTo.date|date('d.m.Y') }}</a>
+                        <br />{{ 'Verschoben auf'|trans }} <a class="text-dark" href="{{ path('play_date_show', {id: playDate.movedTo.id}) }}">{{ playDate.movedTo.date|date('d.m.Y') }}</a>
                     {% endif %}
                 </td>
             </tr>
             <tr>
-                <th>Treffen</th>
+                <th>{{ 'Treffen'|trans }}</th>
                 <td>
                     {{ playDate.meetingTime is not empty ? playDate.meetingTime|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>{{ playDate.isPlayDate ? "Spielzeit" : "Zeitraum" }}</th>
+                <th>{{ (playDate.isPlayDate ? 'Spielzeit' : 'Zeitraum')|trans }}</th>
                 <td>
                     {{ playDate.playTimeFrom is not empty ? playDate.playTimeFrom|date('H:i') }} - {{ playDate.playTimeTo is not empty ? playDate.playTimeTo|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>{{ playDate.isPlayDate ? "Spielende Clowns" : "Teilnehmende" }}</th>
+                <th>{{ (playDate.isPlayDate ? 'Spielende Clowns' : 'Teilnehmende')|trans }}</th>
                 <td>
                     {{ playDate.playingClowns|map(clown => clown.name)|join(' | ') }}
                     {% if can_assign %}
-                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"|trans}) }}
                     {% endif %}
                 </td>
             </tr>
             {% if playDate.isPlayDate %}
                 <tr>
-                    <th>Springer:in</th>
+                    <th>{{ 'Springer:in'|trans }}</th>
                     <td>
                         {{ playDate.substitutionClowns|map(clown => clown ? clown.name : '---')|join(' | ') }}
                     </td>
@@ -79,40 +79,40 @@
             {% endif %}
             {% if playDate.isPaid and config.featureInvoiceManagementClowns %}
                 <tr>
-                    <th>Honorar</th>
+                    <th>{{ 'Honorar'|trans }}</th>
                     <td>
                         {% if playDate.fee %}
                             {{ playDate.fee.feeStandard|format_currency('EUR') }} {{ config.featureAlternativeFee ? "/ #{playDate.fee.feeAlternative|format_currency('EUR')}" }}
                             {% if currentClown.isAdmin and playDate.playDateFee %}
-                                {{ include('_shared/_edit_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "Honorar bearbeiten"}) }}
+                                {{ include('_shared/_edit_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "Honorar bearbeiten"|trans}) }}
                             {% else %}
-                                {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "individuelles Honorar anlegen", if: currentClown.isAdmin}) }}
+                                {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "individuelles Honorar anlegen"|trans, if: currentClown.isAdmin}) }}
                             {% endif %}
                         {% else %}    
                             ?
-                            {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen", if: currentClown.isAdmin}) }}
+                            {{ include('_shared/_create_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), label: "Honorar anlegen"|trans, if: currentClown.isAdmin}) }}
                         {% endif %}
                     </td>
                 </tr>
                 {% if playDate.fee %}
                     <tr>
-                        <th>Kilometergeld</th>
+                        <th>{{ 'Kilometergeld'|trans }}</th>
                         <td>
                                 {{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}
                         </td>
                     </tr>
                 {% endif %}
                 <tr>
-                    <th>wiederkehrend</th>
+                    <th>{{ 'wiederkehrend'|trans }}</th>
                     <td>
                     {% if playDate.recurringDate %}
                         {% if playDate.recurringDate.isWeekly %}
-                            {{ playDate.recurringDate.dayOfWeek|trans }}s {{ "every.week"|trans({'%weeks%': playDate.recurringDate.every}) }} 
+                            {{ 'jeden %day%'|trans({'%day%': playDate.recurringDate.dayOfWeek|trans}) }} {{ "every.week"|trans({'%weeks%': playDate.recurringDate.every}) }}
                         {% else %}
-                            jeden {{ playDate.recurringDate.every }}. {{ playDate.recurringDate.dayOfWeek|trans }} im Monat
+                            {{ 'jeden'|trans }} {{ playDate.recurringDate.every }}. {{ playDate.recurringDate.dayOfWeek|trans }} {{ 'im Monat'|trans }}
                         {% endif %}
                     {% else %}    
-                        nein
+                        {{ 'nein'|trans }}
                     {% endif %}
                         
                     </td>
@@ -120,41 +120,41 @@
             {% endif %}
             {% if playDate.bundle %}
                 <tr>
-                    <th>gebündelt mit</th>
+                    <th>{{ 'gebündelt mit'|trans }}</th>
                     <td>
                     {% for bundledPlayDate in playDate.bundle.playDates|filter(bundledPlayDate => bundledPlayDate.id != playDate.id) %}
                         {{ loop.first ? '' : '<br />' }} {{ bundledPlayDate.date|date('d.m.Y') }} {{ bundledPlayDate.name }}
                     {% endfor %}
                     {% if can_bundle %}
-                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), title: "Spieltermine bündeln"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), title: "Spieltermine bündeln"|trans}) }}
                     {% endif %}
                     </td>
                 </tr>
             {% endif %}
             {% if playDate.super %}
                 <tr>
-                    <th>Super-Spieltermin</th>
+                    <th>{{ 'Super-Spieltermin'|trans }}</th>
                     <td>
-                        <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spieltermin"></i> Dies ist ein Super-Spieltermin!
+                        <i class="bi bi-hand-thumbs-up" title="{{ "Dies ist ein Super-Spieltermin"|trans }}"></i> {{ 'Dies ist ein Super-Spieltermin!'|trans }}
                     </td>
                 </tr>
             {% endif %}
             {% if not playDate.specialPlayDateUrl is empty %}
                 <tr>
-                    <th>URL</th>
+                    <th>{{ 'URL'|trans }}</th>
                     <td>
-                        <a href="{{ playDate.specialPlayDateUrl }}">Weitere Infos</a>
+                        <a href="{{ playDate.specialPlayDateUrl }}">{{ 'Weitere Infos'|trans }}</a>
                     </td>
                 </tr>
             {% endif %}
             {% if playDate.training %}
                 <tr>
-                    <th>Anmeldung</th>
+                    <th>{{ 'Anmeldung'|trans }}</th>
                     <td>
                         {% if playDate.playingClowns.contains(currentClown) %}
-                            Super, Du bist für diesen Termin angemeldet!
+                            {{ 'Super, Du bist für diesen Termin angemeldet!'|trans }}
                         {% else %}
-                            Du bist für diesen Termin leider (noch) nicht angemeldet.
+                            {{ 'Du bist für diesen Termin leider (noch) nicht angemeldet.'|trans }}
                         {% endif %}
                     </td>
                 </tr>
@@ -164,14 +164,14 @@
 
 
     {% if playDate.showChangeRequestLink %}
-        <a href="{{ path('play_date_new_swap_request', {id: playDate.id}) }}">Diesen Spieltermin tauschen</a>&nbsp;
-        <a href="{{ path('play_date_new_give-off_request', {id: playDate.id}) }}">Diesen Spieltermin abgeben</a>
+        <a href="{{ path('play_date_new_swap_request', {id: playDate.id}) }}">{{ 'Diesen Spieltermin tauschen'|trans }}</a>&nbsp;
+        <a href="{{ path('play_date_new_give-off_request', {id: playDate.id}) }}">{{ 'Diesen Spieltermin abgeben'|trans }}</a>
     {% endif %}
     {% if playDate.showTakeOverRequestLink %}
-        <a href="{{ path('play_date_new_take-over_request', {id: playDate.id}) }}">Clowns für diesen Spieltermin anfragen</a>
+        <a href="{{ path('play_date_new_take-over_request', {id: playDate.id}) }}">{{ 'Clowns für diesen Spieltermin anfragen'|trans }}</a>
     {% endif %}
     {% if can_bundle and not playDate.bundle %}
-        {{ include('_shared/_create_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), label: "Spieltermine bündeln"}) }}
+        {{ include('_shared/_create_link.html.twig', {url: path('play_date_bundle', {id: playDate.id}), label: "Spieltermine bündeln"|trans}) }}
     {% endif %}
     
     {% if playDate.showRegisterForTrainingLink %}
@@ -179,7 +179,7 @@
     {% endif %}
 
     {% if playDate.playDateGiveOffRequests is not empty or playDate.playDateSwapRequests is not empty%}
-        <h5 class="pt-3">Tauschanfragen</h5>
+        <h5 class="pt-3">{{ 'Tauschanfragen'|trans }}</h5>
         <table class="table">
             <tbody>
                 {% for sentChangeRequest in playDate.playDateGiveOffRequests %}
@@ -188,11 +188,11 @@
                         {% if sentChangeRequest.isSwap %}
                             <td>
                                 {% if sentChangeRequest.requestedBy == currentClown %}
-                                    Du möchtest diesen Spieltermin an {{ sentChangeRequest.requestedTo.name }} abgeben gegen:
+                                    {{ 'Du möchtest diesen Spieltermin an %name% abgeben gegen:'|trans({'%name%': sentChangeRequest.requestedTo.name}) }}
                                 {% elseif sentChangeRequest.requestedTo == currentClown and sentChangeRequest.isWaiting %}
-                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin an Dich abgeben gegen:    
+                                    {{ '%name% möchte diesen Spieltermin an Dich abgeben gegen:'|trans({'%name%': sentChangeRequest.requestedBy.name}) }}
                                 {% else %}
-                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin an {{ sentChangeRequest.requestedTo.name }} abgeben gegen:
+                                    {{ '%name% möchte diesen Spieltermin an %recipient% abgeben gegen:'|trans({'%name%': sentChangeRequest.requestedBy.name, '%recipient%': sentChangeRequest.requestedTo.name}) }}
                                 {% endif %}
                             </td>
                             <td>
@@ -203,42 +203,42 @@
                             <td>
                                 <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% if sentChangeRequest.canAccept(currentClown) and sentChangeRequest.isWaiting %}
-                                    <a href="{{ path('play_date_swap_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">annehmen</a> oder
-                                    <a href="{{ path('play_date_swap_request_decline', {id: sentChangeRequest.id}) }}" class="link-danger">ablehnen</a>
+                                    <a href="{{ path('play_date_swap_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">{{ 'annehmen'|trans }}</a> {{ 'oder'|trans }}
+                                    <a href="{{ path('play_date_swap_request_decline', {id: sentChangeRequest.id}) }}" class="link-danger">{{ 'ablehnen'|trans }}</a>
                                 {% elseif sentChangeRequest.canCancel(currentClown) and sentChangeRequest.isWaiting %}
-                                    <a href="{{ path('play_date_swap_request_cancel', {id: sentChangeRequest.id}) }}" class="link-danger">abbrechen</a>
+                                    <a href="{{ path('play_date_swap_request_cancel', {id: sentChangeRequest.id}) }}" class="link-danger">{{ 'abbrechen'|trans }}</a>
                                 {% endif %}
                             <td>
                         {% elseif sentChangeRequest.isGiveOff %}
                             <td>
                                 {% if sentChangeRequest.requestedBy == currentClown %}
-                                    Du möchtest Diesen Spieltermin abgeben an {{ sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'egal wen'}}.
+                                    {{ 'Du möchtest diesen Spieltermin an %name% abgeben.'|trans({'%name%': sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'egal wen'|trans}) }}
                                 {% elseif sentChangeRequest.requestedTo == currentClown %}
-                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin an Dich abgeben
+                                    {{ '%name% möchte diesen Spieltermin an Dich abgeben.'|trans({'%name%': sentChangeRequest.requestedBy.name}) }}
                                 {% else %}
-                                    {{ sentChangeRequest.requestedBy.name }} möchte diesen Spieltermin abgeben an {{ sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'egal wen'}}
+                                    {{ '%name% möchte diesen Spieltermin an %recipient% abgeben.'|trans({'%name%': sentChangeRequest.requestedBy.name, '%recipient%': sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'egal wen'|trans}) }}
                                 {% endif %}
                             </td>
                             <td></td>
                             <td>
                                 <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% if sentChangeRequest.isAccepted %}
-                                    {{ sentChangeRequest.requestedTo.name }} hat übernommen
+                                    {{ '%name% hat übernommen'|trans({'%name%': sentChangeRequest.requestedTo.name}) }}
                                 {% elseif sentChangeRequest.canAccept(currentClown) and sentChangeRequest.isWaiting %}
-                                    <a href="{{ path('play_date_give-off_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">übernehmen</a>
+                                    <a href="{{ path('play_date_give-off_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">{{ 'übernehmen'|trans }}</a>
                                 {% endif %}
                             </td>
                         {% elseif sentChangeRequest.isTakeOver %}
                             <td>
-                                {{ sentChangeRequest.requestedBy.name }} hat {{ sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'alle'}} für diesen unterbesetzten Spieltermin angefragt.
+                                {{ '%name% hat %recipient% für diesen unterbesetzten Spieltermin angefragt.'|trans({'%name%': sentChangeRequest.requestedBy.name, '%recipient%': sentChangeRequest.requestedTo ? sentChangeRequest.requestedTo.name : 'alle'|trans}) }}
                             </td>
                             <td></td>
                             <td>
                                 <i class="badge bg-secondary">{{ sentChangeRequest.status.value|trans }}</i>
                                 {% if sentChangeRequest.isAccepted %}
-                                    {{ sentChangeRequest.requestedTo.name }} hat übernommen
+                                    {{ '%name% hat übernommen'|trans({'%name%': sentChangeRequest.requestedTo.name}) }}
                                 {% elseif sentChangeRequest.canAccept(currentClown) and sentChangeRequest.isWaiting %}
-                                    <a href="{{ path('play_date_take-over_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">übernehmen</a>
+                                    <a href="{{ path('play_date_take-over_request_accept', {id: sentChangeRequest.id}) }}" class="link-success">{{ 'übernehmen'|trans }}</a>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -249,11 +249,11 @@
                         <td>{{ swapRequest.requestedAt|date('d.m.Y') }}</td>
                         <td>
                             {% if swapRequest.requestedBy == currentClown %}
-                                Du möchtest diesen Spieltermin von {{ swapRequest.requestedTo.name }} übernehmen gegen:
+                                {{ 'Du möchtest diesen Spieltermin von %name% übernehmen gegen:'|trans({'%name%': swapRequest.requestedTo.name}) }}
                             {% elseif swapRequest.requestedTo == currentClown  %}
-                                {{ swapRequest.requestedBy.name }} möchte diesen Spieltermin von Dir übernehmen gegen:
+                                {{ '%name% möchte diesen Spieltermin von Dir übernehmen gegen:'|trans({'%name%': swapRequest.requestedBy.name}) }}
                             {% else  %}
-                                {{ swapRequest.requestedBy.name }} möchte diesen Spieltermin von {{ swapRequest.requestedTo.name }} übernehmen gegen:
+                                {{ '%name% möchte diesen Spieltermin von %recipient% übernehmen gegen:'|trans({'%name%': swapRequest.requestedBy.name, '%recipient%': swapRequest.requestedTo.name}) }}
                             {% endif %}
                         </td>
                         <td>
@@ -263,8 +263,8 @@
                         </td>
                         <td>
                             {% if swapRequest.canAccept(currentClown) and swapRequest.isWaiting %}
-                                <a href="{{ path('play_date_swap_request_accept', {id: swapRequest.id}) }}" class="link-success">annehmen</a> oder
-                                <a href="{{ path('play_date_swap_request_decline', {id: swapRequest.id}) }}" class="link-danger">ablehnen</a>
+                                <a href="{{ path('play_date_swap_request_accept', {id: swapRequest.id}) }}" class="link-success">{{ 'annehmen'|trans }}</a> {{ 'oder'|trans }}
+                                <a href="{{ path('play_date_swap_request_decline', {id: swapRequest.id}) }}" class="link-danger">{{ 'ablehnen'|trans }}</a>
                             {% else %}    
                                 <i class="badge bg-secondary">{{ swapRequest.status.value|trans }}</i>
                             {% endif %}
@@ -276,24 +276,24 @@
     {% endif %}
 
     <p class="pt-3">
-    <button type="button" class="btn btn-link mb-3 collapse show history" data-bs-target=".history" data-bs-toggle="collapse">Historie anzeigen</button>
-    <button type="button" class="btn btn-link mb-3 collapse history" data-bs-target=".history" data-bs-toggle="collapse">Historie verstecken</button>
+    <button type="button" class="btn btn-link mb-3 collapse show history" data-bs-target=".history" data-bs-toggle="collapse">{{ 'Historie anzeigen'|trans }}</button>
+    <button type="button" class="btn btn-link mb-3 collapse history" data-bs-target=".history" data-bs-toggle="collapse">{{ 'Historie verstecken'|trans }}</button>
        </p> 
     <table class="table collapse history">
         <thead>
-            <caption>Historie</caption>
+            <caption>{{ 'Historie'|trans }}</caption>
             <tr>
-                <th>Datum</th>
-                <th>Spielende Clowns</th>
-                <th>geändert durch</th>
-                <th>Aktion</th>
+                <th>{{ 'Datum'|trans }}</th>
+                <th>{{ 'Spielende Clowns'|trans }}</th>
+                <th>{{ 'geändert durch'|trans }}</th>
+                <th>{{ 'Aktion'|trans }}</th>
         </thead>
         <tbody>
             {% for history in playDate.playDateHistory %}
             <tr>
                 <td>{{ history.changedAt|date('d.m.Y H:i') }}</td>
                 <td>{{ history.playingClowns|map(clown => clown.name)|join(' | ') }}</td>
-                <td>{{ history.changedBy ? history.changedBy.name : 'Spielplan App' }}</td>
+                <td>{{ history.changedBy ? history.changedBy.name : 'Spielplan App'|trans }}</td>
                 <td>{{ history.reason.value|trans }}</td>
             </tr>
             {% endfor %}
