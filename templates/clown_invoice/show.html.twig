@@ -17,7 +17,7 @@
                 <th>Datum</th>
                 <th>{{ config.feeLabel}}</th>
 
-                {% if config.featureAlternativeFeeActive %}
+                {% if config.featureAlternativeFee %}
                     <th>{{ config.alternativeFeeLabel}}</th>
                 {% endif %}
                 <th>Kilometergeld</th>
@@ -42,11 +42,11 @@
                 </td>
                 {% if playDate.fee %}
                     <td>{{ playDate.fee.feeStandard|format_currency('EUR') }}</td>
-                    {% if config.featureAlternativeFeeActive %}<td>{{ playDate.fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
+                    {% if config.featureAlternativeFee %}<td>{{ playDate.fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
                     <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}</td>
                 {% else %}
                     <td>?</td>
-                    {% if config.featureAlternativeFeeActive %}<td>?</td>{% endif %}
+                    {% if config.featureAlternativeFee %}<td>?</td>{% endif %}
                     <td>?</td>
                 {% endif %}
             </tr>
@@ -57,7 +57,7 @@
                 <th>Achtung, dient nur der Orientierung!</th>
                 <th>{{ month.label }}</th>
                 <th>{{ feeStandardSum|format_currency('EUR') }}</th>
-                {% if config.featureAlternativeFeeActive %}<th>{{ feeAlternativeSum|format_currency('EUR') }}</th>{% endif %}
+                {% if config.featureAlternativeFee %}<th>{{ feeAlternativeSum|format_currency('EUR') }}</th>{% endif %}
                 <th>{{ kilometersFeeSum|format_currency('EUR') }}</th>
             </tr>
         </tbody>

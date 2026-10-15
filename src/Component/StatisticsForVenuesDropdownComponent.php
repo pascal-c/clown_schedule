@@ -2,6 +2,7 @@
 
 namespace App\Component;
 
+use App\Service\ConfigService;
 use App\Value\StatisticsForVenuesType;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
@@ -13,8 +14,15 @@ final class StatisticsForVenuesDropdownComponent
     public array $types = [];
     public string $path = '';
 
+    public function __construct(private ConfigService $configService)
+    {
+    }
+
     public function mount(): void
     {
-        $this->types = StatisticsForVenuesType::cases();
+        $this->types = array_filter(
+            StatisticsForVenuesType::cases(),
+            fn (StatisticsForVenuesType $type) => $this->configService->hasFeatureInvoiceManagementClowns() || StatisticsForVenuesType::WITH_FEE !== $type,
+        );
     }
 }

@@ -26,7 +26,7 @@ class FeeFormType extends AbstractType
         if ($config->isFeatureFeeActive()) {
             $builder->add('feeStandard', MoneyType::class, ['label' => $config->getFeeLabel(), 'required' => false]);
         }
-        if ($config->isFeatureAlternativeFeeActive()) {
+        if ($config->hasFeatureAlternativeFee()) {
             $builder->add('feeAlternative', MoneyType::class, ['label' => $config->getAlternativeFeeLabel(), 'required' => false]);
         }
 

@@ -1,7 +1,7 @@
 {% extends "venue/base.html.twig" %}
 
 {% block innercontent %}
-    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'fees'}) }}
+    {{ component('venue/details_navigation', {venue: venue, active: 'fees'}) }}
 
     <h5 class="pt-3">Neues Honorar für {{ venue.name }}</h5>
 

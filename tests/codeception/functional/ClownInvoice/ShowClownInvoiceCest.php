@@ -45,7 +45,7 @@ class ShowClownInvoiceCest extends AbstractCest
 
     }
 
-    public function show(FunctionalTester $I): void
+    public function showInvoice(FunctionalTester $I): void
     {
         $I->login('emil@besen.de', 'secret');
 
@@ -128,5 +128,15 @@ class ShowClownInvoiceCest extends AbstractCest
 
         // what we don't see
         $I->dontSee('19.12.1999');
+    }
+
+    public function dontShowInvoice(FunctionalTester $I): void
+    {
+        $this->configFactory->update(featureInvoiceManagementClowns: false);
+        $I->login('emil@besen.de', 'secret');
+
+        // The invoice tab is not visible in schedule navigation
+        $I->click('Spielplan');
+        $I->dontSee('Rechnungsansicht');
     }
 }
