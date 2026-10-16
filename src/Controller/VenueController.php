@@ -66,11 +66,11 @@ class VenueController extends AbstractProtectedController
             $this->entityManager->persist($venue);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort wurde angelegt. Phantastisch!');
+            $this->addFlash('success', $this->translateMessage('Spielort wurde angelegt. Phantastisch!'));
 
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Spielort konnte nicht angelegt werden.');
+            $this->addFlash('warning', $this->translateMessage('Spielort konnte nicht angelegt werden.'));
         }
 
         return $this->render('venue/new.html.twig', [
@@ -100,11 +100,11 @@ class VenueController extends AbstractProtectedController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+            $this->addFlash('success', $this->translateMessage('Spielort wurde aktualisiert. Super!'));
 
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($editForm->isSubmitted()) {
-            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+            $this->addFlash('warning', $this->translateMessage('Oh! Spielort konnte nicht aktualisiert werden.'));
         }
 
         return $this->render('venue/edit.html.twig', [
@@ -126,11 +126,11 @@ class VenueController extends AbstractProtectedController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+            $this->addFlash('success', $this->translateMessage('Spielort wurde aktualisiert. Super!'));
 
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($editForm->isSubmitted()) {
-            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+            $this->addFlash('warning', $this->translateMessage('Oh! Spielort konnte nicht aktualisiert werden.'));
         }
 
         return $this->render('venue/edit_clowns.html.twig', [
@@ -151,11 +151,11 @@ class VenueController extends AbstractProtectedController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+            $this->addFlash('success', $this->translateMessage('Spielort wurde aktualisiert. Super!'));
 
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($editForm->isSubmitted()) {
-            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+            $this->addFlash('warning', $this->translateMessage('Oh! Spielort konnte nicht aktualisiert werden.'));
         }
 
         return $this->render('venue/edit_clowns.html.twig', [
@@ -176,11 +176,11 @@ class VenueController extends AbstractProtectedController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort wurde aktualisiert. Super!');
+            $this->addFlash('success', $this->translateMessage('Spielort wurde aktualisiert. Super!'));
 
             return $this->redirectToRoute('venue_show', ['id' => $venue->getId()]);
         } elseif ($editForm->isSubmitted()) {
-            $this->addFlash('warning', 'Oh! Spielort konnte nicht aktualisiert werden.');
+            $this->addFlash('warning', $this->translateMessage('Oh! Spielort konnte nicht aktualisiert werden.'));
         }
 
         return $this->render('venue/edit_clowns.html.twig', [
@@ -205,12 +205,12 @@ class VenueController extends AbstractProtectedController
             $venue->setArchived(true);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Ok! Spielort '.$venue->getName().' wurde archiviert. Du kannst ihn jederzeit wiederherstellen!');
+            $this->addFlash('success', $this->translateMessage('Ok! Spielort %venue% wurde archiviert. Du kannst ihn jederzeit wiederherstellen!', ['%venue%' => $venue->getName()]));
 
             return $this->redirectToRoute('venue_index');
         }
 
-        $this->addFlash('warning', 'Achtung! Spielort konnte nicht archiviert werden.');
+        $this->addFlash('warning', $this->translateMessage('Achtung! Spielort konnte nicht archiviert werden.'));
 
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
@@ -229,12 +229,12 @@ class VenueController extends AbstractProtectedController
             $venue->setArchived(false);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Super! '.$venue->getName().' ist wieder da!');
+            $this->addFlash('success', $this->translateMessage('Super! %venue% ist wieder da!', ['%venue%' => $venue->getName()]));
 
             return $this->redirectToRoute('venue_index');
         }
 
-        $this->addFlash('warning', 'Achtung! Spielort konnte nicht wiederhergestellt werden.');
+        $this->addFlash('warning', $this->translateMessage('Achtung! Spielort konnte nicht wiederhergestellt werden.'));
 
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }
@@ -256,12 +256,12 @@ class VenueController extends AbstractProtectedController
             $this->entityManager->remove($venue);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spielort '.$venue->getName().' wurde gelöscht. Danke fürs Aufräumen!');
+            $this->addFlash('success', $this->translateMessage('Spielort %venue% wurde gelöscht. Danke fürs Aufräumen!', ['%venue%' => $venue->getName()]));
 
             return $this->redirectToRoute('venue_index');
         }
 
-        $this->addFlash('warning', 'Achtung! Spielort konnte nicht gelöscht werden.');
+        $this->addFlash('warning', $this->translateMessage('Achtung! Spielort konnte nicht gelöscht werden.'));
 
         return $this->redirectToRoute('venue_edit', ['id' => $venue->getId()]);
     }

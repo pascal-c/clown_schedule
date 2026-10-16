@@ -10,9 +10,14 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AssignClownsFormType extends AbstractType
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $playDate = $options['data'];
@@ -20,7 +25,7 @@ class AssignClownsFormType extends AbstractType
         $builder
             ->add('playingClowns', EntityType::class, [
                 'class' => Clown::class,
-                'choice_label' => fn (Clown $clown) => $clown->getLabelFor($playDate),
+                'choice_label' => fn (Clown $clown) => $clown->getLabelFor($playDate, $this->translator->trans('Verantw.')),
                 'required' => false,
                 'label' => 'Clowns',
                 'expanded' => true,

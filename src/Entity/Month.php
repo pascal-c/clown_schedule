@@ -45,10 +45,10 @@ class Month
         return $this->date->format('Y');
     }
 
-    public function getLabel(): string
+    public function getLabel(string $locale = 'de_DE'): string
     {
         $formatter = new IntlDateFormatter(
-            'de_DE',
+            $locale,
             timezone: 'Europe/Berlin',
             pattern: 'MMM y'
         );

@@ -8,10 +8,11 @@ use App\Repository\ClownRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PlayDateGiveOffRequestMailer
 {
-    public function __construct(private MailerInterface $mailer, private ClownRepository $clownRepository)
+    public function __construct(private MailerInterface $mailer, private ClownRepository $clownRepository, private TranslatorInterface $translator)
     {
     }
 
@@ -24,7 +25,7 @@ class PlayDateGiveOffRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(...$receivers)
-            ->subject($playDateChangeRequest->getRequestedBy()->getName().' möchte ein Spiel abgeben')
+            ->subject($this->translator->trans('%name% möchte ein Spiel abgeben', ['%name%' => $playDateChangeRequest->getRequestedBy()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/give-off_request.html.twig')
             ->context([
                 'changeRequest' => $playDateChangeRequest,
@@ -40,7 +41,7 @@ class PlayDateGiveOffRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject($playDateChangeRequest->getRequestedTo()->getName().' übernimmt Dein Spiel')
+            ->subject($this->translator->trans('%name% übernimmt Dein Spiel', ['%name%' => $playDateChangeRequest->getRequestedTo()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/give-off_request_accept.html.twig')
             ->context([
                 'changeRequest' => $playDateChangeRequest,
@@ -56,7 +57,7 @@ class PlayDateGiveOffRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject($playDateChangeRequest->getRequestedBy()->getName().' hat seine Anfrage zurückgenommen')
+            ->subject($this->translator->trans('%name% hat seine Anfrage zurückgenommen', ['%name%' => $playDateChangeRequest->getRequestedBy()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/give-off_request_cancel.html.twig')
             ->context([
                 'changeRequest' => $playDateChangeRequest,
@@ -76,7 +77,7 @@ class PlayDateGiveOffRequestMailer
             $email = (new TemplatedEmail())
                 ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
                 ->to(new Address($receiver->getEmail(), $receiver->getName()))
-                ->subject('Endlich mal wieder ein Spiel mit '.$newPartner->getName().'!')
+                ->subject($this->translator->trans('Endlich mal wieder ein Spiel mit %name%!', ['%name%' => $newPartner->getName()]))
                 ->htmlTemplate('emails/play_date_change_request/change_request_inform_partner.html.twig')
                 ->context([
                     'playDate' => $playDate,

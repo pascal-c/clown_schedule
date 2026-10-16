@@ -1,0 +1,3 @@
+'Das ist keine gültige Email': 'Das ist keine gültige Email'
+'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.': 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.'
+'Du musst mindestens {{ limit }} Spieltermine auswählen, um sie zu bündeln.': 'Du musst mindestens {{ limit }} Spieltermine auswählen, um sie zu bündeln.'

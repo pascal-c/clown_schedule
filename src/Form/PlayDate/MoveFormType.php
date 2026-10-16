@@ -13,11 +13,14 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MoveFormType extends AbstractType
 {
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private TranslatorInterface $translator,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -68,7 +71,7 @@ class MoveFormType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Kommentar',
                 'required' => false,
-                'attr' => ['placeholder' => 'Optional: Grund der Verschiebung...'],
+                'attr' => ['placeholder' => $this->translator->trans('Optional: Grund der Verschiebung...')],
             ])
             ->setMethod('PUT')
             ->setAction($this->urlGenerator->generate('play_date_move', ['id' => $options['data']->getId()]))
