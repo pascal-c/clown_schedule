@@ -24,7 +24,7 @@ class ConfigInvoiceManagementFormType extends AbstractType
                 'help' => 'Mit der Rechnungsverwaltung können Clowns-Honorare erfasst und durch eine monatliche Rechnungsansicht werden die Clowns in ihrer Rechnungsstellung bzw. das Büro bei der Kontrolle dieser unterstützt.',
                 'attr' => [
                     'data-action' => 'toggle-by-checkbox#toggleVisibility',
-                    'data-target' => 'toggle-by-checkbox.input',
+                    'data-toggle-by-checkbox-target' => 'input',
                 ],
             ])
             ->add('featureInvoicingClowns', CheckboxType::class, [
@@ -34,7 +34,11 @@ class ConfigInvoiceManagementFormType extends AbstractType
                 'help' => 'Clowns (oder das Büro) können ihre Rechnung als “gestellt” markieren. Clowns können selber einstellen, ob sie im Dashboard und/oder per Email über zu stellende Rechnungen benachrichtigt werden. 
                     Rechnungen, die bis zum 1. des übernächsten Monats nicht als gestellt markiert wurden, erscheinen im Büro-Dashboard in einer Liste nicht gestellter Rechnungen.',
                 'row_attr' => [
-                    'data-target' => 'toggle-by-checkbox.hideme',
+                    'data-toggle-by-checkbox-target' => 'hideme',
+                ],
+                'attr' => [
+                    'data-action' => 'dependent-checkbox#sync',
+                    'data-dependent-checkbox-target' => 'source',
                 ],
             ])
             ->add('featureInvoicePaymentClowns', CheckboxType::class, [
@@ -43,14 +47,17 @@ class ConfigInvoiceManagementFormType extends AbstractType
                 'label_attr' => ['class' => 'checkbox-switch'],
                 'help' => 'Das Büro kann gestellte Clowns-Rechnungen als "bezahlt" markieren. Im Büro-Dashboard wird eine Liste zu bezahlender Rechnungen angezeigt.',
                 'row_attr' => [
-                    'data-target' => 'toggle-by-checkbox.hideme',
+                    'data-toggle-by-checkbox-target' => 'hideme',
+                ],
+                'attr' => [
+                    'data-dependent-checkbox-target' => 'synced',
                 ],
             ])
             ->add('feeLabel', TextType::class, [
                 'required' => true,
                 'label' => 'Bezeichnung für Standard-Honorar',
                 'row_attr' => [
-                    'data-target' => 'toggle-by-checkbox.hideme',
+                    'data-toggle-by-checkbox-target' => 'hideme',
                 ],
             ])
             ->add('alternativeFeeLabel', TextType::class, [
@@ -58,7 +65,7 @@ class ConfigInvoiceManagementFormType extends AbstractType
                 'label' => 'Bezeichnung für alternatives Honorar',
                 'help' => 'Wenn angegeben, kann ein alternatives Honorar angegeben werden. Wenn leer gelassen, wird kein alternatives Honorar angezeigt.',
                 'row_attr' => [
-                    'data-target' => 'toggle-by-checkbox.hideme',
+                    'data-toggle-by-checkbox-target' => 'hideme',
                 ],
             ])
             ->add('save', SubmitType::class, ['label' => 'speichern'])
