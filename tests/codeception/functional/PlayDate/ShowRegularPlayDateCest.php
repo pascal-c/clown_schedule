@@ -48,6 +48,7 @@ class ShowRegularPlayDateCest extends AbstractCest
         $I->see('15:30 - 17:30', Locator::contains('table tr', text: 'Spielzeit'));
         $I->see('Hannah Hosianna | Uwe Popuwe', Locator::contains('table tr', text: 'Spielende Clowns'));
         $I->see('Maria Popia', Locator::contains('table tr', text: 'Springer'));
+        $I->see('?', Locator::contains('table tr', text: 'Honorar'));
         $I->see('nein', Locator::contains('table tr', text: 'wiederkehrend'));
     }
 
@@ -64,5 +65,13 @@ class ShowRegularPlayDateCest extends AbstractCest
         $I->amOnPage('/play_dates/'.$this->playDate->getId());
 
         $I->see('Donnerstags alle 3 Wochen', Locator::contains('table tr', text: 'wiederkehrend'));
+    }
+
+    public function withDeactivatedInvoiceManagement(FunctionalTester $I): void
+    {
+        $this->configFactory->update(featureInvoiceManagementClowns: false);
+        $I->loginAsClown();
+        $I->amOnPage('/play_dates/'.$this->playDate->getId());
+        $I->dontSee('Honorar');
     }
 }

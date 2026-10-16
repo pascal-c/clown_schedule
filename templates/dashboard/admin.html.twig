@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Büro-Dashboard{% endblock %}
+{% block title %}{{ 'Büro-Dashboard'|trans }}{% endblock %}
 
 {% block content %}
     {{ component('dashboard/dates_with_missing_clowns', {currentClown: currentClown, asClown: false}) }}

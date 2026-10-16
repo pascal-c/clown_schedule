@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ 'Dashboard'|trans }}{% endblock %}
 
 {% block content %}
     {{ component('dashboard/dates_with_missing_clowns', {currentClown: currentClown, asClown: true}) }}
@@ -13,10 +13,10 @@
     {{ component('dashboard/next_dates_per_clown', {currentClown: currentClown}) }}
 
     {% if showAvailabilityOverview %}
-    <h4 class="pt-3">Wünsche verwalten</h4>
+    <h4 class="pt-3">{{ 'Wünsche verwalten'|trans }}</h4>
     <ul>
         <li>
-            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">Wünsche {{ nextMonth.label }}</a>
+            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">{{ 'Wünsche'|trans }} {{ nextMonth.label }}</a>
             {% if nextMonthSchedule %}
                 {% if nextMonthSchedule.completed %}
                     Spielplan fertiggestellt ✅
@@ -25,14 +25,14 @@
                 {% endif %} 
             {% else %}
                 {% if nextMonthFilled %}
-                    <span class="text-success">(schon eingetragen)</span>
+                    <span class="text-success">{{ '(schon eingetragen)'|trans }}</span>
                 {% else %}
-                    <span class="text-warning">(noch nix eingetragen)</span>
+                    <span class="text-warning">{{ '(noch nix eingetragen)'|trans }}</span>
                 {% endif %}
             {% endif %}
         </li>
         <li>
-            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">Wünsche {{ afterNextMonth.label }}</a>
+            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">{{ 'Wünsche'|trans }} {{ afterNextMonth.label }}</a>
             {% if afterNextMonthSchedule %}
                 {% if afterNextMonthSchedule.completed %}
                     Spielplan fertiggestellt ✅
@@ -41,9 +41,9 @@
                 {% endif %} 
             {% else %}
                 {% if afterNextMonthFilled %}
-                    <span class="text-success">(schon eingetragen)</span>
+                    <span class="text-success">{{ '(schon eingetragen)'|trans }}</span>
                 {% else %}
-                    <span class="text-warning">(noch nix eingetragen)</span>
+                    <span class="text-warning">{{ '(noch nix eingetragen)'|trans }}</span>
                 {% endif %}
             {% endif %}
         </li>
@@ -51,8 +51,8 @@
     {% endif %}
 
     {% if not feedbackUrl is empty %}
-        <h4 class="pt-3">Feedback zu dieser App</h4>
-        <p>Der Entwickler freut sich über Feedback!</p>
-        <a href="{{ feedbackUrl }}" target="_blank">Hier Wünsche und Anregungen eintragen</a>
+        <h4 class="pt-3">{{ 'Feedback zu dieser App'|trans }}</h4>
+        <p>{{ 'Der Entwickler freut sich über Feedback!'|trans }}</p>
+        <a href="{{ feedbackUrl }}" target="_blank">{{ 'Hier Wünsche und Anregungen eintragen'|trans }}</a>
     {% endif %}
 {% endblock %}

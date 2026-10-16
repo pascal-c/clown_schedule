@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Config;
 
 use App\Entity\Config;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -69,15 +68,6 @@ class ConfigGeneralFormType extends AbstractType
                 'row_attr' => [
                     'data-target' => 'toggle-by-checkbox.hideme',
                 ],
-            ])
-            ->add('feeLabel', TextType::class, [
-                'required' => true,
-                'label' => 'Bezeichnung für Standard-Honorar',
-            ])
-            ->add('alternativeFeeLabel', TextType::class, [
-                'required' => false,
-                'label' => 'Bezeichnung für alternatives Honorar',
-                'help' => 'Wenn angegeben, kann ein alternatives Honorar angegeben werden. Wenn leer gelassen, wird kein alternatives Honorar angezeigt.',
             ])
             ->add('save', SubmitType::class, ['label' => 'speichern'])
             ->setMethod('PUT');

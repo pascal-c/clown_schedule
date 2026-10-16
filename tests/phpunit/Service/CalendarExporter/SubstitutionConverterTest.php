@@ -50,7 +50,13 @@ final class SubstitutionConverterTest extends TestCase
     public function testGetSummary(): void
     {
         $substitution = (new Substitution())->setDaytime(TimeSlotPeriodInterface::AM);
-        $this->translator->method('trans')->with(TimeSlotPeriodInterface::AM)->willReturn('matin');
+        $this->translator->method('trans')->willReturnCallback(
+            fn (string $id, array $parameters = []): string => match ($id) {
+                TimeSlotPeriodInterface::AM => 'matin',
+                'Springer %daytime%' => 'Springer '.$parameters['%daytime%'],
+                default => $id,
+            }
+        );
 
         $summary = $this->converter->getSummary($substitution);
 
@@ -63,10 +69,13 @@ final class SubstitutionConverterTest extends TestCase
         $playDate2 = (new PlayDate())->setTitle('Spiel 2')->setDaytime(TimeSlotPeriodInterface::ALL);
         $substitution = new Substitution();
         $this->playDateRepository->method('findConfirmedByTimeSlotPeriod')->willReturn([$playDate1, $playDate2]);
-        $this->translator->method('trans')->willReturnMap([
-            ['all', 'geht den ganzen Tag'],
-            ['pm', 'nachmittags'],
-        ]);
+        $this->translator->method('trans')->willReturnCallback(
+            fn (string $id): string => match ($id) {
+                'all' => 'geht den ganzen Tag',
+                'pm' => 'nachmittags',
+                default => $id,
+            }
+        );
         $description = $this->converter->getDescription($substitution);
 
         $this->assertSame("Springer für:\nSpiel 1 - nachmittags\nSpiel 2 - geht den ganzen Tag", $description);

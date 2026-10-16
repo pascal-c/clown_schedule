@@ -71,11 +71,11 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
                 $this->mailer->sendTakeOverRequestMail($playDateChangeRequest, $formData['comment']);
             }
 
-            $this->addFlash('success', 'Deine Übernahme-Anfrage wurde erfolgreich gestellt. Alle angefragten Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!');
+            $this->addFlash('success', $this->translateMessage('Deine Übernahme-Anfrage wurde erfolgreich gestellt. Alle angefragten Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Irgendwie hat das nicht geklappt. Tut mir leid!');
+            $this->addFlash('warning', $this->translateMessage('Irgendwie hat das nicht geklappt. Tut mir leid!'));
         }
 
         return $this->render('play_date_change_request/new_take-over_request.html.twig', [
@@ -93,7 +93,7 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -107,7 +107,7 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
 
             $this->mailer->sendInformPartnersAboutChangeMail($playDateChangeRequest);
 
-            $this->addFlash('success', 'Super! Du hast den Spieltermin übernommen, vielen Dank!');
+            $this->addFlash('success', $this->translateMessage('Super! Du hast den Spieltermin übernommen, vielen Dank!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -128,7 +128,7 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Anfrage ist bereits geschlossen worden.');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Die Anfrage ist bereits geschlossen worden.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -140,7 +140,7 @@ class PlayDateTakeOverRequestController extends AbstractProtectedController
             $this->playDateChangeService->close($playDateChangeRequest);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Ok! Anfrage wurde erfolgreich geschlossen!');
+            $this->addFlash('success', $this->translateMessage('Ok! Anfrage wurde erfolgreich geschlossen!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }

@@ -1,21 +1,21 @@
 <p>
-    Hallo {{ swapRequest.requestedBy.name }},
+    {{ 'Hallo'|trans }} {{ swapRequest.requestedBy.name }},
 </p>
 
 <p>
-    Gute Neuigkeiten!<br />
-    {{ swapRequest.requestedTo.name }} hat Deine Tauschanfrage akzeptiert! Es ging um:
+    {{ 'Gute Neuigkeiten!'|trans }}<br />
+    {{ '%name% hat Deine Tauschanfrage akzeptiert! Es ging um:'|trans({'%name%': swapRequest.requestedTo.name}) }}
 </p>
 
 <p>
     {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
-    gegen:<br />
+    {{ 'gegen:'|trans }}<br />
     {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
 </p>
 
 {% if personalComment is not empty %}
     <p>
-        Persönliche Nachricht von {{ swapRequest.requestedTo.name }}:
+        {{ 'Persönliche Nachricht von %name%:'|trans({'%name%': swapRequest.requestedTo.name}) }}
     </p>
     <p>
         <i>{{ personalComment|nl2br }}</i>
@@ -23,11 +23,11 @@
 {% endif %}
 
 <p>
-    Ich habe den Tausch für Euch in der Spielplan App schon durchgeführt und wünsche Euch ein schönes Spiel!<br />
-    Hier kannste nochmal gucken: <a href="{{ url('dashboard') }}">Dashboard</a>.<br />
+    {{ 'Ich habe den Tausch für Euch in der Spielplan App schon durchgeführt und wünsche Euch ein schönes Spiel!'|trans }}<br />
+    {{ 'Hier kannste nochmal gucken:'|trans }} <a href="{{ url('dashboard') }}">{{ 'Dashboard'|trans }}</a>.<br />
 </p>
 
 <p>
     <br />
-    Deine Dich liebende Spielplan App
+    {{ 'Deine Dich liebende Spielplan App'|trans }}
 </p>

@@ -4,15 +4,20 @@ namespace App\Form;
 
 use App\Entity\Invoice;
 use App\Service\AuthService;
+use App\Service\ConfigService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InvoiceFormType extends AbstractType
 {
-    public function __construct(protected AuthService $authService)
-    {
+    public function __construct(
+        protected AuthService $authService,
+        private ConfigService $configService,
+        private TranslatorInterface $translator,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -28,7 +33,7 @@ class InvoiceFormType extends AbstractType
                     'label' => '> Rechnung als gestellt markieren',
                     'attr' => [
                         'class' => $buttonClass,
-                        'title' => 'Die Rechnung wurde gestellt und verschickt.',
+                        'title' => $this->translator->trans('Die Rechnung wurde gestellt und verschickt.'),
                     ],
                 ]);
                 break;
@@ -37,15 +42,15 @@ class InvoiceFormType extends AbstractType
                     'label' => '< Rechnung als offen markieren',
                     'attr' => [
                         'class' => $buttonClass,
-                        'title' => 'Ich habe mich vertan, die Rechnung ist doch noch nicht gestellt.',
+                        'title' => $this->translator->trans('Ich habe mich vertan, die Rechnung ist doch noch nicht gestellt.'),
                     ],
                 ]);
-                if ($isAdmin) {
+                if ($isAdmin && $this->configService->hasFeatureInvoicePaymentClowns()) {
                     $builder->add('mark_paid', SubmitType::class, [
                         'label' => '> Rechnung als bezahlt markieren',
                         'attr' => [
                             'class' => $buttonClass,
-                            'title' => 'Ich habe die Rechnung erhalten und bezahlt.',
+                            'title' => $this->translator->trans('Ich habe die Rechnung erhalten und bezahlt.'),
                         ],
                     ]);
                 }
@@ -56,7 +61,7 @@ class InvoiceFormType extends AbstractType
                         'label' => '< Rechnung als doch nicht bezahlt markieren',
                         'attr' => [
                             'class' => $buttonClass,
-                            'title' => 'Ich habe mich vertan, die Rechnung ist doch noch nicht bezahlt.',
+                            'title' => $this->translator->trans('Ich habe mich vertan, die Rechnung ist doch noch nicht bezahlt.'),
                         ],
                     ]);
                 }

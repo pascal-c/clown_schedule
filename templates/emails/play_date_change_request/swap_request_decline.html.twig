@@ -1,20 +1,20 @@
 <p>
-    Hallo {{ swapRequest.requestedBy.name }},
+    {{ 'Hallo'|trans }} {{ swapRequest.requestedBy.name }},
 </p>
 
 <p>
-    {{ swapRequest.requestedTo.name }} hat Deine Tauschanfrage leider abgelehnt! Es ging um:
+    {{ '%name% hat Deine Tauschanfrage leider abgelehnt! Es ging um:'|trans({'%name%': swapRequest.requestedTo.name}) }}
 </p>
 
 <p>
     {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
-    gegen:<br />
+    {{ 'gegen:'|trans }}<br />
     {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
 </p>
 
 {% if personalComment is not empty %}
     <p>
-        Persönliche Nachricht von {{ swapRequest.requestedTo.name }}:
+        {{ 'Persönliche Nachricht von %name%:'|trans({'%name%': swapRequest.requestedTo.name}) }}
     </p>
     <p>
         <i>{{ personalComment|nl2br }}</i>
@@ -22,15 +22,15 @@
 {% endif %}
 
 <p>
-    Nicht traurig sein! Halb so wild!
+    {{ 'Nicht traurig sein! Halb so wild!'|trans }}
 </p>
 
 <p>
-    Es findet sich bestimmt ein anderer Clown, um diesen Termin zu übernehmen. Willst Du gleich mal gucken?
-     <a href="{{ url('play_date_show', {id: swapRequest.playDateToGiveOff.id }) }}">Neue Tauschanfrage stellen</a><br />
+    {{ 'Es findet sich bestimmt ein anderer Clown, um diesen Termin zu übernehmen. Willst Du gleich mal gucken?'|trans }}
+     <a href="{{ url('play_date_show', {id: swapRequest.playDateToGiveOff.id }) }}">{{ 'Neue Tauschanfrage stellen'|trans }}</a><br />
 </p>
 
 <p>
     <br />
-    Deine Dich liebende Spielplan App
+    {{ 'Deine Dich liebende Spielplan App'|trans }}
 </p>

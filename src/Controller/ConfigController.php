@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Form\ConfigCalculationFormType;
-use App\Form\ConfigGeneralFormType;
+use App\Form\Config\ConfigCalculationFormType;
+use App\Form\Config\ConfigGeneralFormType;
+use App\Form\Config\ConfigInvoiceManagementFormType;
 use App\Repository\ConfigRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,7 @@ class ConfigController extends AbstractProtectedController
         $section = $request->query->get('section', 'general');
         $formType = match ($section) {
             'calculation' => ConfigCalculationFormType::class,
+            'invoiceManagement' => ConfigInvoiceManagementFormType::class,
             default => ConfigGeneralFormType::class,
         };
         $form = $this->createForm($formType, $this->configRepository->find(), [
@@ -33,11 +35,11 @@ class ConfigController extends AbstractProtectedController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
-            $this->addFlash('success', 'Yep! Einstellungen wurden gespeichert.');
+            $this->addFlash('success', $this->translateMessage('Yep! Einstellungen wurden gespeichert.'));
 
             return $this->redirect($this->generateUrl('config', ['section' => $section]));
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Hach! Das hat irgendwie nicht funktioniert.');
+            $this->addFlash('warning', $this->translateMessage('Hach! Das hat irgendwie nicht funktioniert.'));
         }
 
         return $this->render('config/edit.html.twig', [

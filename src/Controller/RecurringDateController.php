@@ -58,8 +58,10 @@ class RecurringDateController extends AbstractProtectedController
             $dates = $recurringDate->getPlayDates()->map(fn (PlayDate $playDate) => $playDate->getDate()->format('d.m.Y'));
             $this->addFlash(
                 'success',
-                'Wiederkehrender Termin wurde erfolgreich gespeichert. Es wurden '.$recurringDate->getPlayDates()->count().' Spieltermine angelegt: '.
-                implode(', ', $dates->toArray()),
+                $this->translateMessage(
+                    'Wiederkehrender Termin wurde erfolgreich gespeichert. Es wurden %count% Spieltermine angelegt: %dates%',
+                    ['%count%' => $recurringDate->getPlayDates()->count(), '%dates%' => implode(', ', $dates->toArray())]
+                ),
             );
 
             if ($venue) {
@@ -70,7 +72,7 @@ class RecurringDateController extends AbstractProtectedController
 
 
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Termin konnte nicht angelegt werden.');
+            $this->addFlash('warning', $this->translateMessage('Termin konnte nicht angelegt werden.'));
         }
 
         return $this->render('recurring_date/new.html.twig', [

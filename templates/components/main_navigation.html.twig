@@ -1,8 +1,8 @@
 {% if active != 'none' %}
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">Clown Spielplan</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="/">{{ 'Clown Spielplan'|trans }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ 'Toggle navigation'|trans }}">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -14,14 +14,14 @@
         {% endfor %}
         {% if currentClown.isAdmin %}
             <li class="nav-item">
-                <a class="nav-link {{ active == 'config' ? 'active' }}" {{ active == 'config' ? 'aria-current="page"' }} href="{{ path('config') }}" title="Einstellungen"><i class="bi bi-gear"></i> Einstellungen</a>
+                <a class="nav-link {{ active == 'config' ? 'active' }}" {{ active == 'config' ? 'aria-current="page"' }} href="{{ path('config') }}" title="{{ 'Einstellungen'|trans }}"><i class="bi bi-gear"></i> {{ 'Einstellungen'|trans }}</a>
             </li>
         {% endif %}
         </ul>
 
         <span class="navbar-text ms-auto">
-            <a href="{{ path('me') }}" title="Mein Profil" class="text-decoration-none">{{ currentClown.name }}</a>
-            <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}" title="Abmelden"><i class="bi bi-box-arrow-right"></i></a>
+            <a href="{{ path('me') }}" title="{{ 'Mein Profil'|trans }}" class="text-decoration-none">{{ currentClown.name }}</a>
+            <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}" title="{{ 'Abmelden'|trans }}"><i class="bi bi-box-arrow-right"></i></a>
         </span>
     </div> 
 </nav>    

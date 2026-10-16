@@ -1,9 +1,9 @@
 {% extends "venue/base.html.twig" %}
 
 {% block innercontent %}
-    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'details'}) }}
+    {{ component('venue/details_navigation', {venue: venue, active: 'details'}) }}
 
-    <h4 class="pt-3">Spielort bearbeiten</h4>
+    <h4 class="pt-3">{{ 'Spielort bearbeiten'|trans }}</h4>
     <div data-controller="toggle-by-checkbox">
         {{ form(form) }}
     </div>

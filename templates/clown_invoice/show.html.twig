@@ -1,9 +1,9 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Rechnungsansicht{% endblock %}
+{% block title %}{{ 'Rechnungsansicht'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Rechnungsansicht {{ clown.name }} {{ month.label }}</h4>
+    <h4 class="pt-3">{{ 'Rechnungsansicht'|trans }} {{ clown.name }} {{ month.label }}</h4>
 
     {{ component('schedule_navigation', { active: 'clown_invoice' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_invoice_show', urlParams: {clownId: clown.id} }) }}
@@ -12,15 +12,15 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Spieltermin</th>
-                <th>Bezeichnung</th>
-                <th>Datum</th>
+                <th>{{ 'Spieltermin'|trans }}</th>
+                <th>{{ 'Bezeichnung'|trans }}</th>
+                <th>{{ 'Datum'|trans }}</th>
                 <th>{{ config.feeLabel}}</th>
 
-                {% if config.featureAlternativeFeeActive %}
+                {% if config.featureAlternativeFee %}
                     <th>{{ config.alternativeFeeLabel}}</th>
                 {% endif %}
-                <th>Kilometergeld</th>
+                <th>{{ 'Kilometergeld'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -42,48 +42,26 @@
                 </td>
                 {% if playDate.fee %}
                     <td>{{ playDate.fee.feeStandard|format_currency('EUR') }}</td>
-                    {% if config.featureAlternativeFeeActive %}<td>{{ playDate.fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
+                    {% if config.featureAlternativeFee %}<td>{{ playDate.fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
                     <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: playDate.fee}) }}</td>
                 {% else %}
                     <td>?</td>
-                    {% if config.featureAlternativeFeeActive %}<td>?</td>{% endif %}
+                    {% if config.featureAlternativeFee %}<td>?</td>{% endif %}
                     <td>?</td>
                 {% endif %}
             </tr>
             {% endfor %}
 
             <tr>
-                <th>Summe</th>
-                <th>Achtung, dient nur der Orientierung!</th>
+                <th>{{ 'Summe'|trans }}</th>
+                <th>{{ 'Achtung, dient nur der Orientierung!'|trans }}</th>
                 <th>{{ month.label }}</th>
                 <th>{{ feeStandardSum|format_currency('EUR') }}</th>
-                {% if config.featureAlternativeFeeActive %}<th>{{ feeAlternativeSum|format_currency('EUR') }}</th>{% endif %}
+                {% if config.featureAlternativeFee %}<th>{{ feeAlternativeSum|format_currency('EUR') }}</th>{% endif %}
                 <th>{{ kilometersFeeSum|format_currency('EUR') }}</th>
             </tr>
         </tbody>
     </table>
     
-    {% if invoice %}
-        <h5 class="pt-2"><i class="bi bi-receipt"></i> Rechnungsstatus</h5>
-        <p class="text-muted">
-            
-            <span class="{{ invoice.open ? 'badge bg-secondary'}}">Rechnung offen</span> > 
-            <span class="{{ invoice.issued ? 'badge bg-secondary'}}">Rechnung gestellt</span> > 
-            <span class="{{ invoice.paid ? 'badge bg-secondary'}}">Rechnung bezahlt</span> 
-            </span>
-        </p>
-
-        {% if invoice.open %}
-            <p>
-                Die Rechnung wartet darauf, gestellt zu werden. Bitte klicke auf "Rechnung als gestellt markieren", sobald die Rechnung erstellt und ans Büro gesendet wurde.
-            </p>
-        {% elseif invoice.issued %}
-            <p>Die Rechnung wurde gestellt. Sie wartet darauf, bezahlt zu werden.</p>
-            <p>Du hast Dich vertan und die Rechnung wurde noch gar nicht gestellt? Dann klicke auf "Rechnung als offen markieren".</p>
-        {% elseif invoice.paid %}
-            <p>Die Rechnung wurde bezahlt und ist abgeschlossen.</p>
-        {% endif %}
-
-        {{ form(invoiceForm) }}
-    {% endif %}
+    {{ component('clown_invoice/status', {month: month, clown: clown})}}
 {% endblock %}

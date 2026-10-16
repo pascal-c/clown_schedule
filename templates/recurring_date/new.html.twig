@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Wiederkehrenden Termin anlegen</h4>
+    <h4 class="pt-3">{{ 'Wiederkehrenden Termin anlegen'|trans }}</h4>
 
     {{ form_start(form) }}
      <fieldset class="mb-3">
@@ -12,7 +12,7 @@
         </div>
     </fieldset>
     <fieldset class="mb-3">
-        <legend class="col-form-label">Zeitraum</legend>
+        <legend class="col-form-label">{{ 'Zeitraum'|trans }}</legend>
         <div class="row align-items-center">
             <div class="col-auto">{{ form_label(form.startDate)}}</div>
             <div class="col-auto">{{ form_widget(form.startDate)}}</div>
@@ -21,19 +21,19 @@
         </div>
     </fieldset>
     <fieldset class="mb-3" data-controller="recurring-date-rhythm">
-        <legend class="col-form-label">Rhythmus</legend>
+        <legend class="col-form-label">{{ 'Rhythmus'|trans }}</legend>
         {{ form_widget(form.rhythm, {'attr': {'data-action': 'click->recurring-date-rhythm#setRhythmTexts'}}) }}
         <div class="row align-items-center">
-            <div class="col-auto" id="rhythm_start_text">jeden</div>
+            <div class="col-auto" id="rhythm_start_text">{{ 'jeden'|trans }}</div>
             <div class="col-auto">{{ form_widget(form.every)}}</div>
             <div class="col-auto" id="rhythm_middle_text"></div>
             <div class="col-auto">{{ form_widget(form.dayOfWeek) }}</div>
-            <div class="col-auto" id="rhythm_end_text">im Monat</div>
+            <div class="col-auto" id="rhythm_end_text">{{ 'im Monat'|trans }}</div>
         </div>
     </fieldset>
     {{ form_row(form.daytime) }}
     <fieldset class="mb-3">
-        <legend class="col-form-label">Uhrzeit</legend>
+        <legend class="col-form-label">{{ 'Uhrzeit'|trans }}</legend>
         <div class="row align-items-center">
             <div class="col-auto">{{ form_label(form.meetingTime) }}</div>
             <div class="col-auto">{{ form_widget(form.meetingTime) }}</div>

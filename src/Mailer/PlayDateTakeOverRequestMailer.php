@@ -8,10 +8,11 @@ use App\Repository\ClownRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PlayDateTakeOverRequestMailer
 {
-    public function __construct(private MailerInterface $mailer, private ClownRepository $clownRepository)
+    public function __construct(private MailerInterface $mailer, private ClownRepository $clownRepository, private TranslatorInterface $translator)
     {
     }
 
@@ -24,7 +25,7 @@ class PlayDateTakeOverRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(...$receivers)
-            ->subject('Möchtest Du ein Spiel übernehmen?')
+            ->subject($this->translator->trans('Möchtest Du ein Spiel übernehmen?'))
             ->htmlTemplate('emails/play_date_change_request/take-over_request.html.twig')
             ->context([
                 'changeRequest' => $playDateChangeRequest,
@@ -43,7 +44,7 @@ class PlayDateTakeOverRequestMailer
             $email = (new TemplatedEmail())
                 ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
                 ->to(new Address($receiver->getEmail(), $receiver->getName()))
-                ->subject('Endlich mal wieder ein Spiel mit '.$newPartner->getName().'!')
+                ->subject($this->translator->trans('Endlich mal wieder ein Spiel mit %name%!', ['%name%' => $newPartner->getName()]))
                 ->htmlTemplate('emails/play_date_change_request/change_request_inform_partner.html.twig')
                 ->context([
                     'playDate' => $playDate,

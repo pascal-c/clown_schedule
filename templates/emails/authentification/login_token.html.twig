@@ -1,12 +1,12 @@
 <p>
-    Hallo {{ clown.name }},
+    {{ 'Hallo'|trans }} {{ clown.name }},
 </p>
 
 <p>
-    Hier Dein Anmeldelink für den Clown Spielplan: 
+    {{ 'Hier Dein Anmeldelink für den Clown Spielplan:'|trans }}
     <a href="{{ url('login_by_token', {token: login_token}) }}">{{ url('login_by_token', {token: login_token}) }}</a>
 </p>
 
 <p>
-    Deine Dich liebende Spielplan App 
+    {{ 'Deine Dich liebende Spielplan App'|trans }}
 </p>

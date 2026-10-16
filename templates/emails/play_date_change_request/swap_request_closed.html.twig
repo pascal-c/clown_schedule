@@ -1,25 +1,25 @@
 <p>
-    Hallo {{ swapRequest.requestedBy.name }}, hallo {{ swapRequest.requestedTo.name }},
+    {{ 'Hallo %name%, hallo %otherName%,'|trans({'%name%': swapRequest.requestedBy.name, '%otherName%': swapRequest.requestedTo.name}) }}
 </p>
 
 <p>
-    die Tauschanfrage von {{ swapRequest.requestedBy.name }} hat sich erledigt!<br />
-    Es ging um:
+    {{ 'Die Tauschanfrage von %name% hat sich erledigt!'|trans({'%name%': swapRequest.requestedBy.name}) }}<br />
+    {{ 'Es ging um:'|trans }}
 </p>
 
 <p>
     {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
-    gegen:<br />
+    {{ 'gegen:'|trans }}<br />
     {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
 </p>
 
 <p>
-    Ich kann leider nicht mehr genau sagen, warum, aber die Tauschanfrage wurde geschlossen.<br />
-    Wahrscheinlich wurde der Termin schon von einem anderen Clown übernommen oder getauscht oder es wurden anderweitige Änderungen vorgenommen, die einen Tausch unmöglich machen.<br />
-    Ihr könnt selber mal gucken: <a href="{{ url('dashboard') }}">Dashboard</a>.<br />
+    {{ 'Ich kann leider nicht mehr genau sagen, warum, aber die Tauschanfrage wurde geschlossen.'|trans }}<br />
+    {{ 'Wahrscheinlich wurde der Termin schon von einem anderen Clown übernommen oder getauscht oder es wurden anderweitige Änderungen vorgenommen, die einen Tausch unmöglich machen.'|trans }}<br />
+    {{ 'Ihr könnt selber mal gucken:'|trans }} <a href="{{ url('dashboard') }}">{{ 'Dashboard'|trans }}</a>.<br />
 </p>
 
 <p>
     <br />
-    Eure verliebte Spielplan App
+    {{ 'Eure verliebte Spielplan App'|trans }}
 </p>

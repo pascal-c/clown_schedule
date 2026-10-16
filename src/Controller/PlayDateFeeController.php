@@ -28,7 +28,7 @@ class PlayDateFeeController extends AbstractProtectedController
         $this->adminOnly();
 
         if (!$playDate->isPaid()) {
-            throw $this->createAccessDeniedException('Dieser Spieltermin ist unbezahlt.');
+            throw $this->createAccessDeniedException($this->translateMessage('Dieser Spieltermin ist unbezahlt.'));
         }
 
         $fee = $playDate->getPlayDateFee() ?? new Fee();
@@ -45,11 +45,11 @@ class PlayDateFeeController extends AbstractProtectedController
             $this->entityManager->persist($fee);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Yes, Honorar gespeichert!');
+            $this->addFlash('success', $this->translateMessage('Yes, Honorar gespeichert!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Das stimmt was nicht!');
+            $this->addFlash('warning', $this->translateMessage('Das stimmt was nicht!'));
         }
 
         return $this->render('play_date/fee/edit.html.twig', [
