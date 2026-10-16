@@ -10,5 +10,10 @@
                 Spielplanberechnung
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ section == 'invoiceManagement' ? 'active' }}" {{ section == 'invoiceManagement' ? 'aria-current="page"' }} href="{{ path('config', {section: 'invoiceManagement'}) }}">
+                Rechnungsverwaltung
+            </a>
+        </li>
     </ul>
 </nav>

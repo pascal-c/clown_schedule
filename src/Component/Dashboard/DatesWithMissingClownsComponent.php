@@ -23,6 +23,7 @@ class DatesWithMissingClownsComponent
     public array $dates = [];
     public DateTimeImmutable $until;
     public ?string $message = null;
+    public bool $isAdminDashboard;
 
     public function __construct(
         private PlayDateRepository $playDateRepository,
@@ -39,6 +40,7 @@ class DatesWithMissingClownsComponent
         $this->currentClown = $currentClown;
         $this->message = $asClown ? null : $this->message();
         $this->until = $this->until();
+        $this->isAdminDashboard = !$asClown;
 
         $playDates = $this->playDateRepository->futurePlayDatesWithMissingClowns($this->until);
         $playDates = array_filter(

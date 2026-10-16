@@ -18,9 +18,8 @@ use App\Form\PlayDate\TrainingFormType;
 use App\Guard\PlayDateGuard;
 use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
-use App\Repository\ScheduleRepository;
 use App\Repository\VenueRepository;
-use App\Service\PlayDateHistoryService;
+use App\Service\ConfigService;
 use App\Service\PlayDateService;
 use App\Service\RecurringDateService;
 use App\Service\Scheduler\TrainingAssigner;
@@ -42,13 +41,12 @@ class PlayDateController extends AbstractProtectedController
     public function __construct(
         ManagerRegistry $doctrine,
         private PlayDateRepository $playDateRepository,
-        private ScheduleRepository $scheduleRepository,
-        private PlayDateHistoryService $playDateHistoryService,
         private TimeService $timeService,
         private TranslatorInterface $translator,
         private TrainingAssigner $trainingAssigner,
         private PlayDateViewController $playDateViewController,
         private ConfigRepository $configRepository,
+        private ConfigService $configService,
         private RecurringDateService $recurringDateService,
         private PlayDateGuard $playDateGuard,
         private PlayDateService $playDateService,
@@ -406,7 +404,7 @@ class PlayDateController extends AbstractProtectedController
 
     private function redirectAfterSuccess(PlayDate $playDate, ?Venue $venue)
     {
-        if ($playDate->isSpecial() && !$playDate->getPlayDateFee()) {
+        if ($this->configService->hasFeatureInvoiceManagementClowns() && $playDate->isSpecial() && !$playDate->getPlayDateFee()) {
             return $this->redirectToRoute('play_date_fee_edit', ['id' => $playDate->getId()]);
         } elseif (isset($venue)) {
             return $this->redirectToRoute('venue_play_date_index', ['id' => $venue->getId()]);

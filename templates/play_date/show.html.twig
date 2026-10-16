@@ -77,12 +77,12 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if playDate.isPaid %}
+            {% if playDate.isPaid and config.featureInvoiceManagementClowns %}
                 <tr>
                     <th>Honorar</th>
                     <td>
                         {% if playDate.fee %}
-                            {{ playDate.fee.feeStandard|format_currency('EUR') }} {{ config.featureAlternativeFeeActive ? "/ #{playDate.fee.feeAlternative|format_currency('EUR')}" }}
+                            {{ playDate.fee.feeStandard|format_currency('EUR') }} {{ config.featureAlternativeFee ? "/ #{playDate.fee.feeAlternative|format_currency('EUR')}" }}
                             {% if currentClown.isAdmin and playDate.playDateFee %}
                                 {{ include('_shared/_edit_link.html.twig', {url: path('play_date_fee_edit', {id: playDate.id}), title: "Honorar bearbeiten"}) }}
                             {% else %}
