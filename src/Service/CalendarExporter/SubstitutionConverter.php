@@ -27,7 +27,9 @@ class SubstitutionConverter
 
     public function getSummary(Substitution $substitution): string
     {
-        return "Springer {$this->translator->trans($substitution->getDaytime())}";
+        return $this->translator->trans('Springer %daytime%', [
+            '%daytime%' => $this->translator->trans($substitution->getDaytime()),
+        ]);
     }
 
     public function getDescription(Substitution $substitution): string
@@ -41,8 +43,7 @@ class SubstitutionConverter
             )
         );
 
-        return
-            "Springer für:\n$playDatesString";
+        return $this->translator->trans('Springer für:')."\n$playDatesString";
 
     }
 

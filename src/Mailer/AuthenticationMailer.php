@@ -7,10 +7,11 @@ use App\Service\AuthService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationMailer
 {
-    public function __construct(private MailerInterface $mailer, private AuthService $authService)
+    public function __construct(private MailerInterface $mailer, private AuthService $authService, private TranslatorInterface $translator)
     {
     }
 
@@ -20,7 +21,7 @@ class AuthenticationMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($recipient->getEmail(), $recipient->getName()))
-            ->subject('Einladung zur Spielplan App')
+            ->subject($this->translator->trans('Einladung zur Spielplan App'))
             ->htmlTemplate('emails/authentification/login_invitation.html.twig')
             ->context([
                 'recipient' => $recipient,
@@ -37,7 +38,7 @@ class AuthenticationMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
-            ->subject('Dein Anmeldelink für den Spielplan')
+            ->subject($this->translator->trans('Dein Anmeldelink für den Spielplan'))
             ->htmlTemplate('emails/authentification/login_token.html.twig')
             ->context([
                 'clown' => $clown,
@@ -53,7 +54,7 @@ class AuthenticationMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($clown->getEmail(), $clown->getName()))
-            ->subject('Dein Link zum Ändern Deines Passwortes für den Clown Spielplan')
+            ->subject($this->translator->trans('Dein Link zum Ändern Deines Passwortes für den Clown Spielplan'))
             ->htmlTemplate('emails/authentification/change_password_link.html.twig')
             ->context([
                 'clown' => $clown,

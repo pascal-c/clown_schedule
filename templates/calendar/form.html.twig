@@ -13,7 +13,7 @@
     <ul class="list-group">
         {% for type in types %}
         <li class="list-group-item">
-            {{ type.label }}:<br />
+            {{ type.label|trans }}:<br />
             {% if currentClown.getCalendar(type) %}
                 <span class="fw-lighter"><i class="bi bi-exclamation-triangle"></i> <i>{{ 'Achtung: Der Link ist öffentlich. Bitte nicht weitergeben!'|trans }}</i><br /><br /></span>
                 {% set url=url('calendar_download_for_subscription', {uuid: currentClown.getCalendar(type).uuid}) %}
@@ -45,7 +45,7 @@
         <li class="list-group-item">
             <form action="{{ path('calendar_download') }}">
                 <input type="hidden" name="type" value="{{ type.value }}">
-                {{ type.label }}<br />
+                {{ type.label|trans }}<br />
                 <button class="btn btn-link" type="submit">{{ 'Jetzt herunterladen'|trans }}</a>
             </form>
         </li>

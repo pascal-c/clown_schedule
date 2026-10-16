@@ -57,11 +57,11 @@ class SubstitutionController extends AbstractProtectedController
             $this->entityManager->persist($substitution);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Springer:in wurde erfolgreich gespeichert.');
+            $this->addFlash('success', $this->translateMessage('Springer:in wurde erfolgreich gespeichert.'));
 
             return $this->redirectToRoute('schedule');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Springer:in konnte nicht gespeichert werden.');
+            $this->addFlash('warning', $this->translateMessage('Springer:in konnte nicht gespeichert werden.'));
         }
 
         return $this->render('substitution/edit.html.twig', [

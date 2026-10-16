@@ -48,15 +48,15 @@ class ClownController extends AbstractProtectedController
             $this->entityManager->persist($clown);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Clown wurde erfolgreich angelegt.');
+            $this->addFlash('success', $this->translateMessage('Clown wurde erfolgreich angelegt.'));
             if ($form['send_invitation_email']->getData()) {
                 $this->mailer->sendInvitationMail($clown, $this->getCurrentClown());
-                $this->addFlash('success', 'Ich habe auch eine Einladungsemail an den Clown geschickt.');
+                $this->addFlash('success', $this->translateMessage('Ich habe auch eine Einladungsemail an den Clown geschickt.'));
             }
 
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Clown konnte nicht angelegt werden.');
+            $this->addFlash('warning', $this->translateMessage('Clown konnte nicht angelegt werden.'));
         }
 
         return $this->render('clown/new.html.twig', [
@@ -70,7 +70,7 @@ class ClownController extends AbstractProtectedController
     {
         $this->adminOnly();
         $this->mailer->sendInvitationMail($clown, $this->getCurrentClown());
-        $this->addFlash('success', sprintf('Alles klar! Ich habe eine Einladungsemail an %s geschickt.', $clown->getName()));
+        $this->addFlash('success', $this->translateMessage('Alles klar! Ich habe eine Einladungsemail an %name% geschickt.', ['%name%' => $clown->getName()]));
 
         return $this->redirectToRoute('clown_index');
     }
@@ -84,11 +84,11 @@ class ClownController extends AbstractProtectedController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Deine Daten wurden erfolgreich gespeichert.');
+            $this->addFlash('success', $this->translateMessage('Deine Daten wurden erfolgreich gespeichert.'));
 
             return $this->redirectToRoute('me');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Uuups, da ist etwas schiefgelaufen. Deine Daten konnten nicht gespeichert werden.');
+            $this->addFlash('warning', $this->translateMessage('Uuups, da ist etwas schiefgelaufen. Deine Daten konnten nicht gespeichert werden.'));
         }
 
         return $this->render('clown/me.html.twig', [
@@ -125,11 +125,11 @@ class ClownController extends AbstractProtectedController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Clown wurde erfolgreich gespeichert.');
+            $this->addFlash('success', $this->translateMessage('Clown wurde erfolgreich gespeichert.'));
 
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Clown konnte nicht gespeichert werden.');
+            $this->addFlash('warning', $this->translateMessage('Clown konnte nicht gespeichert werden.'));
         }
 
         return $this->render('clown/edit.html.twig', [
@@ -152,11 +152,11 @@ class ClownController extends AbstractProtectedController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Gesperrte Clowns für '.$clown->getName().' wurden erfolgreich gespeichert.');
+            $this->addFlash('success', $this->translateMessage('Gesperrte Clowns für %name% wurden erfolgreich gespeichert.', ['%name%' => $clown->getName()]));
 
             return $this->redirectToRoute('clown_index');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Gesperrte Clowns konnten nicht gespeichert werden.');
+            $this->addFlash('warning', $this->translateMessage('Gesperrte Clowns konnten nicht gespeichert werden.'));
         }
 
         return $this->render('clown/edit_blocked_clowns.html.twig', [
@@ -183,12 +183,12 @@ class ClownController extends AbstractProtectedController
             $this->entityManager->remove($clown);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Clown wurde erfolgreich gelöscht.');
+            $this->addFlash('success', $this->translateMessage('Clown wurde erfolgreich gelöscht.'));
 
             return $this->redirectToRoute('clown_index');
         }
 
-        $this->addFlash('warning', 'Clown konnte nicht gelöscht werden.');
+        $this->addFlash('warning', $this->translateMessage('Clown konnte nicht gelöscht werden.'));
 
         return $this->redirectToRoute('clown_edit', ['id' => $clown->getId()]);
     }

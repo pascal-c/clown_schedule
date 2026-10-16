@@ -31,8 +31,7 @@ class ConfigInvoiceManagementFormType extends AbstractType
                 'required' => false,
                 'label' => 'Feature "Rechnungsstellung Clowns"',
                 'label_attr' => ['class' => 'checkbox-switch'],
-                'help' => 'Clowns (oder das Büro) können ihre Rechnung als “gestellt” markieren. Clowns können selber einstellen, ob sie im Dashboard und/oder per Email über zu stellende Rechnungen benachrichtigt werden. 
-                    Rechnungen, die bis zum 1. des übernächsten Monats nicht als gestellt markiert wurden, erscheinen im Büro-Dashboard in einer Liste nicht gestellter Rechnungen.',
+                'help' => 'Clowns (oder das Büro) können ihre Rechnung als “gestellt” markieren. Clowns können selber einstellen, ob sie im Dashboard und/oder per Email über zu stellende Rechnungen benachrichtigt werden. Rechnungen, die bis zum 1. des übernächsten Monats nicht als gestellt markiert wurden, erscheinen im Büro-Dashboard in einer Liste nicht gestellter Rechnungen.',
                 'row_attr' => [
                     'data-target' => 'toggle-by-checkbox.hideme',
                 ],
