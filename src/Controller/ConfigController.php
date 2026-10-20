@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Form\ConfigCalculationFormType;
-use App\Form\ConfigGeneralFormType;
+use App\Form\Config\ConfigCalculationFormType;
+use App\Form\Config\ConfigGeneralFormType;
+use App\Form\Config\ConfigInvoiceManagementFormType;
 use App\Repository\ConfigRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,7 @@ class ConfigController extends AbstractProtectedController
         $section = $request->query->get('section', 'general');
         $formType = match ($section) {
             'calculation' => ConfigCalculationFormType::class,
+            'invoiceManagement' => ConfigInvoiceManagementFormType::class,
             default => ConfigGeneralFormType::class,
         };
         $form = $this->createForm($formType, $this->configRepository->find(), [

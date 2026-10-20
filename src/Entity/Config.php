@@ -11,77 +11,89 @@ class Config
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    public ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $specialPlayDateUrl = null;
+    public ?string $specialPlayDateUrl = null;
 
     #[ORM\Column]
-    private bool $featureMaxPerWeekActive = false;
+    public bool $featureMaxPerWeekActive = false;
 
     #[ORM\Column(length: 20, nullable: true)]
-    private ?string $federalState = null;
+    public ?string $federalState = null;
 
     #[ORM\Column(options: ['default' => true])]
-    private bool $useCalculation = true;
+    public bool $useCalculation = true;
 
     #[ORM\Column(length: 255, nullable: true, options: ['default' => 'Honorar'])]
-    private ?string $feeLabel = null;
+    public ?string $feeLabel = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $alternativeFeeLabel = null;
+    public ?string $alternativeFeeLabel = null;
 
     #[ORM\Column(options: ['default' => true])]
-    private ?bool $featurePlayDateChangeRequests = true;
+    public ?bool $featurePlayDateChangeRequests = true;
 
     #[ORM\Column(options: ['default' => true])]
-    private ?bool $featureAssignResponsibleClownAsFirstClown = null;
+    public ?bool $featureAssignResponsibleClownAsFirstClown = null;
 
     #[ORM\Column(options: ['default' => 1000])]
     #[Assert\Range(min: 0, max: 1000)]
-    private ?int $pointsPerMissingPerson = null;
+    public ?int $pointsPerMissingPerson = null;
 
     #[ORM\Column(options: ['default' => 10])]
     #[Assert\Range(min: 0, max: 1000)]
-    private ?int $pointsPerMaybePerson = null;
+    public ?int $pointsPerMaybePerson = null;
 
     #[ORM\Column(options: ['default' => 20])]
     #[Assert\Range(min: 0, max: 1000)]
-    private ?int $pointsPerTargetShifts = null;
+    public ?int $pointsPerTargetShifts = null;
 
     #[ORM\Column(options: ['default' => 100])]
     #[Assert\Range(min: 0, max: 1000)]
-    private ?int $pointsPerMaxPerWeek = null;
+    public ?int $pointsPerMaxPerWeek = null;
 
     #[ORM\Column(options: ['default' => 10])]
-    private int $pointsPerPreferenceWorst;
+    public int $pointsPerPreferenceWorst;
 
     #[ORM\Column(options: ['default' => 4])]
-    private int $pointsPerPreferenceWorse;
+    public int $pointsPerPreferenceWorse;
 
     #[ORM\Column(options: ['default' => 2])]
-    private int $pointsPerPreferenceOk;
+    public int $pointsPerPreferenceOk;
 
     #[ORM\Column(options: ['default' => 1])]
-    private int $pointsPerPreferenceBetter;
+    public int $pointsPerPreferenceBetter;
 
     #[ORM\Column(options: ['default' => 0])]
-    private int $pointsPerPreferenceBest;
+    public int $pointsPerPreferenceBest;
 
     #[ORM\Column(options: ['default' => false])]
-    private bool $featureClownVenuePreferences = false;
+    public bool $featureClownVenuePreferences = false;
 
     #[ORM\Column(options: ['default' => false])]
-    private bool $featureTeams = false;
+    public bool $featureTeams = false;
 
     #[ORM\Column(options: ['default' => 30])]
-    private int $pointsPerPersonNotInTeam = 30;
+    public int $pointsPerPersonNotInTeam = 30;
 
     #[ORM\Column(options: ['default' => false])]
-    private ?bool $teamCanAssignPlayingClowns = null;
+    public ?bool $teamCanAssignPlayingClowns = null;
 
     #[ORM\Column(options: ['default' => false])]
-    private bool $featureAvoidOnlyMen = false;
+    public bool $featureAvoidOnlyMen = false;
+
+    #[ORM\Column(options: ['default' => true])]
+    public bool $featureInvoiceManagementClowns = true;
+
+    #[ORM\Column(options: ['default' => false])]
+    public bool $featureInvoiceManagementVenues = false;
+
+    #[ORM\Column(options: ['default' => false])]
+    public bool $featureInvoicingClowns = false;
+
+    #[ORM\Column(options: ['default' => false])]
+    public bool $featureInvoicePaymentClowns = false;
 
     public function getId(): ?int
     {
@@ -141,7 +153,7 @@ class Config
         return null !== $this->feeLabel;
     }
 
-    public function isFeatureAlternativeFeeActive(): bool
+    public function hasFeatureAlternativeFee(): bool
     {
         return null !== $this->alternativeFeeLabel;
     }

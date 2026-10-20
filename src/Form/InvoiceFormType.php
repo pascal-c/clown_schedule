@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Invoice;
 use App\Service\AuthService;
+use App\Service\ConfigService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InvoiceFormType extends AbstractType
 {
-    public function __construct(protected AuthService $authService)
+    public function __construct(protected AuthService $authService, private ConfigService $configService)
     {
     }
 
@@ -40,7 +41,7 @@ class InvoiceFormType extends AbstractType
                         'title' => 'Ich habe mich vertan, die Rechnung ist doch noch nicht gestellt.',
                     ],
                 ]);
-                if ($isAdmin) {
+                if ($isAdmin && $this->configService->hasFeatureInvoicePaymentClowns()) {
                     $builder->add('mark_paid', SubmitType::class, [
                         'label' => '> Rechnung als bezahlt markieren',
                         'attr' => [

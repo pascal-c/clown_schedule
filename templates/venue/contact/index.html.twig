@@ -1,7 +1,7 @@
 {% extends "venue/base.html.twig" %}
 
 {% block innercontent %}
-    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'contacts'}) }}
+    {{ component('venue/details_navigation', {venue: venue, active: 'contacts'}) }}
 
     <table class="table">
         <thead>

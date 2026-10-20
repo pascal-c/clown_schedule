@@ -15,7 +15,12 @@ class ConfigFactory extends AbstractFactory
         bool $featureAssignResponsibleClownAsFirstClown = true,
         bool $featureTeamsActive = false,
         bool $teamCanAssignPlayingClowns = false,
+        bool $featureInvoiceManagementClowns = true,
+        bool $featureInvoiceManagementVenues = false,
+        bool $featureInvoicingClowns = false,
+        bool $featureInvoicePaymentClowns = false,
     ): Config {
+        /** @var Config $config */
         $config = $this->entityManager->getRepository(Config::class)->find(1);
         $config->setFeeLabel($feeLabel);
         $config->setAlternativeFeeLabel($alternativeFeeLabel);
@@ -23,6 +28,11 @@ class ConfigFactory extends AbstractFactory
         $config->setFeatureAssignResponsibleClownAsFirstClownActive($featureAssignResponsibleClownAsFirstClown);
         $config->setFeatureTeamsActive($featureTeamsActive);
         $config->setTeamCanAssignPlayingClowns($teamCanAssignPlayingClowns);
+        $config->featureInvoiceManagementClowns = $featureInvoiceManagementClowns;
+        $config->featureInvoiceManagementVenues = $featureInvoiceManagementVenues;
+        $config->featureInvoicingClowns = $featureInvoicingClowns;
+        $config->featureInvoicePaymentClowns = $featureInvoicePaymentClowns;
+
         $this->entityManager->flush();
 
         return $config;
