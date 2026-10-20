@@ -1,14 +1,14 @@
 {% extends "venue/base.html.twig" %}
 
 {% block innercontent %}
-    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'fees'}) }}
+    {{ component('venue/details_navigation', {venue: venue, active: 'fees'}) }}
 
     <table class="table">
         <thead>
             <tr>
                 <th scope="col">Gültig ab</th>
                 <th scope="col">{{ config.feeLabel }}</th>
-                {% if config.featureAlternativeFeeActive %}<th scope="col">{{ config.alternativeFeeLabel }}</th>{% endif %}
+                {% if config.featureAlternativeFee %}<th scope="col">{{ config.alternativeFeeLabel }}</th>{% endif %}
                 <th scope="col">Kilometergeld</th>
             </tr>
         </thead>
@@ -22,7 +22,7 @@
                         {% endif %}
                     </td>
                     <td>{{ fee.feeStandard|format_currency('EUR') }}</td>
-                    {% if config.featureAlternativeFeeActive %}<td>{{ fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
+                    {% if config.featureAlternativeFee %}<td>{{ fee.feeAlternative|format_currency('EUR') }}</td>{% endif %}
                     <td>{{ include('_shared/_kilometer_fee.html.twig', {fee: fee}) }}</td>
                 </tr>
             {% endfor %}

@@ -13,7 +13,7 @@ use App\Value\TimeSlotInterface;
 use App\Value\TimeSlotPeriodInterface;
 use DateTimeImmutable;
 
-class ShowDatesWithMissingDatesCest extends AbstractCest
+class ShowDatesWithMissingClownsCest extends AbstractCest
 {
     public function _before(FunctionalTester $I): void
     {
@@ -75,8 +75,13 @@ class ShowDatesWithMissingDatesCest extends AbstractCest
     public function showMissingDatesForAdmin(AdminTester $I): void
     {
         $I->login(email: 'admin@example.org', password: 'secret');
-        $I->amOnPage('/');
 
+        // do not show on clown dashboard
+        $I->click('Dashboard');
+        $I->dontSee('Termine mit fehlender Besetzung', 'h4');
+
+        // show on admin dashboard
+        $I->click('Büro-Dashboard');
         $I->see('Termine mit fehlender Besetzung', 'h4');
         $I->see('17.12.2024', '//table/tbody/tr[1]');
         $I->see('18.12.2024', '//table/tbody/tr[2]');
@@ -88,7 +93,7 @@ class ShowDatesWithMissingDatesCest extends AbstractCest
     public function showMissingDatesForNoTeamClown(FunctionalTester $I): void
     {
         $I->login(email: 'andie@example.org', password: 'secret');
-        $I->amOnPage('/');
+        $I->click('Dashboard');
 
         $I->dontSee('Termine mit fehlender Besetzung', 'h4');
         $I->dontSee('17.12.2024', '//table/tbody/tr[1]');
@@ -101,7 +106,7 @@ class ShowDatesWithMissingDatesCest extends AbstractCest
     public function showMissingDatesForTeamClown(FunctionalTester $I): void
     {
         $I->login(email: 'marie@example.org', password: 'secret');
-        $I->amOnPage('/');
+        $I->click('Dashboard');
 
         $I->see('Termine mit fehlender Besetzung', 'h4');
         $I->see('17.12.2024', '//table/tbody/tr[1]');

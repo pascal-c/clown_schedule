@@ -11,9 +11,11 @@ use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
+use App\Factory\InvoiceFactory;
 use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
 use App\Lib\Collection;
+use App\Value\PlayDateType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -41,6 +43,7 @@ class CreateExampleFixturesCommand extends Command
         private ScheduleFactory $_scheduleFactory,
         private ConfigFactory $_configFactory,
         private RecurringDateFactory $recurringDateFactory,
+        private InvoiceFactory $_invoiceFactory,
     ) {
         parent::__construct();
     }
@@ -66,7 +69,10 @@ class CreateExampleFixturesCommand extends Command
             // ...
         }*/
 
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Calendar')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\RecurringDate')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Schedule')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Invoice')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateHistory')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateChangeRequest')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDate')->execute();
@@ -78,7 +84,6 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailabilityTime')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\ClownAvailability')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Clown')->execute();
-        $this->entityManager->createQuery('DELETE FROM App\Entity\RecurringDate')->execute();
 
         $clowns = $this->clownFactory->createList(8);
         $clowns->push($this->clownFactory->create(email: 'admin-clown@clowns-und-clowns.de', isAdmin: true));
@@ -94,21 +99,34 @@ class CreateExampleFixturesCommand extends Command
 
         }
 
-        $month = Month::build('now');
-        $maxCount = 6;
-        for ($i = 0; $i < 6; ++$i) {
+        $month = Month::build('2 months ago');
+        $maxCount = 8;
+        for ($i = 0; $i < $maxCount; ++$i) {
             foreach ($clowns as $clown) {
-                if (rand(1, $maxCount * 2) >= $i) {
+                if (rand(1, $maxCount * 3) >= $i) {
                     $this->clownAvailabilityFactory->create($clown, $month);
                 }
             }
 
+            // create regular play dates
             Collection::create(
                 fn () => $this->playDateFactory->create(month: $month, venue: $venues->sample()),
                 25,
             );
+
+            // create special play dates
+            Collection::create(
+                fn () => $this->playDateFactory->create(month: $month, venue: null, type: PlayDateType::SPECIAL, title: 'Probespiel St. Elisabeth'),
+                2,
+            );
+
+            // create a training
+            $this->playDateFactory->create(month: $month, venue: null, type: PlayDateType::TRAINING, title: 'Training');
+
             $month = $month->next();
         }
+
+        $this->entityManager->flush();
 
         $io->success('Yeah! Database was repopopulated with cool faker data!');
 
