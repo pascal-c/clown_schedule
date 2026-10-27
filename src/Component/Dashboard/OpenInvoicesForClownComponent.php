@@ -20,7 +20,7 @@ class OpenInvoicesForClownComponent
 
     public function mount(Clown $currentClown): void
     {
-        if (!$this->configService->hasFeatureInvoicingClowns()) {
+        if (!$this->configService->hasFeatureInvoicingClowns() || !$currentClown->getSettings()->openInvoiceOnDashboard) {
             $this->invoices = new ArrayCollection();
 
             return;

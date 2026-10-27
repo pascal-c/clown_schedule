@@ -12,6 +12,7 @@ use App\Factory\PlayDateFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
 use App\Factory\InvoiceFactory;
+use App\Factory\NotificationFactory;
 use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
 use App\Lib\Collection;
@@ -44,6 +45,7 @@ class CreateExampleFixturesCommand extends Command
         private ConfigFactory $_configFactory,
         private RecurringDateFactory $recurringDateFactory,
         private InvoiceFactory $_invoiceFactory,
+        private NotificationFactory $_notificationFactory,
     ) {
         parent::__construct();
     }
@@ -72,6 +74,7 @@ class CreateExampleFixturesCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\Calendar')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\RecurringDate')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Schedule')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Notification')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Invoice')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateHistory')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\PlayDateChangeRequest')->execute();
