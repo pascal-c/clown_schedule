@@ -104,12 +104,6 @@ class Clown
     #[ORM\OneToOne(mappedBy: 'clown', cascade: ['persist', 'remove'])]
     private ?UserSettings $settings = null;
 
-    /**
-     * @var Collection<int, Notification>
-     */
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'clown', orphanRemoval: true)]
-    private Collection $notifications;
-
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -122,7 +116,6 @@ class Clown
         $this->blockedBy = new ArrayCollection();
         $this->calendars = new ArrayCollection();
         $this->invoices = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -574,13 +567,5 @@ class Clown
         $this->settings = $settings;
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, Notification>
-     */
-    public function getNotifications(): Collection
-    {
-        return $this->notifications;
     }
 }
