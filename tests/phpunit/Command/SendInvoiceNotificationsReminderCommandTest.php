@@ -69,13 +69,13 @@ class SendInvoiceNotificationsReminderCommandTest extends KernelTestCase
 
         // check created notification
         $this->assertTrue($this->notificationRepository->exists(
-            NotificationType::INVOICE_REMINDER, 
-            $this->clown1, 
+            NotificationType::INVOICE_REMINDER,
+            $this->clown1,
             $this->month,
         ));
         $this->assertFalse($this->notificationRepository->exists(
-            NotificationType::INVOICE_REMINDER, 
-            $this->clown1, 
+            NotificationType::INVOICE_REMINDER,
+            $this->clown1,
             $this->month->next(),
         ));
     }
@@ -95,13 +95,13 @@ class SendInvoiceNotificationsReminderCommandTest extends KernelTestCase
         $this->assertEmailCount(0);
 
         $this->assertFalse($this->notificationRepository->exists(
-            NotificationType::INVOICE_REMINDER, 
-            $this->clown1, 
+            NotificationType::INVOICE_REMINDER,
+            $this->clown1,
             $this->month,
         ));
         $this->assertFalse($this->notificationRepository->exists(
-            NotificationType::INVOICE_REMINDER, 
-            $this->clown1, 
+            NotificationType::INVOICE_REMINDER,
+            $this->clown1,
             $this->month->next(),
         ));
     }
