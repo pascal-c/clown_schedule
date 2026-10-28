@@ -34,7 +34,7 @@ class CreateInvoicesCommandTest extends KernelTestCase
         $output = $result->getOutput();
         $this->assertStringContainsString(
             'I created invoices for all confirmed and paid play dates for Month 2028-07',
-            $output
+            str_replace(["\n", '  '], '', $output),
         );
         $this->assertNull($clown1->getInvoiceFor($month));
         $this->assertNotNull($clown2->getInvoiceFor($month));
