@@ -32,15 +32,17 @@ final class InvoiceServiceTest extends TestCase
     {
         $month = new Month(new DateTimeImmutable('2023-01'));
         $clown1 = new Clown();
-        $clown2 = new Clown()->addInvoice(new Invoice($month, new Clown()));
+        $clown2 = new Clown()->addInvoice(new Invoice($month));
+        $clown3 = new Clown();
         $this->clownRepository->expects($this->once())
             ->method('all')
-            ->willReturn([$clown1, $clown2]);
-        $this->playDateRepository->expects($this->exactly(2))
+            ->willReturn([$clown1, $clown2, $clown3]);
+        $this->playDateRepository->expects($this->exactly(3))
             ->method('confirmedAndPaidByMonthAndClown')
-            ->with($month, $this->logicalOr($this->equalTo($clown1), $this->equalTo($clown2)))
+            ->with($month, $this->logicalOr($this->equalTo($clown1), $this->equalTo($clown2), $this->equalTo($clown3)))
             ->willReturnOnConsecutiveCalls(
                 [],
+                [new PlayDate()],
                 [new PlayDate()],
             );
 
@@ -48,6 +50,8 @@ final class InvoiceServiceTest extends TestCase
 
         $this->assertCount(0, $clown1->getInvoices());
         $this->assertCount(1, $clown2->getInvoices());
-        $this->assertEquals($month, $clown2->getInvoices()[0]->getMonth());
+        $this->assertEquals($month, $clown2->getInvoices()->first()->getMonth());
+        $this->assertCount(1, $clown3->getInvoices());
+        $this->assertEquals($month, $clown3->getInvoices()->first()->getMonth());
     }
 }

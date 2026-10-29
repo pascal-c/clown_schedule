@@ -101,6 +101,9 @@ class Clown
     #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'clown', cascade: ['persist'])]
     private Collection $invoices;
 
+    #[ORM\OneToOne(mappedBy: 'clown', cascade: ['persist', 'remove'])]
+    private ?UserSettings $settings = null;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -209,7 +212,7 @@ class Clown
     }
 
     /**
-     * @return Collection<int, ClownAvailabilities>
+     * @return Collection<int, ClownAvailability>
      */
     public function getClownAvailabilities(): Collection
     {
@@ -540,6 +543,28 @@ class Clown
             $this->invoices->add($invoice);
             $invoice->setClown($this);
         }
+
+        return $this;
+    }
+
+    public function getSettings(): ?UserSettings
+    {
+        if (is_null($this->settings)) {
+            $this->settings = new UserSettings();
+            $this->settings->clown = $this;
+        }
+
+        return $this->settings;
+    }
+
+    public function setSettings(UserSettings $settings): static
+    {
+        // set the owning side of the relation if necessary
+        if ($settings->clown !== $this) {
+            $settings->clown = $this;
+        }
+
+        $this->settings = $settings;
 
         return $this;
     }

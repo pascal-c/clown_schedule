@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Me;
 
 use App\Entity\Clown;
 use Symfony\Component\Form\AbstractType;
@@ -11,11 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MeFormType extends AbstractType
+class PersonalDataFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $clown = $builder->getData();
         $builder
             ->add('name', TextType::class)
             ->add('email', EmailType::class)

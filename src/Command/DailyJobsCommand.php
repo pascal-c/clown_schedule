@@ -22,8 +22,10 @@ class DailyJobsCommand
         $io = new SymfonyStyle($input, $output);
 
         $inputs = [
-            new ArrayInput(['command' => 'app:create-invoices']),
             new ArrayInput(['command' => 'app:close-invalid-change-requests']),
+            new ArrayInput(['command' => 'app:create-invoices']),
+            new ArrayInput(['command' => 'app:send-invoice-notifications']),
+            new ArrayInput(['command' => 'app:send-invoice-notifications-reminder']),
         ];
 
         foreach ($inputs as $commandInput) {

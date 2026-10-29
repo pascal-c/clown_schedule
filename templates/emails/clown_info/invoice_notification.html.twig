@@ -1,0 +1,16 @@
+<p>
+    Hey {{ clown.name }},
+</p>
+
+<p>
+    Money! Money! Money!<br />
+    Du kannst eine Rechnung für {{ month.label }} stellen!
+</p>
+
+<p>
+    <a href="{{ url('clown_invoice_show', {monthId: month.key, clownId: clown.id}) }}">Hier findest Du alle Details zur Deiner Rechnung!</a>
+</p>
+
+<p>
+    Deine Dich liebende Spielplan App
+</p>

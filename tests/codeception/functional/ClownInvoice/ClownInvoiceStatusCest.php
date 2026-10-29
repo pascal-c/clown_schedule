@@ -9,6 +9,13 @@ use App\Tests\Step\Functional\AdminTester;
 
 class ClownInvoiceStatusCest extends AbstractCest
 {
+    public function _before(FunctionalTester $I): void
+    {
+        parent::_before($I);
+
+        Functional::$now = '2024-01';
+    }
+
     public function InvoiceWorkflowForClown(FunctionalTester $I): void
     {
         $this->configFactory->update(featureInvoicingClowns: true);
@@ -63,6 +70,30 @@ class ClownInvoiceStatusCest extends AbstractCest
         $I->click('Spielplan', 'nav');
         $I->click('Rechnungsansicht', 'nav');
         $I->dontSee('Rechnungsstatus');
+    }
+
+    public function withDeactivatedInvoicingNotificationOnDashboardForClowns(FunctionalTester $I): void
+    {
+        $this->configFactory->update(featureInvoicingClowns: true);
+
+        $I->loginAsClown('Emil');
+        $I->click('Emil', 'nav');
+        $I->click('Benachrichtigungen');
+        $I->uncheckOption('Dashboard-Hinweis bei zu stellender Rechnung');
+        $I->click('speichern');
+
+        // Create an open invoice for the current clown.
+        $currentClown = $I->getCurrentUser();
+        $this->invoiceFactory->create(clown: $currentClown, month: Month::build('2024-01'), status: Invoice::STATUS_OPEN);
+
+        // I dont see open invoices in the dashboard
+        $I->click('Dashboard');
+        $I->dontSee('Rechnung stellen');
+
+        // I do see the status in the invoice view
+        $I->click('Spielplan', 'nav');
+        $I->click('Rechnungsansicht', 'nav');
+        $I->see('Rechnungsstatus');
     }
 
     public function InvoiceWorkflowForAdmin(AdminTester $I): void

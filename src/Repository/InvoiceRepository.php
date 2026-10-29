@@ -37,6 +37,17 @@ class InvoiceRepository extends AbstractRepository
         return $this->monthRepository->current()->previous()->previous();
     }
 
+    public function findOpen(): array
+    {
+        return $this->doctrineRepository->createQueryBuilder('invoice')
+            ->where('invoice.status = :status')
+            ->setParameter('status', Invoice::STATUS_OPEN)
+            ->orderBy('invoice.clown', 'ASC')
+            ->orderBy('invoice.month', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findIssued(): array
     {
         return $this->doctrineRepository->createQueryBuilder('invoice')
