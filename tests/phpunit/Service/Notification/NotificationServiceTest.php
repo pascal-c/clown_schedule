@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service;
+namespace App\Tests\Service\Service\Notification;
 
 use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\Notification;
-use App\Service\NotificationService;
+use App\Service\Notification\NotificationService;
 use App\Service\TimeService;
 use App\Value\NotificationType;
 use DateTimeImmutable;
@@ -28,7 +28,7 @@ final class NotificationServiceTest extends TestCase
         $this->notificationService = new NotificationService($this->entityManager, $this->timeService);
     }
 
-    public function testAddNotification(): void
+    public function testcreate(): void
     {
         $month = new Month(new DateTimeImmutable('2023-01'));
         $clown = new Clown();
@@ -38,7 +38,7 @@ final class NotificationServiceTest extends TestCase
             ->method('persist')
             ->willReturnCallback(
                 function (Notification $notification) use ($clown, $month, $dateTime) {
-                    $this->assertSame(NotificationType::INVOICE_REMINDER, $notification->type);
+                    $this->assertSame(NotificationType::INVOICE_EMAIL_REMINDER, $notification->type);
                     $this->assertSame($clown, $notification->clown);
                     $this->assertEquals($month, $notification->getMonth());
                     $this->assertSame($dateTime, $notification->createdAt);
@@ -48,6 +48,6 @@ final class NotificationServiceTest extends TestCase
             ->method('now')
             ->willReturn($dateTime);
 
-        $this->notificationService->addNotification(NotificationType::INVOICE_REMINDER, $clown, $month);
+        $this->notificationService->create(NotificationType::INVOICE_EMAIL_REMINDER, $clown, $month);
     }
 }

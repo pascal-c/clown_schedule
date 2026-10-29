@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Notification;
 
 use App\Entity\Clown;
 use App\Entity\Notification;
 use App\Entity\Month;
+use App\Service\TimeService;
 use App\Value\NotificationType;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,7 +19,7 @@ class NotificationService
     ) {
     }
 
-    public function addNotification(NotificationType $type, Clown $clown, ?Month $month = null): void
+    public function create(NotificationType $type, Clown $clown, ?Month $month = null): void
     {
         $notification = new Notification();
         $notification->type = $type;

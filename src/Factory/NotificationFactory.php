@@ -14,7 +14,7 @@ class NotificationFactory extends AbstractFactory
 {
     public function create(
         Clown $clown,
-        NotificationType $type = NotificationType::INVOICE,
+        NotificationType $type = NotificationType::INVOICE_EMAIL,
         ?Month $month = null,
         string $dateTime = 'now',
     ): Notification {

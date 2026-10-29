@@ -2,13 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Invoice;
-use App\Mailer\ClownInfoMailer;
-use App\Repository\InvoiceRepository;
-use App\Repository\NotificationRepository;
-use App\Service\NotificationService;
-use App\Service\TimeService;
-use App\Value\NotificationType;
+use App\Service\Notification\InvoiceEmailNotifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,12 +18,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class SendInvoiceNotificationsCommand
 {
     public function __construct(
-        private ClownInfoMailer $mailer,
-        private TimeService $timeService,
-        private InvoiceRepository $invoiceRepository,
-        private NotificationRepository $notificationRepository,
-        private NotificationService $notificationService,
         private EntityManagerInterface $entityManager,
+        private InvoiceEmailNotifier $notifier,
     ) {
     }
 
@@ -39,27 +29,10 @@ class SendInvoiceNotificationsCommand
     ): int {
         $io = new SymfonyStyle($input, $output);
 
-        $invoices = $this->invoiceRepository->findOpen();
-        $invoicesToNotify = array_filter(
-            $invoices,
-            fn (Invoice $invoice) => !$this->notificationRepository->exists(
-                NotificationType::INVOICE,
-                $invoice->getClown(),
-                $invoice->getMonth(),
-            ) && $this->timeService->today() >= $invoice->getMonth()->next()->getDate()
-        );
-        foreach ($invoicesToNotify as $invoice) {
-            $this->notificationService->addNotification(
-                NotificationType::INVOICE,
-                $invoice->getClown(),
-                $invoice->getMonth(),
-            );
-
-            $this->mailer->sendInvoiceNotification($invoice);
-        }
+        $invoicesToNotify = $this->notifier->notify();
 
         $this->entityManager->flush();
-        $io->success('All right! I created '.count($invoicesToNotify).' notifications.');
+        $io->success('All right! I created '.$invoicesToNotify.' notifications.');
 
         return Command::SUCCESS;
     }

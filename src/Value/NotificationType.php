@@ -6,6 +6,6 @@ namespace App\Value;
 
 enum NotificationType: string
 {
-    case INVOICE = 'invoice';
-    case INVOICE_REMINDER = 'inovice_reminder';
+    case INVOICE_EMAIL = 'invoice';
+    case INVOICE_EMAIL_REMINDER = 'inovice_reminder';
 }

@@ -16,7 +16,7 @@ class Notification
     public ?int $id = null;
 
     #[ORM\Column(length: 255, type: 'string', enumType: NotificationType::class)]
-    public NotificationType $type = NotificationType::INVOICE;
+    public NotificationType $type = NotificationType::INVOICE_EMAIL;
 
     #[ORM\ManyToOne(inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false)]

@@ -4,6 +4,7 @@ namespace App\Tests\Command;
 
 use App\Entity\Month;
 use App\Factory\ClownFactory;
+use App\Factory\ConfigFactory;
 use App\Factory\InvoiceFactory;
 use App\Factory\NotificationFactory;
 use App\Repository\NotificationRepository;
@@ -29,15 +30,16 @@ class SendInvoiceNotificationsCommandTest extends KernelTestCase
         $invoiceFactory = $container->get(InvoiceFactory::class);
         $notificationFactory = $container->get(NotificationFactory::class);
         $notificationRepository = $container->get(NotificationRepository::class);
+        $container->get(ConfigFactory::class)->update(featureInvoicingClowns: true);
 
-        $clown1 = $clownFactory->create();
-        $clown2 = $clownFactory->create();
+        $clown1 = $clownFactory->create(openInvoiceEmail: true);
+        $clown2 = $clownFactory->create(openInvoiceEmail: true);
 
         $month = Month::build('2025-09');
         $invoiceFactory->create(clown: $clown1, month: $month); // yes - create a notification for this one!
         $invoiceFactory->create(clown: $clown1, month: $month->next()); // no - this is the current month
         $invoiceFactory->create(clown: $clown2, month: $month); // no - there is already a notification for this one
-        $notificationFactory->create(clown: $clown2, month: $month, type: NotificationType::INVOICE);
+        $notificationFactory->create(clown: $clown2, month: $month, type: NotificationType::INVOICE_EMAIL);
 
         $result = static::runCommand('app:send-invoice-notifications');
 
@@ -54,7 +56,7 @@ class SendInvoiceNotificationsCommandTest extends KernelTestCase
         $this->assertEmailSubjectContains($email, 'Money! Money! Money!');
         $this->assertEmailSubjectNotContains($email, 'Erinnerung');
 
-        $this->assertTrue($notificationRepository->exists(NotificationType::INVOICE, $clown1, $month));
-        $this->assertFalse($notificationRepository->exists(NotificationType::INVOICE, $clown1, $month->next()));
+        $this->assertTrue($notificationRepository->exists(NotificationType::INVOICE_EMAIL, $clown1, $month));
+        $this->assertFalse($notificationRepository->exists(NotificationType::INVOICE_EMAIL, $clown1, $month->next()));
     }
 }
