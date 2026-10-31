@@ -1,7 +1,7 @@
 {% extends "venue/base.html.twig" %}
 
 {% block innercontent %}
-    {{ include('venue/_details_navigation.html.twig', {venue: venue, show: 'play_dates'}) }}
+    {{ component('venue/details_navigation', {venue: venue, active: 'play_dates'}) }}
     {{ include('venue/_year_navigation.html.twig', {venue: venue, years: years, activeYear: activeYear}) }}
     
     {{ component('venue/recurring_date_index', {venue: venue, year: activeYear}) }}

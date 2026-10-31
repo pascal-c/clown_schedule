@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Lib;
+namespace App\Tests\Guard;
 
 use App\Entity\Clown;
 use App\Entity\Config;
@@ -72,7 +72,7 @@ final class PlayDateGuardTest extends TestCase
     }
 
     #[DataProvider('canAssignProvider')]
-    public function testCanAssign(bool $isAdmin, bool $configCanAssign, bool $teamContainsCurrentClown, bool $expected): void
+    public function testCanAssign(bool $isAdmin, bool $configCanAssign, bool $teamContainsCurrentClown, bool $expected, bool $expectedAsClown): void
     {
         $playDate = Stub::make(PlayDate::class, [
             'date' => new DateTimeImmutable('2027-10-07'),
@@ -91,6 +91,7 @@ final class PlayDateGuardTest extends TestCase
         $this->venueService->method('getTeam')->with($venue)->willReturn($team);
 
         $this->assertSame($expected, $this->playDateGuard->canAssign($playDate));
+        $this->assertSame($expectedAsClown, $this->playDateGuard->canAssignAsClown($playDate));
     }
 
     public static function canAssignProvider(): Generator
@@ -100,6 +101,7 @@ final class PlayDateGuardTest extends TestCase
             'configCanAssign' => false,
             'teamContainsCurrentClown' => false,
             'expected' => true,
+            'expectedAsClown' => false,
         ];
 
         yield 'when is not admin and config does not allow assigning for team' => [
@@ -107,6 +109,7 @@ final class PlayDateGuardTest extends TestCase
             'configCanAssign' => false,
             'teamContainsCurrentClown' => true,
             'expected' => false,
+            'expectedAsClown' => false,
         ];
 
         yield 'when is not admin and is not in team' => [
@@ -114,6 +117,7 @@ final class PlayDateGuardTest extends TestCase
             'configCanAssign' => true,
             'teamContainsCurrentClown' => false,
             'expected' => false,
+            'expectedAsClown' => false,
         ];
 
         yield 'when is not admin but config allows assigning for team and is in team' => [
@@ -121,6 +125,7 @@ final class PlayDateGuardTest extends TestCase
             'configCanAssign' => true,
             'teamContainsCurrentClown' => true,
             'expected' => true,
+            'expectedAsClown' => true,
         ];
     }
 

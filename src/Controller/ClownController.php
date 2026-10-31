@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Clown;
 use App\Form\ClownFormType;
 use App\Form\ClownBlockedClownsFormType;
-use App\Form\MeFormType;
+use App\Form\Me\PersonalDataFormType;
+use App\Form\Me\NotificationsFormType;
 use App\Mailer\AuthenticationMailer;
 use App\Repository\ClownRepository;
+use App\Value\MeSubnavigationElement;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -75,10 +77,25 @@ class ClownController extends AbstractProtectedController
         return $this->redirectToRoute('clown_index');
     }
 
-    #[Route('/clowns/me', name: 'me', methods: ['GET', 'PUT'])]
-    public function me(Request $request): Response
+    #[Route(
+        '/clowns/me/{subnavigationElement}',
+        name: 'me',
+        methods: ['GET', 'PUT'],
+    )]
+    public function me(Request $request, MeSubnavigationElement $subnavigationElement): Response
     {
-        $form = $this->createForm(MeFormType::class, $this->getCurrentClown(), ['method' => 'PUT']);
+        $form = match($subnavigationElement) {
+            $subnavigationElement::PERSONAL_DATA => $this->createForm(
+                PersonalDataFormType::class,
+                $this->getCurrentClown(),
+                options: ['method' => 'PUT']
+            ),
+            $subnavigationElement::NOTIFICATIONS => $this->createForm(
+                NotificationsFormType::class,
+                $this->getCurrentClown()->getSettings(),
+                options: ['method' => 'PUT']
+            ),
+        };
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -86,7 +103,7 @@ class ClownController extends AbstractProtectedController
 
             $this->addFlash('success', 'Deine Daten wurden erfolgreich gespeichert.');
 
-            return $this->redirectToRoute('me');
+            return $this->redirectToRoute('me', ['subnavigationElement' => $subnavigationElement->value]);
         } elseif ($form->isSubmitted()) {
             $this->addFlash('warning', 'Uuups, da ist etwas schiefgelaufen. Deine Daten konnten nicht gespeichert werden.');
         }
@@ -95,6 +112,7 @@ class ClownController extends AbstractProtectedController
             'clown' => $this->getCurrentClown(),
             'form' => $form,
             'active' => 'clown',
+            'subnavigationElement' => $subnavigationElement,
         ]);
     }
 
@@ -167,7 +185,7 @@ class ClownController extends AbstractProtectedController
     }
 
     #[Route('/clowns/{id}', name: 'clown_delete', methods: ['DELETE'])]
-    public function delete(Request $request, $id): Response
+    public function delete(Request $request, int $id): Response
     {
         $this->adminOnly();
 

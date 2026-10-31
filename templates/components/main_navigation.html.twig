@@ -20,7 +20,7 @@
         </ul>
 
         <span class="navbar-text ms-auto">
-            <a href="{{ path('me') }}" title="Mein Profil" class="text-decoration-none">{{ currentClown.name }}</a>
+            <a href="{{ path('me', {subnavigationElement: enum('App\\Value\\MeSubnavigationElement').PERSONAL_DATA.value}) }}" title="Mein Profil" class="text-decoration-none">{{ currentClown.name }}</a>
             <a href="{{ path('logout', {_method: 'DELETE', logout_token: csrf_token('logout_token')}) }}" title="Abmelden"><i class="bi bi-box-arrow-right"></i></a>
         </span>
     </div> 

@@ -66,7 +66,7 @@ class DashboardController extends AbstractProtectedController
             );
         }
 
-        return $this->render('dashboard/index.html.twig', [
+        return $this->render('dashboard/clown.html.twig', [
             'nextMonth' => $nextMonth,
             'afterNextMonth' => $afterNextMonth,
             'nextMonthSchedule' => $nextMonthSchedule,
@@ -79,6 +79,14 @@ class DashboardController extends AbstractProtectedController
             'receivedChangeRequests' => $this->playDateChangeRequestRepository->findReceivedRequestsWaiting($currentClown),
             'showAvailabilityOverview' => $this->configRepository->isFeatureCalculationActive(),
             'showChangeRequestsOverview' => $this->configRepository->isFeaturePlayDateChangeRequestsActive() && $currentClown->isActive(),
+        ]);
+    }
+
+    #[Route('/dashboard-admin', name: 'dashboard_admin', methods: ['GET'])]
+    public function dashboardAdmin(): Response
+    {
+        return $this->render('dashboard/admin.html.twig', [
+            'active' => 'dashboard_admin',
         ]);
     }
 }

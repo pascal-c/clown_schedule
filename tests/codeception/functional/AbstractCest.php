@@ -11,6 +11,7 @@ use App\Factory\PlayDateFactory;
 use App\Factory\SubstitutionFactory;
 use App\Factory\VenueFactory;
 use App\Factory\FeeFactory;
+use App\Factory\InvoiceFactory;
 use App\Factory\PlayDateChangeRequestFactory;
 use App\Factory\RecurringDateFactory;
 use App\Factory\ScheduleFactory;
@@ -23,6 +24,7 @@ abstract class AbstractCest
     protected ClownAvailabilityFactory $clownAvailabilityFactory;
     protected VenueFactory $venueFactory;
     protected FeeFactory $feeFactory;
+    protected InvoiceFactory $invoiceFactory;
     protected PlayDateFactory $playDateFactory;
     protected PlayDateChangeRequestFactory $playDateChangeRequestFactory;
     protected SubstitutionFactory $substitutionFactory;
@@ -38,6 +40,7 @@ abstract class AbstractCest
         $this->clownFactory = $I->grabService(ClownFactory::class);
         $this->venueFactory = $I->grabService(VenueFactory::class);
         $this->feeFactory = $I->grabService(FeeFactory::class);
+        $this->invoiceFactory = $I->grabService(InvoiceFactory::class);
         $this->playDateFactory = $I->grabService(PlayDateFactory::class);
         $this->playDateChangeRequestFactory = $I->grabService(PlayDateChangeRequestFactory::class);
         $this->substitutionFactory = $I->grabService(SubstitutionFactory::class);

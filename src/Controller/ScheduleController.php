@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\Schedule;
 use App\Form\ScheduleCalculateFormType;
 use App\Form\ScheduleCompleteFormType;
 use App\Mailer\ClownInfoMailer;
-use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
 use App\Repository\ConfigRepository;
 use App\Repository\MonthRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
-use App\Repository\SubstitutionRepository;
 use App\Service\Scheduler;
-use App\Service\TimeService;
 use App\Value\ScheduleStatus;
 use App\ViewController\ScheduleViewController;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,9 +38,6 @@ class ScheduleController extends AbstractProtectedController
         private ScheduleRepository $scheduleRepository,
         private ClownRepository $clownRepository,
         private ClownInfoMailer $clownInfoMailer,
-        private TimeService $timeService,
-        private ClownAvailabilityRepository $clownAvailabilityRepository,
-        private SubstitutionRepository $substitutionRepository,
         private ConfigRepository $configRepository,
     ) {
         $this->entityManager = $doctrine->getManager();
@@ -132,9 +127,12 @@ class ScheduleController extends AbstractProtectedController
         $this->entityManager->flush();
 
         // send Email to active clowns, but only if Month not in the past
-        if (Month::build('now')->getKey() <= $schedule->getMonth()->getKey()) {
+        if ($this->monthRepository->current()->getKey() <= $schedule->getMonth()->getKey()) {
             foreach ($this->clownRepository->allActive() as $clown) {
-                $this->clownInfoMailer->sendScheduleCompletedMail($clown, $schedule);
+                /** @var Clown $clown */
+                if ($clown->getSettings()->scheduleCompletedEmail) {
+                    $this->clownInfoMailer->sendScheduleCompletedMail($clown, $schedule);
+                }
             }
         }
 

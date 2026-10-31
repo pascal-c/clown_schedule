@@ -1,9 +1,6 @@
-{% if dates|length > 0 or message is not empty %}
+{% if dates|length > 0 or message is not empty or isAdminDashboard %}
     <h4 class="pt-3">
         Termine mit fehlender Besetzung 
-        <span class="ms-2 text-danger">
-            <i class="bi bi-exclamation-triangle"></i>
-        </span>
     </h4>
     <h6>Termine bis {{ until|date('d.m.Y')}}</h6>
 {% endif %}
@@ -42,6 +39,8 @@
             {% endfor %}    
         </tbody>
     </table>
+{% elseif isAdminDashboard %}
+    Alles fein!
 {% endif %}
 
 {% if message is not empty %}

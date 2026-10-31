@@ -185,9 +185,9 @@ class PlayDateRepository extends AbstractRepository
         ));
     }
 
-    public function confirmedByMonthAndClown(Month $month, Clown $clown): array
+    public function confirmedAndPaidByMonthAndClown(Month $month, Clown $clown): array
     {
-        return $this->queryByMonth($month)
+        $playDates = $this->queryByMonth($month)
             ->leftJoin('pd.playingClowns', 'clown')
             ->andWhere('pd.status = :status_confirmed')
             ->setParameter('status_confirmed', PlayDate::STATUS_CONFIRMED)
@@ -197,6 +197,8 @@ class PlayDateRepository extends AbstractRepository
             ->enableResultCache(1)
             ->getResult()
         ;
+
+        return array_filter($playDates, fn (PlayDate $playDate): bool => $playDate->isPaid());
     }
 
     public function byMonthAndClown(Month $month, Clown $clown): array

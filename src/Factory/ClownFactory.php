@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Clown;
+use App\Entity\UserSettings;
 use App\Lib\Collection;
 
 class ClownFactory extends AbstractFactory
@@ -14,10 +15,18 @@ class ClownFactory extends AbstractFactory
         ?string $email = null,
         ?string $phone = null,
         string $password = 'clown',
-        $isAdmin = false,
-        $isActive = true,
-        $clownVenuePreferences = [],
+        bool $isAdmin = false,
+        bool $isActive = true,
+        array $clownVenuePreferences = [],
+        bool $scheduleCompletedEmail = true,
+        bool $openInvoiceEmail = false,
+        bool $openInvoiceEmailReminder = true,
     ): Clown {
+        $settings = new UserSettings();
+        $settings->scheduleCompletedEmail = $scheduleCompletedEmail;
+        $settings->openInvoiceEmail = $openInvoiceEmail;
+        $settings->openInvoiceEmailReminder = $openInvoiceEmailReminder;
+
         $clown = (new Clown())
             ->setName($this->generate('firstName', $name))
             ->setGender('diverse')
@@ -26,6 +35,7 @@ class ClownFactory extends AbstractFactory
             ->setPassword(password_hash($password, PASSWORD_DEFAULT))
             ->setIsAdmin($isAdmin)
             ->setIsActive($isActive)
+            ->setSettings($settings)
         ;
 
         foreach ($clownVenuePreferences as $clownVenuePreference) {

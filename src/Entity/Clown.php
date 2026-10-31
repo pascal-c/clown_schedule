@@ -95,6 +95,15 @@ class Clown
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $phone = null;
 
+    /**
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'clown', cascade: ['persist'])]
+    private Collection $invoices;
+
+    #[ORM\OneToOne(mappedBy: 'clown', cascade: ['persist', 'remove'])]
+    private ?UserSettings $settings = null;
+
     public function __construct()
     {
         $this->venue_responsibilities = new ArrayCollection();
@@ -106,6 +115,7 @@ class Clown
         $this->blockedClowns = new ArrayCollection();
         $this->blockedBy = new ArrayCollection();
         $this->calendars = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -202,7 +212,7 @@ class Clown
     }
 
     /**
-     * @return Collection<int, ClownAvailabilities>
+     * @return Collection<int, ClownAvailability>
      */
     public function getClownAvailabilities(): Collection
     {
@@ -501,6 +511,60 @@ class Clown
     public function setPhone(?string $phone): static
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function getInvoiceFor(Month $month): ?Invoice
+    {
+        foreach ($this->invoices as $invoice) {
+            if ($invoice->getMonth() == $month) {
+                return $invoice;
+            }
+        }
+
+        return null;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice) && !$this->invoices->exists(
+            fn ($_key, Invoice $existingInvoice) => $existingInvoice->getMonth() == $invoice->getMonth()
+        )
+        ) {
+            $this->invoices->add($invoice);
+            $invoice->setClown($this);
+        }
+
+        return $this;
+    }
+
+    public function getSettings(): ?UserSettings
+    {
+        if (is_null($this->settings)) {
+            $this->settings = new UserSettings();
+            $this->settings->clown = $this;
+        }
+
+        return $this->settings;
+    }
+
+    public function setSettings(UserSettings $settings): static
+    {
+        // set the owning side of the relation if necessary
+        if ($settings->clown !== $this) {
+            $settings->clown = $this;
+        }
+
+        $this->settings = $settings;
 
         return $this;
     }
