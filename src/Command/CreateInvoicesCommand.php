@@ -27,7 +27,7 @@ class CreateInvoicesCommand
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-        #[Argument] string $monthString = 'previous month',
+        #[Argument] string $monthString = 'first day of previous month',
     ): int {
         $io = new SymfonyStyle($input, $output);
 
