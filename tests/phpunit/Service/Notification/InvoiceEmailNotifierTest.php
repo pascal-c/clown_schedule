@@ -54,6 +54,7 @@ final class InvoiceEmailNotifierTest extends TestCase
         bool $clownHasOpenInvoiceEmailSetting = true,
         string $dateString = '2025-10-01',
         bool $alreadyNotified = false,
+        bool $hasFeatureInvoicingClowns = true,
         bool $expectedToNotify = true,
     ): void {
         $clown = new Clown()->setEmail('emil@example.com');
@@ -78,7 +79,7 @@ final class InvoiceEmailNotifierTest extends TestCase
         $this->configService
             ->expects($this->atMost(1))
             ->method('hasFeatureInvoicingClowns')
-            ->willReturn(true);
+            ->willReturn($hasFeatureInvoicingClowns);
         $this->notificationService
             ->expects($expectedToNotify ? $this->once() : $this->never())
             ->method('create')
@@ -96,6 +97,11 @@ final class InvoiceEmailNotifierTest extends TestCase
     {
         yield 'when clown does not want notifications' => [
             'clownHasOpenInvoiceEmailSetting' => false,
+            'expectedToNotify' => false,
+        ];
+
+        yield 'when invoicing clowns feature is disabled' => [
+            'hasFeatureInvoicingClowns' => false,
             'expectedToNotify' => false,
         ];
 
