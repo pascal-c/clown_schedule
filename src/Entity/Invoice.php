@@ -25,7 +25,7 @@ class Invoice
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     #[ORM\JoinColumn(nullable: false)]
-    private Clown $clown;
+    private ?Clown $clown = null;
 
     #[ORM\Column(length: 7)]
     private string $month;
@@ -33,7 +33,7 @@ class Invoice
     #[ORM\Column(length: 100)]
     private string $status = self::STATUS_OPEN;
 
-    public function __construct(Month $month, Clown $clown)
+    public function __construct(Month $month, ?Clown $clown = null)
     {
         $this->setMonth($month);
         $this->clown = $clown;
