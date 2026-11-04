@@ -45,7 +45,7 @@ class DashboardController extends AbstractProtectedController
         $currentClown = $this->getCurrentClown();
         $nextMonthFilled = $this->clownAvailabilityRepository->find($nextMonth, $currentClown);
         $afterNextMonthFilled = $this->clownAvailabilityRepository->find($afterNextMonth, $currentClown);
-        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && !$nextMonthSchedule->isCompleted() && !$nextMonthFilled) {
+        if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && !$nextMonthSchedule->isStarted() && !$nextMonthFilled) {
             $this->addFlash(
                 'danger',
                 sprintf(
