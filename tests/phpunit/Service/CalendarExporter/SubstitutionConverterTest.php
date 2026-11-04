@@ -46,7 +46,11 @@ final class SubstitutionConverterTest extends TestCase
     public function testGetSummary(): void
     {
         $substitution = (new Substitution())->setDaytime(TimeSlotPeriodInterface::AM);
-        $this->translator->method('trans')->with(TimeSlotPeriodInterface::AM)->willReturn('matin');
+        $this->translator
+            ->expects($this->once())
+            ->method('trans')
+            ->with(TimeSlotPeriodInterface::AM)
+            ->willReturn('matin');
 
         $summary = $this->converter->getSummary($substitution);
 
@@ -86,7 +90,11 @@ final class SubstitutionConverterTest extends TestCase
     {
         $date = new DateTimeImmutable('2025-12-14');
         $substitution = (new Substitution())->setDate($date);
-        $this->scheduleRepository->method('find')->with(new Month($date))->willReturn($schedule);
+        $this->scheduleRepository
+            ->expects($this->once())
+            ->method('find')
+            ->with(new Month($date))
+            ->willReturn($schedule);
 
         $status = $this->converter->getStatus($substitution);
 

@@ -76,7 +76,7 @@ final class PlayDateConverterTest extends TestCase
         $substitution1 = (new Substitution())->setSubstitutionClown((new Clown())->setName('Emil'));
         $substitution2 = (new Substitution())->setSubstitutionClown((new Clown())->setName('Erika'));
         $this->substitutionRepository->method('findByTimeSlotPeriod')->willReturn([$substitution1, $substitution2]);
-        $this->translator->method('trans')->with('all')->willReturn('geht den ganzen Tag');
+        $this->translator->expects($this->once())->method('trans')->with('all')->willReturn('geht den ganzen Tag');
 
         $description = $this->converter->getDescription($playDate);
 
@@ -100,7 +100,7 @@ final class PlayDateConverterTest extends TestCase
             ->setPlayTimeFrom(new DateTimeImmutable('13:15'))
             ->setPlayTimeTo(new DateTimeImmutable('15:15'))
         ;
-        $this->translator->method('trans')->with('all')->willReturn('geht den ganzen Tag');
+        $this->translator->expects($this->once())->method('trans')->with('all')->willReturn('geht den ganzen Tag');
 
         $description = $this->converter->getDescription($playDate);
 
@@ -155,7 +155,11 @@ final class PlayDateConverterTest extends TestCase
     {
         $date = new DateTimeImmutable('2025-12-14');
         $playDate = (new PlayDate())->setDate($date)->setStatus($playDateStatus);
-        $this->scheduleRepository->method('find')->with(new Month($date))->willReturn($schedule);
+        $this->scheduleRepository
+            ->expects($this->atMost(1))
+            ->method('find')
+            ->with(new Month($date))
+            ->willReturn($schedule);
 
         $status = $this->converter->getStatus($playDate);
 

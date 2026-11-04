@@ -87,8 +87,8 @@ final class PlayDateGuardTest extends TestCase
             'teamCanAssignPlayingClowns' => $configCanAssign,
         ]));
         $team = $this->createMock(Collection::class);
-        $team->method('contains')->with($currentClown)->willReturn($teamContainsCurrentClown);
-        $this->venueService->method('getTeam')->with($venue)->willReturn($team);
+        $team->method('contains')->willReturn($teamContainsCurrentClown);
+        $this->venueService->method('getTeam')->willReturn($team);
 
         $this->assertSame($expected, $this->playDateGuard->canAssign($playDate));
         $this->assertSame($expectedAsClown, $this->playDateGuard->canAssignAsClown($playDate));
