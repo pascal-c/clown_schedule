@@ -56,12 +56,21 @@ final class ScheduleRepositoryTest extends KernelTestCase
         $this->assertSame('2025-09', $schedule->getMonth()->getKey());
     }
 
-    public function testFindFutureNonPersistedSchedule()
+    public function testFindCurrentNonPersistedSchedule()
     {
         $schedule = $this->repository->find(Month::build('2025-10'));
 
         $this->assertNull($schedule->getId());
-        $this->assertEquals(ScheduleStatus::NOT_STARTED, $schedule->getStatus());
+        $this->assertEquals(ScheduleStatus::COMPLETED, $schedule->getStatus());
         $this->assertSame('2025-10', $schedule->getMonth()->getKey());
+    }
+
+    public function testFindFutureNonPersistedSchedule()
+    {
+        $schedule = $this->repository->find(Month::build('2025-11'));
+
+        $this->assertNull($schedule->getId());
+        $this->assertEquals(ScheduleStatus::NOT_STARTED, $schedule->getStatus());
+        $this->assertSame('2025-11', $schedule->getMonth()->getKey());
     }
 }

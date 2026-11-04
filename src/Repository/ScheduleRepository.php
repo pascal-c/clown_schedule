@@ -34,7 +34,7 @@ class ScheduleRepository extends AbstractRepository
         $schedule = new Schedule();
         $schedule->setMonth($month);
         $schedule->setStatus(
-            $this->timeService->firstOfMonth() > $month->getDate() ? ScheduleStatus::COMPLETED : ScheduleStatus::NOT_STARTED,
+            $this->timeService->firstOfMonth() >= $month->getDate() ? ScheduleStatus::COMPLETED : ScheduleStatus::NOT_STARTED,
         );
 
         return $schedule;
