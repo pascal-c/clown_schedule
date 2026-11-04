@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Guard;
 
 use App\Entity\PlayDate;
-use App\Entity\Schedule;
 use App\Repository\ConfigRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\AuthService;
 use App\Service\TimeService;
 use App\Service\VenueService;
-use App\Value\ScheduleStatus;
 
 class PlayDateGuard
 {
@@ -83,8 +81,7 @@ class PlayDateGuard
 
     public function shouldNotDelete(PlayDate $playDate): bool
     {
-        $month = $playDate->getMonth();
-        $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::NOT_STARTED);
+        $schedule = $this->scheduleRepository->find($playDate->getMonth());
 
         return $schedule->isCompleted() || ($this->timeService->today() >= $playDate->getDate());
     }

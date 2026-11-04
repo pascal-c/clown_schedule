@@ -76,11 +76,7 @@ class Scheduler
     public function complete(Month $month): ?Schedule
     {
         $schedule = $this->scheduleRepository->find($month);
-
-        if (null === $schedule) {
-            $schedule = (new Schedule())->setMonth($month);
-            $this->entityManager->persist($schedule);
-        }
+        $this->entityManager->persist($schedule);
 
         if (ScheduleStatus::COMPLETED === $schedule->getStatus()) {
             return null;

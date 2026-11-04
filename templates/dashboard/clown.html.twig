@@ -17,34 +17,28 @@
     <ul>
         <li>
             <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">Wünsche {{ nextMonth.label }}</a>
-            {% if nextMonthSchedule %}
-                {% if nextMonthSchedule.completed %}
-                    Spielplan fertiggestellt ✅
-                {% else %}
-                    Spielplan wird gerade erstellt ⚒️
-                {% endif %} 
+            
+            {% if nextMonthSchedule.completed %}
+                Spielplan fertiggestellt ✅
+            {% elseif nextMonthSchedule.inProgress %}
+                Spielplan wird gerade erstellt ⚒️
+            {% elseif nextMonthFilled %}
+                <span class="text-success">(schon eingetragen)</span>
             {% else %}
-                {% if nextMonthFilled %}
-                    <span class="text-success">(schon eingetragen)</span>
-                {% else %}
-                    <span class="text-warning">(noch nix eingetragen)</span>
-                {% endif %}
+                <span class="text-warning">(noch nix eingetragen)</span>
             {% endif %}
         </li>
         <li>
             <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">Wünsche {{ afterNextMonth.label }}</a>
-            {% if afterNextMonthSchedule %}
-                {% if afterNextMonthSchedule.completed %}
-                    Spielplan fertiggestellt ✅
-                {% else %}
-                    Spielplan wird gerade erstellt ⚒️
-                {% endif %} 
+            
+            {% if afterNextMonthSchedule.completed %}
+                Spielplan fertiggestellt ✅
+            {% elseif afterNextMonthSchedule.inProgress %}
+                Spielplan wird gerade erstellt ⚒️
+            {% elseif afterNextMonthFilled %}
+                <span class="text-success">(schon eingetragen)</span>
             {% else %}
-                {% if afterNextMonthFilled %}
-                    <span class="text-success">(schon eingetragen)</span>
-                {% else %}
-                    <span class="text-warning">(noch nix eingetragen)</span>
-                {% endif %}
+                <span class="text-warning">(noch nix eingetragen)</span>
             {% endif %}
         </li>
     </ul>

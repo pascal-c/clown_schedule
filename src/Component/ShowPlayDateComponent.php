@@ -5,7 +5,6 @@ namespace App\Component;
 use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\PlayDate;
-use App\Entity\Schedule;
 use App\Guard\PlayDateGuard;
 use App\Repository\ConfigRepository;
 use App\Repository\ScheduleRepository;
@@ -38,13 +37,13 @@ final class ShowPlayDateComponent
         $this->specialPlayDateUrl = $playDate->isSpecial() ? $this->configRepository->find()->getSpecialPlayDateUrl() : '';
 
         $schedule = $this->scheduleRepository->find($month);
-        $this->colorClass = $this->getColorClass($playDate, $schedule);
-        $this->showClowns = $this->currentClown->isAdmin() || is_null($schedule) || $schedule?->isCompleted();
-        $this->showNotEnonoughClownsWarning = $schedule && $playDate->isPlayDate() && $playDate->getPlayingClowns()->count() < 2;
+        $this->colorClass = $this->getColorClass($playDate);
+        $this->showClowns = $this->currentClown->isAdmin() || $schedule->isCompleted();
+        $this->showNotEnonoughClownsWarning = $schedule->isStarted() && $playDate->isPlayDate() && $playDate->getPlayingClowns()->count() < 2;
         $this->canAssign = $this->playDateGuard->canAssign($playDate);
     }
 
-    private function getColorClass(PlayDate $playDate, ?Schedule $schedule): string
+    private function getColorClass(PlayDate $playDate): string
     {
         if ($playDate->isOther()) {
             return 'text-secondary';

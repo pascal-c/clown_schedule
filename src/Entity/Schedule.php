@@ -54,6 +54,11 @@ class Schedule
         return $this;
     }
 
+    public function isStarted(): bool
+    {
+        return ScheduleStatus::NOT_STARTED !== $this->getStatus();
+    }
+
     public function isCompleted(): bool
     {
         return ScheduleStatus::COMPLETED === $this->getStatus();

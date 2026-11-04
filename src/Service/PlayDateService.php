@@ -68,7 +68,7 @@ class PlayDateService
     public function assign(PlayDate $playDate, array $clowns, ?PlayDateChangeReason $changeReason = null): void
     {
         $schedule = $this->scheduleRepository->find($playDate->getMonth());
-        $changeReason ??= $schedule?->isCompleted()
+        $changeReason ??= $schedule->isCompleted()
             ? PlayDateChangeReason::MANUAL_CHANGE
             : PlayDateChangeReason::MANUAL_CHANGE_FOR_SCHEDULE;
 

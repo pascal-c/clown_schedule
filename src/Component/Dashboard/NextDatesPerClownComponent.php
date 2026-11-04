@@ -51,7 +51,7 @@ class NextDatesPerClownComponent
                 $date['title'] = 'Du bist nicht angemeldet';
             } else {
                 $schedule = $this->scheduleRepository->find($dateEntity->getMonth());
-                if ($schedule && !$schedule->isCompleted()) {
+                if (!$schedule->isCompleted()) {
                     $date['class'] = 'text-muted';
                     $date['title'] = 'Termin noch unsicher!';
                 }

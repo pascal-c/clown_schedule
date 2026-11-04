@@ -7,7 +7,6 @@ namespace App\Service\CalendarExporter;
 use App\Entity\Clown;
 use App\Entity\PlayDate;
 use App\Entity\Substitution;
-use App\Repository\ConfigRepository;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use Eluceo\iCal\Domain\Enum\EventStatus;
@@ -25,7 +24,6 @@ class PlayDateConverter
         private TranslatorInterface $translator,
         private SubstitutionRepository $substitutionRepository,
         private ScheduleRepository $scheduleRepository,
-        private ConfigRepository $configRepository,
     ) {
     }
 
@@ -122,8 +120,7 @@ class PlayDateConverter
         }
 
         $schedule = $this->scheduleRepository->find($date->getMonth());
-        $completed = !$this->configRepository->isFeatureCalculationActive() || $schedule?->isCompleted();
 
-        return $completed ? EventStatus::CONFIRMED() : EventStatus::TENTATIVE();
+        return $schedule->isCompleted() ? EventStatus::CONFIRMED() : EventStatus::TENTATIVE();
     }
 }
