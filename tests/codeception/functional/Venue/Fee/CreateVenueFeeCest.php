@@ -77,25 +77,4 @@ class CreateVenueFeeCest extends AbstractCest
         $I->see('Das können wir so nicht machen!');
         $I->see('Dieser Wert sollte größer als 02.11.2024', Locator::contains('div', text: 'Gültig ab'));
     }
-
-    public function createFailureNewValidDateOlderThanCurrentMonth(AdminTester $I): void
-    {
-        Functional::$now = '2024-12-01';
-
-        $I->loginAsAdmin();
-        $I->click('Spielorte');
-        $I->click('Spargelheim');
-        $I->click('Honorare');
-        $I->click('Honorar anlegen');
-
-        $I->see('Neues Honorar für Spargelheim', 'h5');
-
-        $I->fillField('Gültig ab', '2024-11-03');
-        $I->fillField('Honorar Öffis', '150,00');
-        $I->click('Honorar speichern');
-        $I->seeInField('Honorar Öffis', '150,00');
-
-        $I->see('Das können wir so nicht machen!');
-        $I->see('Dieser Wert sollte größer oder gleich 01.12.2024', Locator::contains('div', text: 'Gültig ab'));
-    }
 }

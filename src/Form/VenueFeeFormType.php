@@ -6,7 +6,6 @@ use App\Entity\Venue;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\GreaterThan;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class VenueFeeFormType extends FeeFormType
@@ -30,10 +29,7 @@ class VenueFeeFormType extends FeeFormType
 
     private function validFromConstraints(Venue $venue): array
     {
-        $validFromConstraints = [
-            new NotBlank(),
-            new GreaterThanOrEqual($this->timeService->firstOfMonth()),
-        ];
+        $validFromConstraints = [new NotBlank()];
 
         $lastFee = $venue->getFees()->first();
         if ($lastFee && $lastFee->getValidFrom()) {
