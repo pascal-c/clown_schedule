@@ -173,7 +173,7 @@ final class SchedulerTest extends TestCase
         $this->fairPlayCalculator->expects($this->never())->method($this->anything());
         $this->substitutionRepository->expects($this->never())->method($this->anything());
         $this->scheduleRepository->expects($this->once())->method('find')->with($month)->willReturn($schedule);
-        $this->entityManager->expects($this->never())->method($this->anything());
+        $this->entityManager->expects($this->once())->method('persist')->with($schedule);
         $this->trainingAssigner->expects($this->never())->method($this->anything());
 
         $result = $this->scheduler->complete($month);
@@ -205,7 +205,7 @@ final class SchedulerTest extends TestCase
         $this->fairPlayCalculator->expects($this->never())->method($this->anything());
         $this->substitutionRepository->expects($this->once())->method('byMonth')->willReturn([$substitution, $substitution2]);
         $this->scheduleRepository->expects($this->once())->method('find')->with($month)->willReturn($schedule);
-        $this->entityManager->expects($this->never())->method($this->anything());
+        $this->entityManager->expects($this->once())->method('persist')->with($schedule);
 
         $result = $this->scheduler->complete($month);
         $this->assertSame($schedule, $result);

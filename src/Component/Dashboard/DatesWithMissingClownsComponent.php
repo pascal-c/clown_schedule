@@ -5,7 +5,6 @@ namespace App\Component\Dashboard;
 use App\Entity\Clown;
 use App\Entity\Month;
 use App\Entity\PlayDate;
-use App\Entity\Schedule;
 use App\Guard\PlayDateGuard;
 use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
@@ -57,7 +56,7 @@ class DatesWithMissingClownsComponent
     {
         if ($this->configRepository->isFeatureCalculationActive()) {
             $month = new Month($this->timeService->firstOfNextMonth());
-            $schedule = $this->scheduleRepository->find($month) ?? new Schedule();
+            $schedule = $this->scheduleRepository->find($month);
 
             return match($schedule->getStatus()) {
                 ScheduleStatus::NOT_STARTED => $this->timeService->firstOfNextMonth(),
@@ -74,8 +73,8 @@ class DatesWithMissingClownsComponent
     private function message(): ?string
     {
         $month = new Month($this->timeService->firstOfNextMonth());
-        if ($this->currentClown->isAdmin() && $this->configRepository->isFeatureCalculationActive() && !$this->scheduleRepository->find($month)?->isCompleted()) {
-            return 'ACHTUNG! Die Spielplanberechnung für den Monat '.$month->getLabel().' wurde noch nicht abgeschlossen.';
+        if ($this->currentClown->isAdmin() && !$this->scheduleRepository->find($month)->isCompleted()) {
+            return 'ACHTUNG! Die Spielplanerstellung für den Monat '.$month->getLabel().' wurde noch nicht abgeschlossen.';
         }
 
         return null;

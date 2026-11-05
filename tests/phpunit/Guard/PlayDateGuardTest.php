@@ -87,8 +87,8 @@ final class PlayDateGuardTest extends TestCase
             'teamCanAssignPlayingClowns' => $configCanAssign,
         ]));
         $team = $this->createMock(Collection::class);
-        $team->method('contains')->with($currentClown)->willReturn($teamContainsCurrentClown);
-        $this->venueService->method('getTeam')->with($venue)->willReturn($team);
+        $team->method('contains')->willReturn($teamContainsCurrentClown);
+        $this->venueService->method('getTeam')->willReturn($team);
 
         $this->assertSame($expected, $this->playDateGuard->canAssign($playDate));
         $this->assertSame($expectedAsClown, $this->playDateGuard->canAssignAsClown($playDate));
@@ -185,22 +185,22 @@ final class PlayDateGuardTest extends TestCase
     public static function shouldNotDeleteProvider(): Generator
     {
         yield 'when schedule is not completed and date not reached' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS),
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::IN_PROGRESS),
             'today' => '2027-10-06',
             'expected' => false,
         ];
-        yield 'when schedule is null and date not reached' => [
-            'schedule' => null,
+        yield 'when schedule is not started and date not reached' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::NOT_STARTED),
             'today' => '2027-10-06',
             'expected' => false,
         ];
         yield 'when schedule is completed' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::COMPLETED),
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::COMPLETED),
             'today' => '2027-10-06',
             'expected' => true,
         ];
         yield 'when date is reached' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS),
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::IN_PROGRESS),
             'today' => '2027-10-07',
             'expected' => true,
         ];
@@ -223,25 +223,25 @@ final class PlayDateGuardTest extends TestCase
     public static function shouldNotEditProvider(): Generator
     {
         yield 'when schedule is not completed and date not reached' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS),
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::IN_PROGRESS),
             'today' => '2027-10-06',
             'isNew' => false,
             'expected' => false,
         ];
-        yield 'when schedule is null and date not reached' => [
-            'schedule' => null,
+        yield 'when schedule is not started and date not reached' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::NOT_STARTED),
             'today' => '2027-10-06',
             'isNew' => false,
             'expected' => false,
         ];
         yield 'when schedule is completed' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::COMPLETED),
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::COMPLETED),
             'today' => '2027-10-06',
             'isNew' => false,
             'expected' => true,
         ];
         yield 'when date is reached' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS),
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::IN_PROGRESS),
             'today' => '2027-10-07',
             'isNew' => false,
             'expected' => true,

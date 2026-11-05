@@ -8,7 +8,6 @@ use App\Entity\Substitution;
 use App\Repository\ScheduleRepository;
 use App\Repository\SubstitutionRepository;
 use App\Service\AuthService;
-use App\Value\ScheduleStatus;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use DateTimeImmutable;
 
@@ -38,7 +37,7 @@ final class ShowSubstitutionClownComponent
         $this->currentClown = $this->authService->getCurrentClown();
 
         $schedule = $this->scheduleRepository->find($month);
-        $this->showSubstitutionClownWarning = $schedule && !$this->substitution->getSubstitutionClown();
-        $this->showIt = $this->currentClown->isAdmin() || $this->substitution->getSubstitutionClown() || ScheduleStatus::COMPLETED === $schedule?->getStatus();
+        $this->showSubstitutionClownWarning = $schedule->isStarted() && !$this->substitution->getSubstitutionClown();
+        $this->showIt = $this->currentClown->isAdmin() || $schedule->isCompleted();
     }
 }

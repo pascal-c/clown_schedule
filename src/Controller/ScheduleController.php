@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\Clown;
 use App\Entity\Month;
-use App\Entity\Schedule;
 use App\Form\ScheduleCalculateFormType;
 use App\Form\ScheduleCompleteFormType;
 use App\Mailer\ClownInfoMailer;
@@ -51,12 +50,13 @@ class ScheduleController extends AbstractProtectedController
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduleRepository->find($month);
 
-        if (null === $schedule) {
-            $schedule ??= (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::IN_PROGRESS);
-            $this->entityManager->persist($schedule);
-        }
         if (ScheduleStatus::COMPLETED === $schedule->getStatus()) {
             throw $this->createAccessDeniedException('Spielplan ist bereits abgeschlossen!');
+        }
+
+        if (!$schedule->isStarted()) {
+            $schedule->setStatus(ScheduleStatus::IN_PROGRESS);
+            $this->entityManager->persist($schedule);
         }
 
         $calculateForm = $this->createForm(ScheduleCalculateFormType::class, $schedule);
@@ -94,7 +94,7 @@ class ScheduleController extends AbstractProtectedController
     public function show(SessionInterface $session, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
-        $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month)->setStatus(ScheduleStatus::NOT_STARTED);
+        $schedule = $this->scheduleRepository->find($month);
         $scheduleViewModel = $this->scheduleViewController->getSchedule($month);
 
         foreach ($this->playDateRepository->byMonth($month) as $playDate) {

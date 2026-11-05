@@ -10,7 +10,6 @@ use App\Entity\PlayDate;
 use App\Entity\Schedule;
 use App\Entity\Substitution;
 use App\Entity\Venue;
-use App\Repository\ConfigRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\CalendarExporter\PlayDateConverter;
 use App\Repository\SubstitutionRepository;
@@ -33,7 +32,6 @@ final class PlayDateConverterTest extends TestCase
     private TranslatorInterface&MockObject $translator;
     private SubstitutionRepository&MockObject $substitutionRepository;
     private ScheduleRepository&MockObject $scheduleRepository;
-    private ConfigRepository&MockObject $configRepository;
     private PlayDateConverter $converter;
 
     protected function setUp(): void
@@ -41,13 +39,11 @@ final class PlayDateConverterTest extends TestCase
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->scheduleRepository = $this->createMock(ScheduleRepository::class);
-        $this->configRepository = $this->createMock(ConfigRepository::class);
 
         $this->converter = new PlayDateConverter(
             $this->translator,
             $this->substitutionRepository,
             $this->scheduleRepository,
-            $this->configRepository,
         );
     }
 
@@ -80,7 +76,7 @@ final class PlayDateConverterTest extends TestCase
         $substitution1 = (new Substitution())->setSubstitutionClown((new Clown())->setName('Emil'));
         $substitution2 = (new Substitution())->setSubstitutionClown((new Clown())->setName('Erika'));
         $this->substitutionRepository->method('findByTimeSlotPeriod')->willReturn([$substitution1, $substitution2]);
-        $this->translator->method('trans')->with('all')->willReturn('geht den ganzen Tag');
+        $this->translator->expects($this->once())->method('trans')->with('all')->willReturn('geht den ganzen Tag');
 
         $description = $this->converter->getDescription($playDate);
 
@@ -104,7 +100,7 @@ final class PlayDateConverterTest extends TestCase
             ->setPlayTimeFrom(new DateTimeImmutable('13:15'))
             ->setPlayTimeTo(new DateTimeImmutable('15:15'))
         ;
-        $this->translator->method('trans')->with('all')->willReturn('geht den ganzen Tag');
+        $this->translator->expects($this->once())->method('trans')->with('all')->willReturn('geht den ganzen Tag');
 
         $description = $this->converter->getDescription($playDate);
 
@@ -155,12 +151,15 @@ final class PlayDateConverterTest extends TestCase
     }
 
     #[DataProvider('statusDataProvider')]
-    public function testGetStatus(?Schedule $schedule, bool $isFeatureCalculationActive, string $playDateStatus, EventStatus $expectedStatus): void
+    public function testGetStatus(?Schedule $schedule, string $playDateStatus, EventStatus $expectedStatus): void
     {
         $date = new DateTimeImmutable('2025-12-14');
         $playDate = (new PlayDate())->setDate($date)->setStatus($playDateStatus);
-        $this->scheduleRepository->method('find')->with(new Month($date))->willReturn($schedule);
-        $this->configRepository->method('isFeatureCalculationActive')->willReturn($isFeatureCalculationActive);
+        $this->scheduleRepository
+            ->expects($this->atMost(1))
+            ->method('find')
+            ->with(new Month($date))
+            ->willReturn($schedule);
 
         $status = $this->converter->getStatus($playDate);
 
@@ -169,44 +168,32 @@ final class PlayDateConverterTest extends TestCase
 
     public static function statusDataProvider(): Generator
     {
-        yield 'when calculation is active and schedule is completed' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::COMPLETED),
-            'isFeatureCalculationActive' => true,
+        yield 'when play date status is confirmed and schedule is completed' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::COMPLETED),
             'playDateStatus' => PlayDate::STATUS_CONFIRMED,
             'expectedStatus' => EventStatus::CONFIRMED(),
         ];
 
-        yield 'when calculation is active and schedule is not completed' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS),
-            'isFeatureCalculationActive' => true,
+        yield 'when play date status is in progress and schedule is not completed' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::IN_PROGRESS),
             'playDateStatus' => PlayDate::STATUS_CONFIRMED,
             'expectedStatus' => EventStatus::TENTATIVE(),
         ];
 
-        yield 'when calculation is active and there is no schedule' => [
-            'schedule' => null,
-            'isFeatureCalculationActive' => true,
+        yield 'when play date status is not started and schedule is not completed' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::NOT_STARTED),
             'playDateStatus' => PlayDate::STATUS_CONFIRMED,
             'expectedStatus' => EventStatus::TENTATIVE(),
-        ];
-
-        yield 'when calculation is not active' => [
-            'schedule' => null,
-            'isFeatureCalculationActive' => false,
-            'playDateStatus' => PlayDate::STATUS_CONFIRMED,
-            'expectedStatus' => EventStatus::CONFIRMED(),
         ];
 
         yield 'when play date status is cancelled' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::COMPLETED),
-            'isFeatureCalculationActive' => true,
+            'schedule' => new Schedule(),
             'playDateStatus' => PlayDate::STATUS_CANCELLED,
             'expectedStatus' => EventStatus::CANCELLED(),
         ];
 
         yield 'when play date status is moved' => [
-            'schedule' => null,
-            'isFeatureCalculationActive' => false,
+            'schedule' => new Schedule(),
             'playDateStatus' => PlayDate::STATUS_MOVED,
             'expectedStatus' => EventStatus::CANCELLED(),
         ];

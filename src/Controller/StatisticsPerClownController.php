@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\ClownAvailability;
 use App\Entity\Month;
-use App\Entity\Schedule;
 use App\Gateway\RosterCalculatorGateway;
 use App\Repository\ClownAvailabilityRepository;
 use App\Repository\ClownRepository;
@@ -116,7 +115,7 @@ class StatisticsPerClownController extends AbstractProtectedController
     public function showPerMonth(SessionInterface $session, ?string $monthId = null): Response
     {
         $month = $this->monthRepository->find($session, $monthId);
-        $schedule = $this->scheduleRepository->find($month) ?? (new Schedule())->setMonth($month);
+        $schedule = $this->scheduleRepository->find($month);
         $playDates = $this->playDateRepository->confirmedCalculatableByMonth($month);
         $otherDates = $this->playDateRepository->confirmedNonCalculatableByMonth($month);
         $clownAvailabilities = $this->clownAvailabilityRepository->byMonth($month);

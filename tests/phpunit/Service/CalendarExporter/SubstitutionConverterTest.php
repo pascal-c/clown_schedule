@@ -8,7 +8,6 @@ use App\Entity\Month;
 use App\Entity\PlayDate;
 use App\Entity\Schedule;
 use App\Entity\Substitution;
-use App\Repository\ConfigRepository;
 use App\Repository\PlayDateRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\CalendarExporter\SubstitutionConverter;
@@ -29,7 +28,6 @@ final class SubstitutionConverterTest extends TestCase
     private TranslatorInterface&MockObject $translator;
     private PlayDateRepository&MockObject $playDateRepository;
     private ScheduleRepository&MockObject $scheduleRepository;
-    private ConfigRepository&MockObject $configRepository;
     private SubstitutionConverter $converter;
 
     protected function setUp(): void
@@ -37,20 +35,22 @@ final class SubstitutionConverterTest extends TestCase
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->playDateRepository = $this->createMock(PlayDateRepository::class);
         $this->scheduleRepository = $this->createMock(ScheduleRepository::class);
-        $this->configRepository = $this->createMock(ConfigRepository::class);
 
         $this->converter = new SubstitutionConverter(
             $this->translator,
             $this->playDateRepository,
             $this->scheduleRepository,
-            $this->configRepository,
         );
     }
 
     public function testGetSummary(): void
     {
         $substitution = (new Substitution())->setDaytime(TimeSlotPeriodInterface::AM);
-        $this->translator->method('trans')->with(TimeSlotPeriodInterface::AM)->willReturn('matin');
+        $this->translator
+            ->expects($this->once())
+            ->method('trans')
+            ->with(TimeSlotPeriodInterface::AM)
+            ->willReturn('matin');
 
         $summary = $this->converter->getSummary($substitution);
 
@@ -86,12 +86,15 @@ final class SubstitutionConverterTest extends TestCase
     }
 
     #[DataProvider('statusDataProvider')]
-    public function testGetStatus(?Schedule $schedule, bool $isFeatureCalculationActive, EventStatus $expectedStatus): void
+    public function testGetStatus(?Schedule $schedule, EventStatus $expectedStatus): void
     {
         $date = new DateTimeImmutable('2025-12-14');
         $substitution = (new Substitution())->setDate($date);
-        $this->scheduleRepository->method('find')->with(new Month($date))->willReturn($schedule);
-        $this->configRepository->method('isFeatureCalculationActive')->willReturn($isFeatureCalculationActive);
+        $this->scheduleRepository
+            ->expects($this->once())
+            ->method('find')
+            ->with(new Month($date))
+            ->willReturn($schedule);
 
         $status = $this->converter->getStatus($substitution);
 
@@ -100,28 +103,19 @@ final class SubstitutionConverterTest extends TestCase
 
     public static function statusDataProvider(): Generator
     {
-        yield 'when calculation is active and schedule is completed' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::COMPLETED),
-            'isFeatureCalculationActive' => true,
+        yield 'when schedule is completed' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::COMPLETED),
             'expectedStatus' => EventStatus::CONFIRMED(),
         ];
 
-        yield 'when calculation is active and schedule is not completed' => [
-            'schedule' => (new Schedule())->setStatus(ScheduleStatus::IN_PROGRESS),
-            'isFeatureCalculationActive' => true,
+        yield 'when schedule is in progress' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::IN_PROGRESS),
             'expectedStatus' => EventStatus::TENTATIVE(),
         ];
 
-        yield 'when calculation is active and there is no schedule' => [
-            'schedule' => null,
-            'isFeatureCalculationActive' => true,
+        yield 'when schedule is not started' => [
+            'schedule' => new Schedule()->setStatus(ScheduleStatus::NOT_STARTED),
             'expectedStatus' => EventStatus::TENTATIVE(),
-        ];
-
-        yield 'when calculation is not active' => [
-            'schedule' => null,
-            'isFeatureCalculationActive' => false,
-            'expectedStatus' => EventStatus::CONFIRMED(),
         ];
     }
 }

@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
-#[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class MaxPlaysReachedCheckerTest extends TestCase
 {
     private MaxPlaysReachedChecker $maxPlaysReachedChecker;
@@ -54,11 +53,13 @@ final class MaxPlaysReachedCheckerTest extends TestCase
 
         // we have 2 Plays for this clown for this week
         $this->playDateRepository
+            ->expects($this->atMost(1))
             ->method('countByClownAvailabilityAndWeek')
             ->with($clownAvailability, $week)
             ->willReturn(2);
         $this->substitutionRepository->expects($this->never())->method($this->anything());
         $this->configRepository
+            ->expects($this->atMost(1))
             ->method('isFeatureMaxPerWeekActive')
             ->with()
             ->willReturn($isFeatureMaxPerWeekActive);
@@ -81,6 +82,7 @@ final class MaxPlaysReachedCheckerTest extends TestCase
 
         // we have 2 Plays for this clown for this week
         $this->playDateRepository
+            ->expects($this->atMost(1))
             ->method('countByClownAvailabilityAndWeek')
             ->with($clownAvailability, $week)
             ->willReturn(2);
@@ -93,10 +95,12 @@ final class MaxPlaysReachedCheckerTest extends TestCase
             (new Substitution())->setDate(new DateTimeImmutable('2024-02-19'))->setSubstitutionClown($clown), // wrong week (this is next Monday)
         ];
         $this->substitutionRepository
+            ->expects($this->atMost(1))
             ->method('byMonth')
             ->with($month)
             ->willReturn($otherSubstitutions);
         $this->configRepository
+            ->expects($this->atMost(1))
             ->method('isFeatureMaxPerWeekActive')
             ->with()
             ->willReturn($isFeatureMaxPerWeekActive);
@@ -143,6 +147,7 @@ final class MaxPlaysReachedCheckerTest extends TestCase
 
         // we have 1 PlayDate and 1 Substitution for this clown for this day
         $this->playDateRepository
+            ->expects($this->once())
             ->method('confirmedByMonth')
             ->with($month)
             ->willReturn([
@@ -151,6 +156,7 @@ final class MaxPlaysReachedCheckerTest extends TestCase
                 (new PlayDate())->setDate(new DateTimeImmutable('2024-02-14'))->addPlayingClown($clown), // wrong day
             ]);
         $this->substitutionRepository
+            ->expects($this->once())
             ->method('byMonth')
             ->with($month)
             ->willReturn([ // we have 1 substitution for this clown for this week

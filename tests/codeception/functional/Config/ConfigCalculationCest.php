@@ -3,18 +3,21 @@
 namespace App\Tests\Functional\Config;
 
 use App\Tests\Functional\AbstractCest;
+use App\Tests\Helper\Functional;
 use App\Tests\Step\Functional\AdminTester;
 
 class ConfigCalculationCest extends AbstractCest
 {
     public function featureUseCalculation(AdminTester $I): void
     {
+        Functional::$now = '2025-08';
         $I->loginAsAdmin();
 
         // calculation features are activated by default
         $I->click('Dashboard', '.nav');
         $I->see('Wünsche verwalten');
         $I->click('Spielplan', '.nav');
+        $I->click('Sept. 2025', '.nav'); // look in a future month
         $I->seeLink('Spielplan berechnen');
 
         $I->click('Einstellungen');
