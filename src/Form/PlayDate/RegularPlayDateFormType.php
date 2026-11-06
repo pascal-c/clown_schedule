@@ -35,7 +35,6 @@ class RegularPlayDateFormType extends AbstractType
                 'choice_label' => 'name',
                 'required' => false,
                 'label' => 'Spielort',
-                'disabled' => $shouldNotEdit,
             ])
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
