@@ -42,7 +42,7 @@
         "symfony/translation": "^8.0",
         "symfony/twig-bundle": "^8.0",
         "symfony/ux-twig-component": "^2.30",
-        "symfony/validator": "^8.0",
+        "symfony/validator": "^8.1",
         "symfony/web-link": "^8.0",
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "^8.0",
