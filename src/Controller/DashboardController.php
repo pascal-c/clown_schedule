@@ -10,6 +10,7 @@ use App\Repository\ConfigRepository;
 use App\Repository\PlayDateChangeRequestRepository;
 use App\Repository\ScheduleRepository;
 use App\Service\TimeService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -34,8 +35,8 @@ class DashboardController extends AbstractProtectedController
     }
 
     #[Route('/dashboard', name: 'dashboard', methods: ['GET'])]
-    public function dashboard(): Response
-    {
+    public function dashboard(Request $request): Response
+    {// die ($request->getLocale());
         $today = $this->timeService->today();
         $currentMonth = new Month($today);
         $nextMonth = $currentMonth->next();

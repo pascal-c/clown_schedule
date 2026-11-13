@@ -1,59 +1,51 @@
-all: 'ganztags'
-am: 'vormittags'
-pm: 'nachmittags'
-
+Language: Sprache
+Save: Speichern
+all: ganztags
+am: vormittags
+pm: nachmittags
 waiting: '⏳ wartet'
 accepted: '✅ angenommen'
 declined: '❌ abgelehnt'
 closed: '❌ geschlossen'
-
-swap: 'Tausch'
-give-off: 'abgegeben'
-calculation: 'Spielplanberechnung'
+swap: Tausch
+give-off: abgegeben
+calculation: Spielplanberechnung
 manual-change-for-schedule: 'Manuelle Änderung im Rahmen der Spielplanerstellung'
 manual-change: 'Manuelle Änderung nach Spielplanerstellung'
 cancel: 'Termin abgesagt'
 create: 'Termin angelegt'
 move: 'Termin verschoben'
-
 regular: 'Spieltermin (regulär)'
-special: 'Zusatztermin'
+special: Zusatztermin
 training: 'Training / Team-Treffen'
 other: 'Sonstiger Termin'
-
-First name: 'Vorname'
-Last name: 'Nachname'
-Function: 'Funktion'
-Phone: 'Telefon'
-
-weekly: 'wöchentlich'
-monthly: 'monatlich'
-
-Monday: 'Montag'
-Tuesday: 'Dienstag'
-Wednesday: 'Mittwoch'
-Thursday: 'Donnerstag'
-Friday: 'Freitag'
-Saturday: 'Samstag'
-Sunday: 'Sonntag'
-
-on Monday: 'am Montag'
-on Tuesday: 'am Dienstag'
-on Wednesday: 'am Mittwoch'
-on Thursday: 'am Donnerstag'
-on Friday: 'am Freitag'
-on Saturday: 'am Samstag'
-on Sunday: 'am Sonntag'
-
+'First name': Vorname
+'Last name': Nachname
+Function: Funktion
+Phone: Telefon
+weekly: wöchentlich
+monthly: monatlich
+Monday: Montag
+Tuesday: Dienstag
+Wednesday: Mittwoch
+Thursday: Donnerstag
+Friday: Freitag
+Saturday: Samstag
+Sunday: Sonntag
+'on Monday': 'am Montag'
+'on Tuesday': 'am Dienstag'
+'on Wednesday': 'am Mittwoch'
+'on Thursday': 'am Donnerstag'
+'on Friday': 'am Freitag'
+'on Saturday': 'am Samstag'
+'on Sunday': 'am Sonntag'
 invoice-status-open: 'Rechnung offen'
 invoice-status-issued: 'Rechnung gestellt'
 invoice-status-paid: 'Rechnung bezahlt'
-
-'Close': 'Schließen'
+Close: Schließen
 'Toggle navigation': 'Navigation umschalten'
-'Email': 'E-Mail'
-'Sie können die Installation der Cookies durch eine Einstellung Ihres Internet-Browsers verhindern oder einschränken. Ebenfalls können Sie bereits gespeicherte Cookies jederzeit löschen. Die hierfür erforderlichen Schritte und Maßnahmen hängen jedoch von Ihrem konkret genutzten Internet-Browser ab. Bei Fragen benutzen Sie daher bitte die Hilfefunktion oder Dokumentation Ihres Internet-Browsers oder wenden sich an dessen Hersteller bzw. Support. Bei sog. Flash-Cookies kann die Verarbeitung allerdings nicht über die Einstellungen des Browsers unterbunden werden. Stattdessen müssen Sie insoweit die Einstellung Ihres Flash-Players ändern. Auch die hierfür erforderlichen Schritte und Maßnahmen hängen von Ihrem konkret genutzten Flash-Player ab. Bei Fragen benutzen Sie daher bitte ebenso die Hilfefunktion oder Dokumentation Ihres Flash-Players oder wenden sich an den Hersteller bzw. Benutzer-Support.': 'Sie können die Installation der Cookies durch eine Einstellung Ihres Internet-Browsers verhindern oder einschränken. Ebenfalls können Sie bereits gespeicherte Cookies jederzeit löschen. Die hierfür erforderlichen Schritte und Maßnahmen hängen jedoch von Ihrem konkret genutzten Internet-Browser ab. Bei Fragen benutzen Sie daher bitte die Hilfefunktion oder Dokumentation Ihres Internet-Browsers oder wenden sich an dessen Hersteller bzw. Support. Bei sog. Flash-Cookies kann die Verarbeitung allerdings nicht über die Einstellungen des Browsers unterbunden werden. Stattdessen müssen Sie insoweit die Einstellung Ihres Flash-Players ändern. Auch die hierfür erforderlichen Schritte und Maßnahmen hängen von Ihrem konkret genutzten Flash-Player ab. Bei Fragen benutzen Sie daher bitte ebenso die Hilfefunktion oder Dokumentation Ihres Flash-Players oder wenden Sie sich an den Hersteller bzw. Benutzer-Support.'
-
+Email: E-Mail
+cookie_note: 'Sie können die Installation der Cookies durch eine Einstellung Ihres Internet-Browsers verhindern oder einschränken. Ebenfalls können Sie bereits gespeicherte Cookies jederzeit löschen. Die hierfür erforderlichen Schritte und Maßnahmen hängen jedoch von Ihrem konkret genutzten Internet-Browser ab. Bei Fragen benutzen Sie daher bitte die Hilfefunktion oder Dokumentation Ihres Internet-Browsers oder wenden sich an dessen Hersteller bzw. Support. Bei sog. Flash-Cookies kann die Verarbeitung allerdings nicht über die Einstellungen des Browsers unterbunden werden. Stattdessen müssen Sie insoweit die Einstellung Ihres Flash-Players ändern. Auch die hierfür erforderlichen Schritte und Maßnahmen hängen von Ihrem konkret genutzten Flash-Player ab. Bei Fragen benutzen Sie daher bitte ebenso die Hilfefunktion oder Dokumentation Ihres Flash-Players oder wenden Sie sich an den Hersteller bzw. Benutzer-Support.'
 Clown: Clown
 E-Mail: E-Mail
 'Büro?': 'Büro?'
@@ -137,7 +129,7 @@ Spielortpräferenzen: Spielortpräferenzen
 'Deine nächsten Termine,': 'Deine nächsten Termine,'
 anmelden: anmelden
 'keene Termine, nüscht!': 'keene Termine, nüscht!'
-'Noch verfügbar:': 'Noch verfügbar:'
+'Noch verfügbar': 'Noch verfügbar'
 'Kein Springer eingetragen.': 'Kein Springer eingetragen.'
 'Wiederkehrende Termine': 'Wiederkehrende Termine'
 'von:': 'von:'
@@ -171,7 +163,6 @@ Hinweis: Hinweis
 'Viel Spaß!': 'Viel Spaß!'
 Hallo: Hallo
 'x km (Hin- und Rück) = ( ) --': 'x km (Hin- und Rück) = ( ) --'
-'Spielplan fertiggestellt ✅ Spielplan wird gerade erstellt ⚒️': 'Spielplan fertiggestellt ✅ Spielplan wird gerade erstellt ⚒️'
 'Clowns zu Spieltermin einteilen': 'Clowns zu Spieltermin einteilen'
 'Spieltermine bündeln': 'Spieltermine bündeln'
 Kommentar: Kommentar
@@ -265,7 +256,6 @@ Telefon: Telefon
 'Kalender hinzufügen - Öffne die App und tippe auf das „+“-Symbol (unten rechts) und wähle „Neues Kalender-Abonnement“.': 'Kalender hinzufügen - Öffne die App und tippe auf das „+“-Symbol (unten rechts) und wähle „Neues Kalender-Abonnement“.'
 'Webcal-Link einfügen - Gib den Webcal-Link ein und bestätige mit „Weiter“.': 'Webcal-Link einfügen - Gib den Webcal-Link ein und bestätige mit „Weiter“.'
 'Einstellungen prüfen - Wähle einen Namen für den Kalender, die Farbe und wie oft er aktualisiert werden soll. Tippe dann auf „Speichern“.': 'Einstellungen prüfen - Wähle einen Namen für den Kalender, die Farbe und wie oft er aktualisiert werden soll. Tippe dann auf „Speichern“.'
-'Hinweis:': 'Hinweis:'
 'Die App fragt dich beim ersten Start nach Berechtigungen für den Kalender – diese musst du erlauben, damit alles funktioniert.': 'Die App fragt dich beim ersten Start nach Berechtigungen für den Kalender – diese musst du erlauben, damit alles funktioniert.'
 'Kalender auf iOS abonnieren': 'Kalender auf iOS abonnieren'
 'Kalender-App öffnen: Öffne die „Einstellungen“-App auf deinem iOS-Gerät und scrolle nach unten zu „Kalender“.': 'Kalender-App öffnen: Öffne die „Einstellungen“-App auf deinem iOS-Gerät und scrolle nach unten zu „Kalender“.'
@@ -286,7 +276,7 @@ Telefon: Telefon
 'Rechnung bezahlt': 'Rechnung bezahlt'
 'Mein Profil': 'Mein Profil'
 Abmelden: Abmelden
-'| keener': '| keener'
+'keener': 'keener'
 'Es sind   Termine gebündelt': 'Es sind   Termine gebündelt'
 'Weitere Infos': 'Weitere Infos'
 'Springer:': 'Springer:'
@@ -357,8 +347,6 @@ Dashboard: Dashboard
 an: an
 gegen: gegen
 mit: mit
-'Treffen:': 'Treffen:'
-'Spielzeit:': 'Spielzeit:'
 ': Rechnung für': ': Rechnung für'
 'Rechnung für %month%': 'Rechnung für %month%'
 'Hey, %name%, Du kannst eine Rechnung stellen, yippieh!': 'Hey, %name%, Du kannst eine Rechnung stellen, yippieh!'
@@ -462,10 +450,9 @@ Funktion: Funktion
 'Super, Du bist für diesen Termin angemeldet!': 'Super, Du bist für diesen Termin angemeldet!'
 'Du bist für diesen Termin leider (noch) nicht angemeldet.': 'Du bist für diesen Termin leider (noch) nicht angemeldet.'
 noch: noch
-'besser zu schützen.': 'besser zu schützen.'
 Datenschutzerklärung: Datenschutzerklärung
 'Wir nehmen den Schutz Ihrer personenbezogenen Daten sehr ernst. Unglaublich ernst. Wir schützen Ihre Daten in ungeahnter Weise!': 'Wir nehmen den Schutz Ihrer personenbezogenen Daten sehr ernst. Unglaublich ernst. Wir schützen Ihre Daten in ungeahnter Weise!'
-'Wir nehmen Datenschutz so ernst, dass wir derzeit diskutieren, ob wir nicht all unsere Dienste einstellen sollten, um Ihre Daten': 'Wir nehmen Datenschutz so ernst, dass wir derzeit diskutieren, ob wir nicht all unsere Dienste einstellen sollten, um Ihre Daten'
+even_better_data_protection_clause: 'Wir nehmen Datenschutz so ernst, dass wir derzeit diskutieren, ob wir nicht all unsere Dienste einstellen sollten, um Ihre Daten NOCH besser zu schützen'
 'Spaß beiseite: Wir nehmen den Schutz Ihrer personenbezogenen Daten wirklich ernst. Wir geben Ihre Daten auch an niemanden weiter. Auf gar keinen Fall. Niemals.': 'Spaß beiseite: Wir nehmen den Schutz Ihrer personenbezogenen Daten wirklich ernst. Wir geben Ihre Daten auch an niemanden weiter. Auf gar keinen Fall. Niemals.'
 'Außer vielleicht in ganz besonderen Ausnahmesituationen, wie vielleicht, wenn Sie unsere Webseite betreten. Dann geben wir Ihre Daten an Google weiter. Und an Facebook. Und Twitter. Ach ja, und an Instagram, LinkedIn, Pinterest, TikTok, Snapchat, Meta, Alphabet Inc, sowie an: X, Microsoft, Amazon, Apple, IBM, Oracle, SAP, Salesforce, Adobe, Dropbox, Box, Slack, Zoom, Cisco, Huawei, Alibaba und Tencent. Selbstverständlich senden wir Ihre Daten auch an den BND und die NASA. Das geht ja gar nicht anders.': 'Außer vielleicht in ganz besonderen Ausnahmesituationen, wie vielleicht, wenn Sie unsere Webseite betreten. Dann geben wir Ihre Daten an Google weiter. Und an Facebook. Und Twitter. Ach ja, und an Instagram, LinkedIn, Pinterest, TikTok, Snapchat, Meta, Alphabet Inc, sowie an: X, Microsoft, Amazon, Apple, IBM, Oracle, SAP, Salesforce, Adobe, Dropbox, Box, Slack, Zoom, Cisco, Huawei, Alibaba und Tencent. Selbstverständlich senden wir Ihre Daten auch an den BND und die NASA. Das geht ja gar nicht anders.'
 'Das war natürlich nur ein Scherz. Wir geben Ihre Daten nicht an Dritte weiter.': 'Das war natürlich nur ein Scherz. Wir geben Ihre Daten nicht an Dritte weiter.'
@@ -550,7 +537,7 @@ der: der
 'Neue Tauschanfrage stellen': 'Neue Tauschanfrage stellen'
 'Clownsteam für diesen Spielort aktivieren': 'Clownsteam für diesen Spielort aktivieren'
 'Dieser Spielort wird bevorzugt von Clowns aus diesem Team übernommen. Dies wird auch bei der Berechnung berücksichtigt.': 'Dieser Spielort wird bevorzugt von Clowns aus diesem Team übernommen. Dies wird auch bei der Berechnung berücksichtigt.'
-'speichern': 'speichern'
+speichern: speichern
 'Hier wäre noch Platz für eine persönliche Nachricht an die angefragte Person:': 'Hier wäre noch Platz für eine persönliche Nachricht an die angefragte Person:'
 'Anfrage abbrechen': 'Anfrage abbrechen'
 'Gewünschte Anzahl Spiele pro Monat': 'Gewünschte Anzahl Spiele pro Monat'
@@ -590,7 +577,7 @@ der: der
 'Punkte pro Spielortpräferenz "ok"': 'Punkte pro Spielortpräferenz "ok"'
 'Punkte pro Spielortpräferenz "sehr gerne"': 'Punkte pro Spielortpräferenz "sehr gerne"'
 'Punkte pro Spielortpräferenz "au ja, unbedingt!"': 'Punkte pro Spielortpräferenz "au ja, unbedingt!"'
-'Bundesland': 'Bundesland'
+Bundesland: Bundesland
 'für die Anzeige von Ferien und Feiertagen im Kalender': 'für die Anzeige von Ferien und Feiertagen im Kalender'
 'Zusatztermine Link': 'Zusatztermine Link'
 'Dieser Link wird in den Details aller Zusatztermine angezeigt': 'Dieser Link wird in den Details aller Zusatztermine angezeigt'
@@ -609,24 +596,24 @@ der: der
 'Bezeichnung für Standard-Honorar': 'Bezeichnung für Standard-Honorar'
 'Bezeichnung für alternatives Honorar': 'Bezeichnung für alternatives Honorar'
 'Wenn angegeben, kann ein alternatives Honorar angegeben werden. Wenn leer gelassen, wird kein alternatives Honorar angezeigt.': 'Wenn angegeben, kann ein alternatives Honorar angegeben werden. Wenn leer gelassen, wird kein alternatives Honorar angezeigt.'
-'Kilometerpauschale': 'Kilometerpauschale'
-'Kilometer': 'Kilometer'
+Kilometerpauschale: Kilometerpauschale
+Kilometer: Kilometer
 'Kilometergeld für beide Clowns': 'Kilometergeld für beide Clowns'
 'Honorar speichern': 'Honorar speichern'
 'Gegen welchen Termin möchtest Du tauschen?': 'Gegen welchen Termin möchtest Du tauschen?'
 'Es werden nur Termine angezeigt, an denen Du verfügbar bist und Clowns, die an dem Tauschtermin verfügbar sind.': 'Es werden nur Termine angezeigt, an denen Du verfügbar bist und Clowns, die an dem Tauschtermin verfügbar sind.'
 'Hier könntest Du noch eine persönliche Nachricht an die angefragte Person hinterlassen': 'Hier könntest Du noch eine persönliche Nachricht an die angefragte Person hinterlassen'
 'Tauschanfrage senden!': 'Tauschanfrage senden!'
-'Kurzname': 'Kurzname'
+Kurzname: Kurzname
 'Straße und Hausnummer': 'Straße und Hausnummer'
-'PLZ': 'PLZ'
-'Ort': 'Ort'
+PLZ: PLZ
+Ort: Ort
 'URL (für weitere Infos zur Einrichtung)': 'URL (für weitere Infos zur Einrichtung)'
 'Spielzeit (von)': 'Spielzeit (von)'
 'Spielzeit (bis)': 'Spielzeit (bis)'
 'ist ein Super-Spielort? (nur relevant für Statistik)': 'ist ein Super-Spielort? (nur relevant für Statistik)'
 'Spielort speichern': 'Spielort speichern'
-'Gender': 'Gender'
+Gender: Gender
 'Hier wäre noch Platz für eine persönliche Nachricht an die anfragende Person:': 'Hier wäre noch Platz für eine persönliche Nachricht an die anfragende Person:'
 'Tauschanfrage ablehnen!': 'Tauschanfrage ablehnen!'
 'Tauschanfrage jetzt verbindlich annehmen!': 'Tauschanfrage jetzt verbindlich annehmen!'
@@ -636,7 +623,7 @@ der: der
 'Bei der Berechnung wird versucht als ersten Clown immer einen verantwortlichen Clown zu benennen.': 'Bei der Berechnung wird versucht als ersten Clown immer einen verantwortlichen Clown zu benennen.'
 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.': 'Gibt es mehrere verantwortliche Clowns pro Spielort, werden diese abwechselnd als 1. Clown zugeordnet. Ist kein verantwortlicher Clown verfügbar, wird ein Clown zugeordnet, der zuletzt dort spielte.'
 'Termin jetzt absagen': 'Termin jetzt absagen'
-'Titel': 'Titel'
+Titel: Titel
 'automatische Zordnung': 'automatische Zordnung'
 'Wenn aktiviert, werden Clowns im Rahmen der Berechnung automatisch zugeordnet, wenn sie verfügbar sind.': 'Wenn aktiviert, werden Clowns im Rahmen der Berechnung automatisch zugeordnet, wenn sie verfügbar sind.'
 'Termin speichern': 'Termin speichern'
@@ -645,12 +632,12 @@ der: der
 'Der Wert in Klammern hinter dem Clown-Namen gibt die Präferenz des Clowns für den Spielort an.': 'Der Wert in Klammern hinter dem Clown-Namen gibt die Präferenz des Clowns für den Spielort an.'
 'Zuordnung speichern': 'Zuordnung speichern'
 'ist ein Super-Spieltermin? (nur relevant für Statistik)': 'ist ein Super-Spieltermin? (nur relevant für Statistik)'
-'Terminart': 'Terminart'
+Terminart: Terminart
 'Zusatztermine speichern': 'Zusatztermine speichern'
 'Spieltermin speichern': 'Spieltermin speichern'
-'Start': 'Start'
-'Ende': 'Ende'
-'Wochentag': 'Wochentag'
+Start: Start
+Ende: Ende
+Wochentag: Wochentag
 'Alle wieviel Wochen/jeden wievielten im Monat': 'Alle wieviel Wochen/jeden wievielten im Monat'
 'Neues Datum für den Spieltermin': 'Neues Datum für den Spieltermin'
 'Termin jetzt verschieben': 'Termin jetzt verschieben'
@@ -660,8 +647,8 @@ der: der
 '< Rechnung als offen markieren': '< Rechnung als offen markieren'
 '> Rechnung als bezahlt markieren': '> Rechnung als bezahlt markieren'
 '< Rechnung als doch nicht bezahlt markieren': '< Rechnung als doch nicht bezahlt markieren'
-'jährlich': 'jährlich'
-'ewig': 'ewig'
+jährlich: jährlich
+ewig: ewig
 'ACHTUNG! Die Spielplanberechnung für den Monat %month% wurde noch nicht abgeschlossen.': 'ACHTUNG! Die Spielplanberechnung für den Monat %month% wurde noch nicht abgeschlossen.'
 'Spieltermin abgesagt': 'Spieltermin abgesagt'
 'Spieltermin verschoben': 'Spieltermin verschoben'
@@ -675,18 +662,18 @@ der: der
 'Nächstes Jahr': 'Nächstes Jahr'
 'Nach Clowns': 'Nach Clowns'
 'Nach Spielorten': 'Nach Spielorten'
-'monatlich': 'monatlich'
+monatlich: monatlich
 'Persönlicher Kalender (eigene Termine und Springer)': 'Persönlicher Kalender (eigene Termine und Springer)'
 'Vollständiger Kalender': 'Vollständiger Kalender'
 'Reguläre und Zusatztermine': 'Reguläre und Zusatztermine'
 'Abgesagte und verschobene Termine': 'Abgesagte und verschobene Termine'
 'Gespielte Termine gesamt': 'Gespielte Termine gesamt'
 'Gewünschte Termine': 'Gewünschte Termine'
-'Zieltermine': 'Zieltermine'
+Zieltermine: Zieltermine
 'Berechnete Termine': 'Berechnete Termine'
 'Zugeteilte Termine': 'Zugeteilte Termine'
 'Zugeteilte Springer': 'Zugeteilte Springer'
-'Super-Spieltermine': 'Super-Spieltermine'
+Super-Spieltermine: Super-Spieltermine
 'Es existiert bereits ein Kalender-Link für %type%': 'Es existiert bereits ein Kalender-Link für %type%'
 'CSRF token ist abgelaufen. Bitte nochmal probieren!': 'CSRF token ist abgelaufen. Bitte nochmal probieren!'
 'Ok, Kalender-Link wurde angelegt!': 'Ok, Kalender-Link wurde angelegt!'
@@ -804,28 +791,28 @@ der: der
 'Hey %name%, Du musst noch Deine Wünsche für %month% eintragen': 'Hey %name%, Du musst noch Deine Wünsche für %month% eintragen'
 'Springer %daytime%': 'Springer %daytime%'
 'Springer für:': 'Springer für:'
-'Neujahr': 'Neujahr'
+Neujahr: Neujahr
 'Drei Könige': 'Drei Könige'
-'Frauentag': 'Frauentag'
+Frauentag: Frauentag
 'Tag der Arbeit': 'Tag der Arbeit'
 'Mariä Himmelfahrt': 'Mariä Himmelfahrt'
 'Tag der deutschen Einheit': 'Tag der deutschen Einheit'
-'Reformationstag': 'Reformationstag'
-'Allerheiligen': 'Allerheiligen'
+Reformationstag: Reformationstag
+Allerheiligen: Allerheiligen
 '1. Weihnachtsfeiertag': '1. Weihnachtsfeiertag'
 '2. Weihnachtsfeiertag': '2. Weihnachtsfeiertag'
-'Ostersonntag': 'Ostersonntag'
-'Karfreitag': 'Karfreitag'
-'Ostermontag': 'Ostermontag'
-'Himmelfahrt': 'Himmelfahrt'
-'Pfingsten': 'Pfingsten'
-'Fronleichnam': 'Fronleichnam'
+Ostersonntag: Ostersonntag
+Karfreitag: Karfreitag
+Ostermontag: Ostermontag
+Himmelfahrt: Himmelfahrt
+Pfingsten: Pfingsten
+Fronleichnam: Fronleichnam
 'Buß- und Bettag': 'Buß- und Bettag'
 'Ich habe mich vertan, die Rechnung ist doch noch nicht bezahlt.': 'Ich habe mich vertan, die Rechnung ist doch noch nicht bezahlt.'
-'optional': 'optional'
+optional: optional
 'Neues Passwort': 'Neues Passwort'
 'Neues Passwort Wiederholung': 'Neues Passwort Wiederholung'
-'Passwort': 'Passwort'
+Passwort: Passwort
 'Mit Email und Passwort anmelden': 'Mit Email und Passwort anmelden'
 'Du bekommst eine Email, über Du Dich ohne Passwort anmelden kannst': 'Du bekommst eine Email, über Du Dich ohne Passwort anmelden kannst'
 'Du bekommst eine Email zum Ändern Deines Passwortes': 'Du bekommst eine Email zum Ändern Deines Passwortes'
@@ -838,38 +825,39 @@ der: der
 'Die Rechnung wurde gestellt und verschickt.': 'Die Rechnung wurde gestellt und verschickt.'
 'Ich habe mich vertan, die Rechnung ist doch noch nicht gestellt.': 'Ich habe mich vertan, die Rechnung ist doch noch nicht gestellt.'
 'Ich habe die Rechnung erhalten und bezahlt.': 'Ich habe die Rechnung erhalten und bezahlt.'
-'Clown kann nur wenn''s sein muss.': 'Clown kann nur wenn''s sein muss.'
+"Clown kann nur wenn's sein muss.": "Clown kann nur wenn's sein muss."
 'Maximale Anzahl monatlicher Spiele erreicht!': 'Maximale Anzahl monatlicher Spiele erreicht!'
 'Maximale Anzahl täglicher Spiele erreicht!': 'Maximale Anzahl täglicher Spiele erreicht!'
 'Clown ist für diesen Spielort gesperrt!': 'Clown ist für diesen Spielort gesperrt!'
 'Clown ist verfügbar!': 'Clown ist verfügbar!'
-'weiblich': 'weiblich'
-'divers': 'divers'
-'männlich': 'männlich'
+weiblich: weiblich
+divers: divers
+männlich: männlich
 '-- kein Bundesland -- nur bundesweite Feiertage anzeigen': '-- kein Bundesland -- nur bundesweite Feiertage anzeigen'
-'Baden-Württemberg': 'Baden-Württemberg'
-'Bayern': 'Bayern'
-'Berlin': 'Berlin'
-'Brandenburg': 'Brandenburg'
-'Bremen': 'Bremen'
-'Hamburg': 'Hamburg'
-'Hessen': 'Hessen'
-'Mecklenburg-Vorpommern': 'Mecklenburg-Vorpommern'
-'Niedersachsen': 'Niedersachsen'
-'Nordrhein-Westfalen': 'Nordrhein-Westfalen'
-'Rheinland-Pfalz': 'Rheinland-Pfalz'
-'Saarland': 'Saarland'
-'Sachsen': 'Sachsen'
-'Sachsen-Anhalt': 'Sachsen-Anhalt'
-'Schleswig-Holstein': 'Schleswig-Holstein'
-'Thüringen': 'Thüringen'
-'nur wenn''s gar nicht anders geht': 'nur wenn''s gar nicht anders geht'
+Baden-Württemberg: Baden-Württemberg
+Bayern: Bayern
+Berlin: Berlin
+Brandenburg: Brandenburg
+Bremen: Bremen
+Hamburg: Hamburg
+Hessen: Hessen
+Mecklenburg-Vorpommern: Mecklenburg-Vorpommern
+Niedersachsen: Niedersachsen
+Nordrhein-Westfalen: Nordrhein-Westfalen
+Rheinland-Pfalz: Rheinland-Pfalz
+Saarland: Saarland
+Sachsen: Sachsen
+Sachsen-Anhalt: Sachsen-Anhalt
+Schleswig-Holstein: Schleswig-Holstein
+Thüringen: Thüringen
+"nur wenn's gar nicht anders geht": "nur wenn's gar nicht anders geht"
 'na gut': 'na gut'
-'ok': 'ok'
+ok: ok
 'sehr gerne': 'sehr gerne'
 'au ja, unbedingt!': 'au ja, unbedingt!'
 'Clown aktualisieren': 'Clown aktualisieren'
-'Verantw.': 'Verantw.'
+Verantw.: Verantw.
 'Spielplan ist bereits abgeschlossen!': 'Spielplan ist bereits abgeschlossen!'
 'Der Spielplan ist bereits abgeschlossen!': 'Der Spielplan ist bereits abgeschlossen!'
 'Dieser Spieltermin ist unbezahlt.': 'Dieser Spieltermin ist unbezahlt.'
+'Alles fein': 'Alles fein'

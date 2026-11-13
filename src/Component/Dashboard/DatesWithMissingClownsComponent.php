@@ -77,8 +77,8 @@ class DatesWithMissingClownsComponent
         $month = new Month($this->timeService->firstOfNextMonth());
         if ($this->currentClown->isAdmin() && $this->configRepository->isFeatureCalculationActive() && !$this->scheduleRepository->find($month)?->isCompleted()) {
             return $this->translator->trans(
-                'ACHTUNG! Die Spielplanerstellung für den Monat %month% wurde noch nicht abgeschlossen.',
-                ['%month%' => $month->getLabel($this->translator->getLocale())]
+                'ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.',
+                ['month' => $month->getLabel($this->translator->getLocale())]
             );
         }
 

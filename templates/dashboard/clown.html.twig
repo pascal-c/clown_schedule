@@ -16,7 +16,9 @@
     <h4 class="pt-3">{{ 'Wünsche verwalten'|trans }}</h4>
     <ul>
         <li>
-            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">{{ 'Wünsche'|trans }} {{ nextMonth.label }}</a>
+            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: nextMonth.key}) }}">
+                {{ 'Wünsche'|trans }} {{ nextMonth.label }}
+            </a>
             
             {% if nextMonthSchedule.completed %}
                 {{ 'Spielplan fertiggestellt'|trans }} ✅
@@ -29,7 +31,9 @@
             {% endif %}
         </li>
         <li>
-            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">Wünsche {{ afterNextMonth.label }}</a>
+            <a href="{{ path('clown_availability_show', {clownId: currentClown.id, monthId: afterNextMonth.key}) }}">
+                {{ 'Wünsche'|trans }} {{ afterNextMonth.label }}
+            </a>
             
             {% if afterNextMonthSchedule.completed %}
                 {{ 'Spielplan fertiggestellt'|trans }} ✅

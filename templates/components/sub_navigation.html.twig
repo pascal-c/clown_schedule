@@ -10,7 +10,7 @@
             {% for key, element in navigationItems %}
                 <li class="nav-item position-relative {{ element.li_class is defined ? element.li_class : '' }}">
                     <a class="nav-link {{ active == key ? 'active' }}" {{ active == key ? 'aria-current="page"' }} href="{{ element['url'] }}" title="{{ element.title is defined ? element.title }}">
-                        {{ element['label'] }}
+                        {{ element['label']|trans }}
                     {% if element.badge is defined %}
                         <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill text-bg-success">{{ element.badge }}</span>
                     {% endif %}

@@ -25,7 +25,7 @@ class InvitationCest extends AbstractCest
         $I->click('Clowns', 'nav');
         $I->click('Clown anlegen');
         $I->fillField('Name', 'Erica');
-        $I->fillField('Email', 'erica@example.org');
+        $I->fillField('E-Mail', 'erica@example.org');
         $I->selectOption('clown_form[gender]', 'female');
         $I->checkOption('Einladungsmail senden?');
         $I->click('Clown anlegen');
@@ -90,6 +90,6 @@ class InvitationCest extends AbstractCest
         $I->loginAsAdmin();
         $I->click('Clowns', 'nav');
         $I->click('Details bearbeiten', Locator::contains('tr', 'Erica'));
-        $I->see('Erica hat die Datenschutzerklärung am 15.01.2024 akzeptiert.');
+        $I->see('Erica hat die Datenschutzerklärung am 15.01.2024 akzeptiert');
     }
 }

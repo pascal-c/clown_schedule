@@ -24,24 +24,22 @@ use Generator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\IdentityTranslator;
 
 #[\PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations]
 final class PlayDateConverterTest extends TestCase
 {
-    private TranslatorInterface&MockObject $translator;
     private SubstitutionRepository&MockObject $substitutionRepository;
     private ScheduleRepository&MockObject $scheduleRepository;
     private PlayDateConverter $converter;
 
     protected function setUp(): void
     {
-        $this->translator = $this->createMock(TranslatorInterface::class);
         $this->substitutionRepository = $this->createMock(SubstitutionRepository::class);
         $this->scheduleRepository = $this->createMock(ScheduleRepository::class);
 
         $this->converter = new PlayDateConverter(
-            $this->translator,
+            new IdentityTranslator(),
             $this->substitutionRepository,
             $this->scheduleRepository,
         );
@@ -76,13 +74,12 @@ final class PlayDateConverterTest extends TestCase
         $substitution1 = (new Substitution())->setSubstitutionClown((new Clown())->setName('Emil'));
         $substitution2 = (new Substitution())->setSubstitutionClown((new Clown())->setName('Erika'));
         $this->substitutionRepository->method('findByTimeSlotPeriod')->willReturn([$substitution1, $substitution2]);
-        $this->translator->expects($this->once())->method('trans')->with('all')->willReturn('geht den ganzen Tag');
 
         $description = $this->converter->getDescription($playDate);
 
         $this->assertStringContainsString('Es spielen: Antonia, Biff', $description);
         $this->assertStringContainsString('Springer: Emil, Erika', $description);
-        $this->assertStringContainsString('Tageszeit: geht den ganzen Tag', $description);
+        $this->assertStringContainsString('Tageszeit: all', $description);
         $this->assertStringContainsString('Treffen: 12:45', $description);
         $this->assertStringContainsString('Spielzeit: 13:15-15:15', $description);
         $this->assertStringContainsString('Kommentar: Das wird schön!', $description);
@@ -100,12 +97,11 @@ final class PlayDateConverterTest extends TestCase
             ->setPlayTimeFrom(new DateTimeImmutable('13:15'))
             ->setPlayTimeTo(new DateTimeImmutable('15:15'))
         ;
-        $this->translator->expects($this->once())->method('trans')->with('all')->willReturn('geht den ganzen Tag');
 
         $description = $this->converter->getDescription($playDate);
 
         $this->assertStringContainsString('Teilnehmende: Antonia, Biff', $description);
-        $this->assertStringContainsString('Tageszeit: geht den ganzen Tag', $description);
+        $this->assertStringContainsString('Tageszeit: all', $description);
         $this->assertStringContainsString('Treffen: 12:45', $description);
         $this->assertStringContainsString('Zeitraum: 13:15-15:15', $description);
         $this->assertStringContainsString('Kommentar: Das wird schön!', $description);

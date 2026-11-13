@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Clown;
 use App\Form\ClownFormType;
 use App\Form\ClownBlockedClownsFormType;
+use App\Form\Me\LanguageFormType;
 use App\Form\Me\PersonalDataFormType;
 use App\Form\Me\NotificationsFormType;
 use App\Mailer\AuthenticationMailer;
@@ -92,6 +93,11 @@ class ClownController extends AbstractProtectedController
             ),
             $subnavigationElement::NOTIFICATIONS => $this->createForm(
                 NotificationsFormType::class,
+                $this->getCurrentClown()->getSettings(),
+                options: ['method' => 'PUT']
+            ),
+            $subnavigationElement::LANGUAGE => $this->createForm(
+                LanguageFormType::class,
                 $this->getCurrentClown()->getSettings(),
                 options: ['method' => 'PUT']
             ),

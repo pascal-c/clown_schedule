@@ -107,7 +107,7 @@
                     <td>
                     {% if playDate.recurringDate %}
                         {% if playDate.recurringDate.isWeekly %}
-                            {{ 'jeden %day%'|trans({'%day%': playDate.recurringDate.dayOfWeek|trans}) }} {{ "every.week"|trans({'%weeks%': playDate.recurringDate.every}) }}
+                            {{ 'on_day_of_week'|trans({dayOfWeek: playDate.recurringDate.dayOfWeek|trans}) }} {{ "every.week"|trans({'%weeks%': playDate.recurringDate.every}) }}
                         {% else %}
                             {{ 'jeden'|trans }} {{ playDate.recurringDate.every }}. {{ playDate.recurringDate.dayOfWeek|trans }} {{ 'im Monat'|trans }}
                         {% endif %}

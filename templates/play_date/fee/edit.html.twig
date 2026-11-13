@@ -1,7 +1,8 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h5 class="pt-3">{{ playDate.venue ? 'Individuelles'|trans ~ ' ' : '' }}{{ 'Honorar für'|trans }} {{ playDate.name }} {{ 'am'|trans }} {{ playDate.date|date('d.m.Y')}} {{ playDate.hasIndividualFee ? 'bearbeiten'|trans : 'anlegen'|trans }}</h5>
+    <h5 class="pt-3">
+        {{ playDate.venue ? 'Individuelles'|trans ~ ' ' : '' }}{{ 'Honorar für {playDate} am {date, date}'|trans({playDate: playDate.name, date: playDate.date }) }} {{ playDate.hasIndividualFee ? 'bearbeiten'|trans : 'anlegen'|trans }}</h5>
 
     {{ form(form) }}
     {% if not playDate.hasFee %}

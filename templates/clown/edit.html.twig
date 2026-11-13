@@ -4,7 +4,9 @@
     <h4 class="pt-3">{{ 'Clown bearbeiten'|trans }}</h4>
 
     {{ form(form) }}
-    <p>{{ clown.name }} {{ 'hat die Datenschutzerklärung'|trans }} {{ clown.privacyPolicyAccepted ? "am #{clown.privacyPolicyDateTime|date('d.m.Y')} akzeptiert." : 'noch nicht akzeptiert.' }}</p>
+    <p>{{ clown.privacyPolicyAccepted 
+       ? 'privacy_policy_accepted'|trans({name: clown.name, date: clown.privacyPolicyDateTime}) 
+       : 'privacy_policy_not_accepted'|trans({name: clown.name})  }}</p>
     {{ send_invitation_form ? form(send_invitation_form) }}
     {{ form(delete_form) }}
 {% endblock %}

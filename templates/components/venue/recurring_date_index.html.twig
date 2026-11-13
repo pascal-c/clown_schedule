@@ -9,7 +9,7 @@
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 {% if recurringDate.isWeekly %}
-                    {{ 'jeden %day%'|trans({'%day%': recurringDate.dayOfWeek|trans}) }}
+                    {{ 'on_day_of_week'|trans({dayOfWeek: recurringDate.dayOfWeek|trans}) }}
                 {% else %}
                     {{ 'jeden'|trans }} {{ recurringDate.every }}. {{ recurringDate.dayOfWeek|trans }}
                 {% endif %}
@@ -26,8 +26,8 @@
                 {{ recurringDate.daytime|trans }}
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-                <span class="fw-medium">{{ 'Treffen:'|trans }} </span>{{ recurringDate.meetingTime|date(('H:i')) }}<br />
-                <span class="fw-medium">{{ 'Spielzeit:'|trans }} </span>{{ recurringDate.playTimeFrom|date(('H:i')) }}-{{ recurringDate.playTimeTo|date(('H:i')) }}
+                <span class="fw-medium">{{ 'Treffen'|trans }}: </span>{{ recurringDate.meetingTime|date(('H:i')) }}<br />
+                <span class="fw-medium">{{ 'Spielzeit'|trans }}: </span>{{ recurringDate.playTimeFrom|date(('H:i')) }}-{{ recurringDate.playTimeTo|date(('H:i')) }}
                     
             </div>
             <div class="col-6 col-md-4 col-lg-2">

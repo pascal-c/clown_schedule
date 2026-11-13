@@ -46,7 +46,7 @@ final class SubstitutionConverterTest extends TestCase
     public function testGetSummary(): void
     {
         $substitution = (new Substitution())->setDaytime(TimeSlotPeriodInterface::AM);
-        $this->translator->expects($this->once())->method('trans')->willReturnCallback(
+        $this->translator->expects($this->exactly(2))->method('trans')->willReturnCallback(
             fn (string $id, array $parameters = []): string => match ($id) {
                 TimeSlotPeriodInterface::AM => 'matin',
                 'Springer %daytime%' => 'Springer '.$parameters['%daytime%'],
