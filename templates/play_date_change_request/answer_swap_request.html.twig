@@ -1,23 +1,23 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Tauschanfrage beantworten</h4>
+    <h4 class="pt-3">{{ 'Tauschanfrage beantworten'|trans }}</h4>
 
     <p>
-        {{ requestedBy.name }} möchte gerne mit Dir tauschen. Du würdest {{ playDateWanted.name }} abgeben und dafür {{ playDateToGiveOff.name }} bekommen.<br />
-        Hier nochmal alles für Dich im Überblick:
+        {{ '%name% möchte gerne mit Dir tauschen. Du würdest %giveOff% abgeben und dafür %wanted% bekommen.'|trans({'%name%': requestedBy.name, '%giveOff%': playDateWanted.name, '%wanted%': playDateToGiveOff.name}) }}<br />
+        {{ 'Hier nochmal alles für Dich im Überblick:'|trans }}
     </p>
 
     <table class="table">
         <thead>
             <tr>
                 <th>&nbsp;</th>
-                <th>Du bekommst</th>
-                <th>Du gibst ab</th>
+                <th>{{ 'Du bekommst'|trans }}</th>
+                <th>{{ 'Du gibst ab'|trans }}</th>
         </thead>
         <tbody>
             <tr>
-                <th>Wo</th>
+                <th>{{ 'Wo'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.name }}
                 </td>
@@ -26,7 +26,7 @@
                 </td>
             </tr>
             <tr>
-                <th>Wann</th>
+                <th>{{ 'Wann'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.date|date('d.m.Y') }} {{ playDateToGiveOff.daytime|trans }}
                     {% if playDateToGiveOff.comment != '' %}
@@ -41,7 +41,7 @@
                 </td>
             </tr>
             <tr>
-                <th>Treffen</th>
+                <th>{{ 'Treffen'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.meetingTime is not empty ? playDateToGiveOff.meetingTime|date('H:i') }}
                 </td>
@@ -50,7 +50,7 @@
                 </td>
             </tr>
             <tr>
-                <th>Spielzeit</th>
+                <th>{{ 'Spielzeit'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.playTimeFrom  is not empty ? playDateToGiveOff.playTimeFrom|date('H:i') }} - {{ playDateToGiveOff.playTimeTo is not empty ? playDateToGiveOff.playTimeTo|date('H:i') }}
                 </td>
@@ -59,7 +59,7 @@
                 </td>
             </tr>
             <tr>
-                <th>Spielende Clowns</th>
+                <th>{{ 'Spielende Clowns'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.playingClowns|map(clown => clown.name)|join(' | ') }}
                 </td>

@@ -1,0 +1,16 @@
+every.week: >-
+    {weeks, plural,
+        =1    {every week}
+        other {every # weeks}
+    }
+on_day_of_week: 'on {dayOfWeek}'
+'ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.': 'ATTENTION! Schedule for the month {month} has not been completed yet.'
+'Meine Einstellungen': 'My settings'
+'Spielplan fertiggestellt': 'Schedule completed'
+'Spielplan wird gerade erstellt': 'Schedule in creation'
+'Honorar für {playDate} am {date, date}': 'Fee for {playDate} on {date, date}'
+'Persönliche Daten': 'Personal Data'
+'Benachrichtigungen': 'Notifications'
+'Sprache': 'Language'
+privacy_policy_accepted: '{name} has accepted the privacy policy on {date, date}'
+privacy_policy_not_accepted: '{name} has not accepted the privacy policy yet'

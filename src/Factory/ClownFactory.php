@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Clown;
 use App\Entity\UserSettings;
 use App\Lib\Collection;
+use App\Value\Language;
 
 class ClownFactory extends AbstractFactory
 {
@@ -26,6 +27,7 @@ class ClownFactory extends AbstractFactory
         $settings->scheduleCompletedEmail = $scheduleCompletedEmail;
         $settings->openInvoiceEmail = $openInvoiceEmail;
         $settings->openInvoiceEmailReminder = $openInvoiceEmailReminder;
+        $settings->language = Language::DE;
 
         $clown = (new Clown())
             ->setName($this->generate('firstName', $name))

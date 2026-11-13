@@ -30,7 +30,7 @@ class VenueContactCest extends AbstractCest
         $I->fillField('Vorname', 'Steffi');
         $I->fillField('Nachname', 'Graf');
         $I->fillField('Funktion', 'Heimleiterin');
-        $I->fillField('Email', 'steffi@graf.de');
+        $I->fillField('E-Mail', 'steffi@graf.de');
         $I->fillField('Telefon', '0123456789');
         $I->click('speichern');
 
@@ -50,13 +50,13 @@ class VenueContactCest extends AbstractCest
         $I->seeInField('Vorname', 'Steffi');
         $I->seeInField('Nachname', 'Graf');
         $I->seeInField('Funktion', 'Heimleiterin');
-        $I->seeInField('Email', 'steffi@graf.de');
+        $I->seeInField('E-Mail', 'steffi@graf.de');
         $I->seeInField('Telefon', '0123456789');
 
         $I->fillField('Vorname', 'Boris');
         $I->fillField('Nachname', 'Becker');
         $I->fillField('Funktion', 'Ergotherapeut');
-        $I->fillField('Email', 'boris@becker.de');
+        $I->fillField('E-Mail', 'boris@becker.de');
         $I->fillField('Telefon', '4711');
         $I->click('speichern');
 

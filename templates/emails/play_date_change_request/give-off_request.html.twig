@@ -1,9 +1,9 @@
 <p>
-    Hey {{ changeRequest.requestedTo ? changeRequest.requestedTo.name : 'Leute'}},<br />
+    {{ 'Hey %name%,'|trans({'%name%': changeRequest.requestedTo ? changeRequest.requestedTo.name : 'Leute'|trans}) }}<br />
 </p>
 
 <p>
-    {{ changeRequest.requestedBy.name }} möchte gerne einen Spieltermin abgeben. Und zwar:
+    {{ '%name% möchte gerne einen Spieltermin abgeben. Und zwar:'|trans({'%name%': changeRequest.requestedBy.name}) }}
 </p>
 
 <p>
@@ -12,7 +12,7 @@
 
 {% if personalComment is not empty %}
     <p>
-        Persönliche Nachricht von {{ changeRequest.requestedBy.name }}:
+        {{ 'Persönliche Nachricht von %name%:'|trans({'%name%': changeRequest.requestedBy.name}) }}
     </p>
     <p>
         <i>{{ personalComment|nl2br }}</i>
@@ -20,13 +20,13 @@
 {% endif %}
 
 <p>
-    Du kannst den Spieltermin
-    <a href="{{ url('play_date_show', {id: changeRequest.playDateToGiveOff.id }) }}">hier übernehmen</a>, wenn Du willst.<br />
-    Wer zuerst kommt, mahlt zuerst!<br />
+    {{ 'Du kannst den Spieltermin'|trans }}
+    <a href="{{ url('play_date_show', {id: changeRequest.playDateToGiveOff.id }) }}">{{ 'hier übernehmen'|trans }}</a>{{ ', wenn Du willst.'|trans }}<br />
+    {{ 'Wer zuerst kommt, mahlt zuerst!'|trans }}<br />
 </p>
 
 <p>
-    Das Leben ist schön!
+    {{ 'Das Leben ist schön!'|trans }}
     <br />
-    Eure liebende Spielplan App
+    {{ 'Eure liebende Spielplan App'|trans }}
 </p>

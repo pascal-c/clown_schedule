@@ -75,12 +75,12 @@ class ClownVenuePreferencesController extends AbstractProtectedController
                 $venuePreference->setPreference($newPreference);
             }
             $this->entityManager->flush();
-            $this->addFlash('success', 'Deine Präferenzen wurden gespeichert. Vielen Dank!');
+            $this->addFlash('success', $this->translateMessage('Deine Präferenzen wurden gespeichert. Vielen Dank!'));
 
             return $this->redirectToRoute('clown_venue_preferences_show', ['clownId' => $clown->getId()]);
         }
 
-        $this->addFlash('warning', 'Beim Speichern Deiner Präferenzen gab es leider ein Problem...');
+        $this->addFlash('warning', $this->translateMessage('Beim Speichern Deiner Präferenzen gab es leider ein Problem...'));
 
         return $this->render('clown_venue_preferences/form.html.twig', [
             'clown' => $clown,

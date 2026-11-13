@@ -13,6 +13,7 @@ use App\Service\TimeService;
 use App\Value\ScheduleStatus;
 use App\ViewController\PlayDateViewController;
 use DateTimeImmutable;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent('dashboard/dates_with_missing_clowns')]
@@ -31,6 +32,7 @@ class DatesWithMissingClownsComponent
         private TimeService $timeService,
         private PlayDateGuard $playDateGuard,
         private PlayDateViewController $playDateViewController,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -73,8 +75,11 @@ class DatesWithMissingClownsComponent
     private function message(): ?string
     {
         $month = new Month($this->timeService->firstOfNextMonth());
-        if ($this->currentClown->isAdmin() && !$this->scheduleRepository->find($month)->isCompleted()) {
-            return 'ACHTUNG! Die Spielplanerstellung für den Monat '.$month->getLabel().' wurde noch nicht abgeschlossen.';
+        if ($this->currentClown->isAdmin() && $this->configRepository->isFeatureCalculationActive() && !$this->scheduleRepository->find($month)?->isCompleted()) {
+            return $this->translator->trans(
+                'ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.',
+                ['month' => $month->getLabel($this->translator->getLocale())]
+            );
         }
 
         return null;

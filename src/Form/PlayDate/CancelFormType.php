@@ -9,11 +9,14 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CancelFormType extends AbstractType
 {
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private TranslatorInterface $translator,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -22,7 +25,7 @@ class CancelFormType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Kommentar',
                 'required' => false,
-                'attr' => ['placeholder' => 'Optional: Grund für die Absage...'],
+                'attr' => ['placeholder' => $this->translator->trans('Optional: Grund für die Absage...')],
             ])
             ->add('save', SubmitType::class, ['label' => 'Termin jetzt absagen'])
             ->setMethod('PUT')

@@ -143,12 +143,12 @@ class ClownAvailabilityController extends AbstractProtectedController
             }
             $this->entityManager->persist($clownAvailability);
             $this->entityManager->flush();
-            $this->addFlash('success', 'Wünsche wurden gespeichert. Vielen Dank!');
+            $this->addFlash('success', $this->translateMessage('Wünsche wurden gespeichert. Vielen Dank!'));
 
             return $this->redirectToRoute('clown_availability_show', ['clownId' => $clown->getId()]);
         }
 
-        $this->addFlash('warning', 'Speichern fehlgeschlagen! Bitte nochmal versuchen!');
+        $this->addFlash('warning', $this->translateMessage('Speichern fehlgeschlagen! Bitte nochmal versuchen!'));
 
         return $this->redirectToRoute('clown_availability_new', ['clownId' => $clown->getId(), 'monthId' => $month->getKey()]);
     }
@@ -192,12 +192,12 @@ class ClownAvailabilityController extends AbstractProtectedController
                 $timeSlot->setAvailability($availabilities[$date][$timeSlot->getDaytime()]);
             }
             $this->entityManager->flush();
-            $this->addFlash('success', 'Wünsche wurden geändert. Gut!');
+            $this->addFlash('success', $this->translateMessage('Wünsche wurden geändert. Gut!'));
 
             return $this->redirectToRoute('clown_availability_show', ['clownId' => $clown->getId()]);
         }
 
-        $this->addFlash('warning', 'Speichern fehlgeschlagen! Bitte nochmal versuchen!');
+        $this->addFlash('warning', $this->translateMessage('Speichern fehlgeschlagen! Bitte nochmal versuchen!'));
 
         return $this->redirectToRoute('clown_availability_edit', ['clownId' => $clown->getId(), 'monthId' => $month->getKey()]);
     }

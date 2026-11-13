@@ -6,85 +6,85 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Offizieller Name</th>
+                <th>{{ 'Offizieller Name'|trans }}</th>
                 <td>{{ venue.officialName }}</td>
             </tr>
             <tr>
-                <th>Adresse</th>
+                <th>{{ 'Adresse'|trans }}</th>
                 <td>
                      {{ venue.streetAndNumber }}, {{ venue.postalCode }} {{ venue.city }}
                 </td>
             </tr>
             <tr>
-                <th>URL</th>
+                <th>{{ 'URL'|trans }}</th>
                 <td>
                      <a target="_blank" href="{{ venue.url }}">{{ venue.url }}</href>
                 </td>
             </tr>
             {% if showResponsibleClowns %}
-                <tr title="Bei der Spielplanerstellung wird versucht als ersten Clown einen verantwortlichen Clown zuzuordnen">
-                    <th>Verantwortliche Clowns</th>
+                <tr title="{{ 'Bei der Spielplanerstellung wird versucht als ersten Clown einen verantwortlichen Clown zuzuordnen'|trans }}">
+                    <th>{{ 'Verantwortliche Clowns'|trans }}</th>
                     <td>
                         {% if venue.assignResponsibleClownAsFirstClown %}
                             {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ')|default('---') }}
                         {% else %}
-                            <i>deaktiviert</i>
+                            <i>{{ 'deaktiviert'|trans }}</i>
                         {% endif %}
 
-                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_responsible_clowns', {id: venue.id}), title: "Verantwortliche Clowns bearbeiten"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_responsible_clowns', {id: venue.id}), title: "Verantwortliche Clowns bearbeiten"|trans}) }}
                     </td>
                 </tr>
             {% endif %}
             {% if showBlockedClowns %}
-                <tr title="Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet">
-                    <th>Gesperrte Clowns</th>
+                <tr title="{{ 'Bei der Spielplanerstellung wird ein gesperrter Clown niemals diesem Spielort zugeordnet'|trans }}">
+                    <th>{{ 'Gesperrte Clowns'|trans }}</th>
                     <td>
                         {{ venue.blockedClowns|map(clown => clown.name)|join(' | ')|default('---') }}
-                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_blocked_clowns', {id: venue.id}), title: "Gesperrte Clowns bearbeiten"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_blocked_clowns', {id: venue.id}), title: "Gesperrte Clowns bearbeiten"|trans}) }}
                     </td>
                 </tr>
             {% endif %}
             {% if showTeam %}
-                <tr title="Dieser Spielort wird bevorzugt von Clowns aus diesem Team übernommen.">
-                    <th>Clownsteam</th>
+                <tr title="{{ 'Dieser Spielort wird bevorzugt von Clowns aus diesem Team übernommen.'|trans }}">
+                    <th>{{ 'Clownsteam'|trans }}</th>
                     <td>
                         {% if venue.teamActive %}
                             {{ venue.team|map(clown => clown.name)|join(' | ')|default('---') }}
                         {% else %}
-                            <i>deaktiviert</i>
+                            <i>{{ 'deaktiviert'|trans }}</i>
                         {% endif %}
                         
-                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_team', {id: venue.id}), title: "Clownsteam bearbeiten"}) }}
+                        {{ include('_shared/_edit_link.html.twig', {url: path('venue_edit_team', {id: venue.id}), title: "Clownsteam bearbeiten"|trans}) }}
                     </td>
                 </tr>
             {% endif %}
             <tr>
-                <th>Standard Tageszeit für Spieltermine</th>
+                <th>{{ 'Standard Tageszeit für Spieltermine'|trans }}</th>
                 <td>
                     {{ venue.daytimeDefault|trans }}
                 </td>
             </tr>
             <tr>
-                <th>Treffen</th>
+                <th>{{ 'Treffen'|trans }}</th>
                 <td>
                     {{ venue.meetingTime|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>Spielzeit</th>
+                <th>{{ 'Spielzeit'|trans }}</th>
                 <td>
                     {{ venue.playTimeFrom|date('H:i') }} - {{ venue.playTimeTo|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>Bemerkungen</th>
+                <th>{{ 'Bemerkungen'|trans }}</th>
                 <td>
                     {{ venue.comments|nl2br }}
                 </td>
             </tr>
             {% if venue.isSuper %}
                 <tr>
-                    <td colspan="2">ist ein Super-Spielort!</td>
+                    <td colspan="2">{{ 'ist ein Super-Spielort!'|trans }}</td>
                 </tr>
             {% endif %}
         </tbody>

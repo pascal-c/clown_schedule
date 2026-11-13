@@ -7,10 +7,11 @@ use App\Entity\PlayDateChangeRequest;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PlayDateSwapRequestMailer
 {
-    public function __construct(private MailerInterface $mailer)
+    public function __construct(private MailerInterface $mailer, private TranslatorInterface $translator)
     {
     }
 
@@ -20,7 +21,7 @@ class PlayDateSwapRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject('Tauschanfrage von '.$playDateChangeRequest->getRequestedBy()->getName().'')
+            ->subject($this->translator->trans('Tauschanfrage von %name%', ['%name%' => $playDateChangeRequest->getRequestedBy()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/swap_request.html.twig')
             ->context([
                 'swapRequest' => $playDateChangeRequest,
@@ -36,7 +37,7 @@ class PlayDateSwapRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject('Tauschanfrage von '.$playDateChangeRequest->getRequestedTo()->getName().' angenommen!')
+            ->subject($this->translator->trans('Tauschanfrage von %name% angenommen!', ['%name%' => $playDateChangeRequest->getRequestedTo()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/swap_request_accept.html.twig')
             ->context([
                 'swapRequest' => $playDateChangeRequest,
@@ -52,7 +53,7 @@ class PlayDateSwapRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject('Tauschanfrage von '.$playDateChangeRequest->getRequestedTo()->getName().' leider abgelehnt')
+            ->subject($this->translator->trans('Tauschanfrage von %name% leider abgelehnt', ['%name%' => $playDateChangeRequest->getRequestedTo()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/swap_request_decline.html.twig')
             ->context([
                 'swapRequest' => $playDateChangeRequest,
@@ -68,7 +69,7 @@ class PlayDateSwapRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject($playDateChangeRequest->getRequestedBy()->getName().' hat seine Tauschanfrage zurückgenommen')
+            ->subject($this->translator->trans('%name% hat seine Tauschanfrage zurückgenommen', ['%name%' => $playDateChangeRequest->getRequestedBy()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/swap_request_cancel.html.twig')
             ->context([
                 'swapRequest' => $playDateChangeRequest,
@@ -87,7 +88,7 @@ class PlayDateSwapRequestMailer
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
             ->to(new Address($receiver->getEmail(), $receiver->getName()))
-            ->subject('Die Tauschanfrage von '.$playDateChangeRequest->getRequestedBy()->getName().' hat sich erledigt')
+            ->subject($this->translator->trans('Die Tauschanfrage von %name% hat sich erledigt', ['%name%' => $playDateChangeRequest->getRequestedBy()->getName()]))
             ->htmlTemplate('emails/play_date_change_request/swap_request_closed.html.twig')
             ->context([
                 'swapRequest' => $playDateChangeRequest,
@@ -111,7 +112,7 @@ class PlayDateSwapRequestMailer
             $email = (new TemplatedEmail())
                 ->from(new Address('no-reply@clown-spielplan.de', 'Clown Spielplan'))
                 ->to(new Address($receiver->getEmail(), $receiver->getName()))
-                ->subject('Endlich mal wieder ein Spiel mit '.$newPartner->getName().'!')
+                ->subject($this->translator->trans('Endlich mal wieder ein Spiel mit %name%!', ['%name%' => $newPartner->getName()]))
                 ->htmlTemplate('emails/play_date_change_request/change_request_inform_partner.html.twig')
                 ->context([
                     'playDate' => $playDate,

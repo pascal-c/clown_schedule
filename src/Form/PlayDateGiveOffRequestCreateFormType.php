@@ -12,12 +12,14 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PlayDateGiveOffRequestCreateFormType extends AbstractType
 {
     public function __construct(
         private ClownRepository $clownRepository,
         private VenueService $venueService,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -48,7 +50,7 @@ class PlayDateGiveOffRequestCreateFormType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Hier kannst Du eine persönliche Nachricht hinzufügen',
                 'required' => false,
-                'attr' => ['placeholder' => 'optional'],
+                'attr' => ['placeholder' => $this->translator->trans('optional')],
             ])
             ->add('accept', SubmitType::class, [
                 'label' => 'Abgabe-Anfrage senden',

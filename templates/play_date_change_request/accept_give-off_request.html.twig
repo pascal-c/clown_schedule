@@ -1,36 +1,36 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Spieltermin übernehmen</h4>
+    <h4 class="pt-3">{{ 'Spieltermin übernehmen'|trans }}</h4>
 
     <p>
         {% if requestedBy == currentClown %}
-          Hey {{ currentClown.name }}, Du möchtest den Spieltermin doch nicht abgeben?<br />
-          Du kannst einfach unten den grünen Button klicken und damit den Spieltermin selber übernehmen.<br />
-          Dadurch behälst Du den Termin und die Abgabe-Anfrage wird für die anderen geschlossen.
+          {{ 'Hey %name%, Du möchtest den Spieltermin doch nicht abgeben?'|trans({'%name%': currentClown.name}) }}<br />
+          {{ 'Du kannst einfach unten den grünen Button klicken und damit den Spieltermin selber übernehmen.'|trans }}<br />
+          {{ 'Dadurch behälst Du den Termin und die Abgabe-Anfrage wird für die anderen geschlossen.'|trans }}
         {% else %}
-            {{ requestedBy.name }} möchte gerne {{ playDateToGiveOff.name }} abgeben. Es wäre toll, wenn Du das Spiel übernehmen könntest!
+            {{ '%name% möchte gerne %playDate% abgeben. Es wäre toll, wenn Du das Spiel übernehmen könntest!'|trans({'%name%': requestedBy.name, '%playDate%': playDateToGiveOff.name}) }}
         {% endif %}
     </p>
     <p>
-        Hier nochmal alles für Dich im Überblick:
+        {{ 'Hier nochmal alles für Dich im Überblick:'|trans }}
     </p>
 
     <table class="table">
         <thead>
             <tr>
                 <th>&nbsp;</th>
-                <th>Du übernimmst</th>
+                <th>{{ 'Du übernimmst'|trans }}</th>
         </thead>
         <tbody>
             <tr>
-                <th>Wo</th>
+                <th>{{ 'Wo'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.name }}
                 </td>
             </tr>
             <tr>
-                <th>Wann</th>
+                <th>{{ 'Wann'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.date|date('d.m.Y') }} {{ playDateToGiveOff.daytime|trans }}
                     {% if playDateToGiveOff.comment != '' %}
@@ -39,19 +39,19 @@
                 </td>
             </tr>
             <tr>
-                <th>Treffen</th>
+                <th>{{ 'Treffen'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.meetingTime is not empty ? playDateToGiveOff.meetingTime|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>Spielzeit</th>
+                <th>{{ 'Spielzeit'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.playTimeFrom  is not empty ? playDateToGiveOff.playTimeFrom|date('H:i') }} - {{ playDateToGiveOff.playTimeTo is not empty ? playDateToGiveOff.playTimeTo|date('H:i') }}
                 </td>
             </tr>
             <tr>
-                <th>Spielende Clowns</th>
+                <th>{{ 'Spielende Clowns'|trans }}</th>
                 <td>
                     {{ playDateToGiveOff.playingClowns|map(clown => clown.name)|join(' | ') }}
                 </td>

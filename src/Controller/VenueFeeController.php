@@ -63,11 +63,11 @@ class VenueFeeController extends AbstractProtectedController
             $this->entityManager->persist($newFee);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Großartig! Neues Honorar erfolgreich angelegt!');
+            $this->addFlash('success', $this->translateMessage('Großartig! Neues Honorar erfolgreich angelegt!'));
 
             return $this->redirectToRoute('venue_fee_index', ['id' => $venue->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Das können wir so nicht machen!');
+            $this->addFlash('warning', $this->translateMessage('Das können wir so nicht machen!'));
         }
 
         return $this->render('venue/fee/new.html.twig', [
@@ -88,11 +88,11 @@ class VenueFeeController extends AbstractProtectedController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Großartig! Honorar erfolgreich aktualisiert!');
+            $this->addFlash('success', $this->translateMessage('Großartig! Honorar erfolgreich aktualisiert!'));
 
             return $this->redirectToRoute('venue_fee_index', ['id' => $venueFee->getVenue()->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Das können wir so nicht machen!');
+            $this->addFlash('warning', $this->translateMessage('Das können wir so nicht machen!'));
         }
 
         return $this->render('venue/fee/edit.html.twig', [

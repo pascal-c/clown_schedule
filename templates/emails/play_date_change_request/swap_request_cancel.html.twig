@@ -1,25 +1,25 @@
 <p>
-    Hallo {{ swapRequest.requestedTo.name }},
+    {{ 'Hallo %name%,'|trans({'%name%': swapRequest.requestedTo.name}) }}
 </p>
 
 <p>
-    {{ swapRequest.requestedBy.name }} hat seine Tauschanfrage zurückgenommen. <br />
-    Es ging um:
+    {{ '%name% hat seine Tauschanfrage zurückgenommen.'|trans({'%name%': swapRequest.requestedBy.name}) }}<br />
+    {{ 'Es ging um:'|trans }}
 </p>
 
 <p>
     {{ swapRequest.playDateToGiveOff.date|date('d.m.Y') }} {{ swapRequest.playDateToGiveOff.name }}<br />
-    gegen:<br />
+    {{ 'gegen:'|trans }}<br />
     {{ swapRequest.playDateWanted.date|date('d.m.Y') }} {{ swapRequest.playDateWanted.name }}<br />
 </p>
 
 <p>
-    Warum, kann ich leider auch nicht sagen!
+    {{ 'Warum, kann ich leider auch nicht sagen!'|trans }}
 </p>
 
 {% if personalComment is not empty %}
     <p>
-        Aber {{ swapRequest.requestedBy.name }} hat eine persönliche Nachricht für Dich hinterlassen:
+        {{ 'Aber %name% hat eine persönliche Nachricht für Dich hinterlassen:'|trans({'%name%': swapRequest.requestedBy.name}) }}
     </p>
     <p>
         <i>{{ personalComment|nl2br }}</i>
@@ -28,6 +28,6 @@
 
 <p>
     <br />
-    Es lebe das Leben!<br />
-    Deine Spielplan App
+    {{ 'Es lebe das Leben!'|trans }}<br />
+    {{ 'Deine Spielplan App'|trans }}
 </p>

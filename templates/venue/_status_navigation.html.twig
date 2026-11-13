@@ -2,12 +2,12 @@
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link {{ status == 'active' ? 'active' }}" {{ status == 'active' ? 'aria-current="page"' }} href="{{ path('venue_index', {status: 'active'}) }}">
-                Aktiv
+                {{ 'Aktiv'|trans }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ status == 'archived' ? 'active' }}" {{ status == 'archived' ? 'aria-current="page"' }} href="{{ path('venue_index', {status: 'archived'}) }}">
-                Archiv
+                {{ 'Archiv'|trans }}
             </a>
         </li>
     </ul>

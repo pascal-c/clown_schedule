@@ -1,11 +1,11 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h4 class="pt-3">Spieltermine bündeln</h4>
+    <h4 class="pt-3">{{ 'Spieltermine bündeln'|trans }}</h4>
     <p>
         <i class="bi bi-info-circle"></i>
-        Hier können mehrere Spieltermine gebündelt werden. 
-        <br />Alle Spieltermine eines Bündels werden bei der Berechnung aber auch bei manueller Zuordnung mit den gleichen Clowns besetzt.
+        {{ 'Hier können mehrere Spieltermine gebündelt werden.'|trans }}
+        <br />{{ 'Alle Spieltermine eines Bündels werden bei der Berechnung aber auch bei manueller Zuordnung mit den gleichen Clowns besetzt.'|trans }}
     </p>
 
     {{ form_start(form) }}

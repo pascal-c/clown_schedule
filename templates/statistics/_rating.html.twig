@@ -1,6 +1,6 @@
 {% if rating is not null %}
     <div>
-        Rating ({{ name }}): {{ rating.total }} 
+        {{ 'Rating (%name%):'|trans({'%name%': name}) }} {{ rating.total }}
         <a class="text-dark" data-bs-toggle="collapse" href="#{{ id }}" role="button" aria-expanded="false" aria-controls="{{ id }}">
             <i class="bi bi-arrows-collapse"></i>
         </a>
@@ -8,31 +8,31 @@
     <div class="container collapse" id="{{ id }}">
         <div class="row">
             <div class="col-sm-6">
-                Clown fehlt: {{ rating.missingPerson }}
+                {{ 'Clown fehlt:'|trans }} {{ rating.missingPerson }}
             </div>
             <div class="col-sm-6">
-                Clown kann nur wenns sein muss: {{ rating.maybePerson }}
+                {{ 'Clown kann nur wenns sein muss:'|trans }} {{ rating.maybePerson }}
             </div>
         </div>
         <div class="row">
             <div class="col-sm-6">
-                Ziel verfehlt: {{ rating.targetShifts }}
+                {{ 'Ziel verfehlt:'|trans }} {{ rating.targetShifts }}
             </div>
             <div class="col-sm-6">
                 {% if showMaxPerWeek %}
-                    max Anzahl pro Woche überschritten: {{ rating.maxPerWeek }}
+                    {{ 'max Anzahl pro Woche überschritten:'|trans }} {{ rating.maxPerWeek }}
                 {% endif %}    
             </div>
         </div>
         <div class="row">
             <div class="col-sm-6">
                 {% if showVenuePreferences and rating.locationPreferences is defined %}
-                    Spielortpräferenzen: {{ rating.locationPreferences }}
+                    {{ 'Spielortpräferenzen:'|trans }} {{ rating.locationPreferences }}
                 {% endif %}
             </div>
             <div class="col-sm-6">
                 {% if rating.personNotInTeam is defined %}
-                    Zugeordneter Clown nicht im Team: {{ rating.personNotInTeam }}
+                    {{ 'Zugeordneter Clown nicht im Team:'|trans }} {{ rating.personNotInTeam }}
                 {% endif %}
             </div>
         </div>

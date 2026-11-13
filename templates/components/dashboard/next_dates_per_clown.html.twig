@@ -1,8 +1,8 @@
-<h4 class="pt-3">Deine nächsten Termine, {{ currentClown.name }}</h4>
+<h4 class="pt-3">{{ 'Deine nächsten Termine,'|trans }} {{ currentClown.name }}</h4>
 
 <table class="table">
     <thead>
-        <tr><th>Wann</th><th>Wo</th><th>Treffen</th><th>Spielzeit</th><th>mit</th></tr>
+        <tr><th>{{ 'Wann'|trans }}</th><th>{{ 'Wo'|trans }}</th><th>{{ 'Treffen'|trans }}</th><th>{{ 'Spielzeit'|trans }}</th><th>{{ 'mit'|trans }}</th></tr>
     </thead>
     <tbody>
         {% for key, date in dates %}
@@ -18,7 +18,7 @@
                     <td class="{{ date.class ?? '' }}">
                         {% if date.dateEntity.training and not date.dateEntity.playingClowns.contains(currentClown) %}
                             {{ date.dateEntity.name }}
-                            <a class="text-muted" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">anmelden</a>
+                            <a class="text-muted" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">{{ 'anmelden'|trans }}</a>
                         {% else %}
                             <a class="{{ date.class ?? "text-dark" }}" href="{{ path('play_date_show', {id: date.dateEntity.id}) }}">{{ date.dateEntity.name }}</a>
                         {% endif %}
@@ -35,11 +35,11 @@
                     <td class="{{ date.class ?? '' }}">
                         {{ date.dateEntity.date|date('d.m.Y') }} {{ date.dateEntity.daytime|trans }}
                     </td>
-                    <td colspan='4' class="{{ date.class ?? '' }}"><i>Springer:in</i></td>
+                    <td colspan='4' class="{{ date.class ?? '' }}"><i>{{ 'Springer:in'|trans }}</i></td>
                 </tr>
             {% endif %}
         {% else %}
-            <tr><td colspan ="5">keene Termine, nüscht!</td>    
+            <tr><td colspan ="5">{{ 'keene Termine, nüscht!'|trans }}</td>
         {% endfor %}    
     </tbody>
 </table>

@@ -1,15 +1,15 @@
 <p>
-    Hey {{ clown.name }},
+    {{ 'Hey %name%,'|trans({'%name%': clown.name}) }}
 </p>
 
 <p>
-    der Spielplan für {{ schedule.month.label }} wurde soeben fertiggestellt!
+    {{ 'Der Spielplan für %month% wurde soeben fertiggestellt!'|trans({'%month%': schedule.month.label}) }}
 </p>
 
 <p>
-    <a href="{{ url('schedule', {monthId: schedule.month.key}) }}">Check it out!</a>
+    <a href="{{ url('schedule', {monthId: schedule.month.key}) }}">{{ 'Check it out!'|trans }}</a>
 </p>
 
 <p>
-    Deine Dich liebende Spielplan App
+    {{ 'Deine Dich liebende Spielplan App'|trans }}
 </p>

@@ -1,44 +1,43 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Clowns{% endblock %}
+{% block title %}{{ 'Clowns'|trans }}{% endblock %}
 
 {% block content %}
     {{ component('schedule_navigation', { active: 'calendar_export' }) }}
 
-    <h5 class="pt-3">Kalender Abonnement</h5>
+    <h5 class="pt-3">{{ 'Kalender Abonnement'|trans }}</h5>
     <p>
-        Hier kannst Du Dir Webcal-Kalender-Links erstellen, um sie in einer Kalender-App, z.B. auf dem Handy zu abonnieren.
+        {{ 'Hier kannst Du Dir Webcal-Kalender-Links erstellen, um sie in einer Kalender-App, z.B. auf dem Handy zu abonnieren.'|trans }}
         {{ include('calendar/_webcal_info_link.html.twig') }}
     </p>
     <ul class="list-group">
         {% for type in types %}
         <li class="list-group-item">
-            {{ type.label }}:<br />
+            {{ type.label|trans }}:<br />
             {% if currentClown.getCalendar(type) %}
-                <span class="fw-lighter"><i class="bi bi-exclamation-triangle"></i> <i>Achtung: Der Link ist öffentlich. Bitte nicht weitergeben!</i><br /><br /></span>
+                <span class="fw-lighter"><i class="bi bi-exclamation-triangle"></i> <i>{{ 'Achtung: Der Link ist öffentlich. Bitte nicht weitergeben!'|trans }}</i><br /><br /></span>
                 {% set url=url('calendar_download_for_subscription', {uuid: currentClown.getCalendar(type).uuid}) %}
                 <span class="subscription-url">{{ url }}</span>
                 <a href="#" 
                    onClick="navigator.clipboard.writeText('{{ url }}');" 
-                   title="in Zwischenablage kopieren"
+                   title="{{ "in Zwischenablage kopieren"|trans }}"
                 ><i class="bi bi-copy copy-{{ type.value }}"></i></a>
                 {{ include('calendar/_delete_link.html.twig', {calendar: currentClown.getCalendar(type), type: type, token: token}) }}
             {% else %}
-                <span class="fw-lighter"><i>kein Link angelegt</i></span>
+                <span class="fw-lighter"><i>{{ 'kein Link angelegt'|trans }}</i></span>
                 <form method="post" action="{{ path('calendar_create_subscription') }}">
                     <input type="hidden" name="type" value="{{ type.value }}" />
                     <input type="hidden" name="token" value="{{ token }}">
-                    <button type="submit" class="btn btn-link">Kalender-Abonnement-Link erzeugen</button>
+                    <button type="submit" class="btn btn-link">{{ 'Kalender-Abonnement-Link erzeugen'|trans }}</button>
                 </form>
             {% endif %}
         </li>
         {% endfor %}
     </ul>
 
-    <h5 class="pt-3">Kalender Download {{ month.label }}</h5>
+    <h5 class="pt-3">{{ 'Kalender Download'|trans }} {{ month.label }}</h5>
     <p>
-        Hier kannst Du Dir Deine Spieltermine als Ical Kalender(*.ics)  herunterladen,
-        um sie in eine Kalender-App z.B. auf dem Handy zu importieren.
+        {{ 'Hier kannst Du Dir Deine Spieltermine als Ical Kalender(*.ics) herunterladen, um sie in eine Kalender-App z.B. auf dem Handy zu importieren.'|trans }}
     </p>
     {{ component('month_navigation', { active: month.key, urlKey: 'calendar_export' }) }}
     <ul class="list-group">
@@ -46,8 +45,8 @@
         <li class="list-group-item">
             <form action="{{ path('calendar_download') }}">
                 <input type="hidden" name="type" value="{{ type.value }}">
-                {{ type.label }}<br />
-                <button class="btn btn-link" type="submit">Jetzt herunterladen</a>
+                {{ type.label|trans }}<br />
+                <button class="btn btn-link" type="submit">{{ 'Jetzt herunterladen'|trans }}</a>
             </form>
         </li>
         {% endfor %}

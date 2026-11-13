@@ -1,9 +1,9 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Rechnungsansicht{% endblock %}
+{% block title %}{{ 'Rechnungsansicht'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Rechnungsansicht {{ clown.name }} {{ month.label }}</h4>
+    <h4 class="pt-3">{{ 'Rechnungsansicht'|trans }} {{ clown.name }} {{ month.label }}</h4>
 
     {{ component('schedule_navigation', { active: 'clown_invoice' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_invoice_show', urlParams: {clownId: clown.id} }) }}
@@ -12,15 +12,15 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Spieltermin</th>
-                <th>Bezeichnung</th>
-                <th>Datum</th>
+                <th>{{ 'Spieltermin'|trans }}</th>
+                <th>{{ 'Bezeichnung'|trans }}</th>
+                <th>{{ 'Datum'|trans }}</th>
                 <th>{{ config.feeLabel}}</th>
 
                 {% if config.featureAlternativeFee %}
                     <th>{{ config.alternativeFeeLabel}}</th>
                 {% endif %}
-                <th>Kilometergeld</th>
+                <th>{{ 'Kilometergeld'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -53,8 +53,8 @@
             {% endfor %}
 
             <tr>
-                <th>Summe</th>
-                <th>Achtung, dient nur der Orientierung!</th>
+                <th>{{ 'Summe'|trans }}</th>
+                <th>{{ 'Achtung, dient nur der Orientierung!'|trans }}</th>
                 <th>{{ month.label }}</th>
                 <th>{{ feeStandardSum|format_currency('EUR') }}</th>
                 {% if config.featureAlternativeFee %}<th>{{ feeAlternativeSum|format_currency('EUR') }}</th>{% endif %}
