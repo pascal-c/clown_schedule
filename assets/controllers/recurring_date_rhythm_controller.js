@@ -5,6 +5,7 @@ export default class extends Controller {
         this.setRhythmTexts();
     }
 
+    /** @todo i18n */
     setRhythmTexts() {
         var rhythm = document.querySelector('input[name="recurring_date_form[rhythm]"]:checked').value;
         if (rhythm === 'monthly') {

@@ -838,3 +838,13 @@ cookie_note: 'You can prevent or restrict cookies through your internet browser 
 'Der Spielplan ist bereits abgeschlossen!': 'The schedule has already been completed!'
 'Dieser Spieltermin ist unbezahlt.': 'This performance has not been paid.'
 'Alles fein': 'Everything is fine'
+'Email bei Fertigstellung des Spielplans': 'Email on schedule completion'
+'Du bekommst eine Email, wenn das Büro den Spielplan für den nächsten Monat fertig hat.': 'You will receive an email when the schedule is completed'
+'Dashboard-Hinweis bei zu stellender Rechnung': 'Dashboard hint for an invoice to be issued'
+'Du bekommst eine Benachrichtigung auf Deinem Dashboard, wenn Du eine neue Rechnung stellen kannst.': 'You will receive a notification on your dashboard when you can issue a new invoice.'
+'Email bei zu stellender Rechnung': 'Email for the invoice to be sent'
+'Du bekommst eine Email, sobald Du eine neue Rechnung stellen kannst.': 'You will receive an email when you can issue a new invoice.'
+'Email-Erinnerung bei zu stellender Rechnung': 'Email Reminder for Invoices to be issued'
+'Du bekommst nach 14 Tagen eine Email, wenn Du eine neue Rechnung noch nicht gestellt hast.': "You will receive an email after 14 days if you haven't issued a new invoice yet."
+'wöchentlich': weekly
+ganztags: 'all day'
