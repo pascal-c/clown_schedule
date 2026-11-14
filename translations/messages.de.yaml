@@ -861,3 +861,13 @@ Verantw.: Verantw.
 'Der Spielplan ist bereits abgeschlossen!': 'Der Spielplan ist bereits abgeschlossen!'
 'Dieser Spieltermin ist unbezahlt.': 'Dieser Spieltermin ist unbezahlt.'
 'Alles fein': 'Alles fein'
+'Email bei Fertigstellung des Spielplans': 'Email bei Fertigstellung des Spielplans'
+'Du bekommst eine Email, wenn das Büro den Spielplan für den nächsten Monat fertig hat.': 'Du bekommst eine Email, wenn das Büro den Spielplan für den nächsten Monat fertig hat.'
+'Dashboard-Hinweis bei zu stellender Rechnung': 'Dashboard-Hinweis bei zu stellender Rechnung'
+'Du bekommst eine Benachrichtigung auf Deinem Dashboard, wenn Du eine neue Rechnung stellen kannst.': 'Du bekommst eine Benachrichtigung auf Deinem Dashboard, wenn Du eine neue Rechnung stellen kannst.'
+'Email bei zu stellender Rechnung': 'Email bei zu stellender Rechnung'
+'Du bekommst eine Email, sobald Du eine neue Rechnung stellen kannst.': 'Du bekommst eine Email, sobald Du eine neue Rechnung stellen kannst.'
+'Email-Erinnerung bei zu stellender Rechnung': 'Email-Erinnerung bei zu stellender Rechnung'
+'Du bekommst nach 14 Tagen eine Email, wenn Du eine neue Rechnung noch nicht gestellt hast.': 'Du bekommst nach 14 Tagen eine Email, wenn Du eine neue Rechnung noch nicht gestellt hast.'
+'wöchentlich': wöchentlich
+ganztags: 'ganztags'
