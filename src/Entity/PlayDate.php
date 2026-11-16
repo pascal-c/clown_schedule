@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
 use DateTimeInterface;
+use SortDirection;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['venue', 'date'], message: 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.')]
@@ -61,7 +62,7 @@ class PlayDate implements TimeSlotPeriodInterface
     private bool $isSuper = false;
 
     #[ORM\OneToMany(mappedBy: 'playDate', targetEntity: PlayDateHistory::class, orphanRemoval: true, cascade: ['persist'])]
-    #[ORM\OrderBy(['id' => 'DESC'])]
+    #[ORM\OrderBy(['id' => SortDirection::Descending])]
     private Collection $playDateHistory;
 
     #[ORM\OneToMany(mappedBy: 'playDateToGiveOff', targetEntity: PlayDateChangeRequest::class, orphanRemoval: true)]
