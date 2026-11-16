@@ -6,14 +6,14 @@
     
     {{ component('venue/recurring_date_index', {venue: venue, year: activeYear}) }}
 
-    <h5 class="pt-3">Spieltermine</h5>
+    <h5 class="pt-3">{{ 'Spieltermine'|trans }}</h5>
     <div class="container">
         <div class="row">
     {% for playDate in playDates %}
             <div class="col-6 col-md-4 col-lg-2">
             <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id, venue_id: venue.id}) }}">{{ playDate.date|date("d.m.Y") }}</a>
             {% if currentClown.isAdmin %}
-                {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id, venue_id: venue.id}), title: "Termin bearbeiten"}) }}
+                {{ include('_shared/_edit_link.html.twig', {url: path('play_date_edit', {id: playDate.id, venue_id: venue.id}), title: "Termin bearbeiten"|trans}) }}
             {% endif %}
             </div>
     {% endfor %}
@@ -21,8 +21,8 @@
     </div>
     {% if currentClown.isAdmin %}
         <div class="container pt-3">
-            {{ include('_shared/_create_link.html.twig', {url: path('play_date_new', {venue_id: venue.id}), label: "Spieltermin anlegen"}) }}<br />
-            {{ include('_shared/_create_link.html.twig', {url: path('recurring_date_new', {venue_id: venue.id}), label: "Wiederkehrenden Termin anlegen"}) }}
+            {{ include('_shared/_create_link.html.twig', {url: path('play_date_new', {venue_id: venue.id}), label: "Spieltermin anlegen"|trans}) }}<br />
+            {{ include('_shared/_create_link.html.twig', {url: path('recurring_date_new', {venue_id: venue.id}), label: "Wiederkehrenden Termin anlegen"|trans}) }}
         </div>
     {% endif %}    
 {% endblock %}

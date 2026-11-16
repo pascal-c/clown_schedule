@@ -73,11 +73,11 @@ class CalendarController extends AbstractProtectedController
         $clown = $this->getCurrentClown();
         $type = CalendarType::from($request->request->get('type'));
         if ($clown->getCalendar($type)) {
-            $this->addFlash('warning', 'Es existiert bereits ein Kalender-Link für '.$type);
+            $this->addFlash('warning', $this->translateMessage('Es existiert bereits ein Kalender-Link für %type%', ['%type%' => $this->translateMessage($type->label())]));
         } elseif ($request->request->get('token') !== $request->getSession()->get('calendar-token')) {
-            $this->addFlash('warning', 'CSRF token ist abgelaufen. Bitte nochmal probieren!');
+            $this->addFlash('warning', $this->translateMessage('CSRF token ist abgelaufen. Bitte nochmal probieren!'));
         } else {
-            $this->addFlash('success', 'Ok, Kalender-Link wurde angelegt!');
+            $this->addFlash('success', $this->translateMessage('Ok, Kalender-Link wurde angelegt!'));
             $calendar = new Calendar();
             $calendar->setType($type);
             $calendar->setUuid(Uuid::uuid4()->toString());
@@ -94,16 +94,16 @@ class CalendarController extends AbstractProtectedController
     {
         $calendar = $this->calendarRepository->findByUuid($uuid);
         if (!$calendar) {
-            $this->addFlash('warning', 'Kalendar-Abonnement-Link nicht gefunden. Wurde vielleicht schon gelöscht?');
+            $this->addFlash('warning', $this->translateMessage('Kalendar-Abonnement-Link nicht gefunden. Wurde vielleicht schon gelöscht?'));
         } elseif ($this->getCurrentClown() !== $calendar->getClown()) {
-            $this->addFlash('warning', 'Schweinebacke! Das ist nicht Dein eigener Kalender. Den kannst Du nicht löschen!');
+            $this->addFlash('warning', $this->translateMessage('Schweinebacke! Das ist nicht Dein eigener Kalender. Den kannst Du nicht löschen!'));
         } elseif ($request->getSession()->get('calendar-token') !== $request->request->get('token')) {
-            $this->addFlash('warning', 'CSRF token ist abgelaufen. Bitte nochmal probieren!');
+            $this->addFlash('warning', $this->translateMessage('CSRF token ist abgelaufen. Bitte nochmal probieren!'));
         } else {
             $this->entityManager->remove($calendar);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Kalendar-Abonnement-Link erfolgreich gelöscht.');
+            $this->addFlash('success', $this->translateMessage('Kalendar-Abonnement-Link erfolgreich gelöscht.'));
         }
 
         return $this->redirectToRoute('calendar_export');

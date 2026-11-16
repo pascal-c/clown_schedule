@@ -35,11 +35,11 @@ class ConfigController extends AbstractProtectedController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
-            $this->addFlash('success', 'Yep! Einstellungen wurden gespeichert.');
+            $this->addFlash('success', $this->translateMessage('Yep! Einstellungen wurden gespeichert.'));
 
             return $this->redirect($this->generateUrl('config', ['section' => $section]));
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Hach! Das hat irgendwie nicht funktioniert.');
+            $this->addFlash('warning', $this->translateMessage('Hach! Das hat irgendwie nicht funktioniert.'));
         }
 
         return $this->render('config/edit.html.twig', [

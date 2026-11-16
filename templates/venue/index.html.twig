@@ -1,20 +1,20 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Spielorte{% endblock %}
+{% block title %}{{ 'Spielorte'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Spielorte</h4>
+    <h4 class="pt-3">{{ 'Spielorte'|trans }}</h4>
 
     {{ include('venue/_status_navigation.html.twig') }}
 
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                {% if showResponsibleClowns %}<th>Verantwortliche Clowns</th>{% endif %}
-                {% if showTeam %}<th>Clownsteam</th>{% endif %}
-                {% if showBlockedClowns %}<th>Gesperrte Clowns</th>{% endif %}
-                <th>Tageszeit</th>
+                <th>{{ 'Name'|trans }}</th>
+                {% if showResponsibleClowns %}<th>{{ 'Verantwortliche Clowns'|trans }}</th>{% endif %}
+                {% if showTeam %}<th>{{ 'Clownsteam'|trans }}</th>{% endif %}
+                {% if showBlockedClowns %}<th>{{ 'Gesperrte Clowns'|trans }}</th>{% endif %}
+                <th>{{ 'Tageszeit'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@
             <td>
                 <a href="{{ path('venue_show', {id: venue.id}) }}">{{ venue.name }}</a>
                 {% if venue.super %}
-                    <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spielort"></i>
+                    <i class="bi bi-hand-thumbs-up" title="{{ 'Dies ist ein Super-Spielort'|trans }}"></i>
                 {% endif %}
             </td>
             {% if showResponsibleClowns %}
@@ -31,7 +31,7 @@
                     {% if venue.assignResponsibleClownAsFirstClown %}
                         {{ venue.responsibleClowns|map(clown => clown.name)|join(' | ')|default('---') }}
                     {% else %}
-                        <i>deaktiviert</i>
+                        <i>{{ 'deaktiviert'|trans }}</i>
                     {% endif %}
                 </td>
             {% endif %}
@@ -40,7 +40,7 @@
                     {% if venue.teamActive %}
                         {{ venue.team|map(clown => clown.name)|join(' | ')|default('---') }}
                     {% else %}
-                        <i>deaktiviert</i>
+                        <i>{{ 'deaktiviert'|trans }}</i>
                     {% endif %}
                 </td>
             {% endif %}
@@ -59,7 +59,7 @@
     {% if currentClown.isAdmin %}
         {{ include('_shared/_create_link.html.twig', {
             url: path('venue_new'), 
-            label: "Spielort anlegen"
+            label: "Spielort anlegen"|trans
         }) }}
     {% endif %}
 {% endblock %}

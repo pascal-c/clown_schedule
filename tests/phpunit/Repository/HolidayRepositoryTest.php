@@ -10,6 +10,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\IdentityTranslator;
 
 final class HolidayRepositoryTest extends TestCase
 {
@@ -19,7 +20,7 @@ final class HolidayRepositoryTest extends TestCase
     public function setUp(): void
     {
         $this->configRepository = $this->createMock(ConfigRepository::class);
-        $this->repository = new HolidayRepository($this->configRepository);
+        $this->repository = new HolidayRepository($this->configRepository, new IdentityTranslator());
     }
 
     #[DataProvider('HolidayProviderSN')]

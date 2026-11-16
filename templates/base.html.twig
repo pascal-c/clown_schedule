@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name=viewport content="width=device-width, initial-scale=1">
-        <title>{% block title %}Clown Spielplan{% endblock %}</title>
+        <title>{% block title %}{{ 'Clown Spielplan'|trans }}{% endblock %}</title>
         <link rel="icon" href="https://www.clowns-und-clowns.de/wp-content/uploads/2021/03/favicon-1.ico" sizes="32x32">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -21,7 +21,7 @@
                 {% for message in messages %}
                     <div class="alert alert-{{ label }} alert-dismissible fade show d-flex" role="alert">
                         <div>{{ message|nl2br }}</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'Close'|trans }}"></button>
                     </div>
                 {% endfor %}
             {% endfor %}

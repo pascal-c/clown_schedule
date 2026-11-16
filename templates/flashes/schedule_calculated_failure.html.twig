@@ -1,10 +1,10 @@
-Oh no! Fehler! <br />
+{{ 'Oh no! Fehler!'|trans }} <br />
 <span class="small">
     Sekunden: {{ seconds }} |
     Http Status Code: {{ result.statusCode }} |
-    Fehlermeldung:   <a data-bs-toggle="collapse" href="#errorMessage" role="button" aria-expanded="false" aria-controls="errorMessage">auf-/zuklappen</a>
+    Fehlermeldung:   <a data-bs-toggle="collapse" href="#errorMessage" role="button" aria-expanded="false" aria-controls="errorMessage">{{ 'auf-/zuklappen'|trans }}</a>
     <div class="collapse" id="errorMessage">{{ result.errorMessage }}</div>
 </span><br />
-Hmm... das ist nicht gut!<br />
-Bitte die einfache Berechnung benutzen!<br />
-Vielleicht mal Pascal Bescheid geben?<br />
+{{ 'Hmm... das ist nicht gut!'|trans }}<br />
+{{ 'Bitte die einfache Berechnung benutzen!'|trans }}<br />
+{{ 'Vielleicht mal Pascal Bescheid geben?'|trans }}<br />

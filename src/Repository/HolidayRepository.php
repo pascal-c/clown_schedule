@@ -6,13 +6,16 @@ namespace App\Repository;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HolidayRepository
 {
     private array $cache = [];
 
-    public function __construct(private ConfigRepository $configRepository)
-    {
+    public function __construct(
+        private ConfigRepository $configRepository,
+        private TranslatorInterface $translator,
+    ) {
     }
 
     public function oneByDate(DateTimeImmutable $date): ?string
@@ -21,7 +24,9 @@ class HolidayRepository
 
         $holidays = $this->cache[$year] ?? $this->cache[$year] = $this->byYear($year);
 
-        return $holidays[$date->format('Y-m-d')] ?? null;
+        $holiday = $holidays[$date->format('Y-m-d')] ?? null;
+
+        return null === $holiday ? null : $this->translator->trans($holiday);
     }
 
     private function byYear(string $year): array

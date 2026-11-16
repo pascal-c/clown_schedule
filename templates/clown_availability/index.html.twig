@@ -1,15 +1,15 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Clowns{% endblock %}
+{% block title %}{{ 'Clowns'|trans }}{% endblock %}
 
 {% block content %}
     {{ component('clown_constraints_navigation', { active: 'wishes'}) }}
-    <h4 class="pt-3">Wünsche {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
+    <h4 class="pt-3">{{ 'Wünsche'|trans }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h4>
     {{ component('month_navigation', { active: month.key, urlKey: 'clown_availability_index' }) }}
 
     <table class="table">
         <thead>
-            <tr><th>Clown</th><th>Wünsche eingetragen?</th><th>Wünsche / Anmerkungen</tr>
+            <tr><th>{{ 'Clown'|trans }}</th><th>{{ 'Wünsche eingetragen?'|trans }}</th><th>{{ 'Wünsche / Anmerkungen'|trans }}</tr>
         </thead>
         <tbody>
 
@@ -23,7 +23,7 @@
                             {{ clown.hasAvailabilityFor(month) ? 'Ja' : 'Nein' }}
                         </a>
                         {% else %}
-                            Nein
+                            {{ 'Nein'|trans }}
                         {% endif %}
                     </td>
                     <td>{{ clown.hasAvailabilityFor(month) ? clown.getAvailabilityFor(month).additionalWishes|nl2br : '' }}</td>

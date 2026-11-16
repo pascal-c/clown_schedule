@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Value\Language;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -27,4 +28,7 @@ class UserSettings
     #[ORM\OneToOne(inversedBy: 'settings', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     public ?Clown $clown = null;
+
+    #[ORM\Column(nullable: true, enumType: Language::class)]
+    public ?Language $language = null;
 }

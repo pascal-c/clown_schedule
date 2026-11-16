@@ -54,6 +54,8 @@ abstract class AbstractCest
 
         // Clear result cache befor each test
         $this->clearResultCache();
+
+        $I->haveHttpHeader('Accept-Language', 'de');
     }
 
     protected function clearResultCache(): void

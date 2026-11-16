@@ -142,12 +142,12 @@ class Clown
         return $this;
     }
 
-    public function getLabelFor(?PlayDate $playDate): string
+    public function getLabelFor(?PlayDate $playDate, string $responsibleLabel): string
     {
         $label = $this->getName();
 
         if ($playDate?->getVenue() && $playDate->getVenue()->getResponsibleClowns()->contains($this)) {
-            $label .= ' (Verantw.)';
+            $label .= ' ('.$responsibleLabel.')';
         }
         if ($playDate?->getVenue()) {
             $preference = $this->getVenuePreferenceFor($playDate->getVenue());

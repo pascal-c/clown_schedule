@@ -1,16 +1,16 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Spieltermine{% endblock %}
+{% block title %}{{ 'Spieltermine'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Spieltermine {{ activeYear }}</h4>
+    <h4 class="pt-3">{{ 'Spieltermine'|trans }} {{ activeYear }}</h4>
 
     {{ component('schedule_navigation', { active: 'play_dates_by_year' }) }}
     {{ include('play_date/_year_navigation.html.twig', {activeYear: activeYear, years: years}) }}
     
     <table class="table">
         <thead>
-            <tr><th>Wann</th><th>Wo</th><th>Kommentar</th><th>Clowns</th><th>bearbeiten</th></tr>
+            <tr><th>{{ 'Wann'|trans }}</th><th>{{ 'Wo'|trans }}</th><th>{{ 'Kommentar'|trans }}</th><th>{{ 'Clowns'|trans }}</th><th>{{ 'bearbeiten'|trans }}</th></tr>
         </thead>
         <tbody>
 
@@ -24,18 +24,18 @@
                 {{ include('play_date/_status_icons.html.twig', {playDate: play_date}) }}</td>
             <td>
                {% if play_date.super %}
-                    <i class="bi bi-hand-thumbs-up" title="Dies ist ein Super-Spieltermin"></i> Super-Spieltermin<br />
+                    <i class="bi bi-hand-thumbs-up" title="{{ "Dies ist ein Super-Spieltermin"|trans }}"></i> {{ 'Super-Spieltermin'|trans }}<br />
                 {% endif %}
                 {{ play_date.comment }}
             </td>
             <td>
                 {% for clown in play_date.playingClowns %}{{ clown.name }} {% endfor %}
             </td>
-            <td>{% if currentClown.isAdmin %}<a href="{{ path('play_date_edit', {id: play_date.id}) }}">Spieltermin bearbeiten</a>{% endif %}</td>
+            <td>{% if currentClown.isAdmin %}<a href="{{ path('play_date_edit', {id: play_date.id}) }}">{{ 'Spieltermin bearbeiten'|trans }}</a>{% endif %}</td>
         </tr>
     {% endfor %}
     </table>
     {% if currentClown.isAdmin %}
-        <a href="{{ path('play_date_new') }}">Spieltermin anlegen</a>
+        <a href="{{ path('play_date_new') }}">{{ 'Spieltermin anlegen'|trans }}</a>
     {% endif %}
 {% endblock %}

@@ -10,6 +10,7 @@ use App\Service\Scheduler\AvailabilityChecker;
 use App\Service\Scheduler\AvailabilityChecker\MaxPlaysReachedChecker;
 use App\Value\TimeSlotPeriod;
 use App\Value\TimeSlotPeriodInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use DateTimeImmutable;
 
@@ -22,6 +23,7 @@ final class ShowAvailableClownsComponent
         private ClownAvailabilityRepository $clownAvailabilityRepository,
         private AvailabilityChecker $availabilityChecker,
         private MaxPlaysReachedChecker $maxPlaysReachedChecker,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -35,7 +37,7 @@ final class ShowAvailableClownsComponent
         );
         $this->entries = array_map(
             fn (ClownAvailability $availability) => [
-                'clown_name' => $availability->getClown()->getLabelFor($playDate),
+                'clown_name' => $availability->getClown()->getLabelFor($playDate, $this->translator->trans('Verantw.')),
                 'type' => $this->getType($timeSlotPeriod, $availability, $playDate),
                 'messages' => $this->getMessages($timeSlotPeriod, $availability, $playDate),
             ],
@@ -69,19 +71,19 @@ final class ShowAvailableClownsComponent
     {
         $messages = [];
         if ('maybe' == $clownAvailability->getAvailabilityOn($timeSlotPeriod)) {
-            $messages[] = 'Clown kann nur wenn\'s sein muss.';
+            $messages[] = $this->translator->trans('Clown kann nur wenn\'s sein muss.');
         }
         if ($this->maxPlaysReachedChecker->maxPlaysMonthReached($clownAvailability)) {
-            $messages[] = 'Maximale Anzahl monatlicher Spiele erreicht!';
+            $messages[] = $this->translator->trans('Maximale Anzahl monatlicher Spiele erreicht!');
         }
         if ($this->maxPlaysReachedChecker->maxPlaysDayReached($timeSlotPeriod->getDate(), $clownAvailability)) {
-            $messages[] = 'Maximale Anzahl täglicher Spiele erreicht!';
+            $messages[] = $this->translator->trans('Maximale Anzahl täglicher Spiele erreicht!');
         }
         if (!is_null($playDate) && $this->availabilityChecker->isBlocked($playDate->getVenue(), $clownAvailability->getClown())) {
-            $messages[] = 'Clown ist für diesen Spielort gesperrt!';
+            $messages[] = $this->translator->trans('Clown ist für diesen Spielort gesperrt!');
         }
         if (empty($messages)) {
-            $messages[] = 'Clown ist verfügbar!';
+            $messages[] = $this->translator->trans('Clown ist verfügbar!');
         }
 
         return $messages;

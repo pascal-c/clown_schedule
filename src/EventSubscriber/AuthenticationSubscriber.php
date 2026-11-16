@@ -37,7 +37,6 @@ class AuthenticationSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::CONTROLLER => 'onKernelController',
-            // RequestEvent::class => 'onKernelRequest',
         ];
     }
 }

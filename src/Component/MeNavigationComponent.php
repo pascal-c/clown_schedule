@@ -20,21 +20,17 @@ class MeNavigationComponent
     public function mount(string $active = 'me'): void
     {
         $this->active = $active;
+        $navigationItems = [];
 
-        $navigationItems[MeSubnavigationElement::PERSONAL_DATA->value] = [
-            'label' => 'Persönliche Daten',
-            'url' => $this->urlHelper->generate(
-                'me',
-                ['subnavigationElement' => MeSubnavigationElement::PERSONAL_DATA->value],
-            ),
-        ];
-        $navigationItems[MeSubnavigationElement::NOTIFICATIONS->value] = [
-            'label' => 'Benachrichtigungen',
-            'url' => $this->urlHelper->generate(
-                'me',
-                ['subnavigationElement' => MeSubnavigationElement::NOTIFICATIONS->value],
-            ),
-        ];
+        foreach (MeSubnavigationElement::cases() as $meSubnavigationElement) {
+            $navigationItems[$meSubnavigationElement->value] = [
+                'label' => $meSubnavigationElement->label(),
+                'url' => $this->urlHelper->generate(
+                    'me',
+                    ['subnavigationElement' => $meSubnavigationElement->value],
+                ),
+            ];
+        }
 
         $this->navigationItems = $navigationItems;
     }

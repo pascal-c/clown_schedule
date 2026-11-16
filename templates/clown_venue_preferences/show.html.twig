@@ -1,40 +1,40 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Spielort Präferenzen{% endblock %}
+{% block title %}{{ 'Spielort Präferenzen'|trans }}{% endblock %}
 
 {% block content %}
     {{ component('clown_constraints_navigation', { active: 'venue_preferences'}) }}
 
-    <h4 class="pt-3">Spielort Präferenzen {{ showAll ? '' : clowns[0].name }}
+    <h4 class="pt-3">{{ 'Spielort Präferenzen'|trans }} {{ showAll ? '' : clowns[0].name }}
     {% if currentClown.active and not showAll and currentClown==clowns[0] %}
-        {{ include('_shared/_edit_link.html.twig', {url: path('clown_venue_preferences_edit', {clownId: clowns[0].id}), title: "Präferenzen bearbeiten"}) }}
+        {{ include('_shared/_edit_link.html.twig', {url: path('clown_venue_preferences_edit', {clownId: clowns[0].id}), title: "Präferenzen bearbeiten"|trans}) }}
     {% endif %}
     </h4>
 
     {% if showAll %}
-        <a href="{{ path('clown_venue_preferences_show', {clownId: currentClown.id}) }}" class="btn btn-light mb-3">nur meine anzeigen</a>
+        <a href="{{ path('clown_venue_preferences_show', {clownId: currentClown.id}) }}" class="btn btn-light mb-3">{{ 'nur meine anzeigen'|trans }}</a>
     {% else %}
-        <a href="{{ path('clown_venue_preferences_show') }}" class="btn btn-light mb-3">alle anzeigen</a>
+        <a href="{{ path('clown_venue_preferences_show') }}" class="btn btn-light mb-3">{{ 'alle anzeigen'|trans }}</a>
     {% endif %}
     <div class="table-responsive">
         <table class="table">
-            <caption>Legende: <br />
-                -- nur wenn's gar nicht anders geht <br />
-                - na gut <br />
-                o ok <br />
-                + sehr gerne <br />
-                ++ au ja, unbedingt! <br />
+            <caption>{{ 'Legende:'|trans }} <br />
+                {{ "-- nur wenn's gar nicht anders geht"|trans }} <br />
+                {{ '- na gut'|trans }} <br />
+                {{ 'o ok'|trans }} <br />
+                {{ '+ sehr gerne'|trans }} <br />
+                {{ "++ au ja, unbedingt!"|trans }} <br />
             </caption>
             <thead>
                 <tr>
-                    <th>Spielort</th>
+                    <th>{{ 'Spielort'|trans }}</th>
                     {% for clown in clowns %}
                         <th>
                             <a href="{{ path('clown_venue_preferences_show', {clownId: clown.id}) }}">{{ clown.name[:7] }}</a>
                         </th>
                     {% endfor %}
                     {% if showAll %}
-                        <th>Ø</th>
+                        <th>{{ 'Ø'|trans }}</th>
                     {% endif %}
                 </tr>
             </thead>

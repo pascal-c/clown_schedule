@@ -48,20 +48,24 @@ class DashboardController extends AbstractProtectedController
         if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && !$nextMonthSchedule->isStarted() && !$nextMonthFilled) {
             $this->addFlash(
                 'danger',
-                sprintf(
-                    'Hey %s, Du musst DRINGEND noch Deine Wünsche für %s eintragen',
-                    $currentClown->getName(),
-                    $nextMonth->getLabel()
+                $this->translateMessage(
+                    'Hey %name%, Du musst DRINGEND noch Deine Wünsche für %month% eintragen',
+                    [
+                        '%name%' => $currentClown->getName(),
+                        '%month%' => $nextMonth->getLabel($this->getTranslationLocale()),
+                    ]
                 )
             );
         }
         if ($this->configRepository->isFeatureCalculationActive() && $currentClown->isActive() && $today > $this->timeService->NearlyEndOfMonth() && !$afterNextMonthSchedule->isStarted() && !$afterNextMonthFilled) {
             $this->addFlash(
                 'warning',
-                sprintf(
-                    'Hey %s, Du musst noch Deine Wünsche für %s eintragen',
-                    $currentClown->getName(),
-                    $afterNextMonth->getLabel()
+                $this->translateMessage(
+                    'Hey %name%, Du musst noch Deine Wünsche für %month% eintragen',
+                    [
+                        '%name%' => $currentClown->getName(),
+                        '%month%' => $afterNextMonth->getLabel($this->getTranslationLocale()),
+                    ]
                 )
             );
         }

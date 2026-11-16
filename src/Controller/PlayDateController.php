@@ -98,11 +98,11 @@ class PlayDateController extends AbstractProtectedController
             $this->playDateService->create($playDate);
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde erfolgreich angelegt.');
+            $this->addFlash('success', $this->translateMessage('%type% wurde erfolgreich angelegt.', ['%type%' => $this->translateMessage($playDate->getType()->value)]));
 
             return $this->redirectAfterSuccess($playDate, $venue);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Termin konnte nicht angelegt werden.');
+            $this->addFlash('warning', $this->translateMessage('Termin konnte nicht angelegt werden.'));
         }
 
         return $this->render('play_date/new.html.twig', [
@@ -184,22 +184,22 @@ class PlayDateController extends AbstractProtectedController
         if ($form->isSubmitted() && $form->has('remove') && $form->get('remove')->isClicked()) {
             $this->entityManager->remove($bundle);
             $this->entityManager->flush();
-            $this->addFlash('success', 'Das Bündel wurde aufgelöst. Tabula rasa!');
+            $this->addFlash('success', $this->translateMessage('Das Bündel wurde aufgelöst. Tabula rasa!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted() && $form->has('cancel') && $form->get('cancel')->isClicked()) {
-            $this->addFlash('success', 'Bündelung abgebrochen. Besser so!');
+            $this->addFlash('success', $this->translateMessage('Bündelung abgebrochen. Besser so!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
-            $this->addFlash('success', 'Die Spieltermine wurden gebündelt. Gut gemacht!');
+            $this->addFlash('success', $this->translateMessage('Die Spieltermine wurden gebündelt. Gut gemacht!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Da ist was schiefgegangen, tut mir leid!');
+            $this->addFlash('warning', $this->translateMessage('Da ist was schiefgegangen, tut mir leid!'));
         }
 
         return $this->render('play_date/bundle.html.twig', [
@@ -218,11 +218,11 @@ class PlayDateController extends AbstractProtectedController
             $this->playDateService->cancel($playDate);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Der Spieltermin wurde abgesagt. Schade!');
+            $this->addFlash('success', $this->translateMessage('Der Spieltermin wurde abgesagt. Schade!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         }
-        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        $this->addFlash('danger', $this->translateMessage('Da ist was schiefgegangen, tut mir leid!'));
 
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
@@ -238,11 +238,11 @@ class PlayDateController extends AbstractProtectedController
             $this->playDateService->move($playDate, $moveForm);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Der Spieltermin wurde verschoben.');
+            $this->addFlash('success', $this->translateMessage('Der Spieltermin wurde verschoben.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         }
-        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        $this->addFlash('danger', $this->translateMessage('Da ist was schiefgegangen, tut mir leid!'));
 
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
@@ -261,11 +261,11 @@ class PlayDateController extends AbstractProtectedController
             $this->trainingAssigner->assignOne($playDate, $this->getCurrentClown());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Du bist jetzt für dieses Training / Team-Treffen angemeldet. Schön, dass Du dabei bist!');
+            $this->addFlash('success', $this->translateMessage('Du bist jetzt für dieses Training / Team-Treffen angemeldet. Schön, dass Du dabei bist!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         }
-        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        $this->addFlash('danger', $this->translateMessage('Da ist was schiefgegangen, tut mir leid!'));
 
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
@@ -284,11 +284,11 @@ class PlayDateController extends AbstractProtectedController
             $this->trainingAssigner->unassignOne($playDate, $this->getCurrentClown());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Du bist jetzt für das Training / Team-Treffen abgemeldet. Schade, dass Du nicht dabei sein kannst!');
+            $this->addFlash('success', $this->translateMessage('Du bist jetzt für das Training / Team-Treffen abgemeldet. Schade, dass Du nicht dabei sein kannst!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         }
-        $this->addFlash('danger', 'Da ist was schiefgegangen, tut mir leid!');
+        $this->addFlash('danger', $this->translateMessage('Da ist was schiefgegangen, tut mir leid!'));
 
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
@@ -311,16 +311,15 @@ class PlayDateController extends AbstractProtectedController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans($playDate->getType()->value).' wurde aktualisiert. Sehr gut!');
+            $this->addFlash('success', $this->translateMessage('%type% wurde aktualisiert. Sehr gut!', ['%type%' => $this->translateMessage($playDate->getType()->value)]));
 
             return $this->redirectAfterSuccess($playDate, $request->query->get('venue_id') ? $playDate->getVenue() : null);
         } elseif ($editForm->isSubmitted()) {
-            $this->addFlash('warning', 'Hach! Termin konnte irgendwie nicht aktualisiert werden.');
+            $this->addFlash('warning', $this->translateMessage('Hach! Termin konnte irgendwie nicht aktualisiert werden.'));
         }
 
         if ($this->playDateGuard->shouldNotEdit($playDate)) {
-            $this->addFlash('warning', 'Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen!
-            Bei Terminverschiebungen wäre es eventuell sinnvoller, die "Verschieben"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.');
+            $this->addFlash('warning', $this->translateMessage('Achtung! Der Spieltermin liegt in der Vergangenheit bzw. die Spielplanerstellung ist schon abgeschlossen! Bei Terminverschiebungen wäre es eventuell sinnvoller, die "Verschieben"-Funktion in der Detailansicht zu nutzen, um Änderungen für die Clowns transparent zu machen.'));
         }
 
         return $this->render('play_date/edit.html.twig', [
@@ -340,11 +339,11 @@ class PlayDateController extends AbstractProtectedController
             $this->playDateService->assign($playDate, $form->get('playingClowns')->getData()->toArray());
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Clowns wurden zugeordnet. Tip top!');
+            $this->addFlash('success', $this->translateMessage('Clowns wurden zugeordnet. Tip top!'));
 
             return $this->redirectToRoute('schedule');
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Mist, das hat nicht geklappt!');
+            $this->addFlash('warning', $this->translateMessage('Mist, das hat nicht geklappt!'));
         }
 
         return $this->render('play_date/assign_clowns.html.twig', [
@@ -364,7 +363,7 @@ class PlayDateController extends AbstractProtectedController
             $this->entityManager->remove($playDate);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Spieltermin wurde gelöscht. Das ist gut!');
+            $this->addFlash('success', $this->translateMessage('Spieltermin wurde gelöscht. Das ist gut!'));
 
             if ($request->query->get('venue_id')) {
                 return $this->redirectToRoute('venue_play_date_index', ['id' => $playDate->getVenue()->getId()]);
@@ -373,7 +372,7 @@ class PlayDateController extends AbstractProtectedController
             return $this->redirectToRoute('schedule');
         }
 
-        $this->addFlash('warning', 'Achtung! Spieltermin konnte nicht gelöscht werden.');
+        $this->addFlash('warning', $this->translateMessage('Achtung! Spieltermin konnte nicht gelöscht werden.'));
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }
@@ -388,7 +387,7 @@ class PlayDateController extends AbstractProtectedController
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             $deletedCount = $this->recurringDateService->deletePlayDatesSince($playDate->getRecurringDate(), $playDate->getDate());
 
-            $this->addFlash('success', 'Es wurden '.$deletedCount.' Spieltermine gelöscht. Gut gemacht!');
+            $this->addFlash('success', $this->translateMessage('Es wurden %count% Spieltermine gelöscht. Gut gemacht!', ['%count%' => $deletedCount]));
 
             if ($request->query->get('venue_id')) {
                 return $this->redirectToRoute('venue_play_date_index', ['id' => $playDate->getVenue()->getId()]);
@@ -397,7 +396,7 @@ class PlayDateController extends AbstractProtectedController
             return $this->redirectToRoute('schedule');
         }
 
-        $this->addFlash('warning', 'Achtung! Spieltermine konnten nicht gelöscht werden.');
+        $this->addFlash('warning', $this->translateMessage('Achtung! Spieltermine konnten nicht gelöscht werden.'));
 
         return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
     }

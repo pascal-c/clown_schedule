@@ -12,6 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Translation\IdentityTranslator;
 
 final class PlayDateGiveOffRequestMailerTest extends TestCase
 {
@@ -26,6 +27,7 @@ final class PlayDateGiveOffRequestMailerTest extends TestCase
         $this->playDateGiveOffRequestMailer = new PlayDateGiveOffRequestMailer(
             $this->mailer,
             $this->clownRepository,
+            new IdentityTranslator(),
         );
     }
 

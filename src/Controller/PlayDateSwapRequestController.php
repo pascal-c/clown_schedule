@@ -68,12 +68,12 @@ class PlayDateSwapRequestController extends AbstractProtectedController
 
             $this->mailer->sendSwapRequestMail($playDateChangeRequest, $formData['comment']);
 
-            $this->addFlash('success', 'Tauschanfrage wurde erfolgreich gestellt. '.$requestedTo->getName().' hat eine Email bekommen. Hoffentlich klappt das!');
-            $this->addFlash('info', 'Übrigens: Du kannst für einen Spieltermin auch mehrere Tauschanfragen parallel stellen! Sobald eine der Tauschanfragen angenommen wird, werden die anderen automatisch geschlossen.');
+            $this->addFlash('success', $this->translateMessage('Tauschanfrage wurde erfolgreich gestellt. %name% hat eine Email bekommen. Hoffentlich klappt das!', ['%name%' => $requestedTo->getName()]));
+            $this->addFlash('info', $this->translateMessage('Übrigens: Du kannst für einen Spieltermin auch mehrere Tauschanfragen parallel stellen! Sobald eine der Tauschanfragen angenommen wird, werden die anderen automatisch geschlossen.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Irgendwie konnte die Tauschanfrage nicht gestellt werden. Tut mir leid!');
+            $this->addFlash('warning', $this->translateMessage('Irgendwie konnte die Tauschanfrage nicht gestellt werden. Tut mir leid!'));
         }
 
         return $this->render('play_date_change_request/new_swap_request.html.twig', [
@@ -91,7 +91,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -107,7 +107,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
             $this->mailer->sendInformPartnersAboutChangeMail($playDateChangeRequest); // inform about change in wantedPlayDate
             $playDateGiveOffRequestMailer->sendInformPartnersAboutChangeMail($playDateChangeRequest); // inform about change in PlayDateToGiveOff
 
-            $this->addFlash('success', 'Yippieh! Spieltermin wurde getauscht! Die anfragende Person wird per Email informiert.');
+            $this->addFlash('success', $this->translateMessage('Yippieh! Spieltermin wurde getauscht! Die anfragende Person wird per Email informiert.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -129,7 +129,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -143,7 +143,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
 
             $this->mailer->sendDeclineSwapRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
-            $this->addFlash('success', 'Gut gemacht! Tauschanfrage wurde erfolgreich abgelehnt! Du kannst Dich ja hier nicht um alles kümmern!');
+            $this->addFlash('success', $this->translateMessage('Gut gemacht! Tauschanfrage wurde erfolgreich abgelehnt! Du kannst Dich ja hier nicht um alles kümmern!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -165,7 +165,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Die Tauschanfrage ist bereits geschlossen worden.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -179,7 +179,7 @@ class PlayDateSwapRequestController extends AbstractProtectedController
 
             $this->mailer->sendCancelSwapRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
-            $this->addFlash('success', 'Ok! Tauschanfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.');
+            $this->addFlash('success', $this->translateMessage('Ok! Tauschanfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }

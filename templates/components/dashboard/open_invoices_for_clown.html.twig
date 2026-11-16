@@ -1,11 +1,11 @@
 {% if invoices.count > 0 %}
-    <h4 class="pt-3">Rechnung stellen</h4>
+    <h4 class="pt-3">{{ 'Rechnung stellen'|trans }}</h4>
 
-    Hey, {{ currentClown.name }}, Du kannst eine Rechnung stellen, yippieh!
+    {{ 'Hey, %name%, Du kannst eine Rechnung stellen, yippieh!'|trans({'%name%': currentClown.name}) }}
     {% for invoice in invoices %}
         <div>
             <div>
-                <a href="{{ path('clown_invoice_show', {clownId: invoice.clown.id, monthId: invoice.month.key}) }}">Rechnung für {{ invoice.month.label }}</a> 
+                <a href="{{ path('clown_invoice_show', {clownId: invoice.clown.id, monthId: invoice.month.key}) }}">{{ 'Rechnung für %month%'|trans({'%month%': invoice.month.label}) }}</a>
             </div>
         </div>
     {% endfor %}

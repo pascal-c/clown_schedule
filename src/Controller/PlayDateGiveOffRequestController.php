@@ -69,11 +69,11 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
                 $this->mailer->sendGiveOffRequestMail($playDateChangeRequest, $formData['comment']);
             }
 
-            $this->addFlash('success', 'Deine Abgabe-Anfrage wurde erfolgreich gestellt. Alle angefragten Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!');
+            $this->addFlash('success', $this->translateMessage('Deine Abgabe-Anfrage wurde erfolgreich gestellt. Alle angefragten Clowns bekommen ein Email. Bestimmt wird sich eine:r finden!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDate->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Irgendwie hat das nicht geklappt. Tut mir leid!');
+            $this->addFlash('warning', $this->translateMessage('Irgendwie hat das nicht geklappt. Tut mir leid!'));
         }
 
         return $this->render('play_date_change_request/new_give-off_request.html.twig', [
@@ -91,7 +91,7 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Wahrscheinlich ist Dir jemensch zuvorgekommen. Schade!'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -106,7 +106,7 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
             $this->mailer->sendAcceptGiveOffRequestMail($playDateChangeRequest, $form->getData()['comment']);
             $this->mailer->sendInformPartnersAboutChangeMail($playDateChangeRequest);
 
-            $this->addFlash('success', 'Super! Du hast den Spieltermin übernommen, Danke! Die anfragende Person wird per Email informiert.');
+            $this->addFlash('success', $this->translateMessage('Super! Du hast den Spieltermin übernommen, Danke! Die anfragende Person wird per Email informiert.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -127,7 +127,7 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
 
         if (!$playDateChangeRequest->isWaiting()) {
             $this->entityManager->flush();
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Die Anfrage ist bereits geschlossen worden.');
+            $this->addFlash('warning', $this->translateMessage('Das hat leider nicht geklappt. Die Anfrage ist bereits geschlossen worden.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }
@@ -141,7 +141,7 @@ class PlayDateGiveOffRequestController extends AbstractProtectedController
 
             $this->mailer->sendCancelGiveOffRequestMail($playDateChangeRequest, $form->getData()['comment']);
 
-            $this->addFlash('success', 'Ok! Anfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.');
+            $this->addFlash('success', $this->translateMessage('Ok! Anfrage wurde erfolgreich geschlossen! Die angefragte Person wird per Email informiert.'));
 
             return $this->redirectToRoute('play_date_show', ['id' => $playDateChangeRequest->getPlayDateToGiveOff()->getId()]);
         }

@@ -30,8 +30,8 @@ class PlayDateConverter
     public function getName(PlayDate $date): string
     {
         $status = match($date->getStatus()) {
-            PlayDate::STATUS_CANCELLED => ' ABGESAGT',
-            PlayDate::STATUS_MOVED => ' VERSCHOBEN',
+            PlayDate::STATUS_CANCELLED => ' '.strtoupper($this->translator->trans('abgesagt')),
+            PlayDate::STATUS_MOVED => ' '.strtoupper($this->translator->trans('verschoben')),
             default => '',
         };
 
@@ -59,12 +59,12 @@ class PlayDateConverter
         );
 
         return
-            "Es spielen: $playingClowns\n".
-            "Springer: $substitutions\n".
-            "Tageszeit: {$this->translator->trans($date->getDaytime())}\n".
-            "Treffen: {$date->getMeetingTime()?->format('H:i')}\n".
-            "Spielzeit: {$date->getPlayTimeFrom()?->format('H:i')}-{$date->getPLayTimeTo()?->format('H:i')}\n".
-            ($date->getComment() ? "Kommentar: {$date->getComment()}" : '')
+            "{$this->translator->trans('Es spielen')}: $playingClowns\n".
+            "{$this->translator->trans('Springer')}: $substitutions\n".
+            "{$this->translator->trans('Tageszeit')}: {$this->translator->trans($date->getDaytime())}\n".
+            "{$this->translator->trans('Treffen')}: {$date->getMeetingTime()?->format('H:i')}\n".
+            "{$this->translator->trans('Spielzeit')}: {$date->getPlayTimeFrom()?->format('H:i')}-{$date->getPLayTimeTo()?->format('H:i')}\n".
+            ($date->getComment() ? "{$this->translator->trans('Kommentar')}: {$date->getComment()}" : '')
         ;
     }
 
@@ -76,11 +76,11 @@ class PlayDateConverter
         );
 
         return
-            "Teilnehmende: $clowns\n".
-            "Tageszeit: {$this->translator->trans($date->getDaytime())}\n".
-            "Treffen: {$date->getMeetingTime()?->format('H:i')}\n".
-            "Zeitraum: {$date->getPlayTimeFrom()?->format('H:i')}-{$date->getPLayTimeTo()?->format('H:i')}\n".
-            ($date->getComment() ? "Kommentar: {$date->getComment()}" : '')
+            "{$this->translator->trans('Teilnehmende')}: $clowns\n".
+            "{$this->translator->trans('Tageszeit')}: {$this->translator->trans($date->getDaytime())}\n".
+            "{$this->translator->trans('Treffen')}: {$date->getMeetingTime()?->format('H:i')}\n".
+            "{$this->translator->trans('Zeitraum')}: {$date->getPlayTimeFrom()?->format('H:i')}-{$date->getPLayTimeTo()?->format('H:i')}\n".
+            ($date->getComment() ? "{$this->translator->trans('Kommentar')}: {$date->getComment()}" : '')
         ;
     }
 

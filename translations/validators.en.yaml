@@ -1,0 +1,3 @@
+'Das ist keine gültige Email': 'This is not a valid email address'
+'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.': 'A performance already exists at this venue on the same day.'
+'Du musst mindestens {{ limit }} Spieltermine auswählen, um sie zu bündeln.': 'You must select at least {{ limit }} performances to bundle them.'

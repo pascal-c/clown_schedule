@@ -1,8 +1,8 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h3>Clown Spielplan App</h3>
-    <h5 class="pt-3">Hallo {{ currentClown.name }}, lege ein Passwort für Deinen Zugang zur Spielplan App fest:</h4>
+    <h3>{{ 'Clown Spielplan App'|trans }}</h3>
+    <h5 class="pt-3">{{ 'Hallo %name%, lege ein Passwort für Deinen Zugang zur Spielplan App fest:'|trans({'%name%': currentClown.name}) }}</h5>
 
     {{ form(form) }}
 

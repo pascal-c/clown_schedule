@@ -1,12 +1,12 @@
 <div class="pt-2 lh-sm">
     <a class="text-dark" href="{{ path('play_date_show', {id: playDate.id}) }}">
         <span class="{{ colorClass }}">
-            {{ playDate.name }} {{ playDate.daytime == 'all' ? '(ganztags)' }}  {% if playDate.bundle %}<i class="bi bi-{{ playDate.bundle.playDates.count }}-circle" title="Es sind {{ playDate.bundle.playDates.count }} Termine gebündelt"></i>{% endif %}
+            {{ playDate.name }} {{ playDate.daytime == 'all' ? '(ganztags)'|trans }}  {% if playDate.bundle %}<i class="bi bi-{{ playDate.bundle.playDates.count }}-circle" title="{{ 'Es sind %count% Termine gebündelt'|trans({'%count%': playDate.bundle.playDates.count}) }}"></i>{% endif %}
         </span>
     </a>
 
     {% if showNotEnonoughClownsWarning %}
-        <span class="ms-2 text-danger" title="Es sind weniger als 2 Clowns für diesen Spieltermin eingetragen.">
+        <span class="ms-2 text-danger" title="{{ 'Es sind weniger als 2 Clowns für diesen Spieltermin eingetragen.'|trans }}">
             <i class="bi bi-exclamation-triangle"></i>
         </span>
     {% endif %}
@@ -20,13 +20,13 @@
     {% if showClowns %}
         {{ playDate.playingClowns|map(clown => clown.name)|join(' | ')}}
         {% if canAssign %}
-            {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"}) }}
+            {{ include('_shared/_edit_link.html.twig', {url: path('play_date_assign_clowns', {id: playDate.id}), title: "Zuordnung bearbeiten"|trans}) }}
         {% endif %}
     {% endif %}
     {% if playDate.comment != '' %}
         <br /><span class="mt-0 pt-0 fst-itlic fw-light">{{ playDate.comment|nl2br }}</i>
     {% endif %}
     {% if specialPlayDateUrl %}
-        <br /><a href="{{ specialPlayDateUrl }}" target="_blank" rel="noopener">Weitere Infos</a>
+        <br /><a href="{{ specialPlayDateUrl }}" target="_blank" rel="noopener">{{ 'Weitere Infos'|trans }}</a>
     {% endif %}
 </div>

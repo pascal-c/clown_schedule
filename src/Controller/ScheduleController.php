@@ -51,7 +51,7 @@ class ScheduleController extends AbstractProtectedController
         $schedule = $this->scheduleRepository->find($month);
 
         if (ScheduleStatus::COMPLETED === $schedule->getStatus()) {
-            throw $this->createAccessDeniedException('Spielplan ist bereits abgeschlossen!');
+            throw $this->createAccessDeniedException($this->translateMessage('Spielplan ist bereits abgeschlossen!'));
         }
 
         if (!$schedule->isStarted()) {
@@ -62,7 +62,7 @@ class ScheduleController extends AbstractProtectedController
         $calculateForm = $this->createForm(ScheduleCalculateFormType::class, $schedule);
         $calculateForm->handleRequest($request);
         if (!$calculateForm->isSubmitted() || !$calculateForm->isValid()) {
-            $this->addFlash('danger', 'Ui! Das hat irgendwie überhaupt nicht geklappt! Tut mir sehr leid! Bitte versuche es einfach nochmal.');
+            $this->addFlash('danger', $this->translateMessage('Ui! Das hat irgendwie überhaupt nicht geklappt! Tut mir sehr leid! Bitte versuche es einfach nochmal.'));
 
             return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
         }
@@ -121,7 +121,7 @@ class ScheduleController extends AbstractProtectedController
         $month = $this->monthRepository->find($session, $monthId);
         $schedule = $this->scheduler->complete($month);
         if (!$schedule) {
-            throw $this->createAccessDeniedException('Der Spielplan ist bereits abgeschlossen!');
+            throw $this->createAccessDeniedException($this->translateMessage('Der Spielplan ist bereits abgeschlossen!'));
         }
 
         $this->entityManager->flush();
@@ -136,7 +136,7 @@ class ScheduleController extends AbstractProtectedController
             }
         }
 
-        $this->addFlash('success', 'Cool, Spielplan ist abgeschlossen und ist nun für alle sichtbar. Manuelle Änderungen können trotzdem noch vorgenommen werden.');
+        $this->addFlash('success', $this->translateMessage('Cool, Spielplan ist abgeschlossen und ist nun für alle sichtbar. Manuelle Änderungen können trotzdem noch vorgenommen werden.'));
 
         return $this->redirectToRoute('schedule', ['monthId' => $month->getKey()]);
     }

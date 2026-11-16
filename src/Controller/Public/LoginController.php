@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LoginController extends AbstractController
 {
@@ -25,6 +26,7 @@ class LoginController extends AbstractController
         private AuthenticationMailer $mailer,
         private TimeService $timeService,
         private EntityManagerInterface $entityManager,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -52,7 +54,10 @@ class LoginController extends AbstractController
                 }
                 $this->addFlash(
                     'success',
-                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email'])
+                    $this->translator->trans(
+                        'Falls die Adresse richtig ist, wird ein Email mit einem Anmelde-Link an "%email%" gesendet. Schau mal in Dein Email-Postfach!',
+                        ['%email%' => $loginData['email']]
+                    )
                 );
             } elseif ($loginForm['change_password']->isClicked()) {
                 $clown = $this->clownRepository->findOneByEmail($loginForm['email']->getData());
@@ -61,7 +66,10 @@ class LoginController extends AbstractController
                 }
                 $this->addFlash(
                     'success',
-                    sprintf('Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%s" gesendet. Schau mal in Dein Email-Postfach!', $loginData['email'])
+                    $this->translator->trans(
+                        'Falls die Adresse richtig ist, wird ein Email mit einem Link zum Ändern Deines Passwortes an "%email%" gesendet. Schau mal in Dein Email-Postfach!',
+                        ['%email%' => $loginData['email']]
+                    )
                 );
             }
         }
@@ -79,7 +87,7 @@ class LoginController extends AbstractController
             return $this->handleLoginSuccess();
         }
 
-        $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.');
+        $this->addFlash('warning', $this->translator->trans('Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.'));
 
         return $this->redirectToRoute('login');
     }
@@ -94,7 +102,7 @@ class LoginController extends AbstractController
             $this->authService->loginByToken($token);
         }
         if (!$this->authService->isLoggedIn()) {
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.');
+            $this->addFlash('warning', $this->translator->trans('Das hat leider nicht geklappt. Der Link war scheinbar nicht mehr gültig. Bitte fordere eine neue Email an.'));
 
             return $this->redirectToRoute('login');
         }
@@ -102,7 +110,7 @@ class LoginController extends AbstractController
             $this->authService->changePassword($passwordForm['password']['password']->getData());
             $this->addFlash(
                 'success',
-                sprintf('Super, Dein Passwort wurde geändert, %s!', $this->getCurrentClown()->getName())
+                $this->translator->trans('Super, Dein Passwort wurde geändert, %name%!', ['%name%' => $this->getCurrentClown()->getName()])
             );
             $this->authService->logout();
 
@@ -125,7 +133,7 @@ class LoginController extends AbstractController
             $this->authService->loginByToken($token);
         }
         if (!$this->authService->isLoggedIn()) {
-            $this->addFlash('warning', 'Das hat leider nicht geklappt. Der Einladungslink war scheinbar nicht mehr gültig. Tut mir leid!');
+            $this->addFlash('warning', $this->translator->trans('Das hat leider nicht geklappt. Der Einladungslink war scheinbar nicht mehr gültig. Tut mir leid!'));
 
             return $this->redirectToRoute('login');
         }
@@ -137,7 +145,7 @@ class LoginController extends AbstractController
             $this->entityManager->flush();
             $this->addFlash(
                 'success',
-                sprintf('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, %s!', $currentClown->getName())
+                $this->translator->trans('Super, Dein Zugang wurde erstellt! Du kannst Dich jetzt anmelden, %name%!', ['%name%' => $currentClown->getName()])
             );
             $this->authService->logout();
 
@@ -154,13 +162,13 @@ class LoginController extends AbstractController
     public function logout(Request $request): Response
     {
         if (!$this->isCsrfTokenValid('logout_token', $request->query->get('logout_token'))) {
-            $this->addFlash('warning', 'Logout ist schiefgegangen!');
+            $this->addFlash('warning', $this->translator->trans('Logout ist schiefgegangen!'));
 
             return $this->redirectToRoute('root');
         }
 
         $this->authService->logout();
-        $this->addFlash('success', 'Du wurdest mit großem Erfolg abgemeldet. Bis bald!');
+        $this->addFlash('success', $this->translator->trans('Du wurdest mit großem Erfolg abgemeldet. Bis bald!'));
 
         return $this->redirectToRoute('login');
     }
@@ -175,14 +183,14 @@ class LoginController extends AbstractController
             'Das war wohl nicht ganz richtig! Wer tippen kann, ist klar im Vorteil!',
         ];
 
-        return $messages[array_rand($messages)];
+        return $this->translator->trans($messages[array_rand($messages)]);
     }
 
     private function handleLoginSuccess(): Response
     {
         $this->addFlash(
             'success',
-            sprintf('Herzlich Willkommen, %s! Schön, dass Du da bist.', $this->getCurrentClown()->getName())
+            $this->translator->trans('Herzlich Willkommen, %name%! Schön, dass Du da bist.', ['%name%' => $this->getCurrentClown()->getName()])
         );
 
         $uri = $this->authService->getLastUri();

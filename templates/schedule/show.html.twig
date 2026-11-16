@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Spielplan{% endblock %}
+{% block title %}{{ 'Spielplan'|trans }}{% endblock %}
 
 {% block content %}
     <h4 class="pt-3">
-        Spielplan {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}
+        {{ 'Spielplan'|trans }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}
     </h4>
 
     {% if featureCalculationActive and currentClown.isAdmin and not schedule.completed %}
@@ -18,8 +18,8 @@
     {{ component('month_navigation', { active: month.key, urlKey: 'schedule' }) }}
     
     {% if featureCalculationActive %}
-        <button type="button" class="btn btn-link collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns anzeigen</button>
-        <button type="button" class="btn btn-link collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">Verfügbare Clowns verstecken</button>
+        <button type="button" class="btn btn-link collapse show available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">{{ 'Verfügbare Clowns anzeigen'|trans }}</button>
+        <button type="button" class="btn btn-link collapse available_clowns" data-bs-target=".available_clowns" data-bs-toggle="collapse">{{ 'Verfügbare Clowns verstecken'|trans }}</button>
     {% endif %}
 
 
@@ -28,27 +28,27 @@
     </div>
     {% if currentClown.isAdmin %}
         <div class="pt-3">
-            {{ include('_shared/_create_link.html.twig', {url: path('play_date_new'), label: "Spieltermin anlegen"}) }}
+            {{ include('_shared/_create_link.html.twig', {url: path('play_date_new'), label: "Spieltermin anlegen"|trans}) }}
         </div>
 
         <div>
             {{ include('_shared/_create_link.html.twig', {
                 url: path('play_date_new', {type: enum('App\\Value\\PlayDateType').SPECIAL.value}), 
-                label: "Zusatztermin anlegen"
+                label: "Zusatztermin anlegen"|trans
             }) }}
         </div>
 
         <div>
             {{ include('_shared/_create_link.html.twig', {
                 url: path('play_date_new', {type: enum('App\\Value\\PlayDateType').TRAINING.value}), 
-                label: "#{enum('App\\Value\\PlayDateType').TRAINING.value|trans} anlegen"
+                label: "#{enum('App\\Value\\PlayDateType').TRAINING.value|trans} #{'anlegen'|trans}"
             }) }}
         </div>
 
         <div>
             {{ include('_shared/_create_link.html.twig', {
                 url: path('play_date_new', {type: enum('App\\Value\\PlayDateType').OTHER.value}), 
-                label: "#{enum('App\\Value\\PlayDateType').OTHER.value|trans} anlegen"
+                label: "#{enum('App\\Value\\PlayDateType').OTHER.value|trans} #{'anlegen'|trans}"
             }) }}
         </div>
     {% endif %}

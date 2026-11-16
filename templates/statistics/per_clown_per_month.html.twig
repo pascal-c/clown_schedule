@@ -1,44 +1,44 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Statistiken{% endblock %}
+{% block title %}{{ 'Statistiken'|trans }}{% endblock %}
 
 {% block content %}
-    <h4 class="pt-3">Statistiken</h4>
+    <h4 class="pt-3">{{ 'Statistiken'|trans }}</h4>
     {{ component('statistics_navigation', { active: 'per_clown' }) }}
     {{ component('statistics_per_clown_navigation', { active: 'per_month' }) }}
     {{ component('month_navigation', { active: month.key, urlKey: 'statistics' }) }}
-    <h5 class="pt-2">Reguläre Spieltermine {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h5>
+    <h5 class="pt-2">{{ 'Reguläre Spieltermine'|trans }} {{ include('schedule/_schedule_title.html.twig', {schedule: schedule}) }}</h5>
 
-    <div>Spieltermine (aktuell): {{ currentPlayDatesCount }}</div>
+    <div>{{ 'Spieltermine (aktuell):'|trans }} {{ currentPlayDatesCount }}</div>
            
-    {{ include('statistics/_rating.html.twig', {rating: calculatedRating, name: 'berechnet', id: 'calculatedRating'}) }}
-    {{ include('statistics/_rating.html.twig', {rating: currentRating, name: 'aktuell', id: 'currentRating'}) }}
+    {{ include('statistics/_rating.html.twig', {rating: calculatedRating, name: 'berechnet'|trans, id: 'calculatedRating'}) }}
+    {{ include('statistics/_rating.html.twig', {rating: currentRating, name: 'aktuell'|trans, id: 'currentRating'}) }}
 
     <table class="table">
         <thead>
             <tr>
                 <th colspan="1"></th>
-                <th colspan="{{ showMaxPerWeek ? 4 : 3 }}">Bedingungen</th>
-                <th colspan="4" title="Das hat die App berechnet">berechnet</th>
-                <th colspan="2" title="Das war der Stand bei Fertigstellung des Spielplans">zugeteilt</th>
-                <th colspan="2" title="So isses jetzt">aktuell</th>
+                <th colspan="{{ showMaxPerWeek ? 4 : 3 }}">{{ 'Bedingungen'|trans }}</th>
+                <th colspan="4" title="{{ 'Das hat die App berechnet'|trans }}">{{ 'berechnet'|trans }}</th>
+                <th colspan="2" title="{{ 'Das war der Stand bei Fertigstellung des Spielplans'|trans }}">{{ 'zugeteilt'|trans }}</th>
+                <th colspan="2" title="{{ 'So isses jetzt'|trans }}">{{ 'aktuell'|trans }}</th>
             </tr>
             <tr>
-                <th>Clown</th>
-                <th>Maximum</th>
-                <th>Wunsch</th>
+                <th>{{ 'Clown'|trans }}</th>
+                <th>{{ 'Maximum'|trans }}</th>
+                <th>{{ 'Wunsch'|trans }}</th>
                 {% if showMaxPerWeek %}
-                    <th>Max pro Woche</th>
+                    <th>{{ 'Max pro Woche'|trans }}</th>
                 {% endif %}
-                <th>Verfügbarkeit</th>
-                <th>zustehend</th>
-                <th>Ziel</th>
-                <th>Spiele</th>
-                <th>Springer</th>
-                <th>Spiele</th>
-                <th>Springer</th>
-                <th>Spiele</th>
-                <th>Springer</th>
+                <th>{{ 'Verfügbarkeit'|trans }}</th>
+                <th>{{ 'zustehend'|trans }}</th>
+                <th>{{ 'Ziel'|trans }}</th>
+                <th>{{ 'Spiele'|trans }}</th>
+                <th>{{ 'Springer'|trans }}</th>
+                <th>{{ 'Spiele'|trans }}</th>
+                <th>{{ 'Springer'|trans }}</th>
+                <th>{{ 'Spiele'|trans }}</th>
+                <th>{{ 'Springer'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -86,7 +86,7 @@
             </tr>
             {% endfor %}
             <tr>
-                <th>Summe</th>
+                <th>{{ 'Summe'|trans }}</th>
                 <th>
                     {{ clownAvailabilities|reduce((carry, v) => carry+v.maxPlaysMonth) }}
                 </th>

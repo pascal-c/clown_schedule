@@ -50,11 +50,11 @@ class VenueContactController extends AbstractProtectedController
             $this->entityManager->persist($contact);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Schön! Neuen Kontakt erfolgreich angelegt!');
+            $this->addFlash('success', $this->translateMessage('Schön! Neuen Kontakt erfolgreich angelegt!'));
 
             return $this->redirectToRoute('venue_contact_index', ['id' => $venue->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Da ist irgendwas schiefgegangen. Ich verstehe es auch nicht!');
+            $this->addFlash('warning', $this->translateMessage('Da ist irgendwas schiefgegangen. Ich verstehe es auch nicht!'));
         }
 
         return $this->render('venue/contact/new.html.twig', [
@@ -75,11 +75,11 @@ class VenueContactController extends AbstractProtectedController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Schön! Kontakt erfolgreich aktualisiert!');
+            $this->addFlash('success', $this->translateMessage('Schön! Kontakt erfolgreich aktualisiert!'));
 
             return $this->redirectToRoute('venue_contact_index', ['id' => $venue->getId()]);
         } elseif ($form->isSubmitted()) {
-            $this->addFlash('warning', 'Das Aktualisieren hat leider nicht geklappt!');
+            $this->addFlash('warning', $this->translateMessage('Das Aktualisieren hat leider nicht geklappt!'));
         }
 
         return $this->render('venue/contact/edit.html.twig', [
@@ -102,12 +102,12 @@ class VenueContactController extends AbstractProtectedController
             $this->entityManager->remove($contact);
             $this->entityManager->flush();
 
-            $this->addFlash('success', 'Kontakt wurde erfolgreich gelöscht.');
+            $this->addFlash('success', $this->translateMessage('Kontakt wurde erfolgreich gelöscht.'));
 
             return $this->redirectToRoute('venue_contact_index', ['id' => $venue->getId()]);
         }
 
-        $this->addFlash('warning', 'Kontakt konnte nicht gelöscht werden.');
+        $this->addFlash('warning', $this->translateMessage('Kontakt konnte nicht gelöscht werden.'));
 
         return $this->redirectToRoute('clown_edit', ['id' => $venue->getId(), 'contact_id' => $contact->getId()]);
     }
