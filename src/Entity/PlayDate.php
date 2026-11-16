@@ -66,11 +66,11 @@ class PlayDate implements TimeSlotPeriodInterface
     private Collection $playDateHistory;
 
     #[ORM\OneToMany(mappedBy: 'playDateToGiveOff', targetEntity: PlayDateChangeRequest::class, orphanRemoval: true)]
-    #[ORM\OrderBy(['requestedAt' => 'DESC'])]
+    #[ORM\OrderBy(['requestedAt' => SortDirection::Descending])]
     private Collection $playDateGiveOffRequests;
 
     #[ORM\OneToMany(mappedBy: 'PlayDateWanted', targetEntity: PlayDateChangeRequest::class)]
-    #[ORM\OrderBy(['requestedAt' => 'DESC'])]
+    #[ORM\OrderBy(['requestedAt' => SortDirection::Descending])]
     private Collection $playDateSwapRequests;
 
     #[ORM\Column(type: Types::TIME_IMMUTABLE, nullable: true)]

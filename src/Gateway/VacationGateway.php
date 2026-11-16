@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Gateway;
 
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -14,6 +15,7 @@ class VacationGateway
 {
     public function __construct(
         private HttpClientInterface $httpClient,
+        #[Target('vacationCache')]
         private CacheInterface $vacationCache,
     ) {
     }
