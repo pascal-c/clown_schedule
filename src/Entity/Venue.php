@@ -76,7 +76,7 @@ class Venue
      * @var Collection<int, Fee>
      */
     #[ORM\OneToMany(targetEntity: Fee::class, mappedBy: 'venue', orphanRemoval: true)]
-    #[ORM\OrderBy(['validFrom' => 'DESC'])]
+    #[ORM\OrderBy(['validFrom' => SortDirection::Descending])]
     private Collection $fees;
 
     /**
