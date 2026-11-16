@@ -4,7 +4,7 @@ every.week: >-
     other {alle # Wochen}
   }
 on_day_of_week: '{dayOfWeek}s'
-'ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.': '__ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.'
+'ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.': 'ACHTUNG! Die Spielplanerstellung für den Monat {month} wurde noch nicht abgeschlossen.'
 'Meine Einstellungen': 'Meine Einstellungen'
 'Spielplan fertiggestellt': 'Spielplan fertiggestellt'
 'Spielplan wird gerade erstellt': 'Spielplan wird gerade erstellt'

@@ -197,5 +197,5 @@ Error: Fehler
 'Das ist keine gültige Email': 'Das ist keine gültige Email'
 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.': 'Es existiert bereits ein Spieltermin für diesen Spielort am gleichen Tag.'
 'Du musst mindestens {{ limit }} Spieltermine auswählen, um sie zu bündeln.': 'Du musst mindestens {{ limit }} Spieltermine auswählen, um sie zu bündeln.'
-'Your name must be at least {{ limit }} characters long': '__Your name must be at least {{ limit }} characters long'
-'Your name cannot be longer than {{ limit }} characters': '__Your name cannot be longer than {{ limit }} characters'
+'Your name must be at least {{ limit }} characters long': 'Your name must be at least {{ limit }} characters long'
+'Your name cannot be longer than {{ limit }} characters': 'Your name cannot be longer than {{ limit }} characters'
